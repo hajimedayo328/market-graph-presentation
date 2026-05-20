@@ -75,4 +75,44 @@ https://github.com/hajimedayo328/market-graph-research
 
 ---
 
+## Citation
+
+If you use this research, the findings, or any of its figures/analyses, **please cite it**:
+
+```bibtex
+@misc{hajime2026marketgraph,
+  author       = {Hajime},
+  title        = {Market Graph Research: Topological Analysis of Financial Networks
+                  with Categorical and Sign-based Invariants},
+  year         = {2026},
+  institution  = {Tokyo City University},
+  howpublished = {\url{https://github.com/hajimedayo328/market-graph-presentation}},
+  note         = {GitHub Pages: https://hajimedayo328.github.io/market-graph-presentation/}
+}
+```
+
+Plain text:
+
+> Hajime (2026). *Market Graph Research: Topological Analysis of Financial Networks
+> with Categorical and Sign-based Invariants*. Tokyo City University.
+> https://github.com/hajimedayo328/market-graph-presentation
+
+GitHub の "Cite this repository" ボタンからも自動取得可能 (`CITATION.cff` 配置済み)。
+
+## License
+
+This research is released under the **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+
+You are free to share and adapt the material **with appropriate credit** (citation as above).
+Full text: [LICENSE](./LICENSE) / https://creativecommons.org/licenses/by/4.0/
+
+## Contact
+
+質問・コメント・コラボ希望は GitHub Issues 経由でお願いします:
+https://github.com/hajimedayo328/market-graph-presentation/issues
+
+Author: **Hajime**, Tokyo City University · 2026
+
+---
+
 🤖 Built with Plotly, KaTeX, networkx, ripser, yfinance.

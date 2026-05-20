@@ -1,0 +1,53 @@
+cff-version: 1.2.0
+message: "If you use this research or its findings, please cite it as below."
+title: "Market Graph Research: Topological Analysis of Financial Networks with Categorical and Sign-based Invariants"
+authors:
+  - family-names: "Hajime"
+    affiliation: "Tokyo City University"
+abstract: >
+  A research project applying category theory and graph theory to financial
+  market correlation networks. Two topological invariants — the L1 norm of
+  persistent homology H_1 (magnitude-based) and the unbalanced cycle count
+  (sign-based, Heider balance theory) — are tracked daily and shown to capture
+  independent information. The divergence index e_div = z(unb) − z(L1) acts as
+  a shock-type classifier (policy / strength-change / general volatility).
+keywords:
+  - "topological data analysis"
+  - "persistent homology"
+  - "signed graphs"
+  - "structural balance"
+  - "financial networks"
+  - "category theory"
+  - "Heider balance"
+  - "shock detection"
+version: "1.0"
+date-released: "2026-05"
+repository-code: "https://github.com/hajimedayo328/market-graph-presentation"
+url: "https://hajimedayo328.github.io/market-graph-presentation/"
+license: CC-BY-4.0
+references:
+  - type: article
+    authors:
+      - family-names: "Gidea"
+        given-names: "Marian"
+      - family-names: "Katz"
+        given-names: "Yuri"
+    title: "Topological data analysis of financial time series: Landscapes of crashes"
+    journal: "Physica A"
+    year: 2017
+    volume: 491
+    identifiers:
+      - type: other
+        value: "arXiv:1703.04385"
+  - type: article
+    authors:
+      - family-names: "Ferreira"
+        given-names: "Andre"
+      - others: true
+    title: "Loss of structural balance in stock markets"
+    journal: "Scientific Reports"
+    year: 2021
+    volume: 11
+    identifiers:
+      - type: doi
+        value: "10.1038/s41598-021-91266-4"
