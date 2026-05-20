@@ -350,6 +350,21 @@
   Gidea & Katz (2017) が市場クラッシュ前兆として提案。
   <strong>整数値の不変量 (穴の個数 nH1) と実数値の不変量 (寿命の総和 L¹) は別物</strong>。両方この研究で使う。</p>
 
+  <div class="callout intuition">
+    <h4>そもそも「ホモロジー」って何 (ゼロから)</h4>
+    <p><strong>形を数で表す数学</strong>。形が違うかどうかを数で区別する。</p>
+    <ul class="simple">
+      <li>丸い円 → 穴 <strong>0</strong> 個</li>
+      <li>ドーナツ → 穴 <strong>1</strong> 個</li>
+      <li>8 の字 → 穴 <strong>2</strong> 個</li>
+    </ul>
+    <p>この「穴の数」を <strong>$H_1$ (1 次元のホモロジー)</strong> と呼ぶ。
+    銘柄ネットワークでも同じ考え方で「穴の数」を数える。</p>
+    <p>類似の指標: $H_0$ = 「<strong>島の数</strong>」(連結した塊の数)、
+    $H_2$ = 「<strong>空洞の数</strong>」(3 次元の中身、球の内部みたいな空間)。
+    この研究では $H_1$ だけ使う。</p>
+  </div>
+
   <h3>3.1 「穴」って何</h3>
   <p>グラフのトポロジーで言う「1 次元の穴」= 円周のような閉じたループ。
   例えば 4 点 A-B-C-D-A を一周する閉路があり、その内側が塞がってない (三角分割されてない) と、
@@ -362,6 +377,35 @@
     <p class="small">左: 全ペア接続 (三角分割済) → 穴 0 個 ($H_1 = 0$)。<br>
        中央: 四角形のみ (対角線なし) → <strong>穴 1 個</strong> ($H_1 = \mathbb{Z}$)、四角形の中央が「塞がってない」。<br>
        右: 五角形 + 内側に三角形 1 つ → 穴 1 個 (三角形で部分的に塞いだ)。</p>
+  </div>
+
+  <h3>3.1.3 普通のホモロジーの問題と「持続ホモロジー」の発想</h3>
+
+  <div class="callout warn">
+    <h4>普通のホモロジーの問題</h4>
+    <p>「相関がどれくらい強いペアを線で繋ぐか」(閾値) を決めないと、ネットワークが定まらない:</p>
+    <ul class="simple">
+      <li>閾値 0.3 で繋ぐと → 穴 100 個</li>
+      <li>閾値 0.5 で繋ぐと → 穴 20 個</li>
+      <li>閾値 0.7 で繋ぐと → 穴 5 個</li>
+    </ul>
+    <p><strong>結果が閾値で変わる</strong> → どの閾値が正しいか分からない。</p>
+  </div>
+
+  <div class="callout intuition">
+    <h4>持続ホモロジーの解決策: 「全部の閾値を試す」</h4>
+    <p>閾値を <strong>0 → √2</strong> までスライドさせながら、各穴が
+    「いつ生まれて、いつ消えるか」を全部追う。</p>
+    <p><strong>例え話 — 水位が下がる池</strong>:</p>
+    <ol class="simple">
+      <li>水位 高 (閾値 強): 山頂だけが島として顔出してる → 線は無い、穴も無い</li>
+      <li>水位 中: 強い相関ペアから順に橋ができる → <strong>穴が生まれ始める</strong></li>
+      <li>水位 低: 弱い相関ペアも繋がる → 穴の中も埋まる → <strong>穴が死ぬ</strong></li>
+      <li>水位 ゼロ: 全部 1 つの大陸 → 穴ゼロ</li>
+    </ol>
+    <p>その過程で各穴の <strong>「生まれた時の水位」と「死んだ時の水位」</strong>を記録する。
+    これが <strong>持続ホモロジー (Persistent Homology)</strong>。
+    Section 3.1.6 のバーコードで具体的に見える。</p>
   </div>
 
   <h3>3.1.5 実際の銘柄ネットワーク</h3>
@@ -391,20 +435,46 @@
     L¹ ノルムを計算するときはスイープ全体を見るので、図と数値は別の話。</p>
   </div>
 
-  <h3>3.1.6 持続ホモロジー バーコード — 「L¹ の計算過程」を見る</h3>
-  <p>各「穴」の生死を線分で描いた図 = <strong>バーコード</strong>。
-  L¹ = 全ての線分の長さの合計。</p>
-  <div class="plot">
-    <div class="plot-title">バーコード: 横軸 = フィルトレーション値 (距離)、各行 = 1 つの穴。
-    線分が長い = その穴は安定 (本質的)、短い = ノイズ的</div>
-    <div id="barcode_plot" style="height:440px;"></div>
+  <h3>3.1.6 持続ホモロジー バーコード — 「穴の人生」を見る</h3>
+
+  <div class="callout intuition">
+    <h4>そもそもこのグラフは何?</h4>
+    <p>「穴の数 = 16 個」みたいに 1 つの数字で表すんじゃなく、
+    <strong>1 個の穴を 1 本の横線</strong>で表した図 = <strong>バーコード</strong>。</p>
+    <ul class="simple">
+      <li><strong>横軸</strong> = 「水位」(相関の閾値、0 〜 √2)<br>
+        左 = 強い相関だけ繋いだ状態 / 右 = 弱い相関まで全部繋いだ状態</li>
+      <li><strong>1 本の横線</strong> = 1 つの穴の人生</li>
+      <li><strong>線の左端</strong> = その穴が「<strong>生まれた</strong>」水位 (= birth)</li>
+      <li><strong>線の右端</strong> = その穴が「<strong>消えた</strong>」水位 (= death)</li>
+      <li><strong>線の長さ</strong> = 寿命。長いほど本質的、短いほどノイズ的</li>
+    </ul>
   </div>
+
+  <div class="plot">
+    <div class="plot-title">上半分 (赤) = ショック直前、下半分 (青) = 平常時。
+    各横線が 1 個の穴。長い線ほど「本質的な穴」</div>
+    <div id="barcode_plot" style="height:480px;"></div>
+  </div>
+
+  <div class="callout found">
+    <h4>このグラフから何が読み取れる?</h4>
+    <ul class="simple">
+      <li>平常時 (青) は <strong>線が 16 本</strong>、でも<strong>全部短い</strong>
+      → 穴がたくさんあるが、どれもすぐ消える (ノイズ的)</li>
+      <li>ショック直前 (赤) は <strong>線が 9 本に減る</strong>、でも<strong>長い線が出現</strong>
+      (最長 0.27、平常時の 2 倍)</li>
+      <li>→ <strong>「ノイズ的な穴が減って、本質的な大きな穴が出現する」</strong>
+      これが関税ショック直前の構造変化サイン</li>
+    </ul>
+  </div>
+
   <p class="small">
-    <strong>平常時 (青)</strong>: L¹ = 計算結果は控えめ、長い線分は少ない<br>
-    <strong>ショック前 (赤)</strong>: L¹ = 大きい、長い線分が増える<br>
-    各線分の <strong>長さの総和が L¹ ノルム</strong>。
-    <strong>線分の本数が nH1 (穴の個数)</strong>。
-    <strong>最長線分が Linf (最大寿命)</strong>。
+    なお:
+    <strong>線の本数</strong> = <code>nH1</code> (穴の個数、整数値)。
+    <strong>全線分の合計長</strong> = <code>L¹</code> ノルム (実数値)。
+    <strong>最長線</strong> = <code>Linf</code> (最大寿命、実数値)。
+    これら 3 つは別々の指標なので、Section 8.5 で全部追跡している。
   </p>
 
   <h3>3.2 代数的な厳密版 — 「整数」になる部分</h3>
@@ -1308,38 +1378,88 @@ function showSnapshot(key) { drawSnapshot(key); }
 // 初期表示: 関税ショック直前
 drawSnapshot('preshock');
 
-// === バーコード (持続ホモロジー) ===
+// === バーコード (持続ホモロジー) — 上下に分けて表示 ===
 {
-  const traces = [];
-  let row = 0;
-  const colors = { calm: '#2c5aa0', preshock: '#c0392b' };
-  const labels = { calm: '平常時 (2023-06)', preshock: '関税ショック直前 (2025-04)' };
-  for (const key of ['calm', 'preshock']) {
-    const b = DATA.barcodes[key];
-    if (!b) continue;
-    // セクション区切り
-    traces.push({ x: [null], y: [null], mode: 'markers',
-                  name: `${labels[key]}: L¹=${b.L1.toFixed(2)}, nH1=${b.nH1}`,
-                  marker: { color: colors[key], size: 10 }, showlegend: true });
-    for (let i = 0; i < b.H1.length; i++) {
-      const [birth, death] = b.H1[i];
-      traces.push({
-        x: [birth, death], y: [row, row], mode: 'lines',
-        line: { color: colors[key], width: 4 },
-        showlegend: false,
-        hovertemplate: `birth=${birth.toFixed(3)}<br>death=${death.toFixed(3)}<br>` +
-                       `persistence=${(death - birth).toFixed(3)}<extra></extra>`,
-      });
-      row++;
-    }
-    row += 3;  // 区切り
+  const calm = DATA.barcodes.calm;
+  const pre  = DATA.barcodes.preshock;
+
+  // 寿命の長い順にソート (上から長い線)
+  function sortBars(bars) {
+    return bars.slice().sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
   }
+  const calm_bars = sortBars(calm.H1);
+  const pre_bars  = sortBars(pre.H1);
+
+  const traces = [];
+  // 平常時 (下半分: y < 0)
+  for (let i = 0; i < calm_bars.length; i++) {
+    const [b, d] = calm_bars[i];
+    const y = -i - 1;
+    traces.push({
+      x: [b, d], y: [y, y], mode: 'lines',
+      line: { color: '#2c5aa0', width: 4 },
+      hovertemplate: `平常時 穴#${i+1}<br>birth=${b.toFixed(3)}<br>death=${d.toFixed(3)}<br>寿命=${(d-b).toFixed(3)}<extra></extra>`,
+      showlegend: false,
+    });
+  }
+  // ショック前 (上半分: y > 0)
+  for (let i = 0; i < pre_bars.length; i++) {
+    const [b, d] = pre_bars[i];
+    const y = pre_bars.length - i;
+    traces.push({
+      x: [b, d], y: [y, y], mode: 'lines',
+      line: { color: '#c0392b', width: 4 },
+      hovertemplate: `ショック前 穴#${i+1}<br>birth=${b.toFixed(3)}<br>death=${d.toFixed(3)}<br>寿命=${(d-b).toFixed(3)}<extra></extra>`,
+      showlegend: false,
+    });
+  }
+  // 中央分割線
+  traces.push({
+    x: [0, Math.sqrt(2)], y: [0, 0], mode: 'lines',
+    line: { color: '#1d1d1f', width: 1, dash: 'solid' },
+    hoverinfo: 'skip', showlegend: false,
+  });
+  // 凡例ダミー
+  traces.push({ x: [null], y: [null], mode: 'lines',
+                line: { color: '#c0392b', width: 4 },
+                name: `ショック直前 (2025-04): 穴 ${pre.nH1} 個, L¹=${pre.L1.toFixed(2)}, 最長=${pre.Linf.toFixed(2)}` });
+  traces.push({ x: [null], y: [null], mode: 'lines',
+                line: { color: '#2c5aa0', width: 4 },
+                name: `平常時 (2023-06): 穴 ${calm.nH1} 個, L¹=${calm.L1.toFixed(2)}, 最長=${calm.Linf.toFixed(2)}` });
+
+  // 注釈
+  const annotations = [
+    { x: 0.02, y: pre_bars.length + 0.5, xref: 'x', yref: 'y',
+      text: '<b>← ショック直前</b><br>(穴 9 個、最長 0.27)',
+      showarrow: false, font: { size: 12, color: '#c0392b' },
+      bgcolor: 'rgba(255,255,255,0.85)', xanchor: 'left' },
+    { x: 0.02, y: -calm_bars.length - 0.5, xref: 'x', yref: 'y',
+      text: '<b>← 平常時</b><br>(穴 16 個、最長 0.12)',
+      showarrow: false, font: { size: 12, color: '#2c5aa0' },
+      bgcolor: 'rgba(255,255,255,0.85)', xanchor: 'left' },
+    { x: 0.5, y: 0.4, xref: 'paper', yref: 'paper',
+      text: '<i>← 早い時期 (相関強い)　　　　遅い時期 (相関弱い) →</i>',
+      showarrow: false, font: { size: 11, color: '#86868b' },
+      xanchor: 'center' },
+  ];
+
   const layout = Object.assign({}, layout_base, {
-    xaxis: Object.assign({}, layout_base.xaxis,
-                          { title: 'フィルトレーション値 (距離)', zeroline: false }),
+    xaxis: { gridcolor: '#e6e6eb', linecolor: '#d2d2d7',
+             title: 'フィルトレーション値 = 水位 (距離)',
+             range: [0, Math.sqrt(2)], zeroline: false },
     yaxis: { showticklabels: false, gridcolor: '#f4f4f7',
-             title: '穴 ID (寿命降順)' },
-    legend: { orientation: 'h', y: -0.18 },
+             title: '各横線 = 1 つの穴の寿命' },
+    legend: { orientation: 'h', y: -0.20, font: { size: 11 } },
+    annotations: annotations,
+    shapes: [
+      { type: 'rect', x0: 0, x1: Math.sqrt(2),
+        y0: 0.1, y1: pre_bars.length + 1, fillcolor: 'rgba(192,57,43,0.04)',
+        line: { width: 0 }, layer: 'below' },
+      { type: 'rect', x0: 0, x1: Math.sqrt(2),
+        y0: -calm_bars.length - 1, y1: -0.1,
+        fillcolor: 'rgba(44,90,160,0.04)',
+        line: { width: 0 }, layer: 'below' },
+    ],
   });
   Plotly.newPlot('barcode_plot', traces, layout,
                  { responsive: true, displaylogo: false });
