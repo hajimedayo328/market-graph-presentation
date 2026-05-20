@@ -1,0 +1,44 @@
+{
+ "trade_policy_manual": {
+  "n": 23,
+  "e_div_delta_sigma": 0.16499153058641242,
+  "p_perm": 0.10633333333333334,
+  "z_unb_delta_sigma": 0.11173872795245997,
+  "z_L1_delta_sigma": -0.09825996599512907
+ },
+ "trade_policy_2018": {
+  "n": 13,
+  "e_div_delta_sigma": 0.11309253188399918,
+  "p_perm": 0.24866666666666667,
+  "z_unb_delta_sigma": 0.0813204535887641,
+  "z_L1_delta_sigma": -0.06262198943516739
+ },
+ "trade_policy_ALL": {
+  "n": 36,
+  "e_div_delta_sigma": 0.1462502254994299,
+  "p_perm": 0.09333333333333334,
+  "z_unb_delta_sigma": 0.10075435109890316,
+  "z_L1_delta_sigma": -0.08539069668180958
+ },
+ "vix_auto": {
+  "n": 25,
+  "e_div_delta_sigma": 0.09474118602047178,
+  "p_perm": 0.21366666666666667,
+  "z_unb_delta_sigma": 0.22972388488356238,
+  "z_L1_delta_sigma": 0.10913875389755338
+ },
+ "large_reciprocal_2025": {
+  "n": 5,
+  "e_div_delta_sigma": 1.5735138675745675,
+  "p_perm": 0.0,
+  "z_unb_delta_sigma": 0.8454042279181156,
+  "z_L1_delta_sigma": -1.157340130684079
+ },
+ "mid_unilateral": {
+  "n": 7,
+  "e_div_delta_sigma": -0.4860024714175387,
+  "p_perm": 0.9703333333333334,
+  "z_unb_delta_sigma": -0.20787110031894565,
+  "z_L1_delta_sigma": 0.41070540412490475
+ }
+}

@@ -1,0 +1,1948 @@
+"""
+プレゼン HTML 生成器 (index.html). presentation リポ側で独立に動く.
+"""
+from __future__ import annotations
+
+import base64
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+HERE = Path(__file__).parent
+ROOT = HERE.parent
+DATA_DIR = ROOT / "data"
+sys.path.insert(0, str(HERE / "lib"))
+
+# プレゼン用イベントリスト
+EVENTS_EXTENDED = [
+    ("2023-08-02", "Fitch 米国格下げ", "macro", "USA"),
+    ("2023-10-07", "ハマス・イスラエル戦争", "geopolitical", "ISR"),
+    ("2024-01-31", "FOMC タカ派サプライズ", "monetary", "USA"),
+    ("2024-04-13", "イラン・イスラエル攻撃", "geopolitical", "IRN"),
+    ("2024-08-05", "円キャリー巻き戻し", "market_structure", "JPN"),
+    ("2024-09-18", "FOMC 50bp 利下げ", "monetary", "USA"),
+    ("2024-12-18", "FOMC タカ派サプライズ", "monetary", "USA"),
+    ("2025-08-01", "サマー・ボラショック", "market_structure", "USA"),
+    ("2026-01-27", "DeepSeek AI 投資見直し", "tech_shock", "CHN"),
+    ("2025-04-02", "Liberation Day 相互関税", "trade_policy", "USA"),
+    ("2025-04-08", "関税180日停止・株価反発", "trade_policy", "USA"),
+    ("2026-03-04", "関税再発動", "trade_policy", "USA"),
+    ("2021-12-03", "対リトアニア輸入停止", "trade_policy", "CHN"),
+    ("2022-08-09", "米CHIPS法成立", "trade_policy", "USA"),
+    ("2022-10-07", "対中先端半導体輸出規制", "trade_policy", "USA"),
+    ("2023-07-03", "ガリウム・ゲルマニウム規制", "trade_policy", "CHN"),
+    ("2024-05-14", "バイデン 対中EV 100%関税", "trade_policy", "USA"),
+    ("2025-04-04", "中国34%報復+希土類規制", "trade_policy", "CHN"),
+    ("2025-04-09", "関税エスカレート145%", "trade_policy", "USA"),
+    ("2025-04-15", "Nvidia H20輸出規制", "trade_policy", "USA"),
+]
+EVENTS_2018 = []  # presentation 側では未使用
+
+
+def img_b64(path: Path) -> str:
+    if not path.exists():
+        return ""
+    return base64.b64encode(path.read_bytes()).decode("ascii")
+
+
+def build_barcode(date_str: str, window: int = 30) -> dict:
+    """指定日の持続ホモロジーバーコード."""
+    import warnings
+    from persistent_homology import persistence_diagram
+    closes = pd.read_parquet(DATA_DIR / "ohlc_40.parquet")
+    returns = closes.pct_change()
+    target = pd.Timestamp(date_str)
+    pos = returns.index.get_indexer([target], method="nearest")[0]
+    nearest = returns.index[pos]
+    win = returns.iloc[pos - window:pos]
+    win_clean = win.dropna(axis=1, how="any")
+    corr = win_clean.corr()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        diag = persistence_diagram(corr, max_dim=1)
+    # H_1 のみ。persistence の長い順
+    h1 = sorted(diag["H1"], key=lambda x: -(x[1] - x[0]))
+    return {
+        "date": str(nearest.date()),
+        "H1": [[float(b), float(d)] for b, d in h1],
+        "L1": float(sum(d - b for b, d in h1)),
+        "nH1": len(h1),
+        "Linf": float(max((d - b for b, d in h1), default=0)),
+    }
+
+
+def build_signflip_pairs(event_date: str, window: int = 30, top_n: int = 20) -> dict:
+    """イベント前後のペア符号反転 TOP N."""
+    closes = pd.read_parquet(DATA_DIR / "ohlc_40.parquet")
+    returns = closes.pct_change()
+    target = pd.Timestamp(event_date)
+    pos = returns.index.get_indexer([target], method="nearest")[0]
+    # 直前 30 日 vs 直後 30 日 (ちなみに「直前 30 日 vs 当日窓 30 日」も可能だが、
+    # 事前検出としてはイベント以前の動きを見る方が筋)
+    win_pre  = returns.iloc[max(0, pos - 2 * window):pos - window]
+    win_post = returns.iloc[pos - window:pos]
+    common = sorted(set(win_pre.dropna(axis=1, how="any").columns) &
+                    set(win_post.dropna(axis=1, how="any").columns))
+    cp = win_pre[common].corr()
+    cn = win_post[common].corr()
+    pairs = []
+    n = len(common)
+    for i in range(n):
+        for j in range(i + 1, n):
+            rp, rn = cp.iloc[i, j], cn.iloc[i, j]
+            if not (np.isfinite(rp) and np.isfinite(rn)): continue
+            # 両者 |corr|≥0.3 のみ
+            if abs(rp) < 0.3 or abs(rn) < 0.3: continue
+            if np.sign(rp) != np.sign(rn):
+                pairs.append({
+                    "u": common[i], "v": common[j],
+                    "r_pre": float(round(rp, 3)),
+                    "r_post": float(round(rn, 3)),
+                    "delta": float(round(rn - rp, 3)),
+                })
+    pairs.sort(key=lambda x: -abs(x["delta"]))
+    return {
+        "event_date": str(returns.index[pos].date()),
+        "n_flipped": len(pairs),
+        "top_pairs": pairs[:top_n],
+    }
+
+
+def build_network_snapshot(date_str: str, threshold: float = 0.3,
+                             window: int = 30, seed: int = 42) -> dict:
+    """指定日の銘柄ネットワークを force-directed layout で座標化."""
+    import networkx as nx
+    closes = pd.read_parquet(DATA_DIR / "ohlc_40.parquet")
+    returns = closes.pct_change()
+    target = pd.Timestamp(date_str)
+    # 最寄り日
+    nearest_pos = returns.index.get_indexer([target], method="nearest")[0]
+    nearest = returns.index[nearest_pos]
+    win = returns.iloc[nearest_pos - window:nearest_pos]
+    win_clean = win.dropna(axis=1, how="any")
+    corr = win_clean.corr()
+
+    # symbol meta (sector 取得)
+    meta = pd.read_csv(DATA_DIR / "symbol_meta.csv")
+    sector_map = dict(zip(meta["internal"], meta["sector"]))
+
+    G = nx.Graph()
+    syms = list(win_clean.columns)
+    for s in syms:
+        G.add_node(s, sector=sector_map.get(s, "OTHER"))
+    edges = []
+    for i in range(len(syms)):
+        for j in range(i + 1, len(syms)):
+            r = corr.iloc[i, j]
+            if not np.isfinite(r): continue
+            if abs(r) >= threshold:
+                G.add_edge(syms[i], syms[j], weight=abs(r), sign=int(np.sign(r)))
+                edges.append({"u": syms[i], "v": syms[j],
+                              "w": float(abs(r)), "s": int(np.sign(r))})
+
+    pos = nx.spring_layout(G, k=0.6, iterations=200, seed=seed, weight="weight")
+    nodes = []
+    for s in syms:
+        x, y = pos[s]
+        nodes.append({"id": s, "x": float(x), "y": float(y),
+                      "sector": sector_map.get(s, "OTHER"),
+                      "deg": G.degree(s)})
+
+    # ベッチ数
+    n_nodes = G.number_of_nodes()
+    n_edges = G.number_of_edges()
+    n_components = nx.number_connected_components(G)
+    n_holes = max(0, n_edges - n_nodes + n_components)
+
+    return {
+        "date": str(nearest.date()),
+        "nodes": nodes, "edges": edges,
+        "n_nodes": n_nodes, "n_edges": n_edges,
+        "n_components": n_components, "n_holes": n_holes,
+    }
+
+
+def main():
+    # ===== データ準備 =====
+    gamma = pd.read_csv(DATA_DIR / "gamma_timeseries_w30.csv", parse_dates=["date"])
+    gamma = gamma.dropna(subset=["L1_H1", "n_unb"])
+    gamma["z_L1"]  = (gamma["L1_H1"] - gamma["L1_H1"].mean()) / gamma["L1_H1"].std()
+    gamma["z_unb"] = (gamma["n_unb"] - gamma["n_unb"].mean()) / gamma["n_unb"].std()
+    gamma["e_div"] = gamma["z_unb"] - gamma["z_L1"]
+
+    # 軽量化のため週次サンプリング
+    gamma_w = gamma.iloc[::5].copy()  # 5 営業日に 1 点
+
+    flip = pd.read_csv(DATA_DIR / "sign_flip_w30_lag30.csv", parse_dates=["date"])
+    flip = flip.dropna(subset=["flip_rate"])
+    flip_w = flip.iloc[::5].copy()
+
+    # イベント全体
+    events_all = []
+    for e, l, t, c in EVENTS_EXTENDED:
+        events_all.append({"date": e, "label": l, "type": t, "country": c, "src": "manual"})
+    for e, l, sub, c in EVENTS_2018:
+        events_all.append({"date": e, "label": l, "type": sub, "country": c, "src": "2018"})
+
+    # カテゴリ別 event study 結果
+    cat_results = json.loads((DATA_DIR / "gamma_extended_w30.json").read_text(encoding="utf-8"))
+    div_results = json.loads((DATA_DIR / "gamma_divergence_index.json").read_text(encoding="utf-8"))
+    velocity_csv = pd.read_csv(DATA_DIR / "gamma_velocity_features.csv")
+
+    # 12 指標 (フィードバック対応)
+    multi_results = json.loads((DATA_DIR / "multi_indicators_event_study_w30.json")
+                                .read_text(encoding="utf-8"))
+    multi_corr = pd.read_csv(DATA_DIR / "multi_indicators_correlation_w30.csv", index_col=0)
+    heatmap_b64 = img_b64(DATA_DIR / "fig_multi_indicators_heatmap.png")
+
+    # ネットワークスナップショット (3 つの時点)
+    snapshots = {
+        "calm":     build_network_snapshot("2023-06-15"),  # 平常時
+        "preshock": build_network_snapshot("2025-04-01"),  # Liberation Day 直前
+        "postshock":build_network_snapshot("2025-04-20"),  # ショック後
+    }
+    print("Network snapshots:")
+    for k, s in snapshots.items():
+        print(f"  {k:<10} ({s['date']}): nodes={s['n_nodes']}, edges={s['n_edges']}, "
+              f"holes={s['n_holes']}")
+
+    # 持続ホモロジー バーコード (平常時 vs ショック前)
+    barcodes = {
+        "calm":     build_barcode("2023-06-15"),
+        "preshock": build_barcode("2025-04-01"),
+    }
+    print("Barcodes:")
+    for k, b in barcodes.items():
+        print(f"  {k:<10} ({b['date']}): n_holes={b['nH1']}, L1={b['L1']:.3f}, Linf={b['Linf']:.3f}")
+
+    # 符号反転ペア (2025-04-02 関税前後)
+    signflip = build_signflip_pairs("2025-04-02")
+    print(f"Sign-flipped pairs around {signflip['event_date']}: {signflip['n_flipped']} pairs")
+    for p in signflip["top_pairs"][:5]:
+        print(f"  {p['u']:<7} ↔ {p['v']:<7}  r_pre={p['r_pre']:+.2f}  r_post={p['r_post']:+.2f}  Δ={p['delta']:+.2f}")
+
+    DATA = {
+        "ts_dates":   gamma_w["date"].dt.strftime("%Y-%m-%d").tolist(),
+        "ts_L1":      gamma_w["L1_H1"].round(4).tolist(),
+        "ts_unb":     gamma_w["n_unb"].astype(int).tolist(),
+        "ts_zL1":     gamma_w["z_L1"].round(3).tolist(),
+        "ts_zunb":    gamma_w["z_unb"].round(3).tolist(),
+        "ts_ediv":    gamma_w["e_div"].round(3).tolist(),
+        "scatter_L1":   gamma["L1_H1"].round(3).tolist(),
+        "scatter_unb":  gamma["n_unb"].astype(int).tolist(),
+        "flip_dates": flip_w["date"].dt.strftime("%Y-%m-%d").tolist(),
+        "flip_rate":  flip_w["flip_rate"].round(4).tolist(),
+        "events": events_all,
+        "cat_results": cat_results,
+        "div_results": div_results,
+        "velocity": {
+            "density_30d":  velocity_csv["density_30d"].fillna(0).tolist(),
+            "d_unb_sigma":  velocity_csv["d_unb_sigma"].fillna(0).round(3).tolist(),
+            "d_L1_sigma":   velocity_csv["d_L1_sigma"].fillna(0).round(3).tolist(),
+            "label":        velocity_csv["label"].fillna("").tolist(),
+            "country":      velocity_csv["country"].fillna("").tolist(),
+        },
+        "multi_results": multi_results,
+        "multi_corr": {
+            "indicators": list(multi_corr.columns),
+            "matrix": multi_corr.round(2).values.tolist(),
+        },
+        "heatmap_b64": heatmap_b64,
+        "snapshots": snapshots,
+        "barcodes": barcodes,
+        "signflip": signflip,
+        "ts_full": {
+            "dates": gamma["date"].dt.strftime("%Y-%m-%d").tolist(),
+            "z_L1":  gamma["z_L1"].round(3).tolist(),
+            "z_unb": gamma["z_unb"].round(3).tolist(),
+            "e_div": gamma["e_div"].round(3).tolist(),
+        },
+    }
+
+    template = """<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>市場ネットワークの位相分析</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left:'$$', right:'$$', display:true}, {left:'$', right:'$', display:false}]});"></script>
+<style>
+  :root {
+    --bg: #fbfbfd;
+    --card: #ffffff;
+    --ink: #1d1d1f;
+    --sub: #6e6e73;
+    --line: #d2d2d7;
+    --accent: #0066cc;
+    --red: #c0392b;
+    --blue: #2c5aa0;
+    --green: #1b7e3e;
+    --gold: #c9a227;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "SF Pro Text", "Hiragino Sans", "Yu Gothic Medium",
+                 "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.75;
+    margin: 0; padding: 0;
+    font-size: 16px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 880px; margin: 0 auto; padding: 60px 32px; }
+  header.cover {
+    text-align: center;
+    padding: 100px 32px 60px;
+    border-bottom: 1px solid var(--line);
+  }
+  header.cover .badge {
+    display: inline-block; padding: 4px 12px; border: 1px solid var(--line);
+    border-radius: 16px; font-size: 12px; color: var(--sub); margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+  header.cover h1 {
+    font-size: 40px; font-weight: 600; letter-spacing: -0.02em;
+    margin: 0 0 14px; line-height: 1.25;
+  }
+  header.cover .subtitle {
+    font-size: 18px; color: var(--sub); font-weight: 400; margin-bottom: 8px;
+  }
+  header.cover .meta {
+    font-size: 13px; color: var(--sub); margin-top: 28px;
+  }
+  nav.toc {
+    position: sticky; top: 0; background: rgba(251,251,253,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    z-index: 100; padding: 10px 32px;
+    font-size: 13px;
+  }
+  nav.toc .toc-inner { max-width: 880px; margin: 0 auto;
+                         display: flex; gap: 18px; overflow-x: auto; }
+  nav.toc a { color: var(--sub); text-decoration: none; white-space: nowrap;
+              transition: color 0.15s; }
+  nav.toc a:hover { color: var(--accent); }
+  section { padding: 60px 0; border-bottom: 1px solid var(--line); }
+  section:last-child { border-bottom: none; }
+  section h2 {
+    font-size: 26px; font-weight: 600; letter-spacing: -0.01em;
+    margin: 0 0 8px; color: var(--ink);
+  }
+  section .section-num {
+    font-size: 13px; color: var(--accent); font-weight: 500;
+    letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  section .lede {
+    font-size: 18px; color: var(--sub); margin: 0 0 32px;
+    border-left: 3px solid var(--accent); padding-left: 14px;
+  }
+  section h3 {
+    font-size: 18px; font-weight: 600; margin: 32px 0 10px;
+  }
+  section p { margin: 12px 0; color: var(--ink); }
+  section .small { color: var(--sub); font-size: 14px; }
+  .callout {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 22px; margin: 24px 0;
+  }
+  .callout.warn { border-left: 3px solid var(--gold); }
+  .callout.found { border-left: 3px solid var(--green); }
+  .callout.intuition { border-left: 3px solid var(--accent); background: #f5f9ff; }
+  .callout h4 { margin: 0 0 8px; font-size: 14px; color: var(--sub);
+                font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0;
+          font-size: 14px; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+  th { font-weight: 600; color: var(--sub); font-size: 13px;
+       text-transform: uppercase; letter-spacing: 0.4px; }
+  tr:hover td { background: #fafafa; }
+  td.good { color: var(--green); font-weight: 600; }
+  td.bad  { color: var(--red); font-weight: 600; }
+  td.neutral { color: var(--sub); }
+  .plot { background: var(--card); border: 1px solid var(--line);
+          border-radius: 12px; padding: 12px; margin: 24px 0; }
+  .plot-title { font-size: 14px; color: var(--sub); margin-bottom: 8px;
+                font-weight: 500; }
+  details { margin: 18px 0; border: 1px solid var(--line);
+             border-radius: 8px; padding: 0; }
+  details summary { padding: 12px 16px; cursor: pointer; color: var(--accent);
+                     font-size: 14px; font-weight: 500;
+                     border-radius: 8px; user-select: none; }
+  details[open] summary { border-bottom: 1px solid var(--line); }
+  details > *:not(summary) { padding: 16px; }
+  ul.simple { padding-left: 20px; }
+  ul.simple li { margin: 6px 0; }
+  code { background: #f0f0f3; padding: 2px 6px; border-radius: 3px;
+          font-family: "SF Mono", Consolas, monospace; font-size: 13px; }
+  .formula-box { background: var(--card); border: 1px solid var(--line);
+                  border-radius: 8px; padding: 18px 24px; margin: 18px 0;
+                  text-align: center; overflow-x: auto; }
+  .term { border-bottom: 1px dotted var(--sub); cursor: help; }
+  footer { text-align: center; padding: 60px 32px; color: var(--sub);
+            font-size: 13px; }
+  .highlight-green { color: var(--green); font-weight: 600; }
+  .highlight-red { color: var(--red); font-weight: 600; }
+  .step-card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px 24px; margin: 18px 0;
+  }
+  .step-card .step-num {
+    display: inline-block; width: 28px; height: 28px;
+    background: var(--accent); color: white; border-radius: 50%;
+    text-align: center; line-height: 28px; font-weight: 600;
+    margin-right: 10px; font-size: 14px;
+  }
+  .snap-btn {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 14px; font-size: 13px;
+    cursor: pointer; color: var(--ink); margin-right: 6px;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .snap-btn:hover { background: #f0f4ff; }
+  .snap-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .compare-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+                    margin: 24px 0; }
+  .compare-card { background: var(--card); border: 1px solid var(--line);
+                   border-radius: 12px; padding: 20px; }
+  .compare-card h4 { margin: 0 0 8px; font-size: 15px; }
+  .compare-card.red { border-top: 3px solid var(--red); }
+  .compare-card.blue { border-top: 3px solid var(--blue); }
+
+  /* ===== Hero section ===== */
+  .hero {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+    padding: 80px 32px 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-inner { max-width: 1280px; margin: 0 auto; }
+  .hero .eyebrow {
+    display: inline-block; padding: 4px 14px; border: 1px solid var(--line);
+    border-radius: 16px; font-size: 12px; color: var(--sub); margin-bottom: 22px;
+    letter-spacing: 0.6px; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 52px; font-weight: 700; letter-spacing: -0.025em;
+    margin: 0 0 12px; line-height: 1.1; color: var(--ink);
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .tagline {
+    font-size: 22px; color: var(--sub); font-weight: 400;
+    margin: 0 auto 12px; max-width: 720px; line-height: 1.45;
+  }
+  .hero .meta {
+    font-size: 13px; color: var(--sub); margin: 24px 0 8px;
+  }
+  .hero-plot {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 18px; margin: 36px auto 0;
+    max-width: 1200px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .hero-plot-title {
+    font-size: 14px; color: var(--sub); margin-bottom: 10px;
+    text-align: left; font-weight: 500;
+  }
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; margin: 36px auto 0; max-width: 1200px;
+  }
+  .hero-stat {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 20px; text-align: left;
+  }
+  .hero-stat .label { font-size: 12px; color: var(--sub);
+                       text-transform: uppercase; letter-spacing: 0.4px;
+                       margin-bottom: 6px; }
+  .hero-stat .value { font-size: 26px; font-weight: 700; color: var(--ink);
+                       line-height: 1.1; }
+  .hero-stat .detail { font-size: 12px; color: var(--sub); margin-top: 4px; }
+  .scroll-cue {
+    margin-top: 50px; color: var(--sub); font-size: 13px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    50% { transform: translateY(6px); opacity: 1; }
+  }
+
+  /* ===== Top navigation tabs ===== */
+  .topnav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(251,251,253,0.95);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+    padding: 0;
+  }
+  .topnav-inner {
+    max-width: 1280px; margin: 0 auto; padding: 0 32px;
+    display: flex; align-items: center; gap: 4px; height: 52px;
+  }
+  .topnav-brand {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    margin-right: 24px;
+  }
+  .topnav-tab {
+    padding: 8px 18px; font-size: 13px; color: var(--sub);
+    text-decoration: none; border-radius: 8px;
+    transition: all 0.15s; font-weight: 500;
+  }
+  .topnav-tab:hover { background: rgba(0,102,204,0.08); color: var(--accent); }
+  .topnav-tab.active { background: var(--accent); color: white; }
+  .topnav-meta {
+    margin-left: auto; font-size: 12px; color: var(--sub);
+  }
+  .topnav-meta a { color: var(--sub); text-decoration: none; }
+  .topnav-meta a:hover { color: var(--accent); }
+
+  @media (max-width: 700px) {
+    .compare-cards { grid-template-columns: 1fr; }
+    header.cover h1 { font-size: 30px; }
+    section h2 { font-size: 22px; }
+    .hero h1 { font-size: 32px; }
+    .hero .tagline { font-size: 16px; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .topnav-inner { padding: 0 16px; }
+    .topnav-brand { font-size: 12px; margin-right: 12px; }
+    .topnav-tab { padding: 6px 12px; font-size: 12px; }
+    .topnav-meta { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="topnav-brand">Market Graph Research</span>
+    <a href="./index.html" class="topnav-tab active">研究内容</a>
+    <a href="./app.html" class="topnav-tab">実装デモ</a>
+    <span class="topnav-meta"><a href="https://github.com/hajimedayo328/market-graph-presentation">GitHub</a></span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Market Graph Research · 2026-05</div>
+    <h1>市場ネットワークの<br><span class="accent">位相分析</span></h1>
+    <p class="tagline">
+      40 銘柄の相関ネットワークを毎日観察し、<br>
+      「強さ」と「符号」の <strong>2 つの位相不変量</strong> で構造変化を捉える。
+    </p>
+    <p class="meta">Hajime · 東京都市大学 3 年</p>
+
+    <div class="hero-plot">
+      <div class="hero-plot-title">
+        5 年 × 40 銘柄の日次時系列 — L¹ ノルム (赤) と 不整合サイクル数 (青) が独立に動く。
+        縦線はカテゴリ別市場ショック。
+      </div>
+      <div id="hero_plot" style="height:380px;"></div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="label">観測期間</div>
+        <div class="value">5 年</div>
+        <div class="detail">2021-06 〜 2026-05 / 1798 営業日</div>
+      </div>
+      <div class="hero-stat">
+        <div class="label">2 指標の相関</div>
+        <div class="value">+0.16</div>
+        <div class="detail">同じデータから独立な情報 (PC1=0.58)</div>
+      </div>
+      <div class="hero-stat">
+        <div class="label">主要発見</div>
+        <div class="value">4 個</div>
+        <div class="detail">独立性 / カテゴリ別反応 / 符号反転 / e_div 判別器</div>
+      </div>
+      <div class="hero-stat">
+        <div class="label">指標細分化</div>
+        <div class="value">12 指標</div>
+        <div class="detail">[redacted]フィードバックで集約スカラーを分解</div>
+      </div>
+    </div>
+
+    <div class="scroll-cue">▼ スクロールで詳細</div>
+  </div>
+</section>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1. なぜこの研究</a>
+    <a href="#s2">2. 市場ネットワーク</a>
+    <a href="#s3">3. 強さ (L¹)</a>
+    <a href="#s4">4. 符号 (n_unb)</a>
+    <a href="#s5">5. 独立性</a>
+    <a href="#s6">6. ショック反応</a>
+    <a href="#s7">7. 符号反転</a>
+    <a href="#s8">8. e_div 判別器</a>
+    <a href="#s85">8.5 指標細分化</a>
+    <a href="#s9">9. 圏論的整理</a>
+    <a href="#s10">10. 先行研究</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<section id="s1">
+  <div class="section-num">SECTION 01</div>
+  <h2>なぜこの研究をやってるか</h2>
+  <p class="lede">価格を当てに行くのではなく、銘柄ネットワークの「構造変化」を観察する研究。</p>
+
+  <div class="callout intuition">
+    <h4>立ち位置</h4>
+    <p><strong>圏論</strong>と<strong>グラフ理論</strong>を道具として使い、興味のある現象 (金融市場)
+    を観察してみる。先生のラボのテーマと近い数学言語で、金融データを整理し直す試み。</p>
+  </div>
+
+  <h3>なぜ「価格予測」じゃないか</h3>
+  <ul class="simple">
+    <li>価格時系列の予測は機械学習・経済学が膨大に取り組んでいる激戦区</li>
+    <li><strong>銘柄同士の関係性 (ネットワーク)</strong> が外因性ショック前後で<strong>組み替わる</strong>現象は、
+    数学的な構造変化として捉えやすい</li>
+    <li>圏論的に意味のある問題: 「どの不変量が動くか」「どの関手が情報を持つか」</li>
+  </ul>
+
+  <h3>具体的に何を測るか</h3>
+  <p>40 銘柄 (FX, 株式指数, コモディティ, 暗号通貨, 国債) の<strong>毎日の相関ネットワーク</strong>から、
+  2 つの位相不変量を計算して動きを観察する。それだけ。</p>
+</section>
+
+<section id="s2">
+  <div class="section-num">SECTION 02</div>
+  <h2>市場ネットワークとは — 2 分で説明</h2>
+  <p class="lede">毎日 40 銘柄をペアで見て、似た動きをするペアを線で繋いだだけ。</p>
+
+  <h3>ステップ 1: ペアの「相関」を測る</h3>
+  <p>2 つの銘柄が日々一緒に動くかを <strong>Pearson 相関</strong> で測る。値は -1 から +1。</p>
+  <table>
+    <tr><th>ペア</th><th>相関</th><th>意味</th></tr>
+    <tr><td>ドル円 ↔ S&P500</td><td><strong>+0.7</strong></td>
+        <td>一緒に上がる（リスクオン傾向）</td></tr>
+    <tr><td>金 ↔ ドル指数</td><td><strong>-0.6</strong></td>
+        <td>逆に動く（安全資産で対立）</td></tr>
+    <tr><td>ビットコイン ↔ 日経</td><td>+0.1</td>
+        <td>ほぼ関係なし</td></tr>
+  </table>
+
+  <h3>ステップ 2: 強い関係だけを線で繋ぐ</h3>
+  <p>絶対値が 0.3 以上のペア（|corr| ≥ 0.3）だけ「エッジ」として線を引く。
+  これで 40 銘柄のネットワーク（無向グラフ）が出来上がる。</p>
+
+  <div class="callout intuition">
+    <h4>イメージ</h4>
+    <p>40 個の点。点同士の関係性で 200〜400 本の線が引かれる。
+    日によって線の本数や繋がり方が変わる ← <strong>この変化を観察する</strong>のがプロジェクト。</p>
+  </div>
+
+  <h3>ステップ 3: 線に「符号」も持たせる</h3>
+  <p>線には強さ (|corr|) だけでなく、<strong>符号 (+ or -)</strong> も付ける。
+  +0.7 のペアは「+ の線」、-0.6 のペアは「- の線」。</p>
+  <p>この「符号」が、後で重要な情報源になる。</p>
+</section>
+
+<section id="s3">
+  <div class="section-num">SECTION 03</div>
+  <h2>位相不変量 1: 「穴」を数える — L¹ ノルム</h2>
+  <p class="lede">ネットワークにどれだけ「穴」が空いてるかを測る。
+  Gidea & Katz (2017) が市場クラッシュ前兆として提案。
+  <strong>整数値の不変量 (穴の個数 nH1) と実数値の不変量 (寿命の総和 L¹) は別物</strong>。両方この研究で使う。</p>
+
+  <div class="callout intuition">
+    <h4>そもそも「ホモロジー」って何 (ゼロから)</h4>
+    <p><strong>形を数で表す数学</strong>。形が違うかどうかを数で区別する。</p>
+    <ul class="simple">
+      <li>丸い円 → 穴 <strong>0</strong> 個</li>
+      <li>ドーナツ → 穴 <strong>1</strong> 個</li>
+      <li>8 の字 → 穴 <strong>2</strong> 個</li>
+    </ul>
+    <p>この「穴の数」を <strong>$H_1$ (1 次元のホモロジー)</strong> と呼ぶ。
+    銘柄ネットワークでも同じ考え方で「穴の数」を数える。</p>
+    <p>類似の指標: $H_0$ = 「<strong>島の数</strong>」(連結した塊の数)、
+    $H_2$ = 「<strong>空洞の数</strong>」(3 次元の中身、球の内部みたいな空間)。
+    この研究では $H_1$ だけ使う。</p>
+  </div>
+
+  <h3>3.1 「穴」って何</h3>
+  <p>グラフのトポロジーで言う「1 次元の穴」= 円周のような閉じたループ。
+  例えば 4 点 A-B-C-D-A を一周する閉路があり、その内側が塞がってない (三角分割されてない) と、
+  それが <strong>1 個の穴</strong> と数える。</p>
+
+  <div class="callout intuition">
+    <h4>4 ノードで具体的に見る</h4>
+    <p>同じ 4 ノード A, B, C, D で、エッジの繋がり方によって「穴」が変わる:</p>
+    <div id="hole_concept" style="height:280px;"></div>
+    <p class="small">左: 全ペア接続 (三角分割済) → 穴 0 個 ($H_1 = 0$)。<br>
+       中央: 四角形のみ (対角線なし) → <strong>穴 1 個</strong> ($H_1 = \\mathbb{Z}$)、四角形の中央が「塞がってない」。<br>
+       右: 五角形 + 内側に三角形 1 つ → 穴 1 個 (三角形で部分的に塞いだ)。</p>
+  </div>
+
+  <h3>3.1.3 普通のホモロジーの問題と「持続ホモロジー」の発想</h3>
+
+  <div class="callout warn">
+    <h4>普通のホモロジーの問題</h4>
+    <p>「相関がどれくらい強いペアを線で繋ぐか」(閾値) を決めないと、ネットワークが定まらない:</p>
+    <ul class="simple">
+      <li>閾値 0.3 で繋ぐと → 穴 100 個</li>
+      <li>閾値 0.5 で繋ぐと → 穴 20 個</li>
+      <li>閾値 0.7 で繋ぐと → 穴 5 個</li>
+    </ul>
+    <p><strong>結果が閾値で変わる</strong> → どの閾値が正しいか分からない。</p>
+  </div>
+
+  <div class="callout intuition">
+    <h4>持続ホモロジーの解決策: 「全部の閾値を試す」</h4>
+    <p>閾値を <strong>0 → √2</strong> までスライドさせながら、各穴が
+    「いつ生まれて、いつ消えるか」を全部追う。</p>
+    <p><strong>例え話 — 水位が下がる池</strong>:</p>
+    <ol class="simple">
+      <li>水位 高 (閾値 強): 山頂だけが島として顔出してる → 線は無い、穴も無い</li>
+      <li>水位 中: 強い相関ペアから順に橋ができる → <strong>穴が生まれ始める</strong></li>
+      <li>水位 低: 弱い相関ペアも繋がる → 穴の中も埋まる → <strong>穴が死ぬ</strong></li>
+      <li>水位 ゼロ: 全部 1 つの大陸 → 穴ゼロ</li>
+    </ol>
+    <p>その過程で各穴の <strong>「生まれた時の水位」と「死んだ時の水位」</strong>を記録する。
+    これが <strong>持続ホモロジー (Persistent Homology)</strong>。
+    Section 3.1.6 のバーコードで具体的に見える。</p>
+  </div>
+
+  <h3>3.1.5 実際の銘柄ネットワーク</h3>
+  <p>40 銘柄の実データで見る。<strong>平常時 vs 関税ショック前 vs ショック後</strong> の 3 スナップショット:</p>
+  <div class="plot">
+    <div class="plot-title">セレクター: ボタンで表示日を切り替え (各日 30 営業日窓の |corr| ≥ 0.3 をエッジに)</div>
+    <div style="margin-bottom:10px;">
+      <button onclick="showSnapshot('calm')" class="snap-btn" id="btn_calm">平常時 (2023-06)</button>
+      <button onclick="showSnapshot('preshock')" class="snap-btn active" id="btn_preshock">関税ショック直前 (2025-04-01)</button>
+      <button onclick="showSnapshot('postshock')" class="snap-btn" id="btn_postshock">ショック後 (2025-04-20)</button>
+    </div>
+    <div id="network_plot" style="height:540px;"></div>
+    <div id="network_stats" style="margin-top:8px; font-size:13px; color:var(--sub);"></div>
+  </div>
+  <p class="small">セクター別に色分け: FX (青), 株式 (赤), コモディティ (金), 暗号 (緑), 国債 (灰)。
+  ノードサイズは次数 (接続エッジ数)。エッジは正相関 = 黒、負相関 = 赤。
+  クラスタリングが進むと「穴」が見える。</p>
+
+  <div class="callout warn">
+    <h4>「穴 171 個」って多すぎない?</h4>
+    <p>ここでの穴の数は <strong>閾値 0.3 で固定したバイナリグラフ</strong> の cycle rank
+    ($m - n + c$、独立サイクル数)。エッジが 200 本もあるので、穴も数百個になる。
+    <strong>L¹ ノルムは別物</strong>: 閾値を 0 〜 √2 までスイープして、各「穴」の生死期間を測り、
+    寿命の総和を取る (持続ホモロジー)。スイープすることで、ノイズ的な穴は短命、
+    本質的な穴は長命、と区別できる。L¹ ノルムは典型的に 0.5〜2.0 の実数値。</p>
+    <p>→ <strong>このネットワーク図は「穴ができる場所」を見せるための直感図</strong>。
+    L¹ ノルムを計算するときはスイープ全体を見るので、図と数値は別の話。</p>
+  </div>
+
+  <h3>3.1.6 持続ホモロジー バーコード — 「穴の人生」を見る</h3>
+
+  <div class="callout intuition">
+    <h4>そもそもこのグラフは何?</h4>
+    <p>「穴の数 = 16 個」みたいに 1 つの数字で表すんじゃなく、
+    <strong>1 個の穴を 1 本の横線</strong>で表した図 = <strong>バーコード</strong>。</p>
+    <ul class="simple">
+      <li><strong>横軸</strong> = 「水位」(相関の閾値、0 〜 √2)<br>
+        左 = 強い相関だけ繋いだ状態 / 右 = 弱い相関まで全部繋いだ状態</li>
+      <li><strong>1 本の横線</strong> = 1 つの穴の人生</li>
+      <li><strong>線の左端</strong> = その穴が「<strong>生まれた</strong>」水位 (= birth)</li>
+      <li><strong>線の右端</strong> = その穴が「<strong>消えた</strong>」水位 (= death)</li>
+      <li><strong>線の長さ</strong> = 寿命。長いほど本質的、短いほどノイズ的</li>
+    </ul>
+  </div>
+
+  <div class="plot">
+    <div class="plot-title">上半分 (赤) = ショック直前、下半分 (青) = 平常時。
+    各横線が 1 個の穴。長い線ほど「本質的な穴」</div>
+    <div id="barcode_plot" style="height:480px;"></div>
+  </div>
+
+  <div class="callout found">
+    <h4>このグラフから何が読み取れる?</h4>
+    <ul class="simple">
+      <li>平常時 (青) は <strong>線が 16 本</strong>、でも<strong>全部短い</strong>
+      → 穴がたくさんあるが、どれもすぐ消える (ノイズ的)</li>
+      <li>ショック直前 (赤) は <strong>線が 9 本に減る</strong>、でも<strong>長い線が出現</strong>
+      (最長 0.27、平常時の 2 倍)</li>
+      <li>→ <strong>「ノイズ的な穴が減って、本質的な大きな穴が出現する」</strong>
+      これが関税ショック直前の構造変化サイン</li>
+    </ul>
+  </div>
+
+  <p class="small">
+    なお:
+    <strong>線の本数</strong> = <code>nH1</code> (穴の個数、整数値)。
+    <strong>全線分の合計長</strong> = <code>L¹</code> ノルム (実数値)。
+    <strong>最長線</strong> = <code>Linf</code> (最大寿命、実数値)。
+    これら 3 つは別々の指標なので、Section 8.5 で全部追跡している。
+  </p>
+
+  <h3>3.2 代数的な厳密版 — 「整数」になる部分</h3>
+  <p>まずは<strong>厳密に整数値となる部分</strong>から:</p>
+
+  <div class="step-card">
+    <p><span class="step-num">1</span><strong>閾値 α を固定する</strong></p>
+    <p>距離 $d_{ij} \\leq \\alpha$ のペアだけにエッジを引いた単体複体 $X_\\alpha$ を作る。
+    α を変えるとネットワークが変わる。</p>
+  </div>
+
+  <div class="step-card">
+    <p><span class="step-num">2</span><strong>各 α で 1 次元ホモロジー群</strong></p>
+    <div class="formula-box">
+      $$H_1(X_\\alpha; \\mathbb{Z}) = Z_1 / B_1$$
+    </div>
+    <p>$Z_1$ = 1-閉路, $B_1$ = 1-境界 (= 三角形の縁)。代数的に厳密。
+    係数を $\\mathbb{Z}$ (整数) または $\\mathbb{Z}/2$ で取れば、$H_1$ は<strong>有限生成アーベル群</strong>。
+    その rank = <strong>ベッチ数 $b_1(\\alpha) \\in \\mathbb{Z}$ (整数)</strong>。</p>
+    <p class="small">⇨ <strong>各 α で得られる $b_1$ は厳密に整数</strong>。これが「代数的な整数値不変量」。</p>
+  </div>
+
+  <h3>3.3 持続化 — 「実数」が入ってくるところ</h3>
+  <p>ここから L¹ (実数値) が出てくる仕組み:</p>
+
+  <div class="step-card">
+    <p><span class="step-num">3</span><strong>α を 0 → √2 に動かす (フィルトレーション)</strong></p>
+    <p>$\\alpha \\leq \\beta$ ならば $X_\\alpha \\subseteq X_\\beta$、これが自然な包含写像
+    $H_1(X_\\alpha) \\to H_1(X_\\beta)$ を誘導する。
+    α が増えるにつれ、穴が「生まれる (birth)」「埋まる (death)」を繰り返す。</p>
+  </div>
+
+  <div class="step-card">
+    <p><span class="step-num">4</span><strong>持続ホモロジー加群</strong></p>
+    <p>$M = \\{H_1(X_\\alpha)\\}_\\alpha$ は $\\mathbb{R}_{\\geq 0}$ 上の表現
+    (一径数フィルトレーション加群)。<strong>体係数</strong>を取ると Crawley-Boevey の定理により</p>
+    <div class="formula-box">
+      $$M \\cong \\bigoplus_{k=1}^{n_{H_1}} \\mathbb{F}\\text{-interval module}[b_k, d_k)$$
+    </div>
+    <p>つまり「区間モジュール」の直和に一意分解する。
+    各区間 $[b_k, d_k)$ が <strong>1 個の穴に対応</strong>。これがバーコード。</p>
+    <p class="small">⇨ <strong>区間の個数 $n_{H_1}$ は整数 (代数的不変量)</strong>。<br>
+    ⇨ <strong>各区間の端点 $b_k, d_k$ は実数 (フィルトレーションパラメータ)</strong>。</p>
+  </div>
+
+  <div class="step-card">
+    <p><span class="step-num">5</span><strong>L¹ ノルム = 区間の寿命の和</strong></p>
+    <div class="formula-box">
+      $$\\|H_1\\|_{L^1} = \\sum_{k=1}^{n_{H_1}} (d_k - b_k) \\in \\mathbb{R}_{\\geq 0}$$
+    </div>
+    <p>これは<strong>実数値</strong>。なぜなら $d_k, b_k$ がフィルトレーションパラメータで実数だから。
+    <strong>整数化はしていない</strong>。代数的整数値不変量とは別物。</p>
+  </div>
+
+  <div class="callout warn">
+    <h4>整数値 vs 実数値の整理 (要点)</h4>
+    <ul class="simple">
+      <li><strong>整数値の代数的不変量</strong>: ベッチ数 $b_1(\\alpha)$ や穴の個数 $n_{H_1}$ — これは厳密に $\\mathbb{Z}$ の値</li>
+      <li><strong>実数値の連続的不変量</strong>: L¹ ノルム = 寿命の和、最大寿命 Linf — これは $\\mathbb{R}$ の値</li>
+      <li><strong>L¹ を整数化はしない</strong>。代わりに分解した <strong>nH1 (穴の個数, 整数値)</strong> を併用する (Section 8.5 参照)</li>
+    </ul>
+    <p>つまり持続ホモロジーは「各 α では代数的整数」「α を動かすと実数値」というハイブリッド構造を持つ。
+    両方の側面 (整数 nH1 + 実数 L¹) を分解して使う。</p>
+  </div>
+
+  <h3>3.4 直感</h3>
+  <div class="callout intuition">
+    <p>L¹ が大きい = ネットワークが<strong>「断片的」「穴だらけ」</strong>。
+    銘柄群がいくつかのサブクラスタに分かれていて、サブ同士は繋がってない状態。<br>
+    L¹ が小さい = ネットワークが<strong>「密」「穴が少ない」</strong>。
+    全体が一つの塊として繋がっている。</p>
+  </div>
+
+  <h3>3.5 なぜ前兆になるか (Gidea 2017)</h3>
+  <p>クラッシュの直前、市場参加者が一斉に <strong>リスクオフ</strong> モードに入る。
+  ある資産群が固まって動き、他の資産群とは切り離される。
+  → サブクラスタ化が進み、その間に「穴」ができる → L¹ も nH1 も上がる。</p>
+</section>
+
+<section id="s4">
+  <div class="section-num">SECTION 04</div>
+  <h2>位相不変量 2: 符号の整合性 — 不整合サイクル数</h2>
+  <p class="lede">「友達の友達は友達のはず」というルールがどれだけ破れてるかを数える。
+  心理学者 Heider が 1946 年に提唱した <strong>構造的バランス理論</strong>の応用。</p>
+
+  <h3>バランス理論の例</h3>
+  <p>3 つの銘柄 A, B, C を考える:</p>
+  <ul class="simple">
+    <li>A ↔ B が <strong>+</strong> (一緒に動く)</li>
+    <li>B ↔ C が <strong>+</strong> (一緒に動く)</li>
+    <li>A ↔ C はどうあるべきか? → 普通は <strong>+</strong> のはず</li>
+  </ul>
+  <p>でも実際に A ↔ C が <strong>-</strong> だったら、これは「論理矛盾」。
+  「友達の友達は友達のはず」のルールが破れている。
+  この三角形を <strong>不整合サイクル (unbalanced cycle)</strong> と呼ぶ。</p>
+
+  <div class="callout intuition">
+    <h4>三角形で具体的に見る</h4>
+    <div id="balance_triangle" style="height:280px;"></div>
+    <p class="small">
+      <strong>左 (Balanced)</strong>: 全て + → 符号積 = +1 → 整合<br>
+      <strong>中央 (Balanced)</strong>: +, -, - → 符号積 = +1 → 整合 (「敵の敵は味方」)<br>
+      <strong>右 (Unbalanced)</strong>: +, +, - → 符号積 = -1 → <strong>矛盾</strong>。これを 1 個と数える。
+    </p>
+  </div>
+
+  <h3>不整合サイクル数 n_unb の定義 (こちらは整数値)</h3>
+  <p>ネットワーク内の独立な閉路のうち、エッジの符号積が <strong>-1</strong> になるものの個数:</p>
+  <div class="formula-box">
+    $$n_{\\text{unb}} = \\#\\left\\{ C \\in \\text{cycle basis}(G) :
+       \\prod_{e \\in C} \\sigma(e) = -1 \\right\\} \\in \\mathbb{Z}_{\\geq 0}$$
+  </div>
+
+  <h3>代数的な厳密版 — $\\mathbb{Z}/2$ 係数コホモロジー</h3>
+  <p>L¹ と違って、これは<strong>本質的に整数値の不変量</strong>。代数的に書き下せる:</p>
+
+  <div class="step-card">
+    <p><span class="step-num">1</span><strong>符号関数を $\\mathbb{Z}/2$ で見る</strong></p>
+    <p>符号 $\\sigma(e) \\in \\{+1, -1\\}$ を $\\mathbb{Z}/2 = \\{0, 1\\}$ に写す:
+    $+ \\mapsto 0$, $- \\mapsto 1$。エッジ上の $\\mathbb{Z}/2$-cochain。</p>
+  </div>
+
+  <div class="step-card">
+    <p><span class="step-num">2</span><strong>サイクル一周の符号積 = コホモロジー類の値</strong></p>
+    <p>サイクル $C = (e_1, e_2, \\ldots, e_n)$ について、$\\sigma$ の積を取ることは
+    $\\mathbb{Z}/2$ 上では $\\sum_i \\sigma(e_i) \\mod 2$ を取ること。
+    これがサイクル類 $[C] \\in H_1(G; \\mathbb{Z}/2)$ 上の値。</p>
+  </div>
+
+  <div class="step-card">
+    <p><span class="step-num">3</span><strong>整合性 = $\\sigma$ がコバウンダリで書けるか</strong></p>
+    <p>形式的には: ノードに $\\pm 1$ ラベル $\\nu: V \\to \\mathbb{Z}/2$ を割り当てて、
+    全エッジで $\\sigma(uv) = \\nu(u) + \\nu(v)$ と書けるとき、グラフは <strong>balanced</strong>。
+    そうでないとき、 <strong>不整合</strong>。</p>
+    <div class="formula-box">
+      $$[\\sigma] \\in H^1(G; \\mathbb{Z}/2) \\setminus \\{0\\} \\iff \\text{不整合}$$
+    </div>
+  </div>
+
+  <div class="step-card">
+    <p><span class="step-num">4</span><strong>n_unb = 整合性が破れたサイクル基底元の数</strong></p>
+    <p>cycle basis $\\{C_1, \\ldots, C_n\\}$ について、各 $C_k$ で
+    $\\prod \\sigma(e) = -1$ となるものの個数。これは $H^1(G; \\mathbb{Z}/2)$ の
+    non-trivial 部分の代理量 (基底依存だが、定数倍を除いて意味を持つ)。</p>
+    <p class="small">$\\sigma$ が coboundary なら全サイクルで積 = +1。
+    そうでない場合、いくつかのサイクルで積 = -1 になる。
+    その個数を数えるのが $n_{\\text{unb}}$。</p>
+  </div>
+
+  <div class="callout warn">
+    <h4>L¹ と n_unb の代数的対比</h4>
+    <table>
+      <tr><th></th><th>L¹</th><th>n_unb</th></tr>
+      <tr><td>係数</td><td>$\\mathbb{Z}$ または体</td><td>$\\mathbb{Z}/2$</td></tr>
+      <tr><td>値域</td><td>$\\mathbb{R}_{\\geq 0}$ (実数)</td><td>$\\mathbb{Z}_{\\geq 0}$ (整数)</td></tr>
+      <tr><td>由来</td><td>フィルトレーション (連続的)</td><td>固定閾値 (離散的)</td></tr>
+      <tr><td>関連する代数構造</td><td>持続加群の interval decomposition</td><td>1 次コホモロジー $H^1(G; \\mathbb{Z}/2)$</td></tr>
+      <tr><td>厳密に整数になる対応物</td><td>$n_{H_1}$ = 穴の個数 = ベッチ数 $b_1$</td><td>そのまま $n_{\\text{unb}}$ が整数</td></tr>
+    </table>
+    <p>つまり「代数的に整数」を強調するなら<strong>不整合サイクル数の方が自然</strong>。
+    L¹ も nH1 (整数) と L¹ (実数) を併用する形に分解できる (Section 8.5)。</p>
+  </div>
+
+  <div class="callout intuition">
+    <h4>直感</h4>
+    <p>n_unb が大きい = 銘柄間の関係性に<strong>矛盾</strong>が多い、構造的緊張が強い。<br>
+    n_unb が小さい = 銘柄を「正方向に動く陣営」と「負方向に動く陣営」の <strong>2 つにきれいに分けられる</strong>状態。</p>
+  </div>
+
+  <h3>L¹ と何が違うか</h3>
+  <div class="compare-cards">
+    <div class="compare-card red">
+      <h4>L¹ ノルム (強さ)</h4>
+      <p>相関の<strong>絶対値</strong> $|r|$ だけ見る</p>
+      <p>「強い関係 + 強い関係」も「強い反対関係 + 強い反対関係」も同じ扱い</p>
+      <p>符号反転には<strong>気づかない</strong></p>
+    </div>
+    <div class="compare-card blue">
+      <h4>不整合サイクル数 (符号)</h4>
+      <p>相関の<strong>符号</strong> $\\text{sign}(r)$ だけ見る</p>
+      <p>「強さ」が変化しても整合性が保たれていれば動かない</p>
+      <p>強さ変化には<strong>気づかない</strong></p>
+    </div>
+  </div>
+  <p>つまり 2 つの指標は<strong>同じネットワークから違う情報を抽出している</strong>。</p>
+</section>
+
+<section id="s5">
+  <div class="section-num">SECTION 05</div>
+  <h2>発見 1: 2 つの指標は独立に動く</h2>
+  <p class="lede">理論的に「違う情報を見ている」と言ったが、実データでも本当に独立に動くかを確認。</p>
+
+  <div class="plot">
+    <div class="plot-title">5 年 × 40 銘柄での日次時系列 (週次サンプリング表示)</div>
+    <div id="plot_ts" style="height:420px;"></div>
+  </div>
+
+  <div class="plot">
+    <div class="plot-title">L¹ vs 不整合サイクル数 — 散布図 (n=1797 日)</div>
+    <div id="plot_scatter" style="height:420px;"></div>
+  </div>
+
+  <div class="callout found">
+    <h4>結果</h4>
+    <p>Pearson 相関 = <strong>+0.16</strong>。同じ相関行列から計算してるのに、ほぼ独立に動く。
+    PCA 第 1 主成分の寄与率も 0.58 で、完全独立 (0.5) に近い。<br>
+    Window 4 通り (20/30/40/60 日) で再計算しても 0.06 〜 0.23、10 年データでも 0.19。
+    <strong>独立性は堅固</strong>。</p>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="section-num">SECTION 06</div>
+  <h2>発見 2: ショックの種類で反応する指標が変わる</h2>
+  <p class="lede">市場ショック (戦争・関税・利上げ等) の前 15 日に、2 つの指標は<strong>異なる感度</strong>で反応する。</p>
+
+  <h3>イベント・スタディとは</h3>
+  <ol class="simple">
+    <li>過去のショック発生日を t=0 とおく</li>
+    <li>各ショックについて、t = -15 から t = -1 までの「直前 15 日」での指標の値を取る</li>
+    <li>平常時 (全期間平均) と比較して、どれだけ <strong>$\\sigma$</strong> 単位で外れたかを測る</li>
+    <li>これを <strong>$\\Delta\\sigma$ (Delta sigma)</strong> と呼ぶ。+1 なら 1 標準偏差分上振れ。</li>
+  </ol>
+
+  <h3>カテゴリ別の結果 (window=30, USA 40 銘柄)</h3>
+  <div class="plot">
+    <div class="plot-title">カテゴリ別 Δσ — L¹ (赤) vs 不整合サイクル数 (青)</div>
+    <div id="plot_cat" style="height:420px;"></div>
+  </div>
+
+  <div class="callout found">
+    <h4>パターン</h4>
+    <ul class="simple">
+      <li><strong>戦争・地政学・市場構造・AI</strong> ショック → <strong>L¹ で大きく反応</strong> (Δσ +0.7 〜 +1.1)</li>
+      <li><strong>関税ショック (USA-issued)</strong> → <strong>不整合サイクル数で反応</strong> (Δσ +0.38, p=0.018)、L¹ は逆方向</li>
+      <li><strong>利上げ・利下げ</strong> → どちらも弱い</li>
+    </ul>
+    <p>「強さ」と「符号」が <strong>別タイプのショックに別感度</strong>。</p>
+  </div>
+</section>
+
+<section id="s7">
+  <div class="section-num">SECTION 07</div>
+  <h2>発見 3: 関税前は本当に「符号」がひっくり返っている</h2>
+  <p class="lede">関税ショックで不整合サイクル数だけが反応する理由を直接検証した。</p>
+
+  <h3>仮説</h3>
+  <p>関税が発令されると貿易相手国との経済的位置関係が変わる →
+  「これまで一緒に動いていた銘柄ペア」が「逆に動く」ようになる →
+  <strong>符号反転</strong>が起こる → 不整合サイクル数が上がる。</p>
+
+  <h3>直接検証 — flip_rate</h3>
+  <p>各日について「<strong>直前 30 日</strong>の相関と<strong>当日</strong>の相関で、符号が反転したエッジペアの割合」を計算。
+  平常時の平均は 8.3%。</p>
+
+  <div class="plot">
+    <div class="plot-title">flip_rate の時系列 (週次サンプリング)</div>
+    <div id="plot_flip" style="height:340px;"></div>
+  </div>
+
+  <div class="callout found">
+    <h4>結果</h4>
+    <p>trade_policy ショック前 15 日で flip_rate が
+    <strong>Δσ = +0.45 (p = 0.0001)</strong> で有意に上昇。
+    つまり関税前に本当に銘柄ペアの符号がひっくり返っている。</p>
+    <p>L¹ は<strong>絶対値</strong>しか見ないので符号反転に気づかないが、
+    不整合サイクル数は符号構造の整合性をチェックするので気づく。</p>
+  </div>
+
+  <h3>どの銘柄ペアが反転したか — 具体例</h3>
+  <p>Liberation Day (2025-04-02) 関税前後で、実際に符号反転したペアの TOP 10:</p>
+  <div class="plot">
+    <div class="plot-title">2025-04-02 関税前 30 日 → 当日窓 30 日でのペア符号反転 (|r| ≥ 0.3 両期間)</div>
+    <div id="signflip_plot" style="height:480px;"></div>
+  </div>
+  <p class="small">バーの色: 青 = 直前期 (正→負)、赤 = 直前期 (負→正)。
+  長さ = Δr の絶対値。</p>
+
+  <h3>さらに面白い副次発見</h3>
+  <p>利上げ前にも flip_rate は上昇している (Δσ=+0.54)。<strong>でも</strong> 不整合サイクル数は動かない。なぜか?</p>
+  <p>→ 偶数本のサイクルでの符号反転は、サイクル一周すると符号積が変わらない (-1 × -1 = +1)。
+  つまり「flip が起きても整合性は破れない」場合がある。
+  <strong>不整合サイクル数の方が flip より厳しい条件を測っている</strong>。</p>
+</section>
+
+<section id="s8">
+  <div class="section-num">SECTION 08</div>
+  <h2>発見 4: 2 指標の<strong>乖離</strong>がショックタイプを判別する — e_div</h2>
+  <p class="lede">最大の発見。「政策ショック」と「単なる市場ボラ」を区別する指標が出てきた。</p>
+
+  <h3>乖離インデックスの定義</h3>
+  <div class="formula-box">
+    $$e_{\\text{div}}(t) = z_{n_{\\text{unb}}}(t) - z_{L^1}(t)$$
+  </div>
+  <p>$z$ は z-score (平均 0、分散 1 に正規化)。<strong>2 指標の差</strong>を取るだけ。</p>
+
+  <h3>e_div の時系列</h3>
+  <p>3 本の線を重ねて見る: z_L1 (赤)、z_unb (青)、<strong>e_div = z_unb − z_L1 (橙)</strong>。
+  乖離が広がった瞬間 = e_div が大きく動いた瞬間。</p>
+  <div class="plot">
+    <div class="plot-title">5 年 × 日次。trade_policy イベントを縦線で表示</div>
+    <div id="plot_ediv_ts" style="height:420px;"></div>
+  </div>
+
+  <h3>グループ別の event study</h3>
+  <div class="plot">
+    <div class="plot-title">グループ別 e_div の Δσ (高いほど「符号タイプのショック」)</div>
+    <div id="plot_ediv" style="height:380px;"></div>
+  </div>
+
+  <table>
+    <tr><th>グループ</th><th>n</th><th>e_div Δσ</th><th>p_perm</th><th>意味</th></tr>
+    <tr><td>2025-04 Liberation Day 関税連鎖</td><td>5</td>
+        <td class="good">+1.57</td><td class="good">&lt; 10⁻⁴</td>
+        <td>大規模相互報復 → 符号反転大</td></tr>
+    <tr><td>trade_policy 全体</td><td>36</td>
+        <td>+0.15</td><td>0.09</td>
+        <td>軽い乖離</td></tr>
+    <tr><td>VIX 自動スパイク (一般ボラ)</td><td>25</td>
+        <td class="neutral">+0.09</td><td>0.21</td>
+        <td><strong>乖離なし</strong> (2 指標が同方向)</td></tr>
+    <tr><td>中規模一方的 (CHIPS, EU EV 等)</td><td>7</td>
+        <td class="bad">-0.49</td><td>0.97</td>
+        <td>L¹ 上昇のみ、符号は安定</td></tr>
+  </table>
+
+  <div class="callout found">
+    <h4>意味</h4>
+    <p>e_div は<strong>ショックタイプを 3 区分する判別器</strong>として機能:</p>
+    <ul class="simple">
+      <li><strong>e_div ≫ 0</strong> → 政策連鎖 (符号反転中心)</li>
+      <li><strong>e_div ≈ 0</strong> → 一般市場ボラ (両指標が同方向)</li>
+      <li><strong>e_div ≪ 0</strong> → 単発の構造ショック (強さ変化中心)</li>
+    </ul>
+    <p>Gidea 2017 の L¹ 単独・Ferreira 2021 の K 単独では出せない、
+    <strong>2 指標の差分でしか見えない構造識別軸</strong>。</p>
+  </div>
+
+  <h3>連鎖速度との関係</h3>
+  <div class="plot">
+    <div class="plot-title">直前 30 日のイベント密度 vs Δσ_unb (n=42 trade_policy)</div>
+    <div id="plot_velocity" style="height:360px;"></div>
+  </div>
+  <p>各イベントに対し「直前 30 日に同種イベントが何件あったか」を測ると、
+  <strong>連鎖が密 ⇒ 不整合サイクル数大、L¹ 小</strong>という対称関係が trade_policy 内で見えた
+  (相関 +0.43, p=0.005)。
+  ただし VIX 自動スパイクでは消えるので、<strong>政策連鎖固有のサイン</strong>と解釈。</p>
+</section>
+
+<section id="s85" style="background:#fff8e1;">
+  <div class="section-num" style="color:#c9a227;">SECTION 8.5</div>
+  <h2>指標を 2 つ → 12 個に細分化する</h2>
+  <p class="lede">L¹ と n_unb は集約スカラー。
+  分解すれば<strong>もっと精細な情報軸</strong>が見えるはず。</p>
+
+  <div class="callout warn">
+    <h4>動機</h4>
+    <p>これまで使ってきた <strong>L¹ ノルム</strong> は「全ての穴の寿命の総和」、
+    <strong>不整合サイクル数</strong> は「全ての矛盾サイクルの単純カウント」。
+    どちらも複数の情報を 1 つのスカラーに圧縮している。<br>
+    <strong>分解すれば、見えなかった情報が見えるはず</strong>。</p>
+  </div>
+
+  <h3>L¹ を 6 つに分解</h3>
+  <table>
+    <tr><th>指標</th><th>意味</th></tr>
+    <tr><td><strong>L1</strong></td><td>$\\sum_k p_k$ — 寿命の総和 (元の指標)</td></tr>
+    <tr><td><strong>L2</strong></td><td>$\\sqrt{\\sum_k p_k^2}$ — 大きい穴を重視</td></tr>
+    <tr><td><strong>Linf</strong></td><td>$\\max_k p_k$ — 最大の穴 1 つの寿命</td></tr>
+    <tr><td><strong>nH1</strong></td><td>穴の個数 (寿命に関係なくカウント)</td></tr>
+    <tr><td><strong>meanP</strong></td><td>平均寿命</td></tr>
+    <tr><td><strong>entropy</strong></td><td>寿命分布のエントロピー (Atienza 2020 風) — 「1 つの巨大穴」と「複数分散穴」を区別</td></tr>
+  </table>
+
+  <h3>不整合サイクル数を 6 つに分解</h3>
+  <table>
+    <tr><th>指標</th><th>意味</th></tr>
+    <tr><td><strong>n_unb_total</strong></td><td>全不整合サイクル数 (元の指標)</td></tr>
+    <tr><td><strong>n_unb_3</strong></td><td>長さ 3 (三角形) の不整合のみ — 直接的な矛盾</td></tr>
+    <tr><td><strong>n_unb_4</strong></td><td>長さ 4 (四角形) の不整合のみ — 1 段階間接的な矛盾</td></tr>
+    <tr><td><strong>n_unb_5plus</strong></td><td>長さ 5 以上 — 遠い間接的矛盾</td></tr>
+    <tr><td><strong>weighted_unb</strong></td><td>サイクルのエッジ重み |corr| の積で重み付けた不整合</td></tr>
+    <tr><td><strong>balance_rate</strong></td><td>balanced / total — 整合率</td></tr>
+  </table>
+
+  <h3>結果: カテゴリ別 × 12 指標のヒートマップ</h3>
+  <div class="plot">
+    <div class="plot-title">12 指標 × カテゴリ別 Δσ — 左 6 個が L¹ 系 (赤系)、右 6 個が符号系 (青系)</div>
+    <img src="data:image/png;base64,__HEATMAP__" style="width:100%; border-radius:8px;">
+  </div>
+
+  <h3>主要発見</h3>
+  <table>
+    <tr><th>カテゴリ</th><th>集約版 (元の 2 指標)</th><th>分解版で最強の指標</th><th>改善</th></tr>
+    <tr><td>geopolitical (n=2)</td><td>L1 Δσ=+0.88 (p=0.07)</td>
+        <td class="good">entropy +0.92 (p=0.04) ✓</td><td>有意化</td></tr>
+    <tr><td>market_structure (n=2)</td><td>L1 Δσ=+1.08 (p=0.03)</td>
+        <td class="good">nH1 +1.40 (p=0.004) ✓✓</td><td>大幅強化</td></tr>
+    <tr><td><strong>trade_policy (n=23)</strong></td><td>n_unb_total Δσ=+0.16 (p=0.11)</td>
+        <td class="good"><strong>n_unb_4 +0.39 (p=0.004) ✓✓</strong></td>
+        <td><strong>4-cycle 特異性発見</strong></td></tr>
+    <tr><td>trade_policy (副指標)</td><td>L1 Δσ=+0.03 (反応なし)</td>
+        <td class="good">Linf +0.32 (p=0.017) ✓</td><td>埋もれてた前兆出現</td></tr>
+  </table>
+
+  <div class="callout found">
+    <h4>最重要発見: trade_policy は 4-cycle 特異</h4>
+    <p>関税ショックでは <strong>n_unb_4 (長さ 4 の不整合サイクル)</strong> が特異的に動く:</p>
+    <ul class="simple">
+      <li>n_unb_3 (三角形の矛盾): Δσ=+0.02 (反応なし)</li>
+      <li><strong>n_unb_4 (四角形の矛盾): Δσ=+0.39, p=0.004</strong> ← 唯一強く反応</li>
+      <li>n_unb_5plus (5+ サイクル): Δσ=-0.13 (反応なし)</li>
+    </ul>
+    <p>集約された n_unb_total では弱い反応 (Δσ=+0.16) が、4-cycle に絞ると 2.5 倍に増幅。
+    <strong>関税ショックは特定のサイクル長 (=ネットワーク構造の特定スケール) を破る</strong>という
+    新しい発見。</p>
+    <p>解釈仮説: 3-cycle は直接的な貿易相手関係、4-cycle は「友達の友達の友達」のような
+    1 段階間接的な関係。関税はこの間接ネットワークを破る。</p>
+  </div>
+
+  <h3>指標間の相関構造</h3>
+  <p>分解した 12 指標がお互いどれだけ独立かを確認:</p>
+  <details>
+    <summary>12 × 12 相関行列を見る</summary>
+    <div id="plot_corr_mat" style="height:480px;"></div>
+  </details>
+  <p>主要な独立ペア:</p>
+  <ul class="simple">
+    <li><code>Linf</code> vs <code>entropy</code>: <strong>-0.20</strong> ← 「1 つの巨大穴」と「複数分散穴」が逆方向</li>
+    <li><code>n_unb_3</code> vs <code>n_unb_4</code>: <strong>~0.10</strong> ← 三角と四角はほぼ独立</li>
+    <li><code>L1</code> vs <code>n_unb_total</code>: <strong>+0.16</strong> ← 元の独立性は維持</li>
+    <li><code>L1</code> vs <code>Linf</code>: <strong>+0.25</strong> ← 同じ L¹ 系内でも比較的独立</li>
+  </ul>
+  <p>つまり <strong>分解した結果、独立な情報軸が複数増えた</strong>。[redacted]の指摘の通り。</p>
+
+  <div class="callout intuition">
+    <h4>圏論的接続</h4>
+    <p>各指標を別々の関手 $F_1, F_2, \\ldots, F_{12}$ として、
+    その極限・余極限・引き戻しを取ることで、ショックタイプ別の「特性関数」を構築できる。</p>
+  </div>
+</section>
+
+<section id="s9">
+  <div class="section-num">SECTION 09</div>
+  <h2>圏論的に整理すると</h2>
+  <p class="lede">圏論用語で整理しておく。実装ではここまで意識しなくても結果は出るが、研究室の言語と合わせるため。</p>
+
+  <h3>2 つの関手</h3>
+  <p>時間 $T$ を圏として、各 $t$ にネットワーク $M(t)$ を割り当てる関手 $M: T \\to \\mathcal{G}$ を考える。
+  $\\mathcal{G}$ はグラフたちの圏。</p>
+  <p>$M(t)$ から実数を取り出す関手が 2 つある:</p>
+  <div class="formula-box">
+    $$F_{L^1}: M(t) \\xrightarrow{|\\cdot|} \\text{Filtration} \\xrightarrow{H_1(\\cdot; \\mathbb{Z})} \\text{Persistence} \\xrightarrow{L^1} \\mathbb{R}$$
+  </div>
+  <div class="formula-box">
+    $$F_{\\text{unb}}: M(t) \\xrightarrow{\\text{sgn}} \\text{signed graph} \\xrightarrow{H^1(\\cdot; \\mathbb{Z}/2)} \\text{unbalanced cycles} \\xrightarrow{\\#} \\mathbb{R}$$
+  </div>
+  <p>違うのは:</p>
+  <ul class="simple">
+    <li>第 1 関手は <strong>$\\mathbb{Z}$ 係数</strong> + 連続フィルトレーション + 持続ホモロジー</li>
+    <li>第 2 関手は <strong>$\\mathbb{Z}/2$ 係数</strong> + 固定閾値グラフ + 符号付きコホモロジー</li>
+  </ul>
+
+  <h3>不変性のクラスが違う</h3>
+  <table>
+    <tr><th>変換</th><th>L¹ への作用</th><th>不整合サイクル数への作用</th></tr>
+    <tr><td>全エッジの符号反転 ($\\sigma \\to -\\sigma$)</td><td>不変</td><td>変化しうる</td></tr>
+    <tr><td>強度の一様スケール ($|r| \\to \\lambda|r|$)</td><td>変化</td><td>不変</td></tr>
+  </table>
+  <p>これは 2 関手が <strong>異なる対称性群に対して不変</strong>であることを意味する。
+  実証的にも独立性 (corr=0.16) として現れる。</p>
+
+  <h3>e_div は 2 関手の「比較射」のようなもの</h3>
+  <p>形式的には、$F_{\\text{unb}}$ と $F_{L^1}$ の出力を $z$-正規化して差を取る:</p>
+  <div class="formula-box">
+    $$e_{\\text{div}} = z(F_{\\text{unb}}) - z(F_{L^1})$$
+  </div>
+  <p>これは厳密な意味での「自然変換」ではないが、
+  $\\mathbb{Z}/2$ 関手と $\\mathbb{Z}$ 関手の <strong>相対的位置</strong>を測る量として機能している。</p>
+</section>
+
+<section id="s10">
+  <div class="section-num">SECTION 10</div>
+  <h2>先行研究との位置づけ</h2>
+  <p class="lede">論文サーベイの結論は「TDA × 符号付きグラフのクロス領域は空白」。</p>
+
+  <h3>3 つの系統</h3>
+  <table>
+    <tr><th>系統</th><th>代表</th><th>違い</th></tr>
+    <tr><td>TDA × 金融</td><td>Gidea & Katz 2017<br>Majumdar 2024<br>Wang 2023</td>
+        <td>全て $|r|$ ベース、<strong>符号情報を使わない</strong></td></tr>
+    <tr><td>符号 × 金融</td><td>Ferreira 2021 (Walk-based K)<br>Wang & Xu 2025 (LSCBM)</td>
+        <td>TDA なし、event study も permutation も使わない</td></tr>
+    <tr><td>圏論側</td><td>Adachi 2026 (Martingale Cohomology)</td>
+        <td>純粋理論、実データなし</td></tr>
+  </table>
+
+  <div class="callout found">
+    <h4>我々の位置</h4>
+    <p>TDA × 符号付き × event study × ペア符号反転 × 圏論整理 を <strong>橋渡し</strong>した実装と実証。
+    特に e_div という 2 関手の差分指標は、どの先行研究にもない。</p>
+    <p><strong>追い風</strong>: Wang & Xu (2025) が「2024 年米国対中関税で中国市場の Balanced Module が 3.6 倍急増」
+    と<strong>独立に報告</strong>している。彼らは balanced 側、我々は unbalanced 側、同じ現象を別角度から。</p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Hajime · 東京都市大学 · 2026-05<br>
+  GitHub: <a href="https://github.com/hajimedayo328/market-graph-presentation" style="color:var(--accent)">hajimedayo328/market-graph-presentation</a>
+</footer>
+
+<script>
+const DATA = __DATA__;
+
+// === HERO: 全体時系列 (大) ===
+{
+  const traces = [];
+  traces.push({ x: DATA.ts_dates, y: DATA.ts_L1, mode: 'lines',
+                name: 'L¹ ノルム (強さ)', yaxis: 'y1',
+                line: { color: '#c0392b', width: 1.4 },
+                hovertemplate: 'L¹=%{y:.3f}<br>%{x}<extra></extra>' });
+  traces.push({ x: DATA.ts_dates, y: DATA.ts_unb, mode: 'lines',
+                name: '不整合サイクル数 (符号)', yaxis: 'y2',
+                line: { color: '#2c5aa0', width: 1.4 },
+                hovertemplate: 'n_unb=%{y}<br>%{x}<extra></extra>' });
+
+  const shapes = [];
+  const annotations = [];
+  const catColors = {
+    'geopolitical': '#c0392b', 'market_structure': '#e67e22',
+    'trade_policy': '#8e44ad', 'tech_shock': '#16a085',
+    'macro': '#8b4513', 'monetary': '#7f8c8d',
+  };
+  const seenLabels = new Set();
+  for (const ev of DATA.events) {
+    const color = catColors[ev.type];
+    if (!color) continue;
+    shapes.push({ type: 'line', x0: ev.date, x1: ev.date,
+                  y0: 0, y1: 1, yref: 'paper',
+                  line: { color: color, width: 0.8, dash: 'dot' } });
+    if (['trade_policy', 'geopolitical', 'market_structure'].includes(ev.type) && !seenLabels.has(ev.type)) {
+      seenLabels.add(ev.type);
+    }
+  }
+
+  // カテゴリ凡例 (custom traces)
+  for (const [cat, color] of Object.entries(catColors)) {
+    traces.push({ x: [null], y: [null], mode: 'lines',
+                  line: { color: color, width: 2, dash: 'dot' },
+                  name: cat, showlegend: true });
+  }
+
+  const layout = {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#fbfbfd',
+    font: { family: '-apple-system, "Hiragino Sans", "Yu Gothic", sans-serif',
+            size: 11, color: '#1d1d1f' },
+    margin: { l: 60, r: 60, t: 10, b: 80 },
+    showlegend: true,
+    legend: { orientation: 'h', y: -0.18, font: { size: 11 } },
+    xaxis: {
+      gridcolor: '#e6e6eb', linecolor: '#d2d2d7',
+      rangeslider: { visible: true, thickness: 0.08, bgcolor: '#fafafa' },
+      rangeselector: {
+        buttons: [
+          { count: 6, label: '6M', step: 'month', stepmode: 'backward' },
+          { count: 1, label: '1Y', step: 'year', stepmode: 'backward' },
+          { count: 3, label: '3Y', step: 'year', stepmode: 'backward' },
+          { step: 'all', label: 'ALL' },
+        ],
+        font: { size: 11 },
+      },
+    },
+    yaxis: { gridcolor: '#fde4e0', title: 'L¹ ノルム',
+             titlefont: { color: '#c0392b' }, side: 'left',
+             linecolor: '#d2d2d7' },
+    yaxis2: { gridcolor: '#dce4f3', title: '不整合サイクル数', overlaying: 'y',
+              titlefont: { color: '#2c5aa0' }, side: 'right',
+              linecolor: '#d2d2d7' },
+    shapes: shapes,
+  };
+  Plotly.newPlot('hero_plot', traces, layout, { responsive: true, displaylogo: false });
+}
+
+const layout_base = {
+  paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+  font: { family: '-apple-system, "Hiragino Sans", "Yu Gothic", sans-serif',
+          size: 12, color: '#1d1d1f' },
+  margin: { l: 60, r: 30, t: 30, b: 50 },
+  showlegend: true,
+  legend: { orientation: 'h', y: -0.15 },
+  xaxis: { gridcolor: '#e6e6eb', linecolor: '#d2d2d7' },
+  yaxis: { gridcolor: '#e6e6eb', linecolor: '#d2d2d7' },
+};
+
+// === 時系列プロット ===
+{
+  const traces = [];
+  traces.push({ x: DATA.ts_dates, y: DATA.ts_L1, mode: 'lines',
+                name: 'L¹ ノルム (強さ)', yaxis: 'y1',
+                line: { color: '#c0392b', width: 1.4 } });
+  traces.push({ x: DATA.ts_dates, y: DATA.ts_unb, mode: 'lines',
+                name: '不整合サイクル数 (符号)', yaxis: 'y2',
+                line: { color: '#2c5aa0', width: 1.4 } });
+
+  const shapes = [];
+  const catColors = {
+    'geopolitical': '#c0392b', 'market_structure': '#e67e22',
+    'trade_policy': '#8e44ad', 'tech_shock': '#16a085',
+    'macro': '#8b4513', 'monetary': '#7f8c8d',
+  };
+  for (const ev of DATA.events) {
+    if (!catColors[ev.type]) continue;
+    shapes.push({ type: 'line', x0: ev.date, x1: ev.date,
+                  y0: 0, y1: 1, yref: 'paper',
+                  line: { color: catColors[ev.type], width: 0.8, dash: 'dot' } });
+  }
+
+  const layout = Object.assign({}, layout_base, {
+    yaxis: { gridcolor: '#fde4e0', title: 'L¹ ノルム',
+             titlefont: { color: '#c0392b' }, side: 'left' },
+    yaxis2: { gridcolor: '#dce4f3', title: '不整合サイクル数', overlaying: 'y',
+              titlefont: { color: '#2c5aa0' }, side: 'right' },
+    shapes: shapes,
+    xaxis: { gridcolor: '#e6e6eb', title: 'date' },
+  });
+  Plotly.newPlot('plot_ts', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// === 散布図 ===
+{
+  const traces = [{
+    x: DATA.scatter_L1, y: DATA.scatter_unb, mode: 'markers',
+    type: 'scatter', name: '日次観測',
+    marker: { color: '#2c5aa0', size: 4, opacity: 0.35,
+              line: { width: 0 } }
+  }];
+  // 回帰線
+  const n = DATA.scatter_L1.length;
+  let sx = 0, sy = 0;
+  for (let i = 0; i < n; i++) { sx += DATA.scatter_L1[i]; sy += DATA.scatter_unb[i]; }
+  const mx = sx / n, my = sy / n;
+  let num = 0, den = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = DATA.scatter_L1[i] - mx, dy = DATA.scatter_unb[i] - my;
+    num += dx * dy; den += dx * dx; sxx += dx * dx; syy += dy * dy;
+  }
+  const slope = num / den, icpt = my - slope * mx;
+  const r = num / Math.sqrt(sxx * syy);
+  const xmin = Math.min(...DATA.scatter_L1), xmax = Math.max(...DATA.scatter_L1);
+  traces.push({ x: [xmin, xmax], y: [icpt + slope * xmin, icpt + slope * xmax],
+                mode: 'lines', name: `回帰: r=${r.toFixed(3)}`,
+                line: { color: '#c0392b', width: 2, dash: 'dash' } });
+  const layout = Object.assign({}, layout_base, {
+    xaxis: Object.assign({}, layout_base.xaxis, { title: 'L¹ ノルム' }),
+    yaxis: Object.assign({}, layout_base.yaxis, { title: '不整合サイクル数' }),
+  });
+  Plotly.newPlot('plot_scatter', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// === カテゴリ別バー ===
+{
+  const cats = Object.keys(DATA.cat_results);
+  const L1_d = cats.map(c => DATA.cat_results[c].L1_H1.observed_delta_sigma);
+  const unb_d = cats.map(c => DATA.cat_results[c].n_unb.observed_delta_sigma);
+  const n_ev = cats.map(c => DATA.cat_results[c].n_events);
+  const labels = cats.map((c, i) => `${c}<br><span style="font-size:10px">n=${n_ev[i]}</span>`);
+  const traces = [
+    { x: labels, y: L1_d, name: 'L¹ Δσ', type: 'bar',
+      marker: { color: '#c0392b' } },
+    { x: labels, y: unb_d, name: '不整合サイクル数 Δσ', type: 'bar',
+      marker: { color: '#2c5aa0' } },
+  ];
+  const layout = Object.assign({}, layout_base, {
+    barmode: 'group',
+    yaxis: Object.assign({}, layout_base.yaxis, { title: 'Δσ (pre[-15,-1])' }),
+    xaxis: { tickfont: { size: 10 } },
+  });
+  Plotly.newPlot('plot_cat', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// === flip_rate 時系列 ===
+{
+  const traces = [{
+    x: DATA.flip_dates, y: DATA.flip_rate, mode: 'lines',
+    name: 'flip_rate', line: { color: '#8e44ad', width: 1 }
+  }];
+  // 20d MA
+  const ma20 = [];
+  for (let i = 0; i < DATA.flip_rate.length; i++) {
+    let s = 0, c = 0;
+    for (let j = Math.max(0, i - 4); j <= i; j++) { s += DATA.flip_rate[j]; c++; }
+    ma20.push(s / c);
+  }
+  traces.push({ x: DATA.flip_dates, y: ma20, mode: 'lines', name: '4-pt MA',
+                line: { color: '#1d1d1f', width: 1.6 } });
+  // trade_policy 縦線
+  const shapes = [];
+  for (const ev of DATA.events) {
+    if (ev.type !== 'trade_policy') continue;
+    shapes.push({ type: 'line', x0: ev.date, x1: ev.date,
+                  y0: 0, y1: 1, yref: 'paper',
+                  line: { color: '#8e44ad', width: 0.8, dash: 'dot' } });
+  }
+  const layout = Object.assign({}, layout_base, {
+    yaxis: Object.assign({}, layout_base.yaxis, { title: 'flip_rate' }),
+    shapes: shapes,
+  });
+  Plotly.newPlot('plot_flip', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// === e_div グループバー ===
+{
+  const groups = Object.keys(DATA.div_results);
+  const sorted = groups.slice().sort((a, b) =>
+    DATA.div_results[b].e_div_delta_sigma - DATA.div_results[a].e_div_delta_sigma);
+  const vals = sorted.map(g => DATA.div_results[g].e_div_delta_sigma);
+  const ps   = sorted.map(g => DATA.div_results[g].p_perm);
+  const ns   = sorted.map(g => DATA.div_results[g].n);
+  const colors = ps.map(p => p < 0.05 ? '#1b7e3e' : p < 0.10 ? '#c9a227' : '#86868b');
+  const traces = [{
+    y: sorted.map((g, i) => `${g}<br><span style="font-size:10px">n=${ns[i]}</span>`),
+    x: vals, type: 'bar', orientation: 'h',
+    marker: { color: colors, line: { color: '#1d1d1f', width: 0.5 } },
+    text: vals.map((v, i) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}  (p=${ps[i].toFixed(3)})`),
+    textposition: 'outside',
+  }];
+  const layout = Object.assign({}, layout_base, {
+    xaxis: Object.assign({}, layout_base.xaxis, { title: 'e_div Δσ', zeroline: true,
+                                                    zerolinecolor: '#1d1d1f', zerolinewidth: 1 }),
+    yaxis: { gridcolor: '#e6e6eb', autorange: 'reversed' },
+    margin: { l: 220, r: 80, t: 30, b: 50 },
+    showlegend: false,
+  });
+  Plotly.newPlot('plot_ediv', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// === 速度 vs Δσ_unb 散布図 ===
+{
+  const v = DATA.velocity;
+  const traces = [{
+    x: v.density_30d, y: v.d_unb_sigma, mode: 'markers', type: 'scatter',
+    text: v.label, hovertemplate: '%{text}<br>density=%{x}<br>Δσ_unb=%{y:+.2f}',
+    marker: { color: '#2c5aa0', size: 9, opacity: 0.75,
+              line: { color: '#1d1d1f', width: 0.5 } },
+    name: 'event'
+  }];
+  // 回帰線
+  const n = v.density_30d.length;
+  let sx = 0, sy = 0;
+  for (let i = 0; i < n; i++) { sx += v.density_30d[i]; sy += v.d_unb_sigma[i]; }
+  const mx = sx / n, my = sy / n;
+  let num = 0, den = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = v.density_30d[i] - mx, dy = v.d_unb_sigma[i] - my;
+    num += dx * dy; den += dx * dx; sxx += dx * dx; syy += dy * dy;
+  }
+  const slope = num / den, icpt = my - slope * mx;
+  const r = num / Math.sqrt(sxx * syy);
+  const xmin = 0, xmax = Math.max(...v.density_30d) + 0.5;
+  traces.push({ x: [xmin, xmax], y: [icpt + slope * xmin, icpt + slope * xmax],
+                mode: 'lines', name: `回帰: r=${r.toFixed(3)}`,
+                line: { color: '#c0392b', width: 2, dash: 'dash' } });
+  const layout = Object.assign({}, layout_base, {
+    xaxis: Object.assign({}, layout_base.xaxis, { title: '直前 30 日のイベント密度' }),
+    yaxis: Object.assign({}, layout_base.yaxis, { title: 'Δσ_unb', zeroline: true,
+                                                    zerolinecolor: '#86868b' }),
+  });
+  Plotly.newPlot('plot_velocity', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// === 「穴」概念図 (4 ノード 3 例) ===
+{
+  const examples = [
+    {
+      title: '穴 0 個', x_off: 0,
+      nodes: [{n:'A',x:-1,y:1},{n:'B',x:1,y:1},{n:'C',x:1,y:-1},{n:'D',x:-1,y:-1}],
+      edges: [['A','B'],['B','C'],['C','D'],['D','A'],['A','C'],['B','D']],
+    },
+    {
+      title: '穴 1 個', x_off: 4,
+      nodes: [{n:'A',x:-1,y:1},{n:'B',x:1,y:1},{n:'C',x:1,y:-1},{n:'D',x:-1,y:-1}],
+      edges: [['A','B'],['B','C'],['C','D'],['D','A']],
+    },
+    {
+      title: '穴 1 個 (部分三角分割)', x_off: 8,
+      nodes: [{n:'A',x:0,y:1.2},{n:'B',x:1.1,y:0.4},{n:'C',x:0.7,y:-0.9},
+              {n:'D',x:-0.7,y:-0.9},{n:'E',x:-1.1,y:0.4}],
+      edges: [['A','B'],['B','C'],['C','D'],['D','E'],['E','A'],['A','C']],
+    },
+  ];
+  const traces = [];
+  for (const ex of examples) {
+    // edges
+    const ex_st_x = [], ex_st_y = [];
+    for (const [u, v] of ex.edges) {
+      const nu = ex.nodes.find(n => n.n === u), nv = ex.nodes.find(n => n.n === v);
+      ex_st_x.push(nu.x + ex.x_off, nv.x + ex.x_off, null);
+      ex_st_y.push(nu.y, nv.y, null);
+    }
+    traces.push({ x: ex_st_x, y: ex_st_y, mode: 'lines',
+                  line: { color: '#1d1d1f', width: 1.5 },
+                  hoverinfo: 'skip', showlegend: false });
+    // nodes
+    traces.push({ x: ex.nodes.map(n => n.x + ex.x_off), y: ex.nodes.map(n => n.y),
+                  mode: 'markers+text', text: ex.nodes.map(n => n.n),
+                  textposition: 'middle center',
+                  marker: { color: 'white', size: 32, line: { color: '#1d1d1f', width: 2 } },
+                  textfont: { size: 13, color: '#1d1d1f' },
+                  hoverinfo: 'skip', showlegend: false });
+    // title
+    traces.push({ x: [ex.x_off], y: [-1.8], mode: 'text',
+                  text: [`<b>${ex.title}</b>`],
+                  textfont: { size: 13, color: '#0066cc' },
+                  hoverinfo: 'skip', showlegend: false });
+  }
+  const layout = {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    margin: { l: 10, r: 10, t: 10, b: 30 },
+    xaxis: { visible: false, range: [-2, 10] },
+    yaxis: { visible: false, range: [-2.3, 1.6], scaleanchor: 'x' },
+    showlegend: false,
+  };
+  Plotly.newPlot('hole_concept', traces, layout,
+                 { responsive: true, displaylogo: false, displayModeBar: false });
+}
+
+// === 実銘柄ネットワーク (3 スナップショット切替) ===
+const SECTOR_COLORS = {
+  'FX_MAJOR': '#2c5aa0', 'FX_CROSS': '#3a7bc8', 'FX_EM': '#5896d0',
+  'COMMODITY': '#c9a227', 'METAL': '#d4af37', 'CRYPTO': '#1b7e3e',
+  'INDEX_US': '#c0392b', 'INDEX_EU': '#e74c3c', 'INDEX_AS': '#ec7063',
+  'SPECIAL': '#8b4513', 'STOCK': '#8e44ad', 'BOND': '#7f8c8d',
+};
+
+function drawSnapshot(key) {
+  const snap = DATA.snapshots[key];
+  if (!snap) return;
+  // edges
+  const sx = [], sy = [], sc = [];
+  const node_pos = {};
+  for (const nd of snap.nodes) node_pos[nd.id] = [nd.x, nd.y];
+  // 別 trace ループで sign+/- を分ける
+  const pos_x = [], pos_y = [], neg_x = [], neg_y = [];
+  for (const e of snap.edges) {
+    const a = node_pos[e.u], b = node_pos[e.v];
+    if (!a || !b) continue;
+    if (e.s > 0) {
+      pos_x.push(a[0], b[0], null); pos_y.push(a[1], b[1], null);
+    } else {
+      neg_x.push(a[0], b[0], null); neg_y.push(a[1], b[1], null);
+    }
+  }
+  // sector ごとに nodes 分割
+  const traces = [];
+  traces.push({ x: pos_x, y: pos_y, mode: 'lines',
+                line: { color: 'rgba(40,40,40,0.32)', width: 0.8 },
+                name: '+ corr', hoverinfo: 'skip', showlegend: false });
+  traces.push({ x: neg_x, y: neg_y, mode: 'lines',
+                line: { color: 'rgba(192,57,43,0.5)', width: 0.8 },
+                name: '- corr', hoverinfo: 'skip', showlegend: false });
+  const sectors = {};
+  for (const nd of snap.nodes) {
+    if (!sectors[nd.sector]) sectors[nd.sector] = [];
+    sectors[nd.sector].push(nd);
+  }
+  for (const [sec, nds] of Object.entries(sectors)) {
+    traces.push({
+      x: nds.map(n => n.x), y: nds.map(n => n.y),
+      mode: 'markers+text',
+      text: nds.map(n => n.id),
+      textposition: 'top center',
+      textfont: { size: 9, color: '#1d1d1f' },
+      marker: { color: SECTOR_COLORS[sec] || '#999',
+                size: nds.map(n => Math.min(20, 6 + n.deg * 0.5)),
+                line: { color: 'white', width: 1.2 } },
+      name: sec,
+      hovertemplate: '%{text}<br>sector=' + sec + '<extra></extra>',
+    });
+  }
+  const layout = {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#fbfbfd',
+    margin: { l: 10, r: 10, t: 10, b: 50 },
+    xaxis: { visible: false, scaleanchor: 'y', scaleratio: 1 },
+    yaxis: { visible: false },
+    showlegend: true,
+    legend: { orientation: 'h', y: -0.05, font: { size: 10 } },
+  };
+  Plotly.react('network_plot', traces, layout,
+               { responsive: true, displaylogo: false });
+  document.getElementById('network_stats').innerHTML =
+    `<strong>${snap.date}</strong> · ${snap.n_nodes} 銘柄 · ${snap.n_edges} エッジ · ` +
+    `連結成分 ${snap.n_components} · <strong>穴 ${snap.n_holes} 個</strong> ($H_1$ rank)`;
+  // ボタン active 切替
+  document.querySelectorAll('.snap-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('btn_' + key);
+  if (btn) btn.classList.add('active');
+}
+function showSnapshot(key) { drawSnapshot(key); }
+// 初期表示: 関税ショック直前
+drawSnapshot('preshock');
+
+// === バーコード (持続ホモロジー) — 上下に分けて表示 ===
+{
+  const calm = DATA.barcodes.calm;
+  const pre  = DATA.barcodes.preshock;
+
+  // 寿命の長い順にソート (上から長い線)
+  function sortBars(bars) {
+    return bars.slice().sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
+  }
+  const calm_bars = sortBars(calm.H1);
+  const pre_bars  = sortBars(pre.H1);
+
+  const traces = [];
+  // 平常時 (下半分: y < 0)
+  for (let i = 0; i < calm_bars.length; i++) {
+    const [b, d] = calm_bars[i];
+    const y = -i - 1;
+    traces.push({
+      x: [b, d], y: [y, y], mode: 'lines',
+      line: { color: '#2c5aa0', width: 4 },
+      hovertemplate: `平常時 穴#${i+1}<br>birth=${b.toFixed(3)}<br>death=${d.toFixed(3)}<br>寿命=${(d-b).toFixed(3)}<extra></extra>`,
+      showlegend: false,
+    });
+  }
+  // ショック前 (上半分: y > 0)
+  for (let i = 0; i < pre_bars.length; i++) {
+    const [b, d] = pre_bars[i];
+    const y = pre_bars.length - i;
+    traces.push({
+      x: [b, d], y: [y, y], mode: 'lines',
+      line: { color: '#c0392b', width: 4 },
+      hovertemplate: `ショック前 穴#${i+1}<br>birth=${b.toFixed(3)}<br>death=${d.toFixed(3)}<br>寿命=${(d-b).toFixed(3)}<extra></extra>`,
+      showlegend: false,
+    });
+  }
+  // 中央分割線
+  traces.push({
+    x: [0, Math.sqrt(2)], y: [0, 0], mode: 'lines',
+    line: { color: '#1d1d1f', width: 1, dash: 'solid' },
+    hoverinfo: 'skip', showlegend: false,
+  });
+  // 凡例ダミー
+  traces.push({ x: [null], y: [null], mode: 'lines',
+                line: { color: '#c0392b', width: 4 },
+                name: `ショック直前 (2025-04): 穴 ${pre.nH1} 個, L¹=${pre.L1.toFixed(2)}, 最長=${pre.Linf.toFixed(2)}` });
+  traces.push({ x: [null], y: [null], mode: 'lines',
+                line: { color: '#2c5aa0', width: 4 },
+                name: `平常時 (2023-06): 穴 ${calm.nH1} 個, L¹=${calm.L1.toFixed(2)}, 最長=${calm.Linf.toFixed(2)}` });
+
+  // 注釈
+  const annotations = [
+    { x: 0.02, y: pre_bars.length + 0.5, xref: 'x', yref: 'y',
+      text: '<b>← ショック直前</b><br>(穴 9 個、最長 0.27)',
+      showarrow: false, font: { size: 12, color: '#c0392b' },
+      bgcolor: 'rgba(255,255,255,0.85)', xanchor: 'left' },
+    { x: 0.02, y: -calm_bars.length - 0.5, xref: 'x', yref: 'y',
+      text: '<b>← 平常時</b><br>(穴 16 個、最長 0.12)',
+      showarrow: false, font: { size: 12, color: '#2c5aa0' },
+      bgcolor: 'rgba(255,255,255,0.85)', xanchor: 'left' },
+    { x: 0.5, y: 0.4, xref: 'paper', yref: 'paper',
+      text: '<i>← 早い時期 (相関強い)　　　　遅い時期 (相関弱い) →</i>',
+      showarrow: false, font: { size: 11, color: '#86868b' },
+      xanchor: 'center' },
+  ];
+
+  const layout = Object.assign({}, layout_base, {
+    xaxis: { gridcolor: '#e6e6eb', linecolor: '#d2d2d7',
+             title: 'フィルトレーション値 = 水位 (距離)',
+             range: [0, Math.sqrt(2)], zeroline: false },
+    yaxis: { showticklabels: false, gridcolor: '#f4f4f7',
+             title: '各横線 = 1 つの穴の寿命' },
+    legend: { orientation: 'h', y: -0.20, font: { size: 11 } },
+    annotations: annotations,
+    shapes: [
+      { type: 'rect', x0: 0, x1: Math.sqrt(2),
+        y0: 0.1, y1: pre_bars.length + 1, fillcolor: 'rgba(192,57,43,0.04)',
+        line: { width: 0 }, layer: 'below' },
+      { type: 'rect', x0: 0, x1: Math.sqrt(2),
+        y0: -calm_bars.length - 1, y1: -0.1,
+        fillcolor: 'rgba(44,90,160,0.04)',
+        line: { width: 0 }, layer: 'below' },
+    ],
+  });
+  Plotly.newPlot('barcode_plot', traces, layout,
+                 { responsive: true, displaylogo: false });
+}
+
+// === Heider balance 三角形 ===
+{
+  const examples = [
+    { title: '+,+,+ (Balanced)', x_off: 0, signs: ['+', '+', '+'], color: '#1b7e3e' },
+    { title: '+,-,- (Balanced)', x_off: 4, signs: ['+', '-', '-'], color: '#1b7e3e' },
+    { title: '+,+,- (Unbalanced)', x_off: 8, signs: ['+', '+', '-'], color: '#c0392b' },
+  ];
+  const traces = [];
+  for (const ex of examples) {
+    const A = [0 + ex.x_off, 1.2], B = [-1 + ex.x_off, -0.6], C = [1 + ex.x_off, -0.6];
+    const segs = [[A, B, ex.signs[0]], [B, C, ex.signs[1]], [A, C, ex.signs[2]]];
+    for (const [p, q, sg] of segs) {
+      const mid = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
+      const color = sg === '+' ? '#1b7e3e' : '#c0392b';
+      traces.push({
+        x: [p[0], q[0]], y: [p[1], q[1]], mode: 'lines',
+        line: { color: color, width: sg === '+' ? 2.5 : 2.5, dash: sg === '-' ? 'dash' : 'solid' },
+        hoverinfo: 'skip', showlegend: false,
+      });
+      traces.push({
+        x: [mid[0]], y: [mid[1]], mode: 'text',
+        text: [sg], textfont: { size: 18, color: color },
+        hoverinfo: 'skip', showlegend: false,
+      });
+    }
+    // ノード
+    for (const [pt, label] of [[A, 'A'], [B, 'B'], [C, 'C']]) {
+      traces.push({
+        x: [pt[0]], y: [pt[1]], mode: 'markers+text', text: [label],
+        textposition: 'middle center',
+        marker: { color: 'white', size: 30, line: { color: '#1d1d1f', width: 2 } },
+        textfont: { size: 12 }, hoverinfo: 'skip', showlegend: false,
+      });
+    }
+    // タイトル
+    traces.push({
+      x: [ex.x_off], y: [-1.6], mode: 'text',
+      text: [`<b>${ex.title}</b>`],
+      textfont: { size: 12, color: ex.color },
+      hoverinfo: 'skip', showlegend: false,
+    });
+  }
+  const layout = {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    margin: { l: 10, r: 10, t: 10, b: 30 },
+    xaxis: { visible: false, range: [-2, 10] },
+    yaxis: { visible: false, range: [-2, 1.7], scaleanchor: 'x' },
+    showlegend: false,
+  };
+  Plotly.newPlot('balance_triangle', traces, layout,
+                 { responsive: true, displaylogo: false, displayModeBar: false });
+}
+
+// === 符号反転ペア ランキング ===
+{
+  const sf = DATA.signflip;
+  const top = sf.top_pairs.slice(0, 15);
+  const labels = top.map(p => `${p.u} ↔ ${p.v}`);
+  const colors = top.map(p => p.delta > 0 ? '#c0392b' : '#2c5aa0');
+  const trace = {
+    y: labels.reverse(),
+    x: top.map(p => p.delta).reverse(),
+    type: 'bar', orientation: 'h',
+    marker: { color: colors.reverse(), line: { color: '#1d1d1f', width: 0.5 } },
+    text: top.map(p => `r: ${p.r_pre.toFixed(2)} → ${p.r_post.toFixed(2)}`).reverse(),
+    textposition: 'outside',
+    hovertemplate: '%{y}<br>r_pre=%{customdata[0]}<br>r_post=%{customdata[1]}<br>Δ=%{x:+.2f}<extra></extra>',
+    customdata: top.map(p => [p.r_pre, p.r_post]).reverse(),
+  };
+  const layout = Object.assign({}, layout_base, {
+    xaxis: Object.assign({}, layout_base.xaxis,
+                          { title: 'Δr (符号反転の度合い)', zeroline: true,
+                            zerolinecolor: '#1d1d1f', zerolinewidth: 1 }),
+    yaxis: { gridcolor: '#e6e6eb' },
+    margin: { l: 130, r: 80, t: 10, b: 60 },
+    showlegend: false,
+  });
+  Plotly.newPlot('signflip_plot', [trace], layout,
+                 { responsive: true, displaylogo: false });
+}
+
+// === e_div 時系列 (3 本重ね) ===
+{
+  // 軽量化のため 5 営業日サンプリング
+  const step = 5;
+  const dates = DATA.ts_full.dates.filter((_, i) => i % step === 0);
+  const zL1   = DATA.ts_full.z_L1 .filter((_, i) => i % step === 0);
+  const zUnb  = DATA.ts_full.z_unb.filter((_, i) => i % step === 0);
+  const eDiv  = DATA.ts_full.e_div.filter((_, i) => i % step === 0);
+  const traces = [
+    { x: dates, y: zL1, mode: 'lines', name: 'z_L1 (強さ)',
+      line: { color: '#c0392b', width: 1.2, dash: 'dot' } },
+    { x: dates, y: zUnb, mode: 'lines', name: 'z_unb (符号)',
+      line: { color: '#2c5aa0', width: 1.2, dash: 'dot' } },
+    { x: dates, y: eDiv, mode: 'lines', name: 'e_div = z_unb − z_L1',
+      line: { color: '#F39C12', width: 2 } },
+  ];
+  const shapes = [];
+  for (const ev of DATA.events) {
+    if (ev.type !== 'trade_policy') continue;
+    shapes.push({
+      type: 'line', x0: ev.date, x1: ev.date, y0: 0, y1: 1, yref: 'paper',
+      line: { color: '#8e44ad', width: 0.8, dash: 'dot' },
+    });
+  }
+  const layout = Object.assign({}, layout_base, {
+    yaxis: Object.assign({}, layout_base.yaxis, { title: 'z-score', zeroline: true,
+                                                    zerolinecolor: '#86868b' }),
+    shapes: shapes,
+  });
+  Plotly.newPlot('plot_ediv_ts', traces, layout,
+                 { responsive: true, displaylogo: false });
+}
+
+// === 12 指標相関ヒートマップ ===
+{
+  const inds = DATA.multi_corr.indicators;
+  const mat = DATA.multi_corr.matrix;
+  const trace = {
+    z: mat, x: inds, y: inds,
+    type: 'heatmap', colorscale: 'RdBu', zmin: -1, zmax: 1, reversescale: true,
+    showscale: true,
+    hovertemplate: '%{y} ↔ %{x}: %{z:.2f}<extra></extra>'
+  };
+  const annotations = [];
+  for (let i = 0; i < mat.length; i++) {
+    for (let j = 0; j < mat[i].length; j++) {
+      annotations.push({
+        x: inds[j], y: inds[i],
+        text: mat[i][j].toFixed(2),
+        showarrow: false,
+        font: { size: 10, color: Math.abs(mat[i][j]) > 0.6 ? 'white' : 'black' }
+      });
+    }
+  }
+  const layout = Object.assign({}, layout_base, {
+    annotations: annotations,
+    xaxis: { tickangle: 30, gridcolor: '#e6e6eb' },
+    yaxis: { autorange: 'reversed', gridcolor: '#e6e6eb' },
+    margin: { l: 110, r: 30, t: 30, b: 100 },
+  });
+  // details が開かれた時にレンダリング
+  const det = document.getElementById('plot_corr_mat').closest('details');
+  if (det) {
+    det.addEventListener('toggle', () => {
+      if (det.open) {
+        Plotly.newPlot('plot_corr_mat', [trace], layout, { responsive: true, displaylogo: false });
+      }
+    });
+  } else {
+    Plotly.newPlot('plot_corr_mat', [trace], layout, { responsive: true, displaylogo: false });
+  }
+}
+
+window.addEventListener('resize', () => {
+  ['hero_plot', 'plot_ts', 'plot_scatter', 'plot_cat', 'plot_flip', 'plot_ediv',
+   'plot_velocity', 'plot_corr_mat', 'hole_concept', 'network_plot',
+   'barcode_plot', 'balance_triangle', 'signflip_plot', 'plot_ediv_ts']
+    .forEach(id => { const el = document.getElementById(id); if (el) Plotly.Plots.resize(el); });
+});
+</script>
+
+</body>
+</html>"""
+
+    html = (template
+            .replace("__HEATMAP__", DATA["heatmap_b64"])
+            .replace("__DATA__", json.dumps(DATA, ensure_ascii=False)))
+    out = ROOT / "index.html"
+    out.write_text(html, encoding="utf-8")
+    print(f"Saved: {out}  ({len(html) // 1024} KB)")
+
+
+if __name__ == "__main__":
+    main()

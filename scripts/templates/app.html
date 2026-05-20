@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Graph Research — 実装デモ</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  :root {
+    --bg: #fbfbfd; --card: #ffffff; --ink: #1d1d1f; --sub: #6e6e73;
+    --line: #d2d2d7; --accent: #0066cc; --red: #c0392b; --blue: #2c5aa0;
+    --green: #1b7e3e; --gold: #c9a227; --orange: #e67e22;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "SF Pro Text", "Hiragino Sans",
+                       "Yu Gothic Medium", "Yu Gothic", "Meiryo", sans-serif;
+         background: var(--bg); color: var(--ink); margin: 0; padding: 0;
+         font-size: 14px; line-height: 1.6; }
+  .topnav { position: sticky; top: 0; z-index: 200;
+             background: rgba(251,251,253,0.95); backdrop-filter: blur(14px);
+             border-bottom: 1px solid var(--line); }
+  .topnav-inner { max-width: 1280px; margin: 0 auto; padding: 0 32px;
+                   display: flex; align-items: center; gap: 4px; height: 52px; }
+  .topnav-brand { font-size: 14px; font-weight: 600; margin-right: 24px; }
+  .topnav-tab { padding: 8px 18px; font-size: 13px; color: var(--sub);
+                 text-decoration: none; border-radius: 8px; font-weight: 500;
+                 transition: all 0.15s; }
+  .topnav-tab:hover { background: rgba(0,102,204,0.08); color: var(--accent); }
+  .topnav-tab.active { background: var(--accent); color: white; }
+  .topnav-meta { margin-left: auto; font-size: 12px; color: var(--sub); }
+  .topnav-meta a { color: var(--sub); text-decoration: none; }
+  .topnav-meta .freshness {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    background: rgba(27,126,62,0.12); color: var(--green);
+    font-weight: 600; margin-right: 12px; font-size: 11px;
+  }
+  .app { max-width: 1280px; margin: 0 auto; padding: 28px 32px 60px; }
+  .app h1 { font-size: 28px; font-weight: 600; margin: 0 0 4px;
+            letter-spacing: -0.01em; }
+  .app .subtitle { color: var(--sub); margin: 0 0 28px; font-size: 14px; }
+  .status-grid {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 14px; margin-bottom: 28px;
+  }
+  .status-card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 22px;
+  }
+  .status-card .label {
+    font-size: 11px; color: var(--sub); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;
+  }
+  .status-card .value {
+    font-size: 28px; font-weight: 700; line-height: 1.1;
+  }
+  .status-card .detail {
+    font-size: 12px; color: var(--sub); margin-top: 6px;
+  }
+  .status-card.classification {
+    border-left: 4px solid var(--green);
+  }
+  .status-card.classification .value { font-size: 22px; }
+  .panel {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px 24px; margin-bottom: 18px;
+  }
+  .panel h2 {
+    font-size: 16px; font-weight: 600; margin: 0 0 14px;
+    color: var(--ink); display: flex; align-items: center; gap: 10px;
+  }
+  .panel h2 .num {
+    width: 24px; height: 24px; background: var(--accent); color: white;
+    border-radius: 50%; text-align: center; line-height: 24px;
+    font-size: 12px; font-weight: 600;
+  }
+  .panel-desc { font-size: 13px; color: var(--sub); margin: 0 0 14px; }
+  .slider-wrap {
+    display: flex; align-items: center; gap: 16px; margin: 18px 0;
+  }
+  .slider-wrap input[type=range] { flex: 1; accent-color: var(--accent); }
+  .slider-wrap .date-display {
+    font-size: 15px; font-weight: 600; min-width: 130px;
+    background: var(--bg); padding: 6px 12px; border-radius: 6px;
+    border: 1px solid var(--line);
+  }
+  .snap-info {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 10px; margin: 14px 0;
+  }
+  .snap-info-item {
+    background: var(--bg); padding: 10px 12px; border-radius: 6px;
+    border: 1px solid var(--line);
+  }
+  .snap-info-item .lbl {
+    font-size: 10px; color: var(--sub); text-transform: uppercase;
+    letter-spacing: 0.4px; margin-bottom: 4px;
+  }
+  .snap-info-item .val { font-size: 16px; font-weight: 600; }
+  .class-banner {
+    padding: 14px 20px; border-radius: 10px; margin: 14px 0;
+    display: flex; align-items: center; gap: 14px;
+    border-left: 4px solid var(--green);
+    background: rgba(27,126,62,0.06);
+  }
+  .class-banner.policy { border-color: var(--red); background: rgba(192,57,43,0.06); }
+  .class-banner.strength { border-color: var(--orange); background: rgba(230,126,34,0.06); }
+  .class-banner.vol { border-color: var(--sub); background: rgba(127,140,141,0.06); }
+  .class-banner .icon { font-size: 24px; }
+  .class-banner .label { font-weight: 700; font-size: 15px; }
+  .class-banner .desc { font-size: 12px; color: var(--sub); margin-top: 2px; }
+  .plot-area { min-height: 380px; }
+  /* Backtest table */
+  .bt-table { width: 100%; border-collapse: collapse; font-size: 13px;
+                margin: 14px 0; }
+  .bt-table th { background: var(--bg); padding: 9px 10px; text-align: left;
+                  border-bottom: 2px solid var(--line); font-weight: 600;
+                  font-size: 11px; text-transform: uppercase;
+                  letter-spacing: 0.4px; color: var(--sub); }
+  .bt-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .bt-table tr.bench { background: rgba(0,102,204,0.04); font-weight: 600; }
+  .bt-table tr.best  { background: rgba(27,126,62,0.06); font-weight: 600; }
+  .bt-table .pos { color: var(--green); }
+  .bt-table .neg { color: var(--red); }
+  .bt-controls { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .bt-controls label {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 12px;
+    cursor: pointer; padding: 4px 10px; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--card);
+  }
+  .bt-controls label input { accent-color: var(--accent); }
+  footer { text-align: center; padding: 40px 32px;
+            color: var(--sub); font-size: 12px; }
+  @media (max-width: 800px) {
+    .status-grid { grid-template-columns: 1fr 1fr; }
+    .snap-info { grid-template-columns: repeat(2, 1fr); }
+    .topnav-meta { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="topnav-brand">Market Graph Research</span>
+    <a href="./index.html" class="topnav-tab">研究内容</a>
+    <a href="./app.html" class="topnav-tab active">実装デモ</a>
+    <span class="topnav-meta">
+      <span class="freshness" id="freshness_badge">●</span>
+      <a href="https://github.com/hajimedayo328/market-graph-presentation">GitHub</a>
+    </span>
+  </div>
+</nav>
+
+<div class="app">
+  <h1>市場ネットワーク・モニター (プロト)</h1>
+  <p class="subtitle">
+    研究で見つけた指標 (L¹ / 不整合サイクル数 / e_div) を、
+    <strong>もし実運用したらこういうダッシュボードになる</strong>というプロト。
+    GitHub Actions で <strong>毎週月曜朝に自動更新</strong>。
+    最終データ取得: <span id="last_updated">—</span>
+  </p>
+
+  <h2 style="margin:0 0 12px; font-size:20px;">📡 最新の市場状態</h2>
+  <div class="status-grid" id="latest_status"></div>
+
+  <div class="panel">
+    <h2><span class="num">1</span>日次時系列モニター</h2>
+    <p class="panel-desc">
+      赤=L¹ (強さ)、青=不整合サイクル数 (符号)、
+      <strong>橙=e_div = 2 指標の乖離 (ショックタイプ判別器)</strong>。
+      下のスライダー or ボタンで期間を絞れる。
+    </p>
+    <div id="app_ts" class="plot-area" style="height:480px;"></div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="num">2</span>任意日のネットワークスナップショット</h2>
+    <p class="panel-desc">
+      スライダーで日付を選ぶと、その日の銘柄ネットワーク・指標値・ショックタイプ判別が見える。
+    </p>
+    <div class="slider-wrap">
+      <input type="range" id="date_slider" min="0" max="0" value="0">
+      <div class="date-display" id="date_display">—</div>
+    </div>
+    <div class="snap-info" id="snap_info"></div>
+    <div class="class-banner" id="class_banner">
+      <div class="icon">●</div>
+      <div>
+        <div class="label" id="class_label">—</div>
+        <div class="desc" id="class_desc">—</div>
+      </div>
+    </div>
+    <div id="snap_network" class="plot-area" style="height:540px;"></div>
+  </div>
+
+  <!-- バックテスト -->
+  <div class="panel">
+    <h2><span class="num">3</span>バックテスト結果 — 実際に投資に役立つか?</h2>
+    <p class="panel-desc">
+      <strong>S&P500 (^GSPC)</strong> を対象に、γ指標シグナルベースの戦略を
+      <strong>Buy & Hold</strong> と比較。期間: <span id="bt_period">—</span>。
+      各戦略を <strong>short (シグナル ON で現金化)</strong> と
+      <strong>long (シグナル ON で買い)</strong> の 2 方向で評価。
+    </p>
+    <table class="bt-table" id="bt_table">
+      <thead>
+        <tr>
+          <th>戦略</th><th>方向</th>
+          <th>総リターン</th><th>CAGR</th><th>Sharpe</th>
+          <th>最大DD</th><th>シグナル日数</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <h3 style="margin-top:20px; font-size:14px;">累積リターン (Equity Curve)</h3>
+    <div class="bt-controls" id="bt_controls"></div>
+    <div id="bt_plot" class="plot-area" style="height:480px;"></div>
+    <p class="panel-desc" style="margin-top:14px;">
+      <strong>Limitation (正直に)</strong>:
+      取引コスト 0% で計算 (実際は 0.05-0.1% かかる)、スリッページなし、
+      シグナル当日終値で売買 (同日 look-ahead bias の疑義)、S&P500 のみ、
+      過去最適化リスク (in-sample)。
+      実運用では out-of-sample 評価と取引コスト込みで再検証が必要。
+    </p>
+  </div>
+
+  <div class="panel">
+    <h2><span class="num">4</span>判別ロジック</h2>
+    <p class="panel-desc">e_div の値で 4 段階に区分:</p>
+    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+      <tr style="border-bottom:2px solid var(--line);">
+        <th style="text-align:left; padding:8px;">条件</th>
+        <th style="text-align:left; padding:8px;">判定</th>
+        <th style="text-align:left; padding:8px;">意味</th>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:8px;"><code>e_div ≥ +0.8</code></td>
+        <td style="padding:8px;"><strong style="color:var(--red);">政策ショック型</strong></td>
+        <td style="padding:8px;">符号反転を伴う構造変化 (関税連鎖など)</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:8px;"><code>e_div ≤ -0.5</code></td>
+        <td style="padding:8px;"><strong style="color:var(--orange);">強さ変化型</strong></td>
+        <td style="padding:8px;">L¹ のみ上昇、符号は安定 (中規模一方的政策・市場構造)</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:8px;"><code>-0.5 < e_div < +0.8 かつ L¹ ≥ 0.7</code></td>
+        <td style="padding:8px;"><strong style="color:var(--sub);">一般ボラ上昇</strong></td>
+        <td style="padding:8px;">VIX スパイク的な単純ボラ拡大</td>
+      </tr>
+      <tr>
+        <td style="padding:8px;">それ以外</td>
+        <td style="padding:8px;"><strong style="color:var(--green);">平常</strong></td>
+        <td style="padding:8px;">構造的に安定</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<footer>
+  Market Graph Research / 実装デモ ·
+  最終更新: <span id="footer_updated">—</span> ·
+  <a href="https://github.com/hajimedayo328/market-graph-presentation" style="color:var(--accent)">GitHub</a>
+</footer>
+
+<script>
+const DATA = __DATA__;
+const SECTOR_COLORS = {
+  'FX_MAJOR': '#2c5aa0', 'FX_CROSS': '#3a7bc8', 'FX_EM': '#5896d0',
+  'COMMODITY': '#c9a227', 'METAL': '#d4af37', 'CRYPTO': '#1b7e3e',
+  'INDEX_US': '#c0392b', 'INDEX_EU': '#e74c3c', 'INDEX_AS': '#ec7063',
+  'SPECIAL': '#8b4513', 'STOCK': '#8e44ad', 'BOND': '#7f8c8d',
+};
+
+// last_updated
+document.getElementById('last_updated').textContent =
+  DATA.last.date + ' (' + DATA.data_range.n_days + ' 営業日)';
+document.getElementById('footer_updated').textContent = DATA.last_updated;
+
+// データ鮮度バッジ
+{
+  const d = new Date(DATA.last.date);
+  const now = new Date();
+  const diff_days = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+  const badge = document.getElementById('freshness_badge');
+  if (diff_days <= 7) {
+    badge.style.background = 'rgba(27,126,62,0.12)';
+    badge.style.color = '#1b7e3e';
+    badge.textContent = '● 鮮度OK (' + diff_days + '日前)';
+  } else if (diff_days <= 14) {
+    badge.style.background = 'rgba(201,162,39,0.12)';
+    badge.style.color = '#c9a227';
+    badge.textContent = '● やや古い (' + diff_days + '日前)';
+  } else {
+    badge.style.background = 'rgba(192,57,43,0.12)';
+    badge.style.color = '#c0392b';
+    badge.textContent = '● 要更新 (' + diff_days + '日前)';
+  }
+}
+
+// 最新状態カード
+function renderLatest() {
+  const l = DATA.last;
+  const cls = l.classification;
+  document.getElementById('latest_status').innerHTML = `
+    <div class="status-card classification" style="border-left-color:${cls.color}">
+      <div class="label">判定 (${l.date})</div>
+      <div class="value" style="color:${cls.color}">${cls.label}</div>
+      <div class="detail">${cls.desc}</div>
+    </div>
+    <div class="status-card">
+      <div class="label">L¹ (強さ)</div>
+      <div class="value">${l.L1}</div>
+      <div class="detail">z = ${l.z_L1 > 0 ? '+' : ''}${l.z_L1}σ</div>
+    </div>
+    <div class="status-card">
+      <div class="label">不整合サイクル数</div>
+      <div class="value">${l.n_unb}</div>
+      <div class="detail">z = ${l.z_unb > 0 ? '+' : ''}${l.z_unb}σ</div>
+    </div>
+    <div class="status-card" style="border-left:4px solid var(--orange)">
+      <div class="label">e_div</div>
+      <div class="value">${l.e_div > 0 ? '+' : ''}${l.e_div}</div>
+      <div class="detail">z_unb − z_L1</div>
+    </div>
+  `;
+}
+
+// 時系列プロット
+function renderTimeseries() {
+  const t = DATA.ts;
+  const traces = [
+    { x: t.dates, y: t.L1, mode: 'lines', name: 'L¹ (強さ)', yaxis: 'y1',
+      line: { color: '#c0392b', width: 1.4 } },
+    { x: t.dates, y: t.n_unb, mode: 'lines', name: '不整合サイクル数', yaxis: 'y2',
+      line: { color: '#2c5aa0', width: 1.4 } },
+    { x: t.dates, y: t.e_div, mode: 'lines', name: 'e_div (乖離)', yaxis: 'y3',
+      line: { color: '#e67e22', width: 1.6 } },
+  ];
+  const shapes = [];
+  const catColors = {
+    'geopolitical': '#c0392b', 'market_structure': '#e67e22',
+    'trade_policy': '#8e44ad', 'tech_shock': '#16a085',
+    'macro': '#8b4513', 'monetary': '#7f8c8d',
+  };
+  for (const ev of DATA.events) {
+    if (!catColors[ev.type]) continue;
+    shapes.push({ type: 'line', x0: ev.date, x1: ev.date, y0: 0, y1: 1,
+                  yref: 'paper', line: { color: catColors[ev.type], width: 0.7, dash: 'dot' } });
+  }
+  const layout = {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    font: { family: '-apple-system, "Hiragino Sans", sans-serif', size: 11 },
+    margin: { l: 60, r: 60, t: 10, b: 80 },
+    showlegend: true,
+    legend: { orientation: 'h', y: -0.18, font: { size: 11 } },
+    xaxis: {
+      gridcolor: '#e6e6eb',
+      rangeselector: {
+        buttons: [
+          { count: 6, label: '6M', step: 'month', stepmode: 'backward' },
+          { count: 1, label: '1Y', step: 'year', stepmode: 'backward' },
+          { count: 3, label: '3Y', step: 'year', stepmode: 'backward' },
+          { step: 'all', label: 'ALL' },
+        ], font: { size: 11 },
+      },
+      rangeslider: { visible: true, thickness: 0.06, bgcolor: '#fafafa' },
+    },
+    yaxis: { gridcolor: '#fde4e0', title: 'L¹', titlefont: { color: '#c0392b' },
+              domain: [0.66, 1.0] },
+    yaxis2: { gridcolor: '#dce4f3', title: 'n_unb', titlefont: { color: '#2c5aa0' },
+               domain: [0.34, 0.64] },
+    yaxis3: { gridcolor: '#fdebd0', title: 'e_div', titlefont: { color: '#e67e22' },
+               domain: [0, 0.32], zeroline: true, zerolinecolor: '#1d1d1f' },
+    shapes: shapes,
+  };
+  Plotly.newPlot('app_ts', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// スナップショット
+function renderSnapshot(idx) {
+  const s = DATA.snapshots[idx];
+  if (!s) return;
+  document.getElementById('date_display').textContent = s.date;
+  const cls = s.classification || { label: '—', color: '#86868b', desc: '—' };
+  document.getElementById('snap_info').innerHTML = `
+    <div class="snap-info-item"><div class="lbl">L¹</div>
+      <div class="val">${s.L1 ?? '—'}</div></div>
+    <div class="snap-info-item"><div class="lbl">不整合サイクル</div>
+      <div class="val">${s.n_holes ?? '—'}</div></div>
+    <div class="snap-info-item"><div class="lbl">z_L1</div>
+      <div class="val">${(s.z_L1 ?? 0) > 0 ? '+' : ''}${s.z_L1 ?? '—'}σ</div></div>
+    <div class="snap-info-item"><div class="lbl">z_unb</div>
+      <div class="val">${(s.z_unb ?? 0) > 0 ? '+' : ''}${s.z_unb ?? '—'}σ</div></div>
+    <div class="snap-info-item"><div class="lbl">e_div</div>
+      <div class="val" style="color:${cls.color}">${(s.e_div ?? 0) > 0 ? '+' : ''}${s.e_div ?? '—'}</div></div>
+  `;
+  const banner = document.getElementById('class_banner');
+  banner.className = 'class-banner';
+  if (cls.label === '政策ショック型') banner.classList.add('policy');
+  else if (cls.label === '強さ変化型') banner.classList.add('strength');
+  else if (cls.label === '一般ボラ上昇') banner.classList.add('vol');
+  banner.style.borderColor = cls.color;
+  banner.querySelector('.icon').style.color = cls.color;
+  document.getElementById('class_label').textContent = cls.label;
+  document.getElementById('class_label').style.color = cls.color;
+  document.getElementById('class_desc').textContent = cls.desc;
+  // network
+  const node_pos = {};
+  for (const nd of s.nodes) node_pos[nd.id] = [nd.x, nd.y];
+  const pos_x = [], pos_y = [], neg_x = [], neg_y = [];
+  for (const e of s.edges) {
+    const a = node_pos[e.u], b = node_pos[e.v];
+    if (!a || !b) continue;
+    if (e.s > 0) { pos_x.push(a[0], b[0], null); pos_y.push(a[1], b[1], null); }
+    else         { neg_x.push(a[0], b[0], null); neg_y.push(a[1], b[1], null); }
+  }
+  const traces = [
+    { x: pos_x, y: pos_y, mode: 'lines',
+      line: { color: 'rgba(40,40,40,0.3)', width: 0.7 },
+      hoverinfo: 'skip', showlegend: false },
+    { x: neg_x, y: neg_y, mode: 'lines',
+      line: { color: 'rgba(192,57,43,0.5)', width: 0.7 },
+      hoverinfo: 'skip', showlegend: false },
+  ];
+  const sectors = {};
+  for (const nd of s.nodes) {
+    if (!sectors[nd.sector]) sectors[nd.sector] = [];
+    sectors[nd.sector].push(nd);
+  }
+  for (const [sec, nds] of Object.entries(sectors)) {
+    traces.push({
+      x: nds.map(n => n.x), y: nds.map(n => n.y),
+      mode: 'markers+text', text: nds.map(n => n.id),
+      textposition: 'top center', textfont: { size: 9 },
+      marker: { color: SECTOR_COLORS[sec] || '#999',
+                size: nds.map(n => Math.min(20, 6 + n.deg * 0.5)),
+                line: { color: 'white', width: 1.2 } },
+      name: sec, hovertemplate: '%{text}<br>sector=' + sec + '<extra></extra>',
+    });
+  }
+  const layout = {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#fbfbfd',
+    margin: { l: 10, r: 10, t: 10, b: 60 },
+    xaxis: { visible: false, scaleanchor: 'y', scaleratio: 1 },
+    yaxis: { visible: false }, showlegend: true,
+    legend: { orientation: 'h', y: -0.05, font: { size: 10 } },
+  };
+  Plotly.react('snap_network', traces, layout,
+               { responsive: true, displaylogo: false });
+}
+
+// ===== バックテスト =====
+function renderBacktestTable() {
+  const bt = DATA.backtest;
+  if (!bt || !bt.summary) return;
+  // sharpe ランキング順
+  const sorted = Object.entries(bt.summary).sort((a, b) => b[1].sharpe - a[1].sharpe);
+  const tbody = document.querySelector('#bt_table tbody');
+  tbody.innerHTML = '';
+  for (const [name, v] of sorted) {
+    const isB = name === 'Z_buy_and_hold';
+    const tr = document.createElement('tr');
+    if (isB) tr.className = 'bench';
+    else if (name === sorted[0][0]) tr.className = 'best';
+    const fmtPct = x => (x * 100).toFixed(2) + '%';
+    const fmt = x => x.toFixed(2);
+    const cls = (val) => val >= 0 ? 'pos' : 'neg';
+    const dispName = isB ? 'Buy & Hold (ベンチ)' : name.replace(/_/g, ' ');
+    tr.innerHTML = `
+      <td><strong>${dispName}</strong></td>
+      <td>${v.direction === 'bh' ? '—' : v.direction}</td>
+      <td class="${cls(v.total_return)}">${(v.total_return >= 0 ? '+' : '') + fmtPct(v.total_return)}</td>
+      <td class="${cls(v.CAGR)}">${(v.CAGR >= 0 ? '+' : '') + fmtPct(v.CAGR)}</td>
+      <td class="${cls(v.sharpe)}">${(v.sharpe >= 0 ? '+' : '') + fmt(v.sharpe)}</td>
+      <td class="neg">${fmtPct(v.max_drawdown)}</td>
+      <td>${v.n_signal_days} (${(v.signal_pct * 100).toFixed(1)}%)</td>
+    `;
+    tbody.appendChild(tr);
+  }
+  if (sorted.length > 0) {
+    const start = bt.common_dates[0];
+    const end = bt.common_dates[bt.common_dates.length - 1];
+    document.getElementById('bt_period').textContent = `${start} 〜 ${end}`;
+  }
+  // controls (default: B&H + 上位3)
+  const default_picks = ['Z_buy_and_hold', ...sorted.slice(0, 3).map(x => x[0])];
+  const controls = document.getElementById('bt_controls');
+  controls.innerHTML = '';
+  for (const [name, _] of sorted) {
+    const id = 'bt_cb_' + name;
+    const checked = default_picks.includes(name) ? 'checked' : '';
+    const dispName = name === 'Z_buy_and_hold' ? 'Buy & Hold' : name.replace(/_/g, ' ');
+    controls.innerHTML += `<label><input type="checkbox" id="${id}" data-key="${name}" ${checked}> ${dispName}</label>`;
+  }
+  controls.querySelectorAll('input').forEach(cb =>
+    cb.addEventListener('change', renderBacktestPlot));
+}
+
+function renderBacktestPlot() {
+  const bt = DATA.backtest;
+  if (!bt) return;
+  const picked = Array.from(document.querySelectorAll('#bt_controls input:checked'))
+                       .map(cb => cb.dataset.key);
+  const colors = {
+    'Z_buy_and_hold': '#000000',
+    'S1_ediv_high_short': '#c0392b', 'S1_ediv_high_long': '#e74c3c',
+    'S2_ediv_low_short': '#e67e22', 'S2_ediv_low_long': '#f39c12',
+    'S3_abs_zL1_short': '#2c5aa0', 'S3_abs_zL1_long': '#3a7bc8',
+    'S4_abs_zunb_short': '#1b7e3e', 'S4_abs_zunb_long': '#27ae60',
+    'S5_zL1_OR_zunb_short': '#8e44ad', 'S5_zL1_OR_zunb_long': '#9b59b6',
+    'S6_zL1_AND_zunb_short': '#16a085', 'S6_zL1_AND_zunb_long': '#1abc9c',
+  };
+  const traces = [];
+  for (const key of picked) {
+    const curve = bt.equity_curves[key];
+    if (!curve) continue;
+    const isB = key === 'Z_buy_and_hold';
+    traces.push({
+      x: bt.common_dates, y: curve, mode: 'lines',
+      name: isB ? 'Buy & Hold' : key.replace(/_/g, ' '),
+      line: { color: colors[key] || '#999',
+              width: isB ? 2.5 : 1.6,
+              dash: isB ? 'solid' : (key.endsWith('_long') ? 'dot' : 'solid') },
+    });
+  }
+  // y=1 baseline
+  traces.push({
+    x: [bt.common_dates[0], bt.common_dates[bt.common_dates.length - 1]],
+    y: [1, 1], mode: 'lines',
+    line: { color: '#86868b', width: 0.8, dash: 'dash' },
+    name: 'Start = $1', showlegend: false,
+  });
+  const layout = {
+    paper_bgcolor: '#ffffff', plot_bgcolor: '#ffffff',
+    font: { family: '-apple-system, "Hiragino Sans", sans-serif', size: 11 },
+    margin: { l: 60, r: 30, t: 10, b: 50 },
+    showlegend: true,
+    legend: { orientation: 'h', y: -0.15, font: { size: 10 } },
+    xaxis: { gridcolor: '#e6e6eb' },
+    yaxis: { gridcolor: '#e6e6eb', title: '累積リターン ($1 → ?)',
+              tickformat: '.2f' },
+  };
+  Plotly.react('bt_plot', traces, layout, { responsive: true, displaylogo: false });
+}
+
+// init
+renderLatest();
+renderTimeseries();
+const slider = document.getElementById('date_slider');
+slider.max = DATA.snapshots.length - 1;
+slider.value = DATA.snapshots.length - 1;
+slider.addEventListener('input', e => renderSnapshot(parseInt(e.target.value)));
+renderSnapshot(DATA.snapshots.length - 1);
+renderBacktestTable();
+renderBacktestPlot();
+
+window.addEventListener('resize', () => {
+  ['app_ts', 'snap_network', 'bt_plot'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) Plotly.Plots.resize(el);
+  });
+});
+</script>
+</body>
+</html>
