@@ -273,15 +273,30 @@
           <div><span class="lbl">n_unb</span><span class="val">↑↑ 突出</span></div>
           <div><span class="lbl">e_div</span><span class="val">+0.8 〜 +1.5+</span></div>
         </div>
-        <p><strong>市場で何が起きてるか</strong>:
-          銘柄ペアの<strong>正負関係が逆転</strong>する構造変化。
-          これまで仲が良かった国・銘柄が、急に逆方向に動くようになる。
+        <p style="font-size:14px; color:var(--red); font-weight:600;">
+          🗣️ <strong>1 行で言うと</strong>: 「あの国とあの国の関係が、政策で<strong>逆になっちゃった</strong>」
+        </p>
+        <p><strong>どんなシナリオか</strong>:
+          短期間 (2 週間〜1 ヶ月) に<strong>政策イベントが連鎖</strong>して、
+          銘柄ペアの<strong>正負関係そのものが反転</strong>する状態。
           「強さ」は変わらないが「符号」がひっくり返る。</p>
-        <p><strong>典型例</strong>:</p>
+        <p><strong>典型例 — 2025-04 Liberation Day 連鎖 (教科書例)</strong>:</p>
         <ul>
-          <li>2025-04 トランプ Liberation Day 関税連鎖</li>
-          <li>米中半導体規制 + 報復</li>
-          <li>関税エスカレートのクラスタ</li>
+          <li>4/2 トランプ「相互関税」発表</li>
+          <li>4/4 中国「34%報復関税 + 希土類規制」</li>
+          <li>4/8 トランプ「90日関税停止」</li>
+          <li>4/9 145%にエスカレート</li>
+          <li>4/15 Nvidia H20 (AI 半導体) 輸出規制</li>
+        </ul>
+        <p style="font-size:12px; color:var(--sub);">
+          → <strong>2 週間で 5 イベント</strong>。報復が再応酬を呼ぶ「連鎖性」がカギ。
+          単発じゃこのタイプにならない (例: 2018-2019 米中貿易戦争は段階的だったので出なかった)。
+        </p>
+        <p><strong>実際の符号反転 (2025-04 前後)</strong>:</p>
+        <ul style="font-size:12px;">
+          <li><strong>CHINA50 ↔ Dow30</strong>: -0.47 → +0.47 (完全逆転)</li>
+          <li>AAPL ↔ ポンドドル: +0.37 → -0.39</li>
+          <li>ドイツ DAX ↔ ドルスイス: -0.33 → +0.30</li>
         </ul>
         <p><strong>対応策 (バックテスト S1)</strong>:
           <span class="action good">株式ポジション → 現金化</span>
@@ -300,17 +315,27 @@
           <div><span class="lbl">n_unb</span><span class="val">軽く動く</span></div>
           <div><span class="lbl">e_div</span><span class="val">-0.5 〜 -1.5</span></div>
         </div>
-        <p><strong>市場で何が起きてるか</strong>:
-          関係性の<strong>強さが激しく変化</strong>するが、符号は安定。
-          リスク資産群が一斉に動いて、ネットワークが大きく組み替わる。
-          「相関の絶対値」が突出する。</p>
-        <p><strong>典型例</strong>:</p>
+        <p style="font-size:14px; color:var(--orange); font-weight:600;">
+          🗣️ <strong>1 行で言うと</strong>: 「日経が過去最大下げ」「戦争始まった」「巨大規制 1 個」
+        </p>
+        <p><strong>どんなシナリオか</strong>:
+          <strong>1 回の大きな構造的事件</strong>で特定の資産群が一斉に激しく動く。
+          リスク資産 vs 安全資産のクラスタが鮮明化。
+          でも「誰と誰の関係」は変わらない (符号は安定)。<strong>連鎖ではなく単発</strong>。</p>
+        <p><strong>典型例 — 3 つのパターン</strong>:</p>
         <ul>
-          <li>2024-08 円キャリー巻き戻し (日経過去最大下げ)</li>
-          <li>2025-08 サマー・ボラショック</li>
-          <li>戦争・地政学イベント前 (ハマス、イラン)</li>
-          <li>中規模一方的関税 (CHIPS 法、EU EV)</li>
+          <li><strong>市場構造ショック</strong>: 2024-08-05 円キャリー巻き戻し (日経過去最大下げ)、
+            2025-08-01 サマー・ボラショック ← 強制ポジション解消</li>
+          <li><strong>戦争・地政学</strong>: 2023-10-07 ハマス・イスラエル戦争、
+            2024-04-13 イラン・イスラエル攻撃 ← 安全資産買い + リスク資産売り</li>
+          <li><strong>中規模一方的政策</strong>: 2022-08 米 CHIPS 法、
+            2024-05 バイデン対中 EV 100% 関税、EU EV 関税
+            ← 単発の規制 (連鎖がない)</li>
         </ul>
+        <p style="font-size:12px; color:var(--sub);">
+          → 共通点は「<strong>単発</strong>」「<strong>強さ (相関絶対値) が一気に変わる</strong>」。
+          連鎖性がないので符号反転は起こりにくい。
+        </p>
         <p><strong>対応策 (バックテスト S2 long)</strong>:
           <span class="action good">逆張りで買い増し</span>
           シャープレシオ <strong>+1.16 (最高)</strong>, MaxDD -7.6%</p>
@@ -328,17 +353,28 @@
           <div><span class="lbl">n_unb</span><span class="val">↑ (やや上)</span></div>
           <div><span class="lbl">e_div</span><span class="val">≈ 0</span></div>
         </div>
-        <p><strong>市場で何が起きてるか</strong>:
-          両指標が<strong>同じ方向に軽く上昇</strong>。
-          ネットワーク全体が活発に動くが、構造的に特殊な異常はない。
-          VIX が上がるような典型的なボラ拡大期。</p>
+        <p style="font-size:14px; color:var(--sub); font-weight:600;">
+          🗣️ <strong>1 行で言うと</strong>: 「市場全体が今日は荒れてる、<strong>VIX 高い</strong>」
+        </p>
+        <p><strong>どんなシナリオか</strong>:
+          突発的なニュースで市場全体が一時的に騒がしくなる状態。
+          銘柄が一斉に大きく動くが、<strong>構造的な変化はない</strong>。
+          「誰と誰が仲がいいか」は変わらず、ボラ (変動の激しさ) だけ上がる。</p>
         <p><strong>典型例</strong>:</p>
         <ul>
-          <li>FOMC 直前後のボラ高</li>
-          <li>雇用統計サプライズ</li>
-          <li>四半期決算ラッシュ</li>
-          <li>突発的なテール・イベント (短期)</li>
+          <li><strong>FOMC サプライズ</strong> (予想外の利上げ・利下げペース変更)</li>
+          <li><strong>雇用統計サプライズ</strong> (予想と大きく外れる)</li>
+          <li><strong>四半期決算ラッシュ</strong> (Mag5 の決算が偏る時期)</li>
+          <li><strong>VIX スパイク</strong>全般 (突発的なテールイベント)</li>
+          <li><strong>トランプの突発ツイート</strong>系 (短期影響)</li>
         </ul>
+        <p style="font-size:12px; color:var(--sub);">
+          → 「リスクオフ」で株売られて国債買われる、みたいな<strong>普段の流れ</strong>。
+          関係性は維持されてる。L¹ も n_unb も似たような幅で動くので
+          <strong>e_div の差が出ない</strong>。
+        </p>
+        <p><strong>実証 (VIX 自動スパイク 25 件)</strong>:
+          L¹ Δσ = +0.23、n_unb Δσ = +0.28、<strong>e_div ≈ +0.09 (ゼロ近辺)</strong></p>
         <p><strong>対応策</strong>:
           <span class="action neutral">通常のリスク管理 (ストップロス、ポジションサイズ調整)</span></p>
       </div>
@@ -355,19 +391,61 @@
           <div><span class="lbl">n_unb</span><span class="val">平均近辺</span></div>
           <div><span class="lbl">e_div</span><span class="val">-0.5 〜 +0.8</span></div>
         </div>
-        <p><strong>市場で何が起きてるか</strong>:
-          両指標とも<strong>平常域</strong>。ネットワーク構造に特異な変化なし。
-          5 年間の約 6 割はこの状態。普段の市場。</p>
+        <p style="font-size:14px; color:var(--green); font-weight:600;">
+          🗣️ <strong>1 行で言うと</strong>: 「<strong>普段の市場</strong>、特に何もない」
+        </p>
+        <p><strong>どんなシナリオか</strong>:
+          両指標とも平常域。ネットワーク構造に特異な変化なし。
+          5 年間の約 6 割はこの状態。<strong>これが市場のデフォルト</strong>。</p>
         <p><strong>典型例</strong>:</p>
         <ul>
           <li>大きなイベントなし、トレンド継続中</li>
           <li>レンジ相場・横ばい局面</li>
           <li>夏枯れ・年末年始のような流動性薄期</li>
+          <li>決算シーズン以外の平常週</li>
         </ul>
         <p><strong>対応策</strong>:
           <span class="action good">Buy & Hold で OK / 通常運用</span></p>
       </div>
     </div>
+  </div>
+
+  <!-- 1 行で見分けるコツ -->
+  <div class="panel" style="border-left:4px solid var(--accent);">
+    <h2 style="font-size:16px;">📌 1 行で見分けるコツ — 「もし...」だったら</h2>
+    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:10px; width:60%;">
+          「<strong>あの国とあの国の関係が、政策で<span style="color:var(--red);">逆になっちゃった</span></strong>」
+          (関税で米中株指数が逆に動くようになった、等)</td>
+        <td style="padding:10px;">
+          <span class="type-badge" style="background:var(--red); font-size:11px;">政策ショック型</span>
+        </td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:10px;">
+          「<strong>市場全体が今日は<span style="color:var(--sub);">荒れてる</span></strong>、VIX 高い」
+          (FOMC、雇用統計、決算ラッシュ、突発ニュース)</td>
+        <td style="padding:10px;">
+          <span class="type-badge" style="background:var(--sub); font-size:11px;">一般ボラ上昇</span>
+        </td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:10px;">
+          「<strong>日経が<span style="color:var(--orange);">過去最大下げ</span></strong>」
+          「戦争始まった」「巨大規制 1 個」(単発の大事件)</td>
+        <td style="padding:10px;">
+          <span class="type-badge" style="background:var(--orange); font-size:11px;">強さ変化型</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:10px;">
+          「<strong>特に<span style="color:var(--green);">何もない</span></strong>」(これが約 6 割の日)</td>
+        <td style="padding:10px;">
+          <span class="type-badge" style="background:var(--green); font-size:11px;">平常</span>
+        </td>
+      </tr>
+    </table>
   </div>
 
   <div class="panel">
