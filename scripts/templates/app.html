@@ -218,11 +218,48 @@
   <h2 style="margin:0 0 12px; font-size:20px;">📡 最新の市場状態</h2>
   <div class="status-grid" id="latest_status"></div>
 
+  <!-- 判定の核心: e_div = 乖離 -->
+  <div class="panel" style="border-left:4px solid var(--orange);">
+    <h2 style="font-size:16px;">🎯 判定の核心: <code>e_div</code> = 2 指標の乖離</h2>
+    <p>判定は<strong>たった一つの数字 <code>e_div</code></strong> で行う:</p>
+    <div style="text-align:center; padding:14px; background:var(--bg); border-radius:8px;
+                 margin:12px 0; font-size:16px;">
+      <strong>e_div = z(不整合サイクル数) − z(L¹ ノルム)</strong><br>
+      <span style="font-size:12px; color:var(--sub);">
+        = z(矛盾の数) − z(穴の総量) = <strong>「符号」と「強さ」のどっちが突出してるか</strong>
+      </span>
+    </div>
+    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:8px;"><strong>e_div ≫ 0</strong> (大きく正)</td>
+        <td style="padding:8px;">矛盾の数 (符号) が突出 / 穴の総量 (強さ) は平凡</td>
+        <td style="padding:8px;"><span class="type-badge" style="background:var(--red); font-size:11px;">政策ショック型</span></td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:8px;"><strong>e_div ≈ 0</strong> (両指標とも平凡)</td>
+        <td style="padding:8px;">特に異常なし or 両方が同方向に動く</td>
+        <td style="padding:8px;">
+          <span class="type-badge" style="background:var(--green); font-size:11px;">平常</span>
+          または <span class="type-badge" style="background:var(--sub); font-size:11px;">一般ボラ上昇</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:8px;"><strong>e_div ≪ 0</strong> (大きく負)</td>
+        <td style="padding:8px;">穴の総量 (強さ) が突出 / 矛盾の数 (符号) は平凡</td>
+        <td style="padding:8px;"><span class="type-badge" style="background:var(--orange); font-size:11px;">強さ変化型</span></td>
+      </tr>
+    </table>
+    <p style="margin-top:12px; font-size:12px; color:var(--sub);">
+      <strong>なぜ「乖離」を見るか</strong>: L¹ と n_unb が独立に動くから (corr=0.16)。
+      <strong>同じデータから別の情報を取り出している 2 指標の「ズレ」</strong>こそが、
+      ショックの<strong>タイプ</strong>を識別する鍵。詳細は研究内容タブの Section 8 参照。
+    </p>
+  </div>
+
   <!-- 4 つの型カタログ -->
   <h2 style="margin:24px 0 12px; font-size:20px;">🗂 4 つの判定タイプ — どうなったらどの型か</h2>
   <p class="subtitle" style="margin-bottom:18px;">
-    最新カードの「判定」がどの型になるかは、L¹ / 不整合サイクル数 / e_div の組み合わせで決まる。
-    各タイプの<strong>条件・典型値・市場で何が起きてるか・実例</strong>を整理:
+    上の <code>e_div</code> の値と L¹ の値を組み合わせて、市場状態を 4 タイプに分類:
   </p>
   <div class="type-grid">
     <div class="type-card policy">
@@ -336,9 +373,32 @@
   <div class="panel">
     <h2><span class="num">1</span>日次時系列モニター</h2>
     <p class="panel-desc">
-      赤=L¹ (強さ)、青=不整合サイクル数 (符号)、
-      <strong>橙=e_div = 2 指標の乖離 (ショックタイプ判別器)</strong>。
-      下のスライダー or ボタンで期間を絞れる。
+      過去 5 年の 3 つの数字を、上下 3 段に分けて重ねて表示する:
+    </p>
+    <ul style="font-size:13px; line-height:1.7; margin:8px 0 14px;">
+      <li><strong style="color:var(--red);">赤 (一番上) = L¹ ノルム</strong>:
+        ネットワークの「<strong>穴の総量</strong>」。
+        大きい = ネットワークが断片的、サブグループに分断されてる。
+        市場構造ショックや戦争で上がる。</li>
+      <li><strong style="color:var(--blue);">青 (真ん中) = 不整合サイクル数</strong>:
+        「<strong>矛盾の三角形</strong>」の数。
+        大きい = 銘柄関係に矛盾 (符号反転) が増えてる。
+        関税ショックで上がる。</li>
+      <li><strong style="color:var(--orange);">橙 (一番下) = e_div = 2 指標の乖離</strong>:
+        <strong>z(不整合サイクル数) − z(L¹)</strong>。
+        正に振れたら「政策ショック型」、負に振れたら「強さ変化型」、ゼロ近辺は「平常」。
+        <strong>これがショックタイプ判別の核心</strong>。</li>
+    </ul>
+    <p class="panel-desc">
+      縦の点線は過去の市場ショックイベント (色はカテゴリ別)。
+      下の<strong>レンジセレクタ (6M/1Y/3Y/ALL)</strong>でズーム、
+      <strong>スライダー</strong>で任意期間に絞れる。
+    </p>
+    <p class="panel-desc"><strong>このグラフの読み方</strong>:
+      ① 縦線 (イベント) の<strong>直前</strong>で 3 本の線がどう動いたかを見る。
+      ② <strong>関税系イベント (紫)</strong>の前は橙 (e_div) が<strong>上に跳ねている</strong>はず。
+      ③ <strong>市場構造系 (橙線)</strong>の前は赤 (L¹) が<strong>大きく上がる</strong>はず。
+      ④ 縦線がない期間は基本的に 3 本とも平常域内に収まる。
     </p>
     <div id="app_ts" class="plot-area" style="height:480px;"></div>
   </div>
@@ -366,11 +426,71 @@
   <!-- バックテスト -->
   <div class="panel">
     <h2><span class="num">3</span>バックテスト結果 — 実際に投資に役立つか?</h2>
+
+    <div class="callout-mini" style="background:rgba(0,102,204,0.06);
+         padding:14px 18px; border-radius:8px; border-left:3px solid var(--accent);
+         margin:6px 0 16px; font-size:13px;">
+      <strong>バックテストとは何か (1 行で)</strong>:
+      「もし過去にこの指標を見て自動売買してたら、どれくらい儲かってたか」を
+      過去データでシミュレーションすること。
+    </div>
+
     <p class="panel-desc">
-      <strong>S&P500 (^GSPC)</strong> を対象に、γ指標シグナルベースの戦略を
-      <strong>Buy & Hold</strong> と比較。期間: <span id="bt_period">—</span>。
-      各戦略を <strong>short (シグナル ON で現金化)</strong> と
-      <strong>long (シグナル ON で買い)</strong> の 2 方向で評価。
+      <strong>対象資産</strong>: <code>^GSPC</code> (S&P500 指数)<br>
+      <strong>期間</strong>: <span id="bt_period">—</span> (約 5 年)<br>
+      <strong>ベンチマーク</strong>: 同期間に S&P500 を買って持ち続けた場合 (<strong>Buy & Hold</strong>)<br>
+      <strong>比較する戦略</strong>: γ指標 (L¹ / 不整合サイクル数 / e_div) のシグナルで売買する 6 戦略 × 2 方向 = 12 通り
+    </p>
+
+    <h3 style="margin-top:18px; font-size:14px;">📋 戦略の中身 — S1〜S6 + 方向</h3>
+    <p class="panel-desc">
+      各戦略は「ある条件 (シグナル) を満たす日」を検知して売買する。
+      条件を満たした日 = "シグナル ON" の日。
+    </p>
+    <table class="bt-table" style="font-size:12px;">
+      <thead>
+        <tr><th>戦略</th><th>シグナル条件</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>S1: e_div_high</strong></td><td><code>e_div ≥ +0.8</code></td>
+            <td>「政策ショック型」を検知。関税系の連鎖を捉える。</td></tr>
+        <tr><td><strong>S2: e_div_low</strong></td><td><code>e_div ≤ -0.5</code></td>
+            <td>「強さ変化型」を検知。円キャリー巻き戻し等。</td></tr>
+        <tr><td><strong>S3: abs_zL1</strong></td><td><code>|z(L¹)| ≥ 1.0</code></td>
+            <td>L¹ が極端 (上 or 下 1σ 超) の日。「強さ」単独で動いた日。</td></tr>
+        <tr><td><strong>S4: abs_zunb</strong></td><td><code>|z(n_unb)| ≥ 1.0</code></td>
+            <td>不整合サイクル数が極端な日。「符号」単独で動いた日。</td></tr>
+        <tr><td><strong>S5: zL1 OR zunb</strong></td><td><code>z(L¹) ≥ 1.0 OR z(n_unb) ≥ 1.0</code></td>
+            <td>どちらか片方が上振れした日 (OR ロジック)。広めに検知。</td></tr>
+        <tr><td><strong>S6: zL1 AND zunb</strong></td><td><code>z(L¹) ≥ 1.0 AND z(n_unb) ≥ 1.0</code></td>
+            <td>両方が同時に上振れした日 (AND ロジック)。<strong>非常に稀な異常日 (2.9% のみ)</strong>。</td></tr>
+      </tbody>
+    </table>
+    <p class="panel-desc" style="margin-top:10px;">
+      各戦略を 2 方向で実装:
+    </p>
+    <ul style="font-size:13px; margin:6px 0 14px;">
+      <li><strong>_short</strong>: シグナル ON の日に <strong>株を売って現金化</strong>。シグナル OFF で買い戻し。
+        → 「警報サインで逃げる」戦略</li>
+      <li><strong>_long</strong>: シグナル ON の日に <strong>株を持つ</strong>。シグナル OFF で売却 (現金)。
+        → 「警報サインで買う」逆張り戦略</li>
+    </ul>
+
+    <h3 style="margin-top:18px; font-size:14px;">📊 比較する指標 (列の意味)</h3>
+    <table class="bt-table" style="font-size:12px;">
+      <thead><tr><th>指標</th><th>意味</th><th>良い値</th></tr></thead>
+      <tbody>
+        <tr><td><strong>総リターン</strong></td><td>5 年間で資産が何倍になったか</td><td>+ に大きい</td></tr>
+        <tr><td><strong>CAGR</strong></td><td>年率換算リターン</td><td>+ に大きい</td></tr>
+        <tr><td><strong>Sharpe</strong></td><td>リスク調整後リターン (リターン ÷ ボラ)</td><td>+1 以上で良好</td></tr>
+        <tr><td><strong>最大DD</strong></td><td>期間中の最大下落幅 (ドローダウン)</td><td>0 に近い (= -に小さい) ほど安定</td></tr>
+        <tr><td><strong>シグナル日数</strong></td><td>シグナル ON の日数 / 全期間の割合</td><td>用途による</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:18px; font-size:14px;">🏆 結果テーブル (Sharpe ランキング順)</h3>
+    <p class="panel-desc">
+      青色行 = Buy & Hold (ベンチ)、緑色行 = 最強戦略。
     </p>
     <table class="bt-table" id="bt_table">
       <thead>
@@ -382,15 +502,48 @@
       </thead>
       <tbody></tbody>
     </table>
-    <h3 style="margin-top:20px; font-size:14px;">累積リターン (Equity Curve)</h3>
+    <table class="bt-table" id="bt_table">
+      <thead>
+        <tr>
+          <th>戦略</th><th>方向</th>
+          <th>総リターン</th><th>CAGR</th><th>Sharpe</th>
+          <th>最大DD</th><th>シグナル日数</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <h3 style="margin-top:20px; font-size:14px;">📈 累積リターン (Equity Curve)</h3>
+    <p class="panel-desc">
+      $1 を投資して、5 年後にいくらになったか。1.5 なら +50%、2.0 なら +100%。
+      下のチェックボックスで戦略を選んで重ね描き。Buy & Hold (黒太線) と比較できる。
+    </p>
     <div class="bt-controls" id="bt_controls"></div>
     <div id="bt_plot" class="plot-area" style="height:480px;"></div>
-    <p class="panel-desc" style="margin-top:14px;">
-      <strong>Limitation (正直に)</strong>:
-      取引コスト 0% で計算 (実際は 0.05-0.1% かかる)、スリッページなし、
-      シグナル当日終値で売買 (同日 look-ahead bias の疑義)、S&P500 のみ、
-      過去最適化リスク (in-sample)。
-      実運用では out-of-sample 評価と取引コスト込みで再検証が必要。
+
+    <h3 style="margin-top:24px; font-size:14px;">💡 主な結論 (このバックテストから)</h3>
+    <ul style="font-size:13px; line-height:1.7;">
+      <li><strong>S1 (e_div ≥ 0.8 で現金化) が最強</strong>:
+        Buy & Hold の +75% を上回る <strong>+85%</strong>、しかも最大ドローダウンが -25% → -19% に改善。
+        「政策ショック検知でリスクオフ」が機能している証拠。</li>
+      <li><strong>S2 long (e_div ≤ -0.5 で保有) は Sharpe 最高 +1.16</strong>:
+        強さ変化型ショックが過ぎた後の方が S&P500 がよく上がるという、逆張り効果。
+        最大ドローダウンも -7.6% と極端に小さい。</li>
+      <li><strong>S6 short (両指標 AND で現金化) は発火率 2.9% でも +70%</strong>:
+        非常に稀な「両指標同時異常」を捉えると、効果が大きい。</li>
+      <li>L¹ や n_unb の<strong>絶対値だけ</strong>を見る S3/S4 は Buy & Hold に勝てない。
+        <strong>e_div (乖離) を見ることに意味がある</strong>。</li>
+    </ul>
+
+    <p class="panel-desc" style="margin-top:14px; padding:12px; background:#fff8e1;
+                                  border-radius:6px; border-left:3px solid var(--gold);">
+      <strong>⚠️ Limitation (正直に)</strong>:<br>
+      ・取引コスト 0% で計算 (実際は 0.05〜0.1% かかる、頻繁売買だと差が出る)<br>
+      ・スリッページなし (実際は約定価格がズレる)<br>
+      ・シグナル当日終値で売買 (同日 look-ahead bias の疑義あり)<br>
+      ・S&P500 のみ (他資産では結果が違う可能性)<br>
+      ・過去最適化リスク: 閾値 0.8 / -0.5 は<strong>過去データから決めた値</strong>。
+        本当に未来でも効くかは out-of-sample 評価が必要。<br>
+      実運用化前にこれらを全部潰す必要がある。<strong>現段階では「過去に対しては効いた」</strong>段階。
     </p>
   </div>
 
