@@ -625,8 +625,84 @@
     </p>
   </div>
 
+  <!-- 実運用ガイド -->
+  <div class="panel" style="border-left:4px solid var(--green);">
+    <h2><span class="num">4</span>実運用ガイド — デモ口座でやってみる</h2>
+    <p class="panel-desc">
+      この研究を実運用に試したい場合のステップ。完全マニュアル運用が一番安全で現実的。
+    </p>
+
+    <h3 style="margin-top:14px; font-size:14px;">🪙 デモ口座の選び方</h3>
+    <table class="bt-table" style="font-size:12px;">
+      <thead><tr><th>プラットフォーム</th><th>特徴</th><th>こんな人に</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SBI 証券</strong> (バーチャル取引)</td>
+            <td>国内株中心、無料、開設簡単</td><td>日本株でやりたい</td></tr>
+        <tr><td><strong>楽天証券</strong> (マーケットスピード II)</td>
+            <td>米株もデモ可、無料</td><td>米株 (S&P500 ETF) で本研究と同じ条件</td></tr>
+        <tr><td><strong>OANDA Japan</strong> (デモ FX)</td>
+            <td>FX 中心、ストップ/リミット練習向け</td><td>FX で試したい</td></tr>
+        <tr><td><strong>Webull / Moomoo</strong></td>
+            <td>米株 + ETF、paper trading 機能</td><td>SPY ETF で運用</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:14px; font-size:14px;">📅 運用フロー (週次)</h3>
+    <ol style="font-size:13px; line-height:1.7;">
+      <li><strong>毎週月曜 7:00 過ぎ</strong> にこのページをチェック (GitHub Actions が自動更新済)</li>
+      <li>📡 「最新の市場状態」カードを見て、<strong>判定</strong>を確認</li>
+      <li>判定に応じてポジション調整:
+        <ul style="margin:6px 0;">
+          <li><span class="type-badge" style="background:var(--red); font-size:11px;">政策ショック型</span>
+            → SPY (or 国内では JPY 建て指数 ETF) を<strong>売却 / ショート</strong></li>
+          <li><span class="type-badge" style="background:var(--orange); font-size:11px;">強さ変化型</span>
+            → 逆張りで<strong>買い増し</strong> (S2 long 戦略、Sharpe +1.16 最高)</li>
+          <li><span class="type-badge" style="background:var(--sub); font-size:11px;">一般ボラ上昇</span>
+            → 通常リスク管理 (ストップ強化、ポジション縮小)</li>
+          <li><span class="type-badge" style="background:var(--green); font-size:11px;">平常</span>
+            → Buy & Hold 継続</li>
+        </ul>
+      </li>
+      <li>判定が変わったらポジション切替 (前週と判定が変わってない週は何もしなくて OK)</li>
+      <li><strong>記録</strong>: 判定 / 売買額 / 翌週のリターンを Notion or Excel で記録</li>
+    </ol>
+
+    <h3 style="margin-top:14px; font-size:14px;">📊 仮想ポートフォリオ テンプレ</h3>
+    <p class="panel-desc">Notion / Excel / Google Sheets で以下の表を作って週次記録:</p>
+    <table class="bt-table" style="font-size:12px;">
+      <thead>
+        <tr><th>週</th><th>判定</th><th>e_div</th><th>アクション</th>
+            <th>ポジション</th><th>週次リターン</th><th>累積リターン</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2026-W21</td><td>平常</td><td>0.00</td><td>—</td>
+            <td>SPY 100%</td><td>—</td><td>+0.00%</td></tr>
+        <tr><td>2026-W22</td><td>政策ショック型</td><td>+1.20</td><td>SPY → 現金</td>
+            <td>現金 100%</td><td>(後追記)</td><td>—</td></tr>
+        <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:14px; font-size:14px;">📲 通知をセットアップ (任意)</h3>
+    <ul style="font-size:13px; line-height:1.7;">
+      <li><strong>GitHub Watch</strong>: このリポジトリを Watch → コミット時にメール通知 → 週次更新を逃さない</li>
+      <li><strong>Pushbullet / Slack Webhook</strong>: 判定が変わったら通知 (Actions 拡張で実装可)</li>
+      <li><strong>RSS Reader</strong>: GitHub commit feed を購読</li>
+    </ul>
+
+    <div style="background:rgba(192,57,43,0.08); padding:14px 18px; border-radius:8px;
+                  border-left:3px solid var(--red); margin-top:18px; font-size:13px;">
+      <strong>⚠️ 実取引前の注意</strong>:<br>
+      ・このプロトは学術研究目的で、<strong>金融商品のアドバイスではない</strong>。<br>
+      ・必ず<strong>デモ口座で 3 ヶ月以上検証</strong>してから実資金投入を検討する。<br>
+      ・OOS バックテストでは Buy & Hold に勝てない局面が多い (bull market 機会損失) → リターン狙いより<strong>リスク管理ツール</strong>として位置付けるのが妥当。<br>
+      ・取引コスト・スリッページが実際にどれくらいかかるかを把握する。<br>
+      ・大暴落シナリオ (2008, 2020) はこのデータに含まれていないため、それらでの性能は未知。
+    </div>
+  </div>
+
   <div class="panel">
-    <h2><span class="num">4</span>判別ロジック</h2>
+    <h2><span class="num">5</span>判別ロジック</h2>
     <p class="panel-desc">e_div の値で 4 段階に区分:</p>
     <table style="width:100%; border-collapse:collapse; font-size:13px;">
       <tr style="border-bottom:2px solid var(--line);">
