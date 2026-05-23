@@ -227,7 +227,7 @@ def main():
     prev_class = get_last_classification(conn)
     classification_changed = False
     if prev_class and prev_class != classification:
-        log(f"⚠️  CLASSIFICATION CHANGED: {prev_class} -> {classification}")
+        log(f"[!]  CLASSIFICATION CHANGED: {prev_class} -> {classification}")
         classification_changed = True
         c = conn.cursor()
         c.execute("""
@@ -275,6 +275,16 @@ def main():
             log(f"trade_executor failed: {e}")
             import traceback
             log(traceback.format_exc())
+
+    # GitHub Pages に最新データを publish
+    log(f"Publishing to GitHub Pages...")
+    try:
+        from vps_publish import main as publish_main
+        publish_main()
+    except Exception as e:
+        log(f"vps_publish failed: {e}")
+        import traceback
+        log(traceback.format_exc())
 
     log(f"VPS daily job done in {time.time()-t0:.1f}s")
     log("=" * 60)

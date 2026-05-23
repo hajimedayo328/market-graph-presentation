@@ -132,6 +132,21 @@ def find_us500_symbol(mt5):
     return None
 
 
+def _best_filling(mt5, symbol):
+    """symbol がサポートする filling mode を選ぶ.
+    Vantage の SP500.r 等は FOK 非対応のことがある."""
+    info = mt5.symbol_info(symbol)
+    if info is None:
+        return mt5.ORDER_FILLING_RETURN
+    # filling_mode は bit flag: 1=FOK, 2=IOC, 4=Return
+    fm = getattr(info, "filling_mode", 0)
+    if fm & 1:  # FOK
+        return mt5.ORDER_FILLING_FOK
+    if fm & 2:  # IOC
+        return mt5.ORDER_FILLING_IOC
+    return mt5.ORDER_FILLING_RETURN
+
+
 def get_current_position(mt5, symbol):
     """その symbol の現在のポジション (なければ None)."""
     positions = mt5.positions_get(symbol=symbol)
@@ -197,7 +212,7 @@ def execute_trade(classification_prev: str, classification_new: str,
                 "price": price, "deviation": 20, "magic": 99001,
                 "comment": f"close_for_{classification_new}",
                 "type_time": mt5.ORDER_TIME_GTC,
-                "type_filling": mt5.ORDER_FILLING_FOK,
+                "type_filling": _best_filling(mt5, symbol),
             }
             res = mt5.order_send(req)
             log(f"Close result: retcode={res.retcode if res else None} comment={res.comment if res else None}")
@@ -213,7 +228,7 @@ def execute_trade(classification_prev: str, classification_new: str,
                 "deviation": 20, "magic": 99001,
                 "comment": f"open_long_{classification_new}",
                 "type_time": mt5.ORDER_TIME_GTC,
-                "type_filling": mt5.ORDER_FILLING_FOK,
+                "type_filling": _best_filling(mt5, symbol),
             }
             res = mt5.order_send(req)
             log(f"Open long result: retcode={res.retcode if res else None}")
