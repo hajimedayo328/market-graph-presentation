@@ -1,33 +1,83 @@
 {
- "generated_at": "2026-05-24T07:38:14.788623",
+ "generated_at": "2026-05-24T07:40:36.037068",
  "latest": {
   "date": "2026-05-23",
-  "L1_H1": 0.831173,
-  "n_unb": 20,
-  "n_edges": 435,
-  "balance_rate": 0.9496,
-  "z_L1": -0.6853429487179483,
-  "z_unb": -0.6382978723404256,
-  "e_div": 0.047045076377522754,
-  "classification": "一般ボラ上昇",
-  "computed_at": "2026-05-23T07:12:39.603068"
+  "L1_H1": 0.917348,
+  "n_unb": 39,
+  "n_edges": 439,
+  "balance_rate": 0.9027,
+  "z_L1": -0.4091410256410252,
+  "z_unb": 0.7092198581560284,
+  "e_div": 1.1183608837970536,
+  "classification": "政策ショック型",
+  "computed_at": "2026-05-24T07:40:35.990221"
  },
  "gamma_daily_recent": [
   {
    "date": "2026-05-23",
-   "L1_H1": 0.831173,
-   "n_unb": 20,
-   "n_edges": 435,
-   "balance_rate": 0.9496,
-   "z_L1": -0.6853429487179483,
-   "z_unb": -0.6382978723404256,
-   "e_div": 0.047045076377522754,
-   "classification": "一般ボラ上昇",
-   "computed_at": "2026-05-23T07:12:39.603068"
+   "L1_H1": 0.917348,
+   "n_unb": 39,
+   "n_edges": 439,
+   "balance_rate": 0.9027,
+   "z_L1": -0.4091410256410252,
+   "z_unb": 0.7092198581560284,
+   "e_div": 1.1183608837970536,
+   "classification": "政策ショック型",
+   "computed_at": "2026-05-24T07:40:35.990221"
   }
  ],
- "classification_changes": [],
+ "classification_changes": [
+  {
+   "changed_at": "2026-05-24T07:40:35.990221",
+   "date": "2026-05-23",
+   "prev_class": "一般ボラ上昇",
+   "new_class": "政策ショック型",
+   "e_div": 1.1183608837970536,
+   "L1_H1": 0.917348,
+   "n_unb": 39
+  }
+ ],
  "trades": [
+  {
+   "trade_id": 10,
+   "executed_at": "2026-05-24T07:40:36.022423",
+   "symbol": "SP500.r",
+   "side": "close",
+   "volume": 0.1,
+   "classification_trigger": "一般ボラ上昇->政策ショック型",
+   "mt5_ticket": null,
+   "note": "trigger_e_div=+1.118"
+  },
+  {
+   "trade_id": 9,
+   "executed_at": "2026-05-24T07:38:57.877569",
+   "symbol": "SP500.r",
+   "side": "close",
+   "volume": 0.1,
+   "classification_trigger": "強さ変化型->平常",
+   "mt5_ticket": null,
+   "note": "trigger_e_div=+0.050"
+  },
+  {
+   "trade_id": 8,
+   "executed_at": "2026-05-24T07:38:55.856273",
+   "symbol": "SP500.r",
+   "side": "long",
+   "volume": 0.1,
+   "classification_trigger": "平常->強さ変化型",
+   "mt5_ticket": 0,
+   "note": "trigger_e_div=-0.800"
+  },
+  {
+   "trade_id": 7,
+   "executed_at": "2026-05-24T07:38:53.683929",
+   "symbol": "SP500.r",
+   "side": "close",
+   "volume": 0.1,
+   "classification_trigger": "平常->政策ショック型",
+   "mt5_ticket": null,
+   "note": "trigger_e_div=+1.200"
+  },
   {
    "trade_id": 6,
    "executed_at": "2026-05-24T07:38:13.319302",
@@ -91,7 +141,7 @@
  ],
  "summary": {
   "n_days": 1,
-  "n_changes": 0,
-  "n_trades": 6
+  "n_changes": 1,
+  "n_trades": 10
  }
 }
