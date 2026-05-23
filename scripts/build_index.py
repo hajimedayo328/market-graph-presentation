@@ -1294,7 +1294,7 @@ def main():
   <span style="font-size:11px;">
     © 2026 Hajime ·
     Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" style="color:var(--accent)">CC BY 4.0</a> ·
-    <a href="https://github.com/hajimedayo328/market-graph-presentation/raw/main/docs/paper/main.pdf" style="color:var(--accent)">📄 Paper PDF</a> ·
+    <a href="./docs/paper/main.pdf" style="color:var(--accent)">📄 Paper PDF</a> ·
     <a href="https://github.com/hajimedayo328/market-graph-presentation#citation" style="color:var(--accent)">引用方法 (Citation)</a> ·
     <a href="https://github.com/hajimedayo328/market-graph-presentation" style="color:var(--accent)">GitHub</a>
   </span>
