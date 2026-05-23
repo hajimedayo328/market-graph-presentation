@@ -276,6 +276,58 @@
     </p>
   </div>
 
+  <!-- 実運用ログ集計 (live_summary.json) -->
+  <div class="panel" style="border-left:4px solid var(--blue, #0066cc);" id="live_summary_panel">
+    <h2 style="font-size:16px;">
+      📈 実運用ログ集計 <span id="live_summary_freshness" style="font-size:12px; font-weight:normal; color:var(--sub);">(読み込み中...)</span>
+    </h2>
+    <p class="panel-desc">
+      VPS が日次で記録した判定・トレード履歴を月次/累積で集計。
+      「実運用で 1 ヶ月どれだけ判定が動いたか」を可視化する素材。
+      <strong>運用開始: 2026-05-23</strong> — まだサンプルが少ない期間の数字は参考値。
+    </p>
+
+    <!-- 累積サマリーカード -->
+    <div class="status-grid" id="live_summary_grid" style="margin-bottom:14px;">
+      <!-- JS で挿入 -->
+    </div>
+
+    <!-- データ蓄積中ノート -->
+    <div id="live_summary_note" style="display:none; margin-bottom:14px; padding:8px 12px;
+          background:var(--bg); border-left:3px solid var(--orange); border-radius:4px;
+          font-size:12px; color:var(--sub);"></div>
+
+    <!-- 月次集計テーブル -->
+    <div>
+      <h3 style="font-size:13px; margin-bottom:6px;">月次集計</h3>
+      <div style="overflow-x:auto;">
+        <table class="bt-table" id="live_summary_monthly" style="font-size:12px;">
+          <thead>
+            <tr>
+              <th style="text-align:left;">月</th>
+              <th style="text-align:right;">判定日数</th>
+              <th style="text-align:left;">判定分布 (政策/強さ/一般/平常)</th>
+              <th style="text-align:right;">判定変化</th>
+              <th style="text-align:right;">トレード数</th>
+              <th style="text-align:right;">e_div 平均</th>
+              <th style="text-align:right;">e_div 最大</th>
+              <th style="text-align:right;">e_div 最小</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="8" style="padding:8px; color:var(--sub); text-align:center;">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="panel-desc" style="margin-top:14px; font-size:11px;">
+      集計は Pages 配布の <code>live_status.json</code> (直近 90 日分) を元に、
+      <code>scripts/aggregate_live_log.py</code> がローカルで再計算した結果 (<code>live_summary.json</code>) を表示。
+      生成時刻: <span id="live_summary_generated_at">—</span>
+    </p>
+  </div>
+
   <!-- 判定の核心: e_div = 乖離 -->
   <div class="panel" style="border-left:4px solid var(--orange);">
     <h2 style="font-size:16px;">🎯 判定の核心: <code>e_div</code> = 2 指標の乖離</h2>
@@ -1277,6 +1329,106 @@ updateNextRun();
 loadLiveStatus();
 // 5 分ごとに live status を再取得
 setInterval(loadLiveStatus, 300000);
+
+// === 実運用ログ集計 (data/live_summary.json) ===
+async function loadLiveSummary() {
+  try {
+    const url = './data/live_summary.json?ts=' + Date.now();
+    const res = await fetch(url);
+    if (!res.ok) { setLiveSummaryUnavailable(); return; }
+    const data = await res.json();
+    renderLiveSummary(data);
+  } catch (e) {
+    setLiveSummaryUnavailable();
+  }
+}
+function setLiveSummaryUnavailable() {
+  const fr = document.getElementById('live_summary_freshness');
+  if (fr) {
+    fr.textContent = '(集計データ準備中)';
+    fr.style.color = 'var(--sub)';
+  }
+  const tbody = document.querySelector('#live_summary_monthly tbody');
+  if (tbody) {
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:8px; color:var(--sub); text-align:center;">集計ファイル未生成 — aggregate_live_log.py 実行待ち</td></tr>';
+  }
+}
+function renderLiveSummary(d) {
+  const fr = document.getElementById('live_summary_freshness');
+  if (fr) {
+    fr.textContent = d.data_available ? '(更新済 ✓)' : '(データ蓄積中)';
+    fr.style.color = d.data_available ? 'var(--green)' : 'var(--sub)';
+  }
+  const genEl = document.getElementById('live_summary_generated_at');
+  if (genEl) genEl.textContent = d.generated_at || '—';
+
+  const cum = d.cumulative || {};
+  // 累積サマリーカード (4 個)
+  const grid = document.getElementById('live_summary_grid');
+  const dist = cum.classification_distribution || {};
+  const distLine = ['政策ショック型','強さ変化型','一般ボラ上昇','平常']
+    .map(k => `${k.slice(0,2)}:${dist[k]||0}`).join(' / ');
+  grid.innerHTML = `
+    <div class="status-card">
+      <div class="label">観測日数 (累積)</div>
+      <div class="value">${cum.n_observed_days || 0}</div>
+      <div class="detail">${distLine}</div>
+    </div>
+    <div class="status-card">
+      <div class="label">判定変化回数</div>
+      <div class="value">${cum.n_classification_changes || 0}</div>
+      <div class="detail">運用開始 ${d.operation_start || '—'} 以降</div>
+    </div>
+    <div class="status-card" style="border-left:4px solid var(--orange)">
+      <div class="label">デモ約定数 (累積)</div>
+      <div class="value">${cum.n_trades || 0}</div>
+      <div class="detail">Vantage demo (SP500.r)</div>
+    </div>
+    <div class="status-card classification" style="border-left-color:var(--green)">
+      <div class="label">最頻判定タイプ</div>
+      <div class="value" style="font-size:16px;">${cum.most_frequent_classification || '—'}</div>
+      <div class="detail">max e_div=${cum.max_e_div != null ? cum.max_e_div.toFixed(3) : '—'} (${cum.max_e_div_date || '—'})</div>
+    </div>
+  `;
+
+  // データ蓄積中ノート
+  const noteEl = document.getElementById('live_summary_note');
+  if (noteEl) {
+    if (d.note) {
+      noteEl.style.display = 'block';
+      noteEl.textContent = '📌 ' + d.note;
+    } else {
+      noteEl.style.display = 'none';
+    }
+  }
+
+  // 月次テーブル
+  const tbody = document.querySelector('#live_summary_monthly tbody');
+  const monthly = d.monthly || [];
+  if (monthly.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:8px; color:var(--sub); text-align:center;">データ蓄積中 (運用開始 ' + (d.operation_start || '—') + ')</td></tr>';
+    return;
+  }
+  // 新しい月を上に
+  const rows = monthly.slice().reverse();
+  tbody.innerHTML = rows.map(m => {
+    const cd = m.classification_distribution || {};
+    const distCell = `${cd['政策ショック型']||0} / ${cd['強さ変化型']||0} / ${cd['一般ボラ上昇']||0} / ${cd['平常']||0}`;
+    const fmt = v => (v == null || isNaN(v)) ? '—' : v.toFixed(3);
+    return `<tr>
+      <td><strong>${m.month}</strong></td>
+      <td style="text-align:right;">${m.n_days}</td>
+      <td style="font-size:11px;">${distCell}</td>
+      <td style="text-align:right;">${m.n_changes}</td>
+      <td style="text-align:right;">${m.n_trades}</td>
+      <td style="text-align:right;">${fmt(m.e_div_avg)}</td>
+      <td style="text-align:right;">${fmt(m.e_div_max)}</td>
+      <td style="text-align:right;">${fmt(m.e_div_min)}</td>
+    </tr>`;
+  }).join('');
+}
+loadLiveSummary();
+setInterval(loadLiveSummary, 300000);
 
 // init
 renderLatest();

@@ -1,0 +1,39 @@
+{
+ "generated_at": "2026-05-24T07:40:36.037068",
+ "operation_start": "2026-05-23",
+ "data_available": true,
+ "note": "運用開始 2026-05-23 直後のためデータ蓄積中 (現在 1 日分)。1 ヶ月分が貯まると月次集計の信頼度が上がる。",
+ "monthly": [
+  {
+   "month": "2026-05",
+   "n_days": 1,
+   "classification_distribution": {
+    "政策ショック型": 1,
+    "強さ変化型": 0,
+    "一般ボラ上昇": 0,
+    "平常": 0
+   },
+   "e_div_avg": 1.1184,
+   "e_div_max": 1.1184,
+   "e_div_min": 1.1184,
+   "n_changes": 1,
+   "n_trades": 10
+  }
+ ],
+ "cumulative": {
+  "n_observed_days": 1,
+  "n_classification_changes": 1,
+  "n_trades": 10,
+  "most_frequent_classification": "政策ショック型",
+  "max_e_div": 1.1184,
+  "max_e_div_date": "2026-05-23",
+  "min_e_div": 1.1184,
+  "min_e_div_date": "2026-05-23",
+  "classification_distribution": {
+   "政策ショック型": 1,
+   "強さ変化型": 0,
+   "一般ボラ上昇": 0,
+   "平常": 0
+  }
+ }
+}
