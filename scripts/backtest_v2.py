@@ -7,7 +7,7 @@ v1 からの改善:
 - **翌日寄付き約定**: シグナル日 close でなく、翌日 open で約定
   → look-ahead bias 対策 (翌日の open は当日 close を見てから判定可能)
 
-学会発表向け実用レベル版.
+実用レベル版.
 """
 from __future__ import annotations
 
