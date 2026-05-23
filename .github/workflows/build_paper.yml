@@ -25,15 +25,10 @@ jobs:
           working_directory: docs/paper
           compiler: latexmk
           args: -pdfxe -interaction=nonstopmode -halt-on-error -file-line-error
-          # 日本語対応 + bibtex 用追加パッケージ
+          # texlive-full イメージは Alpine ベース。CJK は apk パッケージ名で指定
+          # (texlive 本体は full イメージに同梱済みなので追加不要)
           extra_system_packages: |
-            fonts-noto-cjk
-            fonts-noto-cjk-extra
-            texlive-fonts-recommended
-            texlive-fonts-extra
-            texlive-lang-japanese
-            texlive-lang-cjk
-            texlive-bibtex-extra
+            font-noto-cjk
 
       - name: List generated files
         run: |
