@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .venv/
 .env
+scripts/.env
+scripts/.env.local
+*.env.local
