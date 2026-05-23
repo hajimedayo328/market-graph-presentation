@@ -683,6 +683,59 @@
     </p>
   </div>
 
+  <!-- Walk-forward OOS + 多市場再現性 -->
+  <div class="panel" style="border-left:4px solid var(--blue);">
+    <h2 style="font-size:16px;">📊 検証の堅牢性 — Walk-forward OOS + 多市場再現性</h2>
+    <p class="panel-desc">
+      In-sample (期間全体で最適化) の数字は「過去に対して効いた」だけ。
+      未来でも効くかを確認するため、<strong>walk-forward Out-of-Sample (OOS)</strong>
+      と<strong>別市場・別期間での再現性</strong>を独立に検証。
+    </p>
+
+    <h3 style="margin-top:14px; font-size:14px;">Walk-forward OOS (3 年学習 → 1 年テストの転がし)</h3>
+    <table class="bt-table" style="font-size:12px;">
+      <thead>
+        <tr><th>期間</th><th>fold 数</th><th>OOS Sharpe</th><th>勝率 (vs B&H)</th><th>代表的な fold</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>15y (2011-2026)</td><td>11</td><td>+0.63</td><td>3/11 (27%)</td>
+            <td>2018 米中貿易戦争 α=+4.4%、2022 α=+9.7%</td></tr>
+        <tr><td>20y (2009-2025)</td><td>16</td><td><strong>+0.65</strong></td><td>3/16 (19%)</td>
+            <td>2014 Sharpe +1.8、2018 +1.2、2024 <strong>+2.2</strong></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:var(--sub); margin-top:8px;">
+      → In-sample の Sharpe +1.16 から低下 (過去最適化バイアスを正直に受容)。<br>
+      → Bull market では機会損失が出るが、<strong>bear / volatile 年に α</strong> が出る傾向。
+      <strong>リターン狙いではなくリスク管理ツール</strong>として位置付けるのが妥当。
+    </p>
+
+    <h3 style="margin-top:18px; font-size:14px;">多市場再現性 (5 期間 × 3 市場)</h3>
+    <p style="font-size:13px;">同じパイプラインを別市場・別期間に当てても、主要発見が再現することを確認:</p>
+    <ul style="font-size:13px; line-height:1.7;">
+      <li><strong>USA</strong> 5y / 10y / 15y / 20y データで L¹ と n_unb の独立性 (corr=0.16-0.40) 再現</li>
+      <li><strong>新興国 (EM)</strong> 5y データで同じ独立性パターン再現</li>
+      <li><strong>中国 A 株</strong> 5y データで「市場構造ショック → L¹」が再現 (Δσ=+1.47, p=0.007)</li>
+      <li><strong>USA 関税ショック</strong> (n=11 イベント) で「n_unb のみ反応」を再現 (Δσ=+0.38, p=0.018)</li>
+    </ul>
+    <p style="font-size:12px; color:var(--sub); margin-top:8px;">
+      → 単一市場・単一期間の偶然ではなく、<strong>異なる市場で繰り返し観察される</strong>パターン。<br>
+      → <strong>追い風</strong>: Wang & Xu (2025) が独立に「2024 年米国対中関税で中国 LSCBM が 3.6 倍急増」を報告
+      → 我々の trade_policy 発見と<strong>別角度から相互補強</strong>している。
+    </p>
+
+    <h3 style="margin-top:18px; font-size:14px;">⚠️ 正直な制約 (Limitation)</h3>
+    <ol style="font-size:12px; line-height:1.7; color:var(--sub);">
+      <li>trade_policy の強反応は 2025-04 Liberation Day cluster が大きく寄与している (単一イベント駆動の側面)</li>
+      <li>OOS Sharpe +0.65 (in-sample +1.16 からの低下) → <strong>過去最適化バイアスを認容</strong>している</li>
+      <li>現在は Vantage デモ口座 + 単一ブローカー (CFD SP500.r) で paper trading 検証中。
+        <strong>ライブ資金での運用は future work</strong></li>
+      <li>4 手法の (α) limit (関手の合成) では trade_policy 前兆が消失 → <strong>手法選択依存性</strong>が残る</li>
+      <li>因果性は仮説段階。「政策イベント → 符号反転」の方向性は permutation test で支持されているが、
+        因果推論としての厳密な証明はまだ</li>
+    </ol>
+  </div>
+
   <!-- 実運用ガイド -->
   <div class="panel" style="border-left:4px solid var(--green);">
     <h2><span class="num">4</span>実運用ガイド — デモ口座でやってみる</h2>
