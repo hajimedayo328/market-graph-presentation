@@ -29,13 +29,22 @@ HERE = Path(__file__).parent
 def main(window: int = 30, threshold: float = 0.3, save_every: int = 100,
          suffix: str | None = None, input_file: str = "ohlc_40.parquet",
          out_prefix: str = "gamma_timeseries"):
-    closes = pd.read_parquet(HERE / input_file)
+    # 絶対パスが渡された場合はそのまま使い、相対パスの場合は HERE 基準で解決する
+    input_path = Path(input_file)
+    if not input_path.is_absolute():
+        input_path = HERE / input_file
+    closes = pd.read_parquet(input_path)
     returns = closes.pct_change()
     print(f"Loaded {input_file}: {closes.shape}, range {closes.index.min().date()} -> {closes.index.max().date()}")
 
     n = len(returns)
     suffix = suffix if suffix is not None else f"_w{window}"
-    out_path = HERE / f"{out_prefix}{suffix}.csv"
+    # out_prefix が絶対パスの場合はそのまま、相対パスの場合は HERE 基準
+    out_prefix_path = Path(out_prefix)
+    if out_prefix_path.is_absolute():
+        out_path = Path(f"{out_prefix}{suffix}.csv")
+    else:
+        out_path = HERE / f"{out_prefix}{suffix}.csv"
 
     print(f"window={window}, threshold={threshold}, output={out_path.name}")
     print(f"Computing for idx {window}..{n} ({n - window} days)")

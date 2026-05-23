@@ -1,0 +1,8 @@
+pytest>=7.0
+pytest-cov
+numpy
+pandas
+networkx
+scipy
+ripser
+pyarrow
