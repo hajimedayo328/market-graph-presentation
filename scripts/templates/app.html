@@ -231,10 +231,24 @@
     <div class="status-grid" id="live_status_grid" style="margin-bottom:14px;">
       <!-- JS で挿入 -->
     </div>
+    <!-- 直近 90 日の e_div ミニチャート -->
+    <div style="margin-bottom:14px;">
+      <h3 style="font-size:13px; margin-bottom:6px;">直近 90 日の e_div 推移</h3>
+      <div id="live_ediv_chart" style="height:160px; background:var(--bg); border-radius:6px;">
+        <span style="color:var(--sub); font-size:11px; padding:8px;">読み込み中...</span>
+      </div>
+    </div>
+
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
       <div>
         <h3 style="font-size:13px; margin-bottom:6px;">直近 30 日の判定推移</h3>
         <div id="live_classification_timeline" style="font-size:11px;">—</div>
+        <div style="margin-top:8px; font-size:10px; color:var(--sub);">
+          <span style="display:inline-block; width:8px; height:8px; background:#c0392b; margin-right:2px;"></span>政策ショック
+          <span style="display:inline-block; width:8px; height:8px; background:#e67e22; margin-left:6px; margin-right:2px;"></span>強さ変化
+          <span style="display:inline-block; width:8px; height:8px; background:#7f8c8d; margin-left:6px; margin-right:2px;"></span>一般ボラ
+          <span style="display:inline-block; width:8px; height:8px; background:#1b7e3e; margin-left:6px; margin-right:2px;"></span>平常
+        </div>
       </div>
       <div>
         <h3 style="font-size:13px; margin-bottom:6px;">最新トレード履歴 (Vantage デモ)</h3>
@@ -249,6 +263,12 @@
           <tbody><tr><td colspan="5" style="padding:6px; color:var(--sub);">—</td></tr></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- 次回更新まで -->
+    <div style="margin-top:12px; padding:8px 12px; background:var(--bg); border-radius:6px; font-size:11px;">
+      <strong>次回 VPS 自動実行まで:</strong> <span id="live_next_run">—</span>
+      <span style="color:var(--sub); margin-left:14px;">(毎日 JST 07:00, NY 引け後)</span>
     </div>
     <p class="panel-desc" style="margin-top:14px; font-size:11px;">
       ⚠️ デモ口座 (Vantage demo, $100k 仮想資金) での paper trading。
@@ -1119,6 +1139,43 @@ function renderLiveStatus(d) {
       <div class="detail">Vantage demo (SP500.r)</div>
     </div>
   `;
+  // e_div ミニチャート (Plotly)
+  const chart_data = d.gamma_daily_recent.slice(0, 90).reverse();
+  if (chart_data.length >= 2) {
+    const tracesEd = [{
+      x: chart_data.map(r => r.date),
+      y: chart_data.map(r => r.e_div),
+      mode: 'lines+markers',
+      line: { color: '#e67e22', width: 1.6 },
+      marker: { size: 4, color: chart_data.map(r => {
+        const c = r.classification;
+        return c === '政策ショック型' ? '#c0392b'
+             : c === '強さ変化型' ? '#e67e22'
+             : c === '一般ボラ上昇' ? '#7f8c8d' : '#1b7e3e';
+      })},
+      name: 'e_div',
+    }];
+    const shapesEd = [
+      { type: 'line', x0: chart_data[0].date, x1: chart_data[chart_data.length-1].date,
+        y0: 0.8, y1: 0.8, line: { color: '#c0392b', width: 1, dash: 'dash' } },
+      { type: 'line', x0: chart_data[0].date, x1: chart_data[chart_data.length-1].date,
+        y0: -0.5, y1: -0.5, line: { color: '#e67e22', width: 1, dash: 'dash' } },
+      { type: 'line', x0: chart_data[0].date, x1: chart_data[chart_data.length-1].date,
+        y0: 0, y1: 0, line: { color: '#86868b', width: 0.5, dash: 'dot' } },
+    ];
+    const layoutEd = {
+      paper_bgcolor: '#fbfbfd', plot_bgcolor: '#ffffff',
+      margin: { l: 40, r: 10, t: 10, b: 30 },
+      xaxis: { tickfont: { size: 9 }, showgrid: false },
+      yaxis: { tickfont: { size: 9 }, gridcolor: '#e6e6eb',
+                title: 'e_div', titlefont: { size: 10 }, zeroline: false },
+      shapes: shapesEd,
+      showlegend: false,
+    };
+    Plotly.newPlot('live_ediv_chart', tracesEd, layoutEd,
+                    { responsive: true, displayModeBar: false });
+  }
+
   // classification timeline (last 30 days)
   const recent = d.gamma_daily_recent.slice(0, 30).reverse();
   const colorMap = {
@@ -1147,7 +1204,25 @@ function renderLiveStatus(d) {
     ).join('');
   }
 }
+// 次回 VPS 実行までのカウントダウン
+function updateNextRun() {
+  const now = new Date();
+  // 翌日の 07:00 JST = UTC 22:00 前日
+  const next = new Date(now);
+  next.setHours(7, 0, 0, 0);
+  if (now > next) next.setDate(next.getDate() + 1);
+  const diff = next - now;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const el = document.getElementById('live_next_run');
+  if (el) el.textContent = `${h} 時間 ${m} 分後`;
+}
+setInterval(updateNextRun, 60000);
+updateNextRun();
+
 loadLiveStatus();
+// 5 分ごとに live status を再取得
+setInterval(loadLiveStatus, 300000);
 
 // init
 renderLatest();
