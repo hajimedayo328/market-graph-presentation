@@ -62,12 +62,19 @@ def connect_demo_mt5():
     login = env.get("VANTAGE_DEMO_LOGIN")
     pw = env.get("VANTAGE_DEMO_PASSWORD")
     server = env.get("VANTAGE_DEMO_SERVER")
-    if not all([path, login, pw, server]):
-        log(f"Missing env: path={bool(path)}, login={bool(login)}, pw={bool(pw)}, server={bool(server)}")
+    if not path:
+        log(f"Missing VANTAGE_DEMO_PATH in .env")
         return None
     log(f"Connecting to demo MT5: {path}")
     try:
-        ok = mt5.initialize(path=path, login=int(login), password=pw, server=server)
+        # login/pw/server がそろってればフル指定 (MT5 が落ちてても起動 + ログイン)
+        # path のみなら起動中 MT5 にアタッチ
+        if all([login, pw, server]):
+            ok = mt5.initialize(path=path, login=int(login), password=pw, server=server)
+            log("  using full credentials (login+pw+server)")
+        else:
+            ok = mt5.initialize(path=path)
+            log("  attaching to running MT5 (path only)")
     except Exception as e:
         log(f"initialize() raised: {e}")
         return None
@@ -81,7 +88,7 @@ def connect_demo_mt5():
         return None
     # 安全装置: ライブ口座だったら即停止
     if info.trade_mode == 2:  # 2 = REAL
-        log(f"⛔ SAFETY: Connected account is LIVE (trade_mode=2). Login={info.login}. ABORTING.")
+        log(f"[NG] SAFETY: Connected account is LIVE (trade_mode=2). Login={info.login}. ABORTING.")
         mt5.shutdown()
         return None
     if info.trade_mode == 0:
@@ -90,13 +97,21 @@ def connect_demo_mt5():
         mode = "CONTEST"
     else:
         mode = f"UNKNOWN({info.trade_mode})"
-    log(f"✓ Connected: login={info.login} server={info.server} balance={info.balance} {info.currency} mode={mode}")
+    log(f"[OK] Connected: login={info.login} server={info.server} balance={info.balance} {info.currency} mode={mode}")
+    # autotrading check
+    term = mt5.terminal_info()
+    if term is not None and not term.trade_allowed:
+        log(f"[NG] Auto-trading is DISABLED in MT5 terminal. Enable 'Algo Trading' toolbar button.")
+        log(f"     Trades will be rejected with retcode=10027 until enabled.")
+        # 接続は返す (情報取得は可能、発注のみ失敗する)
     return mt5
 
 
 def find_us500_symbol(mt5):
     """Vantage の US500 系シンボルを探す (名前ブローカー依存)."""
-    candidates = ["US500", "SPX500", "SP500", "USTEC", "US500.cash", "SPX500.cash"]
+    # Vantage Trading: SP500.r (spot), SP500ft.r (futures), SPX
+    candidates = ["SP500.r", "SP500", "SPX", "SP500ft.r", "US500",
+                   "SPX500", "USTEC", "US500.cash", "SPX500.cash"]
     for sym in candidates:
         info = mt5.symbol_info(sym)
         if info is not None:
@@ -113,7 +128,7 @@ def find_us500_symbol(mt5):
             if "500" in s.name.upper() or "SPX" in s.name.upper():
                 log(f"Symbol candidate by search: {s.name}")
                 return s.name
-    log("⚠️  US500 symbol not found")
+    log("[WARN]  US500 symbol not found")
     return None
 
 
@@ -123,7 +138,7 @@ def get_current_position(mt5, symbol):
     if not positions:
         return None
     if len(positions) > 1:
-        log(f"⚠️  Multiple positions on {symbol}: {len(positions)}")
+        log(f"[WARN]  Multiple positions on {symbol}: {len(positions)}")
     return positions[0]
 
 

@@ -218,6 +218,44 @@
   <h2 style="margin:0 0 12px; font-size:20px;">📡 最新の市場状態</h2>
   <div class="status-grid" id="latest_status"></div>
 
+  <!-- VPS Live ステータス -->
+  <div class="panel" style="border-left:4px solid var(--green);" id="live_panel">
+    <h2 style="font-size:16px;">
+      🟢 VPS Live ステータス <span id="live_freshness" style="font-size:12px; font-weight:normal; color:var(--sub);">(読み込み中...)</span>
+    </h2>
+    <p class="panel-desc">
+      VPS が <strong>毎日 JST 07:00</strong> に自動で計算した結果。
+      Vantage デモ MT5 で <strong>判定変化があれば自動売買</strong> (SP500.r)、約定を記録。
+      最終取得: <span id="live_generated_at">—</span>
+    </p>
+    <div class="status-grid" id="live_status_grid" style="margin-bottom:14px;">
+      <!-- JS で挿入 -->
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+      <div>
+        <h3 style="font-size:13px; margin-bottom:6px;">直近 30 日の判定推移</h3>
+        <div id="live_classification_timeline" style="font-size:11px;">—</div>
+      </div>
+      <div>
+        <h3 style="font-size:13px; margin-bottom:6px;">最新トレード履歴 (Vantage デモ)</h3>
+        <table style="width:100%; font-size:11px; border-collapse:collapse;" id="live_trades_table">
+          <thead><tr style="border-bottom:1px solid var(--line);">
+            <th style="text-align:left; padding:4px;">日時</th>
+            <th style="text-align:left; padding:4px;">Symbol</th>
+            <th style="text-align:left; padding:4px;">Side</th>
+            <th style="text-align:left; padding:4px;">Vol</th>
+            <th style="text-align:left; padding:4px;">Trigger</th>
+          </tr></thead>
+          <tbody><tr><td colspan="5" style="padding:6px; color:var(--sub);">—</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="panel-desc" style="margin-top:14px; font-size:11px;">
+      ⚠️ デモ口座 (Vantage demo, $100k 仮想資金) での paper trading。
+      実弾ではない。CFD 価格はブローカーマークアップあり、spot ^GSPC とは差異あり。
+    </p>
+  </div>
+
   <!-- 判定の核心: e_div = 乖離 -->
   <div class="panel" style="border-left:4px solid var(--orange);">
     <h2 style="font-size:16px;">🎯 判定の核心: <code>e_div</code> = 2 指標の乖離</h2>
@@ -1025,6 +1063,91 @@ function renderBacktestPlot() {
   };
   Plotly.react('bt_plot', traces, layout, { responsive: true, displaylogo: false });
 }
+
+// === VPS Live ステータス取得 (data/live_status.json) ===
+async function loadLiveStatus() {
+  try {
+    const url = './data/live_status.json?ts=' + Date.now();
+    const res = await fetch(url);
+    if (!res.ok) { setLiveUnavailable(); return; }
+    const data = await res.json();
+    renderLiveStatus(data);
+  } catch (e) {
+    setLiveUnavailable();
+  }
+}
+function setLiveUnavailable() {
+  document.getElementById('live_freshness').textContent = '(VPS データ準備中)';
+  document.getElementById('live_freshness').style.color = 'var(--sub)';
+}
+function renderLiveStatus(d) {
+  const latest = d.latest;
+  if (!latest) { setLiveUnavailable(); return; }
+  // 生成時刻とフレッシュネス
+  document.getElementById('live_generated_at').textContent = d.generated_at;
+  const genDate = new Date(d.generated_at);
+  const diffH = Math.floor((Date.now() - genDate.getTime()) / (1000 * 60 * 60));
+  const fr = document.getElementById('live_freshness');
+  if (diffH < 24) {
+    fr.textContent = '(' + diffH + ' 時間前更新 ✓)';
+    fr.style.color = 'var(--green)';
+  } else {
+    fr.textContent = '(' + Math.floor(diffH / 24) + ' 日前 — 更新遅延)';
+    fr.style.color = 'var(--orange)';
+  }
+  // status grid (4 cards)
+  const grid = document.getElementById('live_status_grid');
+  grid.innerHTML = `
+    <div class="status-card classification" style="border-left-color:var(--green)">
+      <div class="label">VPS 判定 (${latest.date})</div>
+      <div class="value" style="font-size:18px;">${latest.classification}</div>
+      <div class="detail">L¹=${latest.L1_H1.toFixed(3)} / unb=${latest.n_unb} / e_div=${latest.e_div.toFixed(3)}</div>
+    </div>
+    <div class="status-card">
+      <div class="label">記録日数</div>
+      <div class="value">${d.summary.n_days}</div>
+      <div class="detail">日次自動記録</div>
+    </div>
+    <div class="status-card">
+      <div class="label">判定変化</div>
+      <div class="value">${d.summary.n_changes}</div>
+      <div class="detail">累積イベント数</div>
+    </div>
+    <div class="status-card" style="border-left:4px solid var(--orange)">
+      <div class="label">デモ約定数</div>
+      <div class="value">${d.summary.n_trades}</div>
+      <div class="detail">Vantage demo (SP500.r)</div>
+    </div>
+  `;
+  // classification timeline (last 30 days)
+  const recent = d.gamma_daily_recent.slice(0, 30).reverse();
+  const colorMap = {
+    '政策ショック型': '#c0392b',
+    '強さ変化型': '#e67e22',
+    '一般ボラ上昇': '#7f8c8d',
+    '平常': '#1b7e3e',
+  };
+  const tlDiv = document.getElementById('live_classification_timeline');
+  tlDiv.innerHTML = recent.map(r =>
+    `<span title="${r.date}: ${r.classification} (e_div=${r.e_div.toFixed(2)})" style="display:inline-block; width:8px; height:18px; background:${colorMap[r.classification]||'#999'}; margin-right:1px;"></span>`
+  ).join('');
+  // trades table
+  const tbody = document.querySelector('#live_trades_table tbody');
+  if (d.trades.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="padding:6px; color:var(--sub);">まだトレードなし</td></tr>';
+  } else {
+    tbody.innerHTML = d.trades.slice(0, 10).map(t =>
+      `<tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:4px;">${t.executed_at.slice(0, 16).replace('T', ' ')}</td>
+        <td style="padding:4px;">${t.symbol}</td>
+        <td style="padding:4px;">${t.side}</td>
+        <td style="padding:4px;">${t.volume}</td>
+        <td style="padding:4px; font-size:10px;">${t.classification_trigger || '—'}</td>
+      </tr>`
+    ).join('');
+  }
+}
+loadLiveStatus();
 
 // init
 renderLatest();
