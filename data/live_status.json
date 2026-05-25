@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-05-25T18:35:16.414076",
+ "generated_at": "2026-05-25T21:32:48.903645",
  "latest": {
   "date": "2026-05-25",
   "L1_H1": 0.804281,
@@ -59,101 +59,11 @@
    "classification_trigger": "一般ボラ上昇->政策ショック型",
    "mt5_ticket": null,
    "note": "trigger_e_div=+1.118"
-  },
-  {
-   "trade_id": 9,
-   "executed_at": "2026-05-24T07:38:57.877569",
-   "symbol": "SP500.r",
-   "side": "close",
-   "volume": 0.1,
-   "classification_trigger": "強さ変化型->平常",
-   "mt5_ticket": null,
-   "note": "trigger_e_div=+0.050"
-  },
-  {
-   "trade_id": 8,
-   "executed_at": "2026-05-24T07:38:55.856273",
-   "symbol": "SP500.r",
-   "side": "long",
-   "volume": 0.1,
-   "classification_trigger": "平常->強さ変化型",
-   "mt5_ticket": 0,
-   "note": "trigger_e_div=-0.800"
-  },
-  {
-   "trade_id": 7,
-   "executed_at": "2026-05-24T07:38:53.683929",
-   "symbol": "SP500.r",
-   "side": "close",
-   "volume": 0.1,
-   "classification_trigger": "平常->政策ショック型",
-   "mt5_ticket": null,
-   "note": "trigger_e_div=+1.200"
-  },
-  {
-   "trade_id": 6,
-   "executed_at": "2026-05-24T07:38:13.319302",
-   "symbol": "SP500.r",
-   "side": "close",
-   "volume": 0.1,
-   "classification_trigger": "強さ変化型->平常",
-   "mt5_ticket": null,
-   "note": "trigger_e_div=+0.050"
-  },
-  {
-   "trade_id": 5,
-   "executed_at": "2026-05-24T07:38:11.302585",
-   "symbol": "SP500.r",
-   "side": "long",
-   "volume": 0.1,
-   "classification_trigger": "平常->強さ変化型",
-   "mt5_ticket": 0,
-   "note": "trigger_e_div=-0.800"
-  },
-  {
-   "trade_id": 4,
-   "executed_at": "2026-05-24T07:38:09.270871",
-   "symbol": "SP500.r",
-   "side": "close",
-   "volume": 0.1,
-   "classification_trigger": "平常->政策ショック型",
-   "mt5_ticket": null,
-   "note": "trigger_e_div=+1.200"
-  },
-  {
-   "trade_id": 3,
-   "executed_at": "2026-05-24T07:29:51.941163",
-   "symbol": "SP500.r",
-   "side": "close",
-   "volume": 0.1,
-   "classification_trigger": "強さ変化型->平常",
-   "mt5_ticket": null,
-   "note": "trigger_e_div=+0.050"
-  },
-  {
-   "trade_id": 2,
-   "executed_at": "2026-05-24T07:29:49.925839",
-   "symbol": "SP500.r",
-   "side": "long",
-   "volume": 0.1,
-   "classification_trigger": "平常->強さ変化型",
-   "mt5_ticket": 0,
-   "note": "trigger_e_div=-0.800"
-  },
-  {
-   "trade_id": 1,
-   "executed_at": "2026-05-24T07:29:47.894411",
-   "symbol": "SP500.r",
-   "side": "close",
-   "volume": 0.1,
-   "classification_trigger": "平常->政策ショック型",
-   "mt5_ticket": null,
-   "note": "trigger_e_div=+1.200"
   }
  ],
  "summary": {
   "n_days": 2,
   "n_changes": 1,
-  "n_trades": 10
+  "n_trades": 1
  }
 }
