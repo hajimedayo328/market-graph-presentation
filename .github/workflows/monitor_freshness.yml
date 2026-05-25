@@ -1,0 +1,111 @@
+name: Monitor Pages Freshness
+
+# VPS 自動実行 (JST 07:00) が止まっていないかを毎日チェック.
+# data/live_status.json の generated_at が 30h より古ければ Issue を自動作成.
+
+on:
+  schedule:
+    # JST 09:00 = UTC 00:00 (VPS daily 07:00 完了から 2h 後)
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch live_status.json from Pages
+        id: fetch
+        run: |
+          URL="https://hajimedayo328.github.io/market-graph-presentation/data/live_status.json?ts=$(date +%s)"
+          echo "fetching: $URL"
+          curl -fsSL "$URL" -o live_status.json || { echo "fetch_failed=true" >> $GITHUB_OUTPUT; exit 0; }
+
+          GEN=$(python -c "import json; print(json.load(open('live_status.json'))['generated_at'])")
+          echo "generated_at: $GEN"
+
+          AGE_H=$(python -c "
+          from datetime import datetime
+          import json
+          gen = datetime.fromisoformat(json.load(open('live_status.json'))['generated_at'])
+          now = datetime.now()
+          # generated_at is naive (JST). UTC -> JST 9h add to now
+          from datetime import timedelta
+          now_jst = now + timedelta(hours=9)
+          age = now_jst - gen
+          print(int(age.total_seconds() / 3600))
+          ")
+          echo "age_hours: $AGE_H"
+          echo "age_hours=$AGE_H" >> $GITHUB_OUTPUT
+          echo "generated_at=$GEN" >> $GITHUB_OUTPUT
+
+      - name: Open or update issue if stale
+        if: steps.fetch.outputs.fetch_failed == 'true' || steps.fetch.outputs.age_hours > 30
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🔴 VPS 自動実行が停止している可能性"
+          AGE="${{ steps.fetch.outputs.age_hours }}"
+          GEN="${{ steps.fetch.outputs.generated_at }}"
+
+          if [ "${{ steps.fetch.outputs.fetch_failed }}" = "true" ]; then
+            BODY="$(cat <<EOF
+          ## 検知
+          - **\`data/live_status.json\` の fetch に失敗**しました
+          - Pages 自体が落ちている / publish が長期間止まっている可能性
+
+          ## チェック手順
+          1. \`ssh fx-vps\` で VPS に入る
+          2. \`Get-Content C:\\tools\\market-graph\\logs\\vps_daily.log -Tail 30\`
+          3. \`Get-ScheduledTaskInfo MarketGraphDaily | Select LastRunTime, LastTaskResult\`
+             - LastTaskResult が \`2147942402\` (0x80070002) なら PATH 問題
+             - 修正手順: \`.agent/memory/project_market_graph_vps_runtime.md\` 参照
+
+          このイシューはワークフローが鮮度回復を検知したら自動でクローズします。
+          EOF
+          )"
+          else
+            BODY="$(cat <<EOF
+          ## 検知
+          - **live_status.json の \`generated_at\` が ${AGE}h 古い** (閾値 30h)
+          - generated_at: \`${GEN}\`
+
+          ## チェック手順
+          1. \`ssh fx-vps\`
+          2. \`Get-Content C:\\tools\\market-graph\\logs\\vps_daily.log -Tail 30\`
+          3. \`Get-ScheduledTaskInfo MarketGraphDaily | Select LastRunTime, LastTaskResult\`
+          4. 必要なら \`Start-ScheduledTask -TaskName MarketGraphDaily\` で手動キック
+
+          このイシューはワークフローが鮮度回復を検知したら自動でクローズします。
+          EOF
+          )"
+          fi
+
+          # 既存の open issue を探す (同じタイトル + ラベル monitoring)
+          EXISTING=$(gh issue list --label monitoring --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+
+          if [ -z "$EXISTING" ]; then
+            gh issue create --title "$TITLE" --body "$BODY" --label monitoring || \
+              gh issue create --title "$TITLE" --body "$BODY"  # ラベル無い場合のフォールバック
+          else
+            gh issue comment "$EXISTING" --body "$BODY"
+            echo "Updated existing issue #$EXISTING"
+          fi
+
+      - name: Close issue if fresh
+        if: steps.fetch.outputs.fetch_failed != 'true' && steps.fetch.outputs.age_hours <= 30
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🔴 VPS 自動実行が停止している可能性"
+          EXISTING=$(gh issue list --label monitoring --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue close "$EXISTING" --comment "✅ 鮮度回復 (age=${{ steps.fetch.outputs.age_hours }}h). 自動クローズ。"
+            echo "Closed #$EXISTING"
+          else
+            echo "No open issue, all good."
+          fi
