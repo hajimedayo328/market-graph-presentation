@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "windows": [
+      20,
+      30,
+      60,
+      90
+    ],
+    "threshold": 0.3,
+    "returns_period": [
+      "2024-08-01",
+      "2025-04-30"
+    ],
+    "baseline_window": [
+      "2025-02-15",
+      "2025-03-25"
+    ],
+    "event_window": [
+      "2025-04-02",
+      "2025-04-15"
+    ],
+    "event_name": "2025-04 Liberation Day",
+    "n_symbols": 40
+  },
+  "results": {
+    "20": {
+      "window": 20,
+      "elapsed_sec": 1.59674072265625,
+      "n_rows_total": 253,
+      "delta_sigma_L1": -1.530937653406022,
+      "delta_sigma_unb": -0.937877190331738,
+      "delta_sigma_ediv": 0.5930604630742842,
+      "n_baseline": 39,
+      "n_event": 14,
+      "baseline_mean_L1": 1.0659188103750428,
+      "baseline_std_L1": 0.2548867739140786,
+      "baseline_mean_unb": 48.02564102564103,
+      "baseline_std_unb": 14.497707948585635
+    },
+    "30": {
+      "window": 30,
+      "elapsed_sec": 1.4704818725585938,
+      "n_rows_total": 243,
+      "delta_sigma_L1": -1.461267803010267,
+      "delta_sigma_unb": 1.2851782690269071,
+      "delta_sigma_ediv": 2.7464460720371733,
+      "n_baseline": 39,
+      "n_event": 14,
+      "baseline_mean_L1": 1.0582029492797782,
+      "baseline_std_L1": 0.28376474046794486,
+      "baseline_mean_unb": 36.41025641025641,
+      "baseline_std_unb": 8.628953552210593
+    },
+    "60": {
+      "window": 60,
+      "elapsed_sec": 1.2524445056915283,
+      "n_rows_total": 213,
+      "delta_sigma_L1": -2.3108502230340973,
+      "delta_sigma_unb": 1.1215505061244095,
+      "delta_sigma_ediv": 3.432400729158507,
+      "n_baseline": 39,
+      "n_event": 14,
+      "baseline_mean_L1": 0.851215264587936,
+      "baseline_std_L1": 0.15172289662563912,
+      "baseline_mean_unb": 13.35897435897436,
+      "baseline_std_unb": 8.086659512943067
+    },
+    "90": {
+      "window": 90,
+      "elapsed_sec": 1.0964481830596924,
+      "n_rows_total": 183,
+      "delta_sigma_L1": -1.795464087233174,
+      "delta_sigma_unb": 2.041059175888786,
+      "delta_sigma_ediv": 3.8365232631219586,
+      "n_baseline": 39,
+      "n_event": 14,
+      "baseline_mean_L1": 0.73519806520098,
+      "baseline_std_L1": 0.13282067317428117,
+      "baseline_mean_unb": 7.871794871794871,
+      "baseline_std_unb": 7.3419468491512845
+    }
+  },
+  "summary_table": {
+    "window": [
+      20,
+      30,
+      60,
+      90
+    ],
+    "delta_sigma_L1": [
+      -1.530937653406022,
+      -1.461267803010267,
+      -2.3108502230340973,
+      -1.795464087233174
+    ],
+    "delta_sigma_unb": [
+      -0.937877190331738,
+      1.2851782690269071,
+      1.1215505061244095,
+      2.041059175888786
+    ],
+    "delta_sigma_ediv": [
+      0.5930604630742842,
+      2.7464460720371733,
+      3.432400729158507,
+      3.8365232631219586
+    ]
+  }
+}
