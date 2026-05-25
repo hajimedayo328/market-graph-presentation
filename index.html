@@ -323,6 +323,7 @@
     <a href="#s85">8.5 指標細分化</a>
     <a href="#s9">9. 圏論的整理</a>
     <a href="#s10">10. 先行研究</a>
+    <a href="#s11">11. 限界と今後</a>
   </div>
 </nav>
 
@@ -385,9 +386,16 @@
   <p>絶対値が 0.3 以上のペア（|corr| ≥ 0.3）だけ「エッジ」として線を引く。
   これで 40 銘柄のネットワーク（無向グラフ）が出来上がる。
   <span style="color:var(--sub); font-size:12px;">
-    (閾値 0.3 は相関ノイズと有意な関係の典型的な境界。0.2 / 0.4 で sensitivity check しても本論文の発見は維持される。
-    閾値の事後最適化バイアスは Limitation で明記。)
+    (閾値 0.3 は相関ノイズと有意な関係の典型的な境界。0.2 / 0.4 で sensitivity check しても本論文の発見は維持される。)
   </span></p>
+  <p style="font-size:12px; color:var(--sub);">
+    <strong>「window=30 日の根拠は？」</strong>:
+    実証で window=20/30/60/90 を比較 (<code>scripts/robustness_window.py</code>)。
+    Δσ_e_div は 20→+0.59、30→+2.75、60→+3.43、90→+3.84 と<strong>単調増加</strong>。
+    30 はむしろ控えめな選択で、cherry-pick ではない (20 のみ短すぎて n_unb の反応が捉えきれない)。
+    本研究で 30 を採用したのは月次効果を捕まえる標準的長さ + リアルタイム性 (60 / 90 だと反応遅延)
+    のため。
+  </p>
 
   <div class="callout intuition">
     <h4>イメージ</h4>
@@ -868,6 +876,15 @@
         <td>L¹ 上昇のみ、符号は安定</td></tr>
   </table>
 
+  <p style="font-size:12px; color:var(--sub);">
+    <strong>「Liberation Day 5 件は autocorrelation で実質 n=1 では？」への補足</strong>:
+    その通り、5 件は 2 週間に集中した因果連鎖。これを <strong>1 つの cluster event</strong> として
+    permutation (5000 perm) し直すと <strong>Δσ = +3.20, p = 0.037</strong> で有意性は維持
+    (<code>scripts/robustness_cluster_permutation.py</code>)。
+    むしろ cluster framing の方が個別日 (4/2 vs 4/9 で符号逆) のノイズを除去できて誠実な記述。
+    主要発見は autocorrelation を厳密に扱っても堅い。
+  </p>
+
   <div class="callout found">
     <h4>意味</h4>
     <p>e_div は<strong>ショックタイプを 3 区分する判別器</strong>として機能:</p>
@@ -1068,6 +1085,69 @@
     <p><strong>追い風</strong>: Wang & Xu (2025) が「2024 年米国対中関税で中国市場の Balanced Module が 3.6 倍急増」
     と<strong>独立に報告</strong>している。彼らは balanced 側、我々は unbalanced 側、同じ現象を別角度から。</p>
   </div>
+</section>
+
+<section id="s11">
+  <div class="section-num">SECTION 11</div>
+  <h2>限界と今後</h2>
+  <p class="lede">研究の正直な制約を全部出す。すべて実証検証済 (<code>scripts/audit_*.py</code> / <code>robustness_*.py</code>)。</p>
+
+  <h3>11.1 検証済みの制約 (主要発見への影響: 小)</h3>
+  <table>
+    <tr><th>項目</th><th>検証</th><th>結論</th></tr>
+    <tr><td><strong>銘柄選択依存性</strong></td>
+        <td>40→30 リサンプリング 30 回</td>
+        <td>29/30 で e_div 符号保持、影響小</td></tr>
+    <tr><td><strong>e_div の cherry-pick 疑惑</strong></td>
+        <td>11 指標 55 ペアスイープ</td>
+        <td>trade/structure 上位 22-36%、war 中央値以下、Bonferroni 通過</td></tr>
+    <tr><td><strong>window=30 の事後選定</strong></td>
+        <td>window 20/30/60/90 sensitivity</td>
+        <td>30 はむしろ控えめ (60/90 でもっと強い)</td></tr>
+    <tr><td><strong>VIX の内生性</strong></td>
+        <td>VIX 除外で再計算</td>
+        <td>Δσ_e_div: 2.75 → 2.28、方向一致、差 0.47σ</td></tr>
+    <tr><td><strong>Liberation Day 5 件の autocorrelation</strong></td>
+        <td>1 cluster としての permutation</td>
+        <td>p=0.037 で依然有意、むしろ cluster framing が誠実</td></tr>
+    <tr><td><strong>Survivorship bias</strong></td>
+        <td>銘柄初出日 audit</td>
+        <td>主要 event は全て 39 銘柄揃う 2017-11 以降、主要発見への影響なし</td></tr>
+  </table>
+
+  <h3>11.2 残る制約 (今後の課題)</h3>
+  <ol>
+    <li><strong>過去最適化バイアス</strong>: バックテストの閾値 0.8 / -0.5 は in-sample 選択。
+        Walk-forward OOS で Sharpe +1.16 → +0.65 に低下しており、過去最適化を認容。
+        閾値の自由化は future work。</li>
+    <li><strong>20y OOS 初期 (2006-2017) の universe 時変</strong>: TSLA/META/BTC/ETH の IPO 前は欠落。
+        この期間の結果は universe が時間と共に変化する residual bias を持つ。
+        主要発見 (2017-11 以降) には影響なし。</li>
+    <li><strong>z-score の weak look-ahead</strong>: 既存バックテストは全期間 mean/std で正規化 (実装簡便化)。
+        過去のみ expanding window 計算と相関 0.99 で実質同一、主要日 (Liberation Day) でも 3σ 超は両方で出る。
+        <strong>VPS 実運用 (<code>vps_daily.py</code>) は過去のみで計算しており正しい</strong>。</li>
+    <li><strong>タイムゾーン</strong>: 24h 銘柄 (FX/暗号) と日中銘柄 (株/指数) を tz-naive UTC midnight に揃えて
+        close-to-close return を取っている。event 発表時刻と各市場 close の関係で最大 ~30h ずれが発生する。
+        日次粒度では実用上問題ないが、より高頻度な検出には asset_class 別 sub-graph + 時刻揃え resampling が必要 (future work)。</li>
+    <li><strong>因果性は仮説段階</strong>: permutation で「ランダム日との比較で有意」までは示せたが、
+        causal inference (例: Granger) としての厳密な証明は今後。</li>
+    <li><strong>圏論的厳密性</strong>: 圏論は道具として使用、新定理や構造定理は得ていない。
+        関手の極限 / pullback による手法非依存シグナル構築は実装途中。</li>
+    <li><strong>実弾未検証</strong>: VPS で Vantage デモ MT5 paper trading を 2026-05-23 から運用中だが、
+        実資金でのライブ運用は未実施。CFD と spot の差 (typically 0.05%) は方向シグナルには影響しないが、
+        絶対水準を使う戦略へ拡張する場合は別途検証要。</li>
+    <li><strong>イベント日の事後選定</strong>: Liberation Day などの代表的 event は事後に同定。
+        本研究は「事前予測」ではなく「事後分類できるか」を主張している点に注意。
+        VIX 自動スパイク (Section 6) は事前検出の方向で部分的に対応済み。</li>
+  </ol>
+
+  <h3>11.3 今後の方向</h3>
+  <ul>
+    <li>20y データを使った関手の極限 / pullback 構築 → 手法非依存シグナル</li>
+    <li>asset_class 別 sub-graph (株式 / FX / 商品 / 暗号) で時刻揃え相関 → 高頻度 event detection</li>
+    <li>実弾運用 (まずは少額) で paper trading との乖離を測定</li>
+    <li>causal inference (Granger / DAG) で「政策イベント → 符号反転」の方向性を厳密に証明</li>
+  </ul>
 </section>
 
 </div>
