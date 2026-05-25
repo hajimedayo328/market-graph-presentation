@@ -1,0 +1,713 @@
+{
+  "meta": {
+    "window": 30,
+    "threshold": 0.3,
+    "n_trials": 30,
+    "drop_k": 10,
+    "rng_seed": 20250602,
+    "returns_period": [
+      "2025-01-01",
+      "2025-04-30"
+    ],
+    "baseline_window": [
+      "2025-02-15",
+      "2025-03-25"
+    ],
+    "event_window": [
+      "2025-04-02",
+      "2025-04-15"
+    ],
+    "event_name": "2025-04 Liberation Day"
+  },
+  "baseline_40": {
+    "delta_sigma_L1": -1.461267803010267,
+    "delta_sigma_unb": 1.2851782690269071,
+    "delta_sigma_ediv": 2.7464460720371733,
+    "n_baseline": 39,
+    "n_event": 14
+  },
+  "trials": [
+    {
+      "trial": 0,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "EUB10Y",
+        "EURTRY",
+        "FRA40",
+        "GBPJPY",
+        "NAS100",
+        "SP500",
+        "TSLA",
+        "UKOUSD",
+        "VIX",
+        "XAGUSD"
+      ],
+      "delta_sigma_L1": -1.644002457538885,
+      "delta_sigma_unb": 0.9588491022497401,
+      "delta_sigma_ediv": 2.602851559788625,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 1,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "DJ30",
+        "ETHUSD",
+        "GBPJPY",
+        "JP225",
+        "NGAS",
+        "NZDUSD",
+        "RUS2000",
+        "USDTRY",
+        "VIX"
+      ],
+      "delta_sigma_L1": -0.5447492408264082,
+      "delta_sigma_unb": -0.909996789674891,
+      "delta_sigma_ediv": -0.36524754884848276,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 2,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AAPL",
+        "DJ30",
+        "EURJPY",
+        "JP225",
+        "NAS100",
+        "RUS2000",
+        "UK100",
+        "UKOUSD",
+        "USDCAD",
+        "XAGUSD"
+      ],
+      "delta_sigma_L1": -1.501541066109557,
+      "delta_sigma_unb": 0.9982101414058686,
+      "delta_sigma_ediv": 2.4997512075154265,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 3,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "BTCUSD",
+        "DJ30",
+        "ETHUSD",
+        "META",
+        "MSFT",
+        "UKGILT",
+        "UKOUSD",
+        "US10Y",
+        "USDHUF"
+      ],
+      "delta_sigma_L1": -1.5556544753748074,
+      "delta_sigma_unb": 1.0289981470599439,
+      "delta_sigma_ediv": 2.5846526224347515,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 4,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "CHINA50",
+        "EURGBP",
+        "EURUSD",
+        "FRA40",
+        "GBPUSD",
+        "USDCAD",
+        "USDTRY",
+        "USOUSD",
+        "VIX",
+        "XAUUSD"
+      ],
+      "delta_sigma_L1": -1.3016977874193838,
+      "delta_sigma_unb": 0.9391464583640857,
+      "delta_sigma_ediv": 2.2408442457834696,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 5,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "CHINA50",
+        "DJ30",
+        "ETHUSD",
+        "EURTRY",
+        "GER40",
+        "META",
+        "RUS2000",
+        "USDCAD",
+        "USDJPY",
+        "USOUSD"
+      ],
+      "delta_sigma_L1": -0.7546330161684137,
+      "delta_sigma_unb": 1.931810889895181,
+      "delta_sigma_ediv": 2.6864439060635945,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 6,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "BTCUSD",
+        "DJ30",
+        "EURTRY",
+        "FRA40",
+        "NGAS",
+        "UKGILT",
+        "USDHUF",
+        "USDTRY",
+        "XAGUSD"
+      ],
+      "delta_sigma_L1": -2.6362385275944615,
+      "delta_sigma_unb": -0.7651447439939686,
+      "delta_sigma_ediv": 1.8710937836004926,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 7,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "CHINA50",
+        "COPPER",
+        "JP225",
+        "META",
+        "US10Y",
+        "USDHUF",
+        "USDJPY",
+        "USDTRY",
+        "VIX",
+        "XAGUSD"
+      ],
+      "delta_sigma_L1": -1.4613055146277432,
+      "delta_sigma_unb": -0.4995970334676883,
+      "delta_sigma_ediv": 0.9617084811600549,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 8,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "ETHUSD",
+        "EUB10Y",
+        "EURUSD",
+        "GBPJPY",
+        "JP225",
+        "META",
+        "UK100",
+        "UKOUSD",
+        "USDHUF"
+      ],
+      "delta_sigma_L1": -0.968008850350154,
+      "delta_sigma_unb": -0.2731800740265922,
+      "delta_sigma_ediv": 0.694828776323562,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 9,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "EURJPY",
+        "EURTRY",
+        "EURUSD",
+        "GER40",
+        "META",
+        "MSFT",
+        "NGAS",
+        "NZDUSD",
+        "TSLA",
+        "USDCHF"
+      ],
+      "delta_sigma_L1": -2.239593095053441,
+      "delta_sigma_unb": -0.5937710067689899,
+      "delta_sigma_ediv": 1.6458220882844512,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 10,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "COPPER",
+        "ETHUSD",
+        "EURUSD",
+        "JP225",
+        "RUS2000",
+        "SP500",
+        "US10Y",
+        "USOUSD",
+        "VIX"
+      ],
+      "delta_sigma_L1": -0.772233902711422,
+      "delta_sigma_unb": 0.6031063798979056,
+      "delta_sigma_ediv": 1.3753402826093277,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 11,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AAPL",
+        "AUDUSD",
+        "DXY",
+        "EURJPY",
+        "GOOG",
+        "NAS100",
+        "NZDUSD",
+        "UK100",
+        "UKGILT",
+        "XAGUSD"
+      ],
+      "delta_sigma_L1": -1.1050829920852157,
+      "delta_sigma_unb": 1.0959523884204068,
+      "delta_sigma_ediv": 2.201035380505623,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 12,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AAPL",
+        "ETHUSD",
+        "FRA40",
+        "GBPUSD",
+        "JP225",
+        "META",
+        "UK100",
+        "UKOUSD",
+        "USDJPY",
+        "XAUUSD"
+      ],
+      "delta_sigma_L1": -0.5414087279576699,
+      "delta_sigma_unb": 1.8405605293438232,
+      "delta_sigma_ediv": 2.3819692573014923,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 13,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AAPL",
+        "DJ30",
+        "EUB10Y",
+        "EURGBP",
+        "FRA40",
+        "GOOG",
+        "MSFT",
+        "US10Y",
+        "USDJPY",
+        "USDTRY"
+      ],
+      "delta_sigma_L1": -1.314366207042418,
+      "delta_sigma_unb": 1.0986213716958129,
+      "delta_sigma_ediv": 2.4129875787382313,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 14,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "CHINA50",
+        "DJ30",
+        "EURTRY",
+        "GBPJPY",
+        "NAS100",
+        "NZDUSD",
+        "USDTRY",
+        "USOUSD",
+        "VIX"
+      ],
+      "delta_sigma_L1": -0.5011099804188247,
+      "delta_sigma_unb": 1.6727856799888898,
+      "delta_sigma_ediv": 2.1738956604077146,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 15,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "CHINA50",
+        "DJ30",
+        "DXY",
+        "EURGBP",
+        "GOOG",
+        "JP225",
+        "UKGILT",
+        "USDCHF",
+        "USDTRY"
+      ],
+      "delta_sigma_L1": -1.2569142301579859,
+      "delta_sigma_unb": 1.1283207377831146,
+      "delta_sigma_ediv": 2.3852349679411,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 16,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "ETHUSD",
+        "EUB10Y",
+        "EURGBP",
+        "EURTRY",
+        "EURUSD",
+        "GBPJPY",
+        "UK100",
+        "US10Y",
+        "USDCHF",
+        "USDHUF"
+      ],
+      "delta_sigma_L1": -1.7780963064806288,
+      "delta_sigma_unb": 0.539385597233207,
+      "delta_sigma_ediv": 2.3174819037138357,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 17,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AAPL",
+        "COPPER",
+        "EURUSD",
+        "GER40",
+        "META",
+        "MSFT",
+        "NGAS",
+        "RUS2000",
+        "USDHUF",
+        "USDTRY"
+      ],
+      "delta_sigma_L1": -1.6250598957943312,
+      "delta_sigma_unb": 0.37343081130376515,
+      "delta_sigma_ediv": 1.9984907070980964,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 18,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AAPL",
+        "DJ30",
+        "ETHUSD",
+        "GOOG",
+        "JP225",
+        "NAS100",
+        "UKGILT",
+        "US10Y",
+        "USDJPY",
+        "VIX"
+      ],
+      "delta_sigma_L1": 0.15538760795418766,
+      "delta_sigma_unb": 1.069971722597166,
+      "delta_sigma_ediv": 0.9145841146429782,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 19,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "CHINA50",
+        "DJ30",
+        "EURUSD",
+        "GBPUSD",
+        "META",
+        "SP500",
+        "US10Y",
+        "USDCHF",
+        "USDTRY",
+        "USOUSD"
+      ],
+      "delta_sigma_L1": -0.6460627804264377,
+      "delta_sigma_unb": 1.0544172664149039,
+      "delta_sigma_ediv": 1.7004800468413417,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 20,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "BTCUSD",
+        "EURGBP",
+        "GBPJPY",
+        "GER40",
+        "JP225",
+        "META",
+        "NZDUSD",
+        "SP500",
+        "UKGILT",
+        "XAGUSD"
+      ],
+      "delta_sigma_L1": -3.3823456589433496,
+      "delta_sigma_unb": 0.28324213677324567,
+      "delta_sigma_ediv": 3.6655877957165957,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 21,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "GBPUSD",
+        "NAS100",
+        "NZDUSD",
+        "RUS2000",
+        "SP500",
+        "UK100",
+        "USDCHF",
+        "USDHUF",
+        "USDJPY",
+        "USDTRY"
+      ],
+      "delta_sigma_L1": -1.7843994442565,
+      "delta_sigma_unb": 2.0807275370248104,
+      "delta_sigma_ediv": 3.8651269812813105,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 22,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "EURJPY",
+        "FRA40",
+        "GOOG",
+        "MSFT",
+        "UK100",
+        "USDCAD",
+        "USDJPY",
+        "USDTRY",
+        "VIX",
+        "XAUUSD"
+      ],
+      "delta_sigma_L1": -0.8188916197632715,
+      "delta_sigma_unb": 1.0403373992171578,
+      "delta_sigma_ediv": 1.8592290189804295,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 23,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "FRA40",
+        "GBPUSD",
+        "META",
+        "MSFT",
+        "UK100",
+        "UKOUSD",
+        "USDCAD",
+        "USDTRY",
+        "VIX",
+        "XAGUSD"
+      ],
+      "delta_sigma_L1": -1.7016062046130533,
+      "delta_sigma_unb": 1.2210929234779901,
+      "delta_sigma_ediv": 2.9226991280910437,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 24,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "CHINA50",
+        "COPPER",
+        "DXY",
+        "GER40",
+        "GOOG",
+        "JP225",
+        "NGAS",
+        "US10Y",
+        "USDHUF",
+        "USOUSD"
+      ],
+      "delta_sigma_L1": -2.974950917299695,
+      "delta_sigma_unb": 0.38067574213414945,
+      "delta_sigma_ediv": 3.3556266594338453,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 25,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "EURJPY",
+        "EURTRY",
+        "FRA40",
+        "JP225",
+        "MSFT",
+        "NGAS",
+        "UKOUSD",
+        "USDCAD",
+        "USDJPY"
+      ],
+      "delta_sigma_L1": -1.577178545879837,
+      "delta_sigma_unb": -0.30804916208395305,
+      "delta_sigma_ediv": 1.2691293837958837,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 26,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AUDUSD",
+        "DXY",
+        "ETHUSD",
+        "EURTRY",
+        "EURUSD",
+        "GBPUSD",
+        "META",
+        "RUS2000",
+        "USDCAD",
+        "USDTRY"
+      ],
+      "delta_sigma_L1": -1.7443988972467435,
+      "delta_sigma_unb": 1.6991788718340008,
+      "delta_sigma_ediv": 3.443577769080744,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 27,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "BTCUSD",
+        "COPPER",
+        "DXY",
+        "GER40",
+        "GOOG",
+        "META",
+        "NZDUSD",
+        "USDCHF",
+        "USDTRY",
+        "VIX"
+      ],
+      "delta_sigma_L1": -0.9658101428913103,
+      "delta_sigma_unb": 0.32214241223601137,
+      "delta_sigma_ediv": 1.2879525551273214,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 28,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "DJ30",
+        "EUB10Y",
+        "EURUSD",
+        "GOOG",
+        "NGAS",
+        "NZDUSD",
+        "UKGILT",
+        "USDCHF",
+        "USDTRY",
+        "USOUSD"
+      ],
+      "delta_sigma_L1": -0.5751250989230112,
+      "delta_sigma_unb": 0.10984188518394464,
+      "delta_sigma_ediv": 0.684966984106956,
+      "n_baseline": 39,
+      "n_event": 14
+    },
+    {
+      "trial": 29,
+      "n_kept": 30,
+      "dropped_symbols": [
+        "AAPL",
+        "EURJPY",
+        "EURTRY",
+        "EURUSD",
+        "META",
+        "NAS100",
+        "NZDUSD",
+        "SP500",
+        "USDCAD",
+        "USDJPY"
+      ],
+      "delta_sigma_L1": -1.475430357328969,
+      "delta_sigma_unb": 1.3131862906546539,
+      "delta_sigma_ediv": 2.7886166479836234,
+      "n_baseline": 39,
+      "n_event": 14
+    }
+  ],
+  "summary_30": {
+    "delta_sigma_L1": {
+      "mean": -1.3664169444443246,
+      "std": 0.763114377005413,
+      "min": -3.3823456589433496,
+      "max": 0.15538760795418766,
+      "median": -1.3878358608350805,
+      "p05": -2.8225303419323398,
+      "p95": -0.5192444168113052,
+      "n_valid": 30
+    },
+    "delta_sigma_unb": {
+      "mean": 0.7144751204057896,
+      "std": 0.8143707639136226,
+      "min": -0.909996789674891,
+      "max": 2.0807275370248104,
+      "median": 0.9785296218278043,
+      "p05": -0.6880265622427282,
+      "p95": 1.8907482276470697,
+      "n_valid": 30
+    },
+    "delta_sigma_ediv": {
+      "mean": 2.0808920648501146,
+      "std": 0.9566169114322064,
+      "min": -0.36524754884848276,
+      "max": 3.8651269812813105,
+      "median": 2.2209398131445464,
+      "p05": 0.6894047906044287,
+      "p95": 3.5656832837304617,
+      "n_valid": 30
+    }
+  },
+  "comparison_baseline_vs_subsample": {
+    "delta_sigma_L1": {
+      "baseline": -1.461267803010267,
+      "subsample_mean": -1.3664169444443246,
+      "diff": 0.09485085856594244,
+      "within_p05_p95": true
+    },
+    "delta_sigma_unb": {
+      "baseline": 1.2851782690269071,
+      "subsample_mean": 0.7144751204057896,
+      "diff": -0.5707031486211175,
+      "within_p05_p95": true
+    },
+    "delta_sigma_ediv": {
+      "baseline": 2.7464460720371733,
+      "subsample_mean": 2.0808920648501146,
+      "diff": -0.6655540071870587,
+      "within_p05_p95": true
+    }
+  }
+}
