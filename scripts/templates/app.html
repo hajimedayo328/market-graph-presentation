@@ -211,7 +211,7 @@
   <p class="subtitle">
     研究で見つけた指標 (L¹ / 不整合サイクル数 / e_div) を、
     <strong>もし実運用したらこういうダッシュボードになる</strong>というプロト。
-    GitHub Actions で <strong>毎週月曜朝に自動更新</strong>。
+    VPS で <strong>毎朝 JST 07:00 に自動更新</strong> (NY 引け後)。
     最終データ取得: <span id="last_updated">—</span>
   </p>
 
@@ -277,7 +277,7 @@
   </div>
 
   <!-- 実運用ログ集計 (live_summary.json) -->
-  <div class="panel" style="border-left:4px solid var(--blue, #0066cc);" id="live_summary_panel">
+  <div class="panel" style="border-left:4px solid var(--blue);" id="live_summary_panel">
     <h2 style="font-size:16px;">
       📈 実運用ログ集計 <span id="live_summary_freshness" style="font-size:12px; font-weight:normal; color:var(--sub);">(読み込み中...)</span>
     </h2>
@@ -615,7 +615,7 @@
   <div class="panel">
     <h2><span class="num">3</span>バックテスト結果 — 実際に投資に役立つか?</h2>
 
-    <div class="callout-mini" style="background:rgba(0,102,204,0.06);
+    <div style="background:rgba(0,102,204,0.06);
          padding:14px 18px; border-radius:8px; border-left:3px solid var(--accent);
          margin:6px 0 16px; font-size:13px;">
       <strong>バックテストとは何か (1 行で)</strong>:
@@ -680,16 +680,6 @@
     <p class="panel-desc">
       青色行 = Buy & Hold (ベンチ)、緑色行 = 最強戦略。
     </p>
-    <table class="bt-table" id="bt_table">
-      <thead>
-        <tr>
-          <th>戦略</th><th>方向</th>
-          <th>総リターン</th><th>CAGR</th><th>Sharpe</th>
-          <th>最大DD</th><th>シグナル日数</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
     <table class="bt-table" id="bt_table">
       <thead>
         <tr>
@@ -810,9 +800,9 @@
       </tbody>
     </table>
 
-    <h3 style="margin-top:14px; font-size:14px;">📅 運用フロー (週次)</h3>
+    <h3 style="margin-top:14px; font-size:14px;">📅 運用フロー (日次)</h3>
     <ol style="font-size:13px; line-height:1.7;">
-      <li><strong>毎週月曜 7:00 過ぎ</strong> にこのページをチェック (GitHub Actions が自動更新済)</li>
+      <li><strong>毎朝 JST 07:00 過ぎ</strong> にこのページをチェック (VPS が日次自動更新)</li>
       <li>📡 「最新の市場状態」カードを見て、<strong>判定</strong>を確認</li>
       <li>判定に応じてポジション調整:
         <ul style="margin:6px 0;">
@@ -826,21 +816,21 @@
             → Buy & Hold 継続</li>
         </ul>
       </li>
-      <li>判定が変わったらポジション切替 (前週と判定が変わってない週は何もしなくて OK)</li>
-      <li><strong>記録</strong>: 判定 / 売買額 / 翌週のリターンを Notion or Excel で記録</li>
+      <li>判定が変わったらポジション切替 (前日と判定が変わってない日は何もしなくて OK)</li>
+      <li><strong>記録</strong>: 判定 / 売買額 / 翌日のリターンを Notion or Excel で記録</li>
     </ol>
 
     <h3 style="margin-top:14px; font-size:14px;">📊 仮想ポートフォリオ テンプレ</h3>
-    <p class="panel-desc">Notion / Excel / Google Sheets で以下の表を作って週次記録:</p>
+    <p class="panel-desc">Notion / Excel / Google Sheets で以下の表を作って日次記録:</p>
     <table class="bt-table" style="font-size:12px;">
       <thead>
-        <tr><th>週</th><th>判定</th><th>e_div</th><th>アクション</th>
-            <th>ポジション</th><th>週次リターン</th><th>累積リターン</th></tr>
+        <tr><th>日付</th><th>判定</th><th>e_div</th><th>アクション</th>
+            <th>ポジション</th><th>日次リターン</th><th>累積リターン</th></tr>
       </thead>
       <tbody>
-        <tr><td>2026-W21</td><td>平常</td><td>0.00</td><td>—</td>
+        <tr><td>2026-05-23</td><td>平常</td><td>0.00</td><td>—</td>
             <td>SPY 100%</td><td>—</td><td>+0.00%</td></tr>
-        <tr><td>2026-W22</td><td>政策ショック型</td><td>+1.20</td><td>SPY → 現金</td>
+        <tr><td>2026-05-24</td><td>政策ショック型</td><td>+1.20</td><td>SPY → 現金</td>
             <td>現金 100%</td><td>(後追記)</td><td>—</td></tr>
         <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
       </tbody>
@@ -848,8 +838,8 @@
 
     <h3 style="margin-top:14px; font-size:14px;">📲 通知をセットアップ (任意)</h3>
     <ul style="font-size:13px; line-height:1.7;">
-      <li><strong>GitHub Watch</strong>: このリポジトリを Watch → コミット時にメール通知 → 週次更新を逃さない</li>
-      <li><strong>Pushbullet / Slack Webhook</strong>: 判定が変わったら通知 (Actions 拡張で実装可)</li>
+      <li><strong>GitHub Watch</strong>: このリポジトリを Watch → コミット時にメール通知 → 日次更新を逃さない</li>
+      <li><strong>Pushbullet / Slack Webhook</strong>: 判定が変わったら通知 (VPS 側スクリプト拡張で実装可)</li>
       <li><strong>RSS Reader</strong>: GitHub commit feed を購読</li>
     </ul>
 

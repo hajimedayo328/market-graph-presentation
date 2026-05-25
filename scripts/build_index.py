@@ -320,7 +320,7 @@ def main():
     font-size: 13px; color: var(--sub); margin-top: 28px;
   }
   nav.toc {
-    position: sticky; top: 0; background: rgba(251,251,253,0.92);
+    position: sticky; top: 52px; background: rgba(251,251,253,0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
     z-index: 100; padding: 10px 32px;
@@ -1290,12 +1290,12 @@ def main():
 </div>
 
 <footer>
-  Hajime · 東京都市大学 · 2026<br>
+  Market Graph Research · 研究内容<br>
   <span style="font-size:11px;">
-    © 2026 Hajime ·
+    © 2026 Hajime · 東京都市大学 ·
     Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" style="color:var(--accent)">CC BY 4.0</a> ·
     <a href="./docs/paper/main.pdf" style="color:var(--accent)">📄 Paper PDF</a> ·
-    <a href="https://github.com/hajimedayo328/market-graph-presentation#citation" style="color:var(--accent)">引用方法 (Citation)</a> ·
+    <a href="https://github.com/hajimedayo328/market-graph-presentation#citation" style="color:var(--accent)">Citation</a> ·
     <a href="https://github.com/hajimedayo328/market-graph-presentation" style="color:var(--accent)">GitHub</a>
   </span>
 </footer>
