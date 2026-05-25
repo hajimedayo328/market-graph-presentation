@@ -1214,12 +1214,24 @@ function renderLiveStatus(d) {
   const genDate = new Date(d.generated_at);
   const diffH = Math.floor((Date.now() - genDate.getTime()) / (1000 * 60 * 60));
   const fr = document.getElementById('live_freshness');
+  const panel = document.getElementById('live_panel');
   if (diffH < 24) {
     fr.textContent = '(' + diffH + ' 時間前更新 ✓)';
     fr.style.color = 'var(--green)';
-  } else {
-    fr.textContent = '(' + Math.floor(diffH / 24) + ' 日前 — 更新遅延)';
+    if (panel) panel.style.borderLeftColor = 'var(--green)';
+  } else if (diffH < 30) {
+    fr.textContent = '(' + diffH + ' 時間前更新 ⚠️ — 通常 24h 内)';
     fr.style.color = 'var(--orange)';
+    if (panel) panel.style.borderLeftColor = 'var(--orange)';
+  } else {
+    const days = Math.floor(diffH / 24);
+    fr.textContent = '🔴 (' + days + ' 日前 — VPS 自動実行が止まっている可能性)';
+    fr.style.color = 'var(--red)';
+    fr.style.fontWeight = '600';
+    if (panel) {
+      panel.style.borderLeftColor = 'var(--red)';
+      panel.style.background = 'rgba(192,57,43,0.04)';
+    }
   }
   // status grid (4 cards)
   const grid = document.getElementById('live_status_grid');
