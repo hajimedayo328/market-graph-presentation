@@ -272,7 +272,10 @@
     </div>
     <p class="panel-desc" style="margin-top:14px; font-size:11px;">
       ⚠️ デモ口座 (Vantage demo, $100k 仮想資金) での paper trading。
-      実弾ではない。CFD 価格はブローカーマークアップあり、spot ^GSPC とは差異あり。
+      実弾ではない。CFD 価格はブローカーマークアップあり、spot ^GSPC とは差異あり
+      (typically 0.05% 程度)。本パイプラインは「方向シグナル」を出すだけで絶対水準を
+      使わないため影響は小さい — シグナルの判定材料は相関ネットワークから計算する
+      L¹ / n_unb / e_div であり、価格の絶対値ではない。
     </p>
   </div>
 

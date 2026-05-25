@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "window": 30,
+    "threshold": 0.3,
+    "returns_period": [
+      "2025-01-01",
+      "2025-04-30"
+    ],
+    "baseline_window": [
+      "2025-02-15",
+      "2025-03-25"
+    ],
+    "event_window": [
+      "2025-04-02",
+      "2025-04-15"
+    ],
+    "event_name": "2025-04 Liberation Day",
+    "n_symbols_baseline": 40,
+    "n_symbols_exclude_vix": 39,
+    "dropped_symbols": [
+      "VIX"
+    ]
+  },
+  "baseline_40": {
+    "delta_sigma_L1": -1.461267803010267,
+    "delta_sigma_unb": 1.2851782690269071,
+    "delta_sigma_ediv": 2.7464460720371733,
+    "n_baseline": 39,
+    "n_event": 14,
+    "mu_L1_baseline": 1.0582029492797782,
+    "sd_L1_baseline": 0.28376474046794486,
+    "mu_unb_baseline": 36.41025641025641,
+    "sd_unb_baseline": 8.628953552210593
+  },
+  "exclude_vix_39": {
+    "delta_sigma_L1": -1.0800130390174278,
+    "delta_sigma_unb": 1.1970422695783984,
+    "delta_sigma_ediv": 2.277055308595826,
+    "n_baseline": 39,
+    "n_event": 14,
+    "mu_L1_baseline": 0.984385822684433,
+    "sd_L1_baseline": 0.3357671507940076,
+    "mu_unb_baseline": 35.35897435897436,
+    "sd_unb_baseline": 8.352393856308751
+  },
+  "comparison_baseline_vs_no_vix": {
+    "delta_sigma_L1": {
+      "baseline_40": -1.461267803010267,
+      "exclude_vix_39": -1.0800130390174278,
+      "diff_abs": 0.3812547639928392,
+      "diff_rel": 0.2609068393948323,
+      "sign_preserved": true
+    },
+    "delta_sigma_unb": {
+      "baseline_40": 1.2851782690269071,
+      "exclude_vix_39": 1.1970422695783984,
+      "diff_abs": -0.0881359994485087,
+      "diff_rel": 0.06857881242828845,
+      "sign_preserved": true
+    },
+    "delta_sigma_ediv": {
+      "baseline_40": 2.7464460720371733,
+      "exclude_vix_39": 2.277055308595826,
+      "diff_abs": -0.4693907634413472,
+      "diff_rel": 0.17090842169465106,
+      "sign_preserved": true
+    }
+  },
+  "verdict": {
+    "ediv_sign_preserved": true,
+    "ediv_abs_diff_sigma": 0.4693907634413472,
+    "ediv_passes_0p5sigma": true,
+    "summary": "VIX 込み Δσ_ediv = +2.746, VIX 抜き Δσ_ediv = +2.277, 差 = -0.469σ. 方向一致 + 0.5σ 以内 → VIX の内生性は banner finding に実質影響なし。"
+  }
+}

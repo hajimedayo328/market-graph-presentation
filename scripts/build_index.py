@@ -1253,20 +1253,28 @@ def main():
   <h2>圏論的に整理すると</h2>
   <p class="lede">圏論用語で整理しておく。実装ではここまで意識しなくても結果は出るが、研究室の言語と合わせるため。</p>
 
-  <h3>2 つの関手</h3>
-  <p>時間 $T$ を圏として、各 $t$ にネットワーク $M(t)$ を割り当てる関手 $M: T \\to \\mathcal{G}$ を考える。
-  $\\mathcal{G}$ はグラフたちの圏。</p>
-  <p>$M(t)$ から実数を取り出す関手が 2 つある:</p>
+  <h3>2 つの関手 (codomain を明示)</h3>
+  <p>時間を全順序圏 $(T, \\leq)$ とみなし、各 $t$ にネットワーク $M(t)$ を割り当てる関手</p>
   <div class="formula-box">
-    $$F_{L^1}: M(t) \\xrightarrow{|\\cdot|} \\text{Filtration} \\xrightarrow{H_1(\\cdot; \\mathbb{Z})} \\text{Persistence} \\xrightarrow{L^1} \\mathbb{R}$$
+    $$M: (T, \\leq) \\;\\longrightarrow\\; \\mathbf{Grph}$$
+  </div>
+  <p>を考える ($\\mathbf{Grph}$ はグラフの圏)。さらにエッジに符号 $\\pm$ がついたものは符号付きグラフの圏 $\\mathbf{SGrph}$ の対象として扱う。
+  $M(t)$ から実数を取り出す関手は次の 2 つ:</p>
+  <div class="formula-box">
+    $$F_{L^1}:\\;\\mathbf{Grph} \\;\\xrightarrow{|\\cdot|\\text{-filt.}}\\; \\mathrm{Filt} \\;\\xrightarrow{H_1(-;\\,\\mathbb{Z})}\\; \\mathrm{Pers} \\;\\xrightarrow{L^1}\\; (\\mathbb{R}_{\\geq 0}, \\leq)$$
   </div>
   <div class="formula-box">
-    $$F_{\\text{unb}}: M(t) \\xrightarrow{\\text{sgn}} \\text{signed graph} \\xrightarrow{H^1(\\cdot; \\mathbb{Z}/2)} \\text{unbalanced cycles} \\xrightarrow{\\#} \\mathbb{R}$$
+    $$F_{n_{\\text{unb}}}:\\;\\mathbf{SGrph} \\;\\xrightarrow{\\text{cycle-decomp.}}\\; \\mathrm{Cyc} \\;\\xrightarrow{H^1(-;\\,\\mathbb{Z}/2)}\\; \\mathrm{Unb} \\;\\xrightarrow{\\#}\\; (\\mathbb{Z}_{\\geq 0}, \\leq)$$
   </div>
-  <p>違うのは:</p>
+  <p>合成関手として書くと:</p>
   <ul class="simple">
-    <li>第 1 関手は <strong>$\\mathbb{Z}$ 係数</strong> + 連続フィルトレーション + 持続ホモロジー</li>
-    <li>第 2 関手は <strong>$\\mathbb{Z}/2$ 係数</strong> + 固定閾値グラフ + 符号付きコホモロジー</li>
+    <li>$F_{L^1} \\circ M:\\; (T, \\leq) \\to (\\mathbb{R}_{\\geq 0}, \\leq)$ — 各時刻の <strong>強さの時系列</strong></li>
+    <li>$F_{n_{\\text{unb}}} \\circ M:\\; (T, \\leq) \\to (\\mathbb{Z}_{\\geq 0}, \\leq)$ — 各時刻の <strong>符号矛盾サイクル数の時系列</strong></li>
+  </ul>
+  <p>違いをまとめると:</p>
+  <ul class="simple">
+    <li>第 1 関手は <strong>$\\mathbb{Z}$ 係数</strong> + 連続フィルトレーション + 持続ホモロジー → codomain は $\\mathbb{R}_{\\geq 0}$</li>
+    <li>第 2 関手は <strong>$\\mathbb{Z}/2$ 係数</strong> + 固定閾値の符号付きグラフ + 符号付きコホモロジー → codomain は $\\mathbb{Z}_{\\geq 0}$</li>
   </ul>
 
   <h3>不変性のクラスが違う</h3>
@@ -1285,6 +1293,20 @@ def main():
   </div>
   <p>これは厳密な意味での「自然変換」ではないが、
   $\\mathbb{Z}/2$ 関手と $\\mathbb{Z}$ 関手の <strong>相対的位置</strong>を測る量として機能している。</p>
+
+  <div class="callout intuition" style="margin-top:18px;">
+    <h4>正直に言うと: 圏論は道具として使っている</h4>
+    <p>本研究では <strong>圏論は記述・整理の道具として用いており、新しい証明や構造定理を生んでいるわけではない</strong>。
+    実質的な貢献は (1) 2 つの位相不変量 ($L^1$ ノルムと不整合サイクル数) を金融市場ネットワークに同時適用したこと、
+    (2) その差 $e_{\\text{div}}$ が経験的にショックタイプを判別する (関税系で大きく、ボラ系では小さく出る) ことを示したこと、
+    (3) 40 銘柄日次・event study・ペア符号反転による実証パイプラインを構築したこと、の 3 点である。
+    上の関手図式は「2 関手が異なる係数体・異なるフィルトレーション・異なる codomain を持つ」という事実を明示するためのフレームであり、
+    それ自体が新しい数学的定理ではない。</p>
+    <p><strong>今後の課題</strong>: より深い圏論的利用として、関手族の極限 (limit) や ind-完備化、
+    あるいは 12 指標を <strong>関手の family</strong> として扱った場合の引き戻し (pullback) を用いた
+    「手法非依存なショックシグナル」 — つまり個別の指標選びに依存しない不変量の構成 — が考えられる。
+    現状は実装途中で、ここでは予告に留める。</p>
+  </div>
 </section>
 
 <section id="s10">
