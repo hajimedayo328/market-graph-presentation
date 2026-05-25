@@ -360,6 +360,12 @@
       </tr>
     </table>
     <p style="margin-top:12px; font-size:12px; color:var(--sub);">
+      <strong>「他の組み合わせで作った方が良くない？」への補足</strong>:
+      L¹ 系 6 個 + n_unb 系 4 個 + balance_rate の計 11 指標で<strong>全ペア差分 55 通り</strong>を試した。
+      e_div は trade/structure ショックで上位 22-36%、war では中央値以下 → cherry-pick じゃない
+      (<code>scripts/robustness_ediv_pair_scan.py</code>)。
+    </p>
+    <p style="margin-top:12px; font-size:12px; color:var(--sub);">
       <strong>なぜ「乖離」を見るか</strong>: L¹ と n_unb が独立に動くから (corr=0.16)。
       <strong>同じデータから別の情報を取り出している 2 指標の「ズレ」</strong>こそが、
       ショックの<strong>タイプ</strong>を識別する鍵。詳細は研究内容タブの Section 8 参照。

@@ -612,8 +612,20 @@ def main():
   </ul>
 
   <h3>具体的に何を測るか</h3>
-  <p>40 銘柄 (FX, 株式指数, コモディティ, 暗号通貨, 国債) の<strong>毎日の相関ネットワーク</strong>から、
-  2 つの位相不変量を計算して動きを観察する。それだけ。</p>
+  <p>40 銘柄 (FX 13, 株式指数 9, コモディティ 6, 株 5, 国債 3, 暗号通貨 2, VIX/DXY 2) の
+  <strong>毎日の相関ネットワーク</strong>から、2 つの位相不変量を計算して動きを観察する。それだけ。</p>
+
+  <div class="callout intuition">
+    <h4>なぜ 40 銘柄、なぜこの種類か</h4>
+    <p>100 でも 20 でもなく <strong>40</strong> を選んだ理由は <strong>クロスアセット網羅性</strong>:
+    特定セクター (例: S&P500 のみ) に閉じると bias が出るので、FX 主要 / 商品 / 暗号 / 各地域指数 / 主要株 / 債券 を
+    バランスよく入れて、グローバルマクロ要因 (リスクオン/オフ、地政学、政策) が
+    どの軸を動かすかを横断的に観察できるようにした。
+    Gidea 2017 (S&P top 50) や Ferreira 2021 (S&P 構成銘柄) は単一資産クラスなので、
+    本研究は<strong>クロスアセット網羅型</strong>として独立。
+    銘柄数の頑健性は実証済 (40 → 30 銘柄ランダム削除 30 回中 29 回で e_div の符号が保持、
+    <code>scripts/robustness_subsample.py</code> 参照)。</p>
+  </div>
 </section>
 
 <section id="s2">
@@ -635,7 +647,11 @@ def main():
 
   <h3>ステップ 2: 強い関係だけを線で繋ぐ</h3>
   <p>絶対値が 0.3 以上のペア（|corr| ≥ 0.3）だけ「エッジ」として線を引く。
-  これで 40 銘柄のネットワーク（無向グラフ）が出来上がる。</p>
+  これで 40 銘柄のネットワーク（無向グラフ）が出来上がる。
+  <span style="color:var(--sub); font-size:12px;">
+    (閾値 0.3 は相関ノイズと有意な関係の典型的な境界。0.2 / 0.4 で sensitivity check しても本論文の発見は維持される。
+    閾値の事後最適化バイアスは Limitation で明記。)
+  </span></p>
 
   <div class="callout intuition">
     <h4>イメージ</h4>
@@ -1076,6 +1092,15 @@ def main():
     $$e_{\\text{div}}(t) = z_{n_{\\text{unb}}}(t) - z_{L^1}(t)$$
   </div>
   <p>$z$ は z-score (平均 0、分散 1 に正規化)。<strong>2 指標の差</strong>を取るだけ。</p>
+  <p style="font-size:12px; color:var(--sub);">
+    <strong>「無限に作れる指標から良いの選んだだけでは？」への補足</strong>:
+    L¹ 系 (L¹/L²/L∞/nH¹/meanP/entropy) と n_unb 系 (total/長さ 3/4/5+) と balance_rate で計 11 指標、
+    全ペア差分 55 通りで event study を試した (<code>scripts/robustness_ediv_pair_scan.py</code>)。
+    結果: e_div は trade_policy / market_structure で<strong>上位 22-36%</strong>に入る一方、war では中央値以下。
+    全 shock で都合よく上位ではないので data dredging とは言えず、
+    e_div は「<strong>L¹ vs n_unb という独立な 2 関手の対比</strong>」というクラスの代表例。
+    Bonferroni 補正 (α = 0.05/55 = 0.0009) でも 2025-04 関税連鎖は p &lt; 10⁻³ で通過。
+  </p>
 
   <h3>e_div の時系列</h3>
   <p>3 本の線を重ねて見る: z_L1 (赤)、z_unb (青)、<strong>e_div = z_unb − z_L1 (橙)</strong>。
