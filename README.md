@@ -1,118 +1,174 @@
-# Market Graph Research — プレゼンテーション
+# Market Graph Research
 
-> 圏論×グラフ理論で金融市場ネットワークの位相変化を分析する研究。
-> 東京都市大学 / Hajime / 2026-05
+> 圏論 × グラフ理論で金融市場ネットワークの **位相変化** を観察し、
+> ショックの種類を分類する研究プロジェクト。
 
-## 🌐 公開 URL
+## 概要
 
-- **研究内容**: https://hajimedayo328.github.io/market-graph-presentation/
-- **実装デモ**: https://hajimedayo328.github.io/market-graph-presentation/app.html
+株式市場の相関ネットワークを「符号付きグラフ」と見なし、
+2 種類の **位相不変量** を毎日計算する:
 
-## 構成
+- **L¹ ノルム of H₁** (`L1`) — 持続ホモロジーで測る相関構造の "強さ"
+- **不整合サイクル数** (`n_unb`) — Heider balance に基づく "符号" の崩れ
+
+両者の発散指標 `e_div = z(n_unb) − z(L¹)` でショックタイプを
+**3 区分 (政策 / 構造変化 / 一般ボラ)** に分類する。
+
+## 公開 URL
+
+| | |
+|---|---|
+| 研究内容 (HTML) | https://hajimedayo328.github.io/market-graph-presentation/ |
+| 実装デモ (リアルタイム + バックテスト) | https://hajimedayo328.github.io/market-graph-presentation/app.html |
+| Paper PDF | [./docs/paper/main.pdf](./docs/paper/main.pdf) |
+| Live ステータス JSON | [./data/live_status.json](./data/live_status.json) |
+
+## 何ができるか
+
+1. **2 つの位相不変量を計算** — `L¹ of H₁` と `n_unb` は corr ≈ 0.16 で **独立に動く**
+2. **e_div でショック分類** — 政策ショック (`e_div ≥ +0.8`) と構造変化 (`e_div ≤ −0.5`) を判別
+3. **VPS で毎日自動運用** — JST 07:00 に計算 → 判定 → Vantage デモ MT5 で paper trading → Pages 更新
+
+## リポジトリ構成
 
 ```
 .
-├── index.html              # 研究内容 (説明 + 可視化)
-├── app.html                # 実装デモ (リアルタイム + バックテスト)
-├── data/                   # 日次データ (週次自動更新)
-│   ├── ohlc_40.parquet     # yfinance 40 銘柄 5 年
-│   ├── gamma_timeseries_w30.csv
-│   ├── multi_indicators_w30.csv
-│   ├── backtest_results.json
-│   └── ...
+├── index.html                  # 研究内容 (説明 + 可視化)
+├── app.html                    # 実装デモ (リアルタイム + バックテスト)
+├── data/                       # 計算結果 (parquet / csv / json)
+│   ├── ohlc_40.parquet         #   40 銘柄 OHLC (5y/10y/15y/20y)
+│   ├── gamma_timeseries_w30.csv#   γ (L¹, n_unb) 時系列
+│   ├── multi_indicators_w30.csv#   12 指標分解
+│   ├── backtest_*_results.json #   バックテスト結果
+│   ├── live_status.json        #   VPS 最新ステータス
+│   └── live_summary.json       #   実運用ログ月次・累積集計
 ├── scripts/
-│   ├── update_data.py      # yfinance → 時系列
-│   ├── backtest.py         # 6 戦略 × 2 方向のバックテスト
-│   ├── build_index.py      # 研究内容 HTML 生成
-│   ├── build_app.py        # 実装デモ HTML 生成
-│   ├── templates/app.html  # app テンプレート
-│   └── lib/                # 持続ホモロジー等の依存ライブラリ
+│   ├── update_data.py          #   yfinance データ取得
+│   ├── compute_gamma_em.py     #   新興国市場版
+│   ├── backtest.py             #   6 戦略 × 2 方向
+│   ├── backtest_v2.py          #   改良版 (look-ahead 修正)
+│   ├── backtest_walkforward*.py#   Walk-forward OOS 検証 (5/10/15/20 年)
+│   ├── vps_daily.py            #   VPS 日次パイプライン本体
+│   ├── vps_publish.py          #   結果を Pages に push
+│   ├── trade_executor.py       #   MT5 paper trading 実行
+│   ├── aggregate_live_log.py   #   実運用ログ集計
+│   ├── health_check.py         #   VPS 停止検知
+│   ├── build_index.py          #   研究 HTML 生成
+│   ├── build_app.py            #   デモ HTML 生成
+│   ├── build_paper_figs.py     #   論文用図版生成
+│   └── lib/                    #   位相不変量計算コア
+│       ├── homology.py
+│       ├── persistent_homology.py
+│       ├── market_category.py
+│       ├── compute_gamma_timeseries.py
+│       └── compute_multi_indicators.py
+├── docs/paper/                 # LaTeX 論文 (自動ビルド PDF)
+│   ├── main.tex
+│   ├── main.pdf
+│   ├── references.bib
+│   └── figs/
+├── tests/                      # pytest スモークテスト
 ├── .github/workflows/
-│   └── weekly_update.yml   # 毎週月曜 JST 7:00 に自動データ更新 + HTML 再生成 + push
-└── requirements.txt
+│   ├── weekly_update.yml       #   週次データ更新 (補助)
+│   ├── build_paper.yml         #   docs/paper/ 変更時に PDF 自動ビルド
+│   └── test.yml                #   push 時 pytest
+├── requirements.txt            # 実行依存
+├── requirements-dev.txt        # テスト依存
+├── CITATION.cff
+└── LICENSE                     # CC BY 4.0
 ```
 
-## 自動更新
+## 自動化
 
-GitHub Actions が **毎週月曜 JST 07:00 (UTC 日曜 22:00)** に:
+| 何が | いつ | 何を |
+|---|---|---|
+| **VPS 日次パイプライン** | 毎日 JST 07:00 | データ取得 → γ 計算 → 判定 → Vantage デモ MT5 で paper trade → `data/live_status.json` 更新 → Pages へ push |
+| **LaTeX ビルド** (`build_paper.yml`) | `docs/paper/**` への push | xelatex で `main.pdf` を自動再生成しコミット |
+| **pytest CI** (`test.yml`) | push / PR | `requirements-dev.txt` でテスト実行 |
+| **週次更新 GitHub Actions** (`weekly_update.yml`) | 毎週月曜 JST 07:00 (補助) | yfinance 再取得 + HTML 再生成 |
 
-1. yfinance で最新 5 年データ取得
-2. γ時系列 (L¹ + 不整合サイクル数) 再計算
-3. バックテスト再実行 (S&P500 vs 6 戦略)
-4. `index.html` と `app.html` 再生成
-5. 自動 commit & push
+VPS 停止は `scripts/health_check.py` が検出し、Pages に警告表示する。
 
-手動トリガーも可: Actions タブ → "Weekly Data Update" → "Run workflow"
+## 再現方法 (最小手順)
+
+```bash
+git clone https://github.com/hajimedayo328/market-graph-presentation.git
+cd market-graph-presentation
+
+pip install -r requirements.txt
+
+# 1. 40 銘柄 OHLC を取得 (5 年)
+python scripts/update_data.py 5
+
+# 2. γ (L¹, n_unb) 時系列を計算 (window=30)
+python scripts/lib/compute_gamma_timeseries.py 30
+
+# 3. バックテスト (look-ahead 修正済み v2)
+python scripts/backtest_v2.py
+
+# 4. (任意) HTML を再生成して挙動確認
+python scripts/build_index.py
+python scripts/build_app.py
+```
+
+テストを動かす場合:
+
+```bash
+pip install -r requirements-dev.txt
+pytest -v
+```
 
 ## 主要発見 (要約)
 
-1. L¹ ノルム (強さ) と 不整合サイクル数 (符号) は **corr=0.16 で独立に動く**
-2. **ショック種別で反応指標が分岐**: 戦争・市場構造 → L¹、関税 → 不整合サイクル数
-3. **e_div = z_unb − z_L1 がショックタイプ 3 区分判別器**
-4. 集約スカラーを **12 指標に分解**すると trade_policy が **n_unb_4 (4-cycle) 特異**
+1. `L¹` (強さ) と `n_unb` (符号) は **corr ≈ 0.16 で独立**
+2. **ショック種別で反応指標が分岐** — 戦争・市場構造 → `L¹`、関税 → `n_unb`
+3. `e_div = z(n_unb) − z(L¹)` が **ショックタイプ 3 区分判別器**
+4. 集約スカラーを **12 指標に分解**すると `trade_policy` で `n_unb_4` (4-cycle) が特異
 
-## バックテスト結果 (2021-2026 5 年、S&P500 対象)
+詳細は Paper PDF (`./docs/paper/main.pdf`) または `index.html` 参照。
 
-| 戦略 | リターン | Sharpe | Max DD |
-|---|---|---|---|
-| **S1: e_div≥+0.8 で現金化** | **+85.2%** | +0.98 | -18.9% |
-| Buy & Hold (ベンチ) | +75.4% | +0.71 | -25.4% |
-| S2: e_div≤-0.5 で買い | +63.8% | **+1.16** | **-7.6%** |
+## Limitation
 
-→ 政策ショック検知でリスクオフする戦略が Buy & Hold を約 10pp 上回り、最大ドローダウンも改善。
+- バックテストの look-ahead bias は v2 で部分的に修正済み。残存リスクは Walk-forward OOS で検証中
+- 多市場再現性は新興国市場 (EM) で追加検証中
+- 取引コストは現在 0% 想定
+- `trade_policy` 反応は 2025-04 cluster 駆動の側面が大きい
 
-## 研究本体
+## 用語集
 
-コード・解析スクリプト・データ・ドキュメント詳細は別リポジトリ (Private):
-https://github.com/hajimedayo328/market-graph-research
-
-## Limitation (正直に)
-
-- バックテストは取引コスト 0%、look-ahead bias の疑義あり (Section 3 末参照)
-- 5 年データ・S&P500 のみ
-- trade_policy 反応は 2025-04 cluster 駆動の側面大
-- 4 手法統合では trade_policy 前兆消失 → 手法選択依存性あり
-
----
+| 記号 | 意味 |
+|---|---|
+| `L¹` | 持続ホモロジー H₁ バーコードの L¹ ノルム。相関構造の総"強さ"を表す連続量 |
+| `n_unb` | 符号付きグラフの不整合 (unbalanced) 3-サイクル数。Heider balance の崩れを離散量で測る |
+| `e_div` | `z(n_unb) − z(L¹)`。両不変量の z-score 差で、ショックタイプを分類 |
 
 ## Citation
 
-If you use this research, the findings, or any of its figures/analyses, **please cite it**:
-
 ```bibtex
-@misc{hajime2026marketgraph,
+@misc{marketgraph2026,
   author       = {Hajime},
   title        = {Market Graph Research: Topological Analysis of Financial Networks
                   with Categorical and Sign-based Invariants},
   year         = {2026},
   institution  = {Tokyo City University},
   howpublished = {\url{https://github.com/hajimedayo328/market-graph-presentation}},
-  note         = {GitHub Pages: https://hajimedayo328.github.io/market-graph-presentation/}
+  note         = {GitHub Pages: \url{https://hajimedayo328.github.io/market-graph-presentation/}}
 }
 ```
 
-Plain text:
-
-> Hajime (2026). *Market Graph Research: Topological Analysis of Financial Networks
-> with Categorical and Sign-based Invariants*. Tokyo City University.
-> https://github.com/hajimedayo328/market-graph-presentation
-
-GitHub の "Cite this repository" ボタンからも自動取得可能 (`CITATION.cff` 配置済み)。
+CITATION.cff を配置済みのため、GitHub の "Cite this repository" ボタンからも自動取得できる。
 
 ## License
 
-This research is released under the **Creative Commons Attribution 4.0 International (CC BY 4.0)**.
+[Creative Commons Attribution 4.0 International (CC BY 4.0)](./LICENSE)
 
-You are free to share and adapt the material **with appropriate credit** (citation as above).
-Full text: [LICENSE](./LICENSE) / https://creativecommons.org/licenses/by/4.0/
+引用 (上記 BibTeX) を伴う限り、共有・改変・商用利用いずれも可。
 
 ## Contact
 
-質問・コメント・コラボ希望は GitHub Issues 経由でお願いします:
+質問・コラボ希望は GitHub Issues 経由でお願いします:
 https://github.com/hajimedayo328/market-graph-presentation/issues
-
-Author: **Hajime**, Tokyo City University · 2026
 
 ---
 
-🤖 Built with Plotly, KaTeX, networkx, ripser, yfinance.
+Built with Plotly, KaTeX, networkx, ripser, yfinance, MetaTrader5.

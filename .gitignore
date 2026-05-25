@@ -1,7 +1,49 @@
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual envs
 .venv/
+venv/
+env/
+
+# Secrets / env
 .env
+*.env.local
 scripts/.env
 scripts/.env.local
-*.env.local
+
+# Test / coverage
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+
+# Logs (VPS 側ログを誤って commit しないため)
+logs/
+*.log
+
+# Temp / backup
+*.bak
+*.tmp
+*.swp
+*~
+
+# filter-repo 用一時ファイル
+replacements.txt
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

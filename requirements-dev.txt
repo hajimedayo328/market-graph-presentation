@@ -1,8 +1,6 @@
+# Test-only dependencies.
+# Production deps (numpy/pandas/networkx/scipy/ripser/pyarrow/yfinance/matplotlib)
+# are inherited from requirements.txt — keep this file lean.
+-r requirements.txt
 pytest>=7.0
 pytest-cov
-numpy
-pandas
-networkx
-scipy
-ripser
-pyarrow
