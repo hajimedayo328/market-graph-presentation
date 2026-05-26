@@ -1619,6 +1619,11 @@ __SEC105__
     <tr><td><strong>Survivorship bias</strong></td>
         <td>銘柄初出日 audit</td>
         <td>主要 event は全て 39 銘柄揃う 2017-11 以降、主要発見への影響なし</td></tr>
+    <tr><td><strong>因果方向性 (Granger)</strong></td>
+        <td>trade_policy event dummy ↔ e_div の 2 方向 Granger 検定 (lag 1/3/5/10)</td>
+        <td>trade_policy → e_div: <strong>p=0.022 (lag=5)</strong> で有意、
+            逆方向 e_div → trade_policy: p=0.254 で非有意 →
+            <strong>一方向因果</strong>、相関を超え方向性まで実証</td></tr>
   </table>
 
   <h3>11.2 残る制約 (今後の課題)</h3>
@@ -1635,8 +1640,13 @@ __SEC105__
     <li><strong>タイムゾーン</strong>: 24h 銘柄 (FX/暗号) と日中銘柄 (株/指数) を tz-naive UTC midnight に揃えて
         close-to-close return を取っている。event 発表時刻と各市場 close の関係で最大 ~30h ずれが発生する。
         日次粒度では実用上問題ないが、より高頻度な検出には asset_class 別 sub-graph + 時刻揃え resampling が必要 (future work)。</li>
-    <li><strong>因果性は仮説段階</strong>: permutation で「ランダム日との比較で有意」までは示せたが、
-        causal inference (例: Granger) としての厳密な証明は今後。</li>
+    <li><strong>因果性の検証範囲</strong>: 2 方向 Granger 因果性検定で
+        <code>trade_policy → e_div</code> の方向は p=0.022 (lag=5) で有意・逆は非有意 (p=0.254) を確認
+        (<code>scripts/causal_granger.py</code> / <code>data/causal_granger_results.json</code>)。
+        ただし Granger は「予測可能性ベース」の因果であり、隠れた共通要因 (例: 市場ストレス全般) を完全排除しない点は残課題。
+        より厳密な手法 (DAG / structural IV / counterfactual) は future work。
+        なお <code>market_structure</code> は p=0.67 で有意性なし
+        (n=5 と少サンプルが効いている可能性)。</li>
     <li><strong>圏論的厳密性</strong>: 圏論は道具として使用、新定理や構造定理は得ていない。
         関手族の極限 / 余極限による手法非依存シグナル $\\alpha$ は実装・実証完了 (Section 9 参照)。
         ただし「真の意味の圏論的 limit を計算した」のではなく、その類似物 (z-score の集約) で済ませている点は残課題。</li>
@@ -1653,7 +1663,7 @@ __SEC105__
     <li>20y データを使った関手の極限 / pullback 構築 (現状の $\\alpha$ は w30 / 5y, さらなる拡張)</li>
     <li>asset_class 別 sub-graph (株式 / FX / 商品 / 暗号) で時刻揃え相関 → 高頻度 event detection</li>
     <li>実弾運用 (まずは少額) で paper trading との乖離を測定</li>
-    <li>causal inference (Granger / DAG) で「政策イベント → 符号反転」の方向性を厳密に証明</li>
+    <li>因果推論の強化: Granger は方向性まで実証済 (11.1 参照)。残るは隠れた共通要因の排除 (DAG / structural IV)</li>
   </ul>
 </section>
 
