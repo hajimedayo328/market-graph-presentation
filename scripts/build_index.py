@@ -1564,6 +1564,64 @@ def main():
     新しい構造定理を証明したわけではないが、圏論的整理が「次の指標」を予言する形に動いた、という意味では
     記述以上の役割を果たしている。</p>
   </div>
+
+  <h3>Conjectures from Round 1 (予想)</h3>
+  <p>本研究の経験的発見を <strong>圏論的命題 (conjecture)</strong> として書き直し、
+  <code>scripts/conjecture_test_round1.py</code> で 10 個の仮説を数値検証した。
+  Round 1 の結果は <strong>支持 5 / 反例 5 / 中立 0</strong>。
+  ここでは <strong>支持 (support)</strong> と判定された 5 個のうち、
+  経験的根拠の強い 3 個を「予想」として記載する。
+  <strong>これらは数値検証で支持されただけで、証明完了ではない</strong>。
+  証明スケッチは future work であり、本ページの主要発見の地位を変えるものではない。</p>
+
+  <div class="callout intuition">
+    <h4>Conjecture 1: cross-asset の e_div 増幅 ≈ 層 (sheaf) 的貼り合わせ</h4>
+    <p><strong>命題 (予想)</strong>: 全 40 銘柄で計算した $\\Delta\\sigma_{e_{\\text{div}}}$ は、
+    asset_class 別 sub-graph (FX, INDEX, COMMODITY, STOCK) で計算した同量を有意に上回る。
+    これは、銘柄集合を asset_class でカバーした際の局所切断を貼り合わせる
+    <strong>層 (sheaf) 的構造</strong>の存在を示唆する。</p>
+    <p><strong>動機</strong>: 実測では Liberation Day で全 40 が <strong>+2.75σ</strong>、
+    FX が +0.47σ、INDEX が -0.06σ。<strong>増幅量 +2.28σ</strong> は asset 内シグナルでは説明できず、
+    cross-edge (Čech cohomology $H^1$ 的な glue 障害) の寄与と読める。</p>
+    <p><strong>数値検証で支持 / 証明は future work</strong>: sheaf 構造の opens の厳密化、
+    Čech cohomology の直接計算が次の課題。</p>
+  </div>
+
+  <div class="callout intuition">
+    <h4>Conjecture 2: shock-type → e_div 値の対応は分類関手 (classifying functor)</h4>
+    <p><strong>命題 (予想)</strong>: shock type を対象とする離散圏 $\\mathcal{S}$ から $\\mathbb{R}$ への
+    <strong>分類関手 $C: \\mathcal{S} \\to \\mathbb{R}$</strong>、$C(\\sigma) := \\text{mean}_{e\\in\\sigma}\\Delta\\sigma_{e_{\\text{div}}}(e)$
+    が、type 内分散 $\\ll$ type 間分散 (ANOVA F 比 $>$ 2) を満たす形で経験的に well-defined である。</p>
+    <p><strong>動機</strong>: 8 年 OOS で trade_policy が +0.96σ、market_structure +0.74σ、
+    macro/tech_shock -0.93〜-0.96σ と type ごとに値が <strong>分離</strong>。
+    type 内の event は同符号でまとまる傾向 (F 比 $>$ 2 で支持)。</p>
+    <p><strong>数値検証で支持 / 証明は future work</strong>: type 間の morphism (例: trade_policy ⊃ tariff) を
+    持つ豊富な圏 $\\mathcal{S}$ への拡張、event 数不均衡下での分散推定の安定性が課題。</p>
+  </div>
+
+  <div class="callout intuition">
+    <h4>Conjecture 3: Granger 一方向因果 ≈ 層コホモロジー長完全列の連結準同型</h4>
+    <p><strong>命題 (予想)</strong>: trade_policy event dummy → $e_{\\text{div}}$ の <strong>一方向 Granger 因果</strong>
+    (forward 有意 / reverse 非有意) は、政策層と市場層の短完全列
+    $0 \\to P \\to M \\to M/P \\to 0$ から誘導される長完全列の
+    <strong>連結準同型 $\\delta: H^n(P) \\to H^{n+1}(M)$</strong> として解釈できる。</p>
+    <p><strong>動機</strong>: forward (trade_policy → e_div) で $p=0.022$ (lag=5) で有意、
+    reverse は $p=0.254$ で非有意 → 因果の <strong>非対称性</strong>。
+    Granger の予測情報単方向性と、sheaf cohomology の境界写像 (片側情報が他方の構造を決める) が形式的に類似。</p>
+    <p><strong>数値検証で支持 / 証明は future work</strong>: 時間軸 open の厳密な sheaf 化 (Goguen 1992 等の参考)、
+    現時点では type-theoretic な mere analogy に留まる。</p>
+  </div>
+
+  <div class="callout">
+    <p style="font-size:0.92em;">
+      <strong>Honesty disclaimer</strong>: 本セクションは <strong>「数値検証で支持された予想 (conjecture)」</strong>
+      を述べたものであり、<strong>「証明された定理 (theorem)」</strong>ではない。
+      支持された他 2 仮説 (e_div = 障害類, α の Galois 接続) は本文で既に部分的に言及している。
+      反例 5 個 (係数 ℤ/$k$ への独立性拡張、ergodic 定常性、Kan extension 連続性、
+      balanced と $H_1=0$ の 4 同値、coend 集約) は棄却され、研究の限界として誠実に保持する。
+      生データは <code>data/conjecture_round1_results.json</code>。
+    </p>
+  </div>
 </section>
 
 <section id="s10">

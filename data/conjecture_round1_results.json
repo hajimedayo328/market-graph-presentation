@@ -1,0 +1,234 @@
+{
+  "round": 1,
+  "n_conjectures": 10,
+  "summary": {
+    "support": 5,
+    "refute": 5,
+    "neutral": 0
+  },
+  "honest_disclaimer": "本検証は『conjecture (予想)』レベルの数値支持を与えるのみで, 『定理 (theorem)』としての証明は完了していない. 支持と判定された仮説についても, 証明スケッチは将来研究 (future work) である.",
+  "results": [
+    {
+      "id": 1,
+      "verdict": "refute",
+      "evidence": {
+        "n_samples": 35,
+        "correlations": {
+          "r_L1_unb_2": -0.7211602555935873,
+          "r_L1_unb_3": -0.5806985148780682,
+          "r_L1_unb_5": -0.59859380517491
+        },
+        "max_abs_corr": 0.7211602555935873,
+        "threshold": 0.3
+      },
+      "note": "Z/3, Z/5 への係数拡張で L¹ との独立性が保たれるか",
+      "statement": "L¹(ℤ) と n_unb(ℤ/2) の独立性は普遍係数定理由来 → ℤ/3, ℤ/5 でも独立性が保たれる"
+    },
+    {
+      "id": 2,
+      "verdict": "support",
+      "evidence": {
+        "corr_ediv_vs_reconstruction": 0.9999999999638015,
+        "n_samples": 1679
+      },
+      "note": "e_div は形式的に z(n_unb) - z(L1). 障害類としての論証は証明スケッチへ",
+      "statement": "e_div は 2 関手 (F_L¹, F_n_unb) の自然変換の障害類 (obstruction)",
+      "proof_sketch": {
+        "title": "Conjecture (e_div = 障害類)",
+        "statement": "z 正規化された差 e_div(t) = z(n_unb)(t) - z(L¹)(t) は 2 つの関手 F_L¹: Grph → ℝ_≥0 と F_n_unb: SGrph → ℤ_≥0 の出力を 同じ codomain ℝ に射影した上での『差』であり, 両関手が自然変換で繋がるための障害類 (obstruction class) として機能する.",
+        "motivation": "もし F_L¹ と F_n_unb が同じ関手なら出力は一致し e_div ≡ 0. 実証的に e_div は ±5σ まで動くので, 両関手は等価ではない (障害が存在する). 経験的に再構成式と相関 r > 0.9999 で一致 (= 数値的に同義).",
+        "sketch": "想定アプローチ: (i) 関手族 {F_L¹, F_n_unb} を時間圏から ℝ への関手として固定; (ii) 両者の codomain を rolling z-score で同一化する射 z_t を作る; (iii) 自然変換 η: z∘F_L¹ ⇒ z∘F_n_unb が存在するなら 対角写像 (η_t - id) = 0 だが, 実測 e_div ≠ 0. Open: (a) z 正規化が関手として well-defined か (window 依存); (b) 障害類を本物の cohomology 類として書ける群構造の同定.",
+        "future_work": "z 正規化を厳密な categorical morphism として定式化"
+      }
+    },
+    {
+      "id": 3,
+      "verdict": "support",
+      "evidence": {
+        "spearman_naive_vs_norm": 0.7957433882470616,
+        "P(norm>med | naive>med)": 0.9297218155197657,
+        "n_samples": 1768
+      },
+      "note": "両者は単位が違うが順序的に整合するか (Galois 接続の必要条件)",
+      "statement": "α_naive (colimit 的) と α_norm (limit 的) の間に Galois 接続 (α_colim ≤ α_lim) が成立",
+      "proof_sketch": {
+        "title": "Conjecture (α 関手族の Galois 接続)",
+        "statement": "12 指標から構成した α_naive (≈ colimit 的「同時発火数」) と α_norm (≈ limit 的「Frobenius ノルム」) は, ランク順 (Spearman 相関) で正の単調関係を持ち, 圏論的 Galois 接続 α_colim ⊣ α_lim の必要条件を満たす.",
+        "motivation": "12 個の指標 F_i: ℳ → ℝ を関手族とみるとき, α_naive は colimit (同時発火) 側, α_norm は limit (全指標ノルム) 側. Galois 接続なら左随伴 ≤ 右随伴 の順序関係が常に成立する.",
+        "sketch": "想定アプローチ: (i) 指標族 {F_i}_{i=1}^{12} を関手として固定; (ii) ポセット ℝ^12 → [0,1] (閾値 2σ 越え数) と ℝ^12 → ℝ_≥0 (Frobenius) を colimit / limit に対応させる; (iii) Galois 接続 (adjoint pair) の構成可能性を, 閾値写像が monotone 関手として書けることから示す. Open: (a) 圏としての ℳ を厳密化 (現状は集合); (b) 12 指標の独立性をどう関手の充満性として捉えるか.",
+        "future_work": "ℳ の morphism (指標間の変換) を明示する"
+      }
+    },
+    {
+      "id": 4,
+      "verdict": "support",
+      "evidence": {
+        "delta_sigma_ediv_all_40": 2.7464460720371733,
+        "delta_sigma_ediv_by_class": {
+          "FX": 0.4691976247340773,
+          "INDEX": -0.0598615632649636
+        },
+        "max_subgraph": 0.4691976247340773,
+        "amplification": 2.277248447303096
+      },
+      "note": "クロスアセット相関での増幅 (層的貼り合わせの示唆)",
+      "statement": "cross-asset の e_div 増幅は層 (sheaf) の貼り合わせ",
+      "proof_sketch": {
+        "title": "Conjecture (cross-asset e_div 増幅 ≈ 層的貼り合わせ)",
+        "statement": "全 40 銘柄で計算した Δσ_e_div は, 個別 asset_class sub-graph (FX, INDEX, ...) で 計算した同量の最大値を有意に上回る. これは asset_class 間の cross-edge が, 局所切断 (sub-graph 上) を貼り合わせる層 (sheaf) 的構造の存在を示唆する.",
+        "motivation": "実測: 全 40 で Δσ_e_div = +2.75σ, FX で +0.47σ, INDEX で -0.06σ. asset 内シグナルだけでは説明できず, asset 間相関 (cross-edge) が増幅源.",
+        "sketch": "想定アプローチ: (i) 銘柄集合 V を asset_class でカバー V = ⋃_α V_α; (ii) 各 V_α 上に sub-graph を割り当てる pre-sheaf 𝓕 を構成; (iii) sheaf condition (local sections の glue) が成立しないとき, Čech cohomology H¹(V; 𝓕) ≠ 0 が cross-asset 増幅量に対応. Open: (a) sheaf 構造の opens をどう定義するか (asset_class は元々離散); (b) Δσ という統計量を sheaf 値として書く厳密化.",
+        "future_work": "Čech cohomology を実データから直接計算する"
+      }
+    },
+    {
+      "id": 5,
+      "verdict": "refute",
+      "evidence": {
+        "mean_r": 0.18688985671976832,
+        "std_r": 0.15063113875259926,
+        "min_r": -0.08668212480628873,
+        "max_r": 0.41711011761855515,
+        "sign_flip": true,
+        "n_rolling_points": 1546
+      },
+      "note": "L¹ と n_unb の相関が時間定常か (ergodic property の必要条件)",
+      "statement": "8y OOS での independence (r=0.16-0.26) は ergodicity (時間定常性) から従う"
+    },
+    {
+      "id": 6,
+      "verdict": "support",
+      "evidence": {
+        "means_by_cat": {
+          "geopolitical": -0.10126666666666666,
+          "macro": -0.9569,
+          "market_structure": 0.735425,
+          "monetary": -0.17776666666666663,
+          "tech_shock": -0.9284,
+          "trade_policy": 0.95642
+        },
+        "n_events_by_cat": {
+          "geopolitical": 3,
+          "macro": 1,
+          "market_structure": 4,
+          "monetary": 3,
+          "tech_shock": 1,
+          "trade_policy": 15
+        },
+        "f_ratio_between_within": 2.0438381073500524,
+        "ss_between": 9.929984235166666,
+        "ss_within": 20.40569340483333
+      },
+      "note": "shock type 内の e_div 分散 < shock type 間分散なら classifying functor として機能",
+      "statement": "shock-type → e_div 値の対応は分類関手 (classifying functor)",
+      "proof_sketch": {
+        "title": "Conjecture (shock-type → e_div の classifying functor)",
+        "statement": "shock type (geopolitical / monetary / trade_policy / ...) と Δσ_e_div の対応は, type 内分散 << type 間分散 (F 比 > 2) を満たし, shock type を対象とする離散圏 𝒮 から ℝ への分類関手 C: 𝒮 → ℝ として記述できる.",
+        "motivation": "trade_policy で平均 +0.96σ, market_structure で +0.74σ, macro/tech_shock で -0.93〜-0.96σ と type ごとに値が分離している. type 内の event は同符号でまとまる傾向.",
+        "sketch": "想定アプローチ: (i) shock 集合 E を type で分割し, 離散圏 𝒮 を type の集合とする; (ii) C(σ) := mean_{e ∈ σ}(Δσ_e_div(e)) を 𝒮 → ℝ の関手として定義; (iii) 関手の充実性は ANOVA F 比 > 2 で経験的に裏打ち. Open: (a) shock type 同士の morphism (type 階層) をどう与えるか; (b) event 数 (n=1-15) の不均衡による分散推定の安定性.",
+        "future_work": "shock type 間の射 (例: trade_policy ⊃ tariff) を持つ豊富な圏に拡張"
+      }
+    },
+    {
+      "id": 7,
+      "verdict": "refute",
+      "evidence": {
+        "spearman_adjacent_windows": {
+          "w20_vs_w30": -0.0871528046012957,
+          "w30_vs_w60": 0.13111123583053863,
+          "w60_vs_w90": 0.39966222693857106
+        },
+        "min_spearman": -0.0871528046012957,
+        "n_samples": 34
+      },
+      "note": "window を変えても n_unb の順序が保たれる (Kan extension 連続性の必要条件)",
+      "statement": "window=30/60/90 の連続性は Kan extension で繋がる"
+    },
+    {
+      "id": 8,
+      "verdict": "refute",
+      "evidence": {
+        "n_days_n_unb_zero": 6,
+        "n_days_h1_also_zero": 1,
+        "counter_examples_balanced_but_cyclic": 5,
+        "rate_h1_zero_given_n_unb_zero": 0.16666666666666666,
+        "core_3_equivalence": "(balanced ⇔ F=0 ⇔ n_unb=0) は Cartwright-Harary より数学的事実",
+        "tested_4th_condition": "H_1=0 との 4 同値"
+      },
+      "note": "balanced と cycle rank 0 は別概念であり, 4 同値拡張は反証される",
+      "statement": "balanced graph ⇔ frustration F=0 ⇔ n_unb=0 の三同値"
+    },
+    {
+      "id": 9,
+      "verdict": "support",
+      "evidence": {
+        "n_asymmetric_pairs": 1,
+        "pairs": [
+          {
+            "forward": "trade_policy → e_div",
+            "reverse": "e_div → trade_policy",
+            "sig_forward": true,
+            "sig_reverse": false,
+            "asymmetric": true
+          },
+          {
+            "forward": "trade_policy → L1",
+            "reverse": "e_div → trade_policy",
+            "sig_forward": false,
+            "sig_reverse": false,
+            "asymmetric": false
+          },
+          {
+            "forward": "trade_policy → n_unb",
+            "reverse": "e_div → trade_policy",
+            "sig_forward": false,
+            "sig_reverse": false,
+            "asymmetric": false
+          },
+          {
+            "forward": "market_structure → e_div",
+            "reverse": "e_div → trade_policy",
+            "sig_forward": false,
+            "sig_reverse": false,
+            "asymmetric": false
+          },
+          {
+            "forward": "market_structure → L1",
+            "reverse": "e_div → trade_policy",
+            "sig_forward": false,
+            "sig_reverse": false,
+            "asymmetric": false
+          },
+          {
+            "forward": "market_structure → n_unb",
+            "reverse": "e_div → trade_policy",
+            "sig_forward": false,
+            "sig_reverse": false,
+            "asymmetric": false
+          }
+        ]
+      },
+      "note": "Granger 一方向性 (短完全列の連結準同型) が成立",
+      "statement": "Granger 因果性 (trade_policy → e_div) は層コホモロジー長完全列の連結準同型と解釈できる",
+      "proof_sketch": {
+        "title": "Conjecture (Granger 因果性 ≈ 連結準同型)",
+        "statement": "trade_policy event dummy と e_div の間に Granger 一方向因果が成立する (forward 有意, reverse 非有意) ことは, 層コホモロジーの長完全列における連結準同型 δ: H^n(政策層) → H^{n+1}(市場層) と解釈できる.",
+        "motivation": "Granger 因果は予測情報の単方向流れ. 一方, sheaf cohomology の 連結準同型は短完全列 0→A→B→C→0 から長完全列を引き起こす境界写像. 両者とも『片側の情報が他方の構造を決める』という意味で類似.",
+        "sketch": "想定アプローチ: (i) 時間軸を opens とする pre-sheaf 𝒪(I) = {(政策状態, 市場状態) | I 上で観測}; (ii) 政策 → 市場の射が短完全列 0 → P → M → M/P → 0 を成すと仮定; (iii) 長完全列の連結準同型 δ の有意性が Granger F 統計量と対応. Open: (a) 層化の厳密性 (時間軸 open はあいまい); (b) 因果統計と境界写像の数学的対応は強い予想で, 現時点では type-theoretic な mere analogy.",
+        "future_work": "より厳密な sheaf 構造を時間軸上で構築 (Goguen 1992 etc.)"
+      }
+    },
+    {
+      "id": 10,
+      "verdict": "refute",
+      "evidence": {
+        "delta_sigma_ediv_all_40": 2.7464460720371733,
+        "weighted_subs_avg": 0.25276432055265147,
+        "diff": 2.4936817514845218,
+        "same_sign": true
+      },
+      "note": "全 40 の集約値が銘柄数加重 sub-graph 平均と整合 (coend 的)",
+      "statement": "asset_class 別 sub-graph の集計は coend (終余関手) で書ける"
+    }
+  ]
+}
