@@ -247,6 +247,15 @@ testing.
 
 \subsection{Independence of Two Invariants}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.78\linewidth]{figs/fig1_independence_scatter.pdf}
+\caption{Daily $L^1$ norm of $H_1$ vs. unbalanced cycle count $n_{\mathrm{unb}}$ over 5 years
+of S\&P 500-centered universe ($r=0.16$). The two topological invariants are nearly independent
+despite being computed from the same daily correlation matrix.}
+\label{fig:independence}
+\end{figure}
+
 \begin{table}[h]
 \centering
 \caption{Pearson correlation of $L^1$ and $n_{\mathrm{unb}}$ across data windows
@@ -271,6 +280,14 @@ within-country sectoral clustering.
 
 \subsection{Event Study by Category}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figs/fig2_event_study_categorical.pdf}
+\caption{Event study $\Delta\sigma$ by shock category. Geopolitical and market-structure
+shocks move $L^1$; US-issued large reciprocal trade-policy shocks move only $n_{\mathrm{unb}}$.}
+\label{fig:eventstudy}
+\end{figure}
+
 \begin{table}[h]
 \centering
 \caption{Event study results by shock category (window = 30, pre = $[-15, -1]$,
@@ -292,6 +309,14 @@ monetary          & 3  & $+0.38$ & $0.230$ & $-0.22$ & $0.76$ \\
 
 \subsection{Divergence Index Classifier}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figs/fig3_ediv_classifier.pdf}
+\caption{Group-level $\Delta\sigma$ of $e_{\mathrm{div}}$. Liberation Day cluster
+($n=5$) shows the strongest divergence ($+1.57$, $p<10^{-4}$).}
+\label{fig:ediv}
+\end{figure}
+
 \begin{table}[h]
 \centering
 \caption{Group-level event study of $e_{\mathrm{div}}$.}
@@ -308,6 +333,15 @@ Mid-unilateral policy (CHIPS, EU EV) & 7 & $-0.49$ & $0.97$ \\
 \end{table}
 
 \subsection{Three-Indicator Benchmark}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.65\linewidth]{figs/fig4_three_indicator_correlation.pdf}
+\caption{Pairwise correlations among three sign-balance indicators
+($n_{\mathrm{unb}}$, $K$, $F$). Our $n_{\mathrm{unb}}$ carries complementary
+information ($r = -0.40$ with $K$).}
+\label{fig:threeind}
+\end{figure}
 
 \begin{table}[h]
 \centering
@@ -330,6 +364,22 @@ confirming it carries complementary information.
 
 \subsection{Backtest Results}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figs/fig5_equity_curve.pdf}
+\caption{Equity curve of $S_1$ strategy ($e_{\mathrm{div}} \geq 0.8$ short)
+vs. Buy \& Hold benchmark on S\&P 500 over 5 years (in-sample).}
+\label{fig:equity}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figs/fig6_drawdown_curve.pdf}
+\caption{Drawdown curve. $S_1$ achieves $-11.2\%$ MaxDD vs. Buy \& Hold's $-25.4\%$,
+roughly half the worst-case loss.}
+\label{fig:drawdown}
+\end{figure}
+
 \begin{table}[h]
 \centering
 \caption{Backtest v2 results: 5y in-sample (S\&P 500 underlying).}
@@ -346,6 +396,15 @@ $S_6$: $z_{L^1} \wedge z_{\text{unb}}$ (short) & $+79.3\%$ & $+12.4\%$ & $+0.78$
 \end{table}
 
 \subsection{Walk-Forward Out-of-Sample}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{figs/fig7_walkforward_alpha.pdf}
+\caption{Per-fold OOS alpha (vs. Buy \& Hold) on 15y walk-forward.
+Positive alpha concentrates in volatile/bear years (2018 trade war, 2022);
+bull markets show opportunity cost.}
+\label{fig:walkforward}
+\end{figure}
 
 \begin{table}[h]
 \centering
