@@ -1,0 +1,142 @@
+[
+  {
+    "date": "2018-03-22",
+    "label": "米中第1弾関税発表 (Section 301)",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2018-07-06",
+    "label": "米中第1弾関税発動 (340億ドル)",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2019-08-23",
+    "label": "米中再エスカレ (関税報復応酬)",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2020-01-15",
+    "label": "米中 Phase One 合意",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2021-12-03",
+    "label": "対リトアニア輸入停止",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2022-08-09",
+    "label": "米 CHIPS 法成立",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2022-10-07",
+    "label": "対中先端半導体輸出規制",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2023-07-03",
+    "label": "ガリウム・ゲルマニウム規制",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2024-05-14",
+    "label": "バイデン 対中 EV 100% 関税",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2025-04-02",
+    "label": "Liberation Day 相互関税",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2025-04-04",
+    "label": "中国 34% 報復 + 希土類規制",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2025-04-08",
+    "label": "関税 180 日停止・株価反発",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2025-04-09",
+    "label": "関税エスカレート 145%",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2025-04-15",
+    "label": "Nvidia H20 輸出規制",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2026-03-04",
+    "label": "関税再発動",
+    "category": "trade_policy"
+  },
+  {
+    "date": "2018-02-05",
+    "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+    "category": "market_structure"
+  },
+  {
+    "date": "2020-03-12",
+    "label": "COVID クラッシュ (株式 -10%)",
+    "category": "market_structure"
+  },
+  {
+    "date": "2022-09-23",
+    "label": "UK 年金危機 (LDI ショック)",
+    "category": "market_structure"
+  },
+  {
+    "date": "2024-08-05",
+    "label": "円キャリー巻き戻し (日経過去最大下げ)",
+    "category": "market_structure"
+  },
+  {
+    "date": "2025-08-01",
+    "label": "サマー・ボラショック",
+    "category": "market_structure"
+  },
+  {
+    "date": "2022-02-24",
+    "label": "ウクライナ侵攻",
+    "category": "geopolitical"
+  },
+  {
+    "date": "2023-10-07",
+    "label": "ハマス・イスラエル戦争",
+    "category": "geopolitical"
+  },
+  {
+    "date": "2024-04-13",
+    "label": "イラン・イスラエル攻撃",
+    "category": "geopolitical"
+  },
+  {
+    "date": "2023-08-02",
+    "label": "Fitch 米国格下げ",
+    "category": "macro"
+  },
+  {
+    "date": "2024-01-31",
+    "label": "FOMC タカ派サプライズ",
+    "category": "monetary"
+  },
+  {
+    "date": "2024-09-18",
+    "label": "FOMC 50bp 利下げ",
+    "category": "monetary"
+  },
+  {
+    "date": "2024-12-18",
+    "label": "FOMC タカ派サプライズ",
+    "category": "monetary"
+  },
+  {
+    "date": "2026-01-27",
+    "label": "DeepSeek AI 投資見直し",
+    "category": "tech_shock"
+  }
+]

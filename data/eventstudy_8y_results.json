@@ -1,0 +1,1283 @@
+{
+  "meta": {
+    "oos_start": "2017-11-01",
+    "data_range": [
+      "2017-11-01",
+      "2026-05-22"
+    ],
+    "n_days": 3125,
+    "expanding_min_periods": 90,
+    "baseline_bdays": 30,
+    "event_bdays": 30,
+    "n_permutations": 5000,
+    "rng_seed": 20260526,
+    "input_csv": "gamma_timeseries_20y_w30.csv",
+    "indicators": [
+      "L1 (z-expanding)",
+      "n_unb (z-expanding)",
+      "e_div = z_unb - z_L1"
+    ],
+    "note": "z-score は過去のみ expanding window (min_periods=90) で計算し look-ahead を回避。Δσ は 2 mode: (1) post_minus_pre: post-30bd 平均 − pre-30bd 平均, (2) post_only: post-30bd 平均 (5y 既存指標との直接比較用). p_perm は 5000 perm の two-sided。"
+  },
+  "results": {
+    "geopolitical": {
+      "n_events": 3,
+      "events": [
+        "2022-02-24",
+        "2023-10-07",
+        "2024-04-13"
+      ],
+      "modes": {
+        "post_minus_pre": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.6106,
+              "p_perm": 0.1986,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2022-02-24",
+                  "label": "ウクライナ侵攻",
+                  "d_sigma": -1.1827
+                },
+                {
+                  "date": "2023-10-07",
+                  "label": "ハマス・イスラエル戦争",
+                  "d_sigma": -0.487
+                },
+                {
+                  "date": "2024-04-13",
+                  "label": "イラン・イスラエル攻撃",
+                  "d_sigma": -0.1623
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": -0.1422,
+              "p_perm": 0.6627,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2022-02-24",
+                  "label": "ウクライナ侵攻",
+                  "d_sigma": -0.6051
+                },
+                {
+                  "date": "2023-10-07",
+                  "label": "ハマス・イスラエル戦争",
+                  "d_sigma": 0.2677
+                },
+                {
+                  "date": "2024-04-13",
+                  "label": "イラン・イスラエル攻撃",
+                  "d_sigma": -0.0893
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": 0.4684,
+              "p_perm": 0.3775,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2022-02-24",
+                  "label": "ウクライナ侵攻",
+                  "d_sigma": 0.5776
+                },
+                {
+                  "date": "2023-10-07",
+                  "label": "ハマス・イスラエル戦争",
+                  "d_sigma": 0.7547
+                },
+                {
+                  "date": "2024-04-13",
+                  "label": "イラン・イスラエル攻撃",
+                  "d_sigma": 0.0729
+                }
+              ]
+            }
+          }
+        },
+        "post_only": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.1795,
+              "p_perm": 0.9398,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2022-02-24",
+                  "label": "ウクライナ侵攻",
+                  "d_sigma": -1.1205
+                },
+                {
+                  "date": "2023-10-07",
+                  "label": "ハマス・イスラエル戦争",
+                  "d_sigma": 0.0478
+                },
+                {
+                  "date": "2024-04-13",
+                  "label": "イラン・イスラエル攻撃",
+                  "d_sigma": 0.5341
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": -0.2808,
+              "p_perm": 0.4443,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2022-02-24",
+                  "label": "ウクライナ侵攻",
+                  "d_sigma": -0.1408
+                },
+                {
+                  "date": "2023-10-07",
+                  "label": "ハマス・イスラエル戦争",
+                  "d_sigma": -0.5827
+                },
+                {
+                  "date": "2024-04-13",
+                  "label": "イラン・イスラエル攻撃",
+                  "d_sigma": -0.1188
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": -0.1013,
+              "p_perm": 0.6683,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2022-02-24",
+                  "label": "ウクライナ侵攻",
+                  "d_sigma": 0.9797
+                },
+                {
+                  "date": "2023-10-07",
+                  "label": "ハマス・イスラエル戦争",
+                  "d_sigma": -0.6305
+                },
+                {
+                  "date": "2024-04-13",
+                  "label": "イラン・イスラエル攻撃",
+                  "d_sigma": -0.653
+                }
+              ]
+            }
+          }
+        }
+      },
+      "n_valid": 3
+    },
+    "macro": {
+      "n_events": 1,
+      "events": [
+        "2023-08-02"
+      ],
+      "modes": {
+        "post_minus_pre": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.2246,
+              "p_perm": 0.7791,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2023-08-02",
+                  "label": "Fitch 米国格下げ",
+                  "d_sigma": -0.2246
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": -0.3879,
+              "p_perm": 0.5184,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2023-08-02",
+                  "label": "Fitch 米国格下げ",
+                  "d_sigma": -0.3879
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": -0.1633,
+              "p_perm": 0.8262,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2023-08-02",
+                  "label": "Fitch 米国格下げ",
+                  "d_sigma": -0.1633
+                }
+              ]
+            }
+          }
+        },
+        "post_only": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": 0.2296,
+              "p_perm": 0.6407,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2023-08-02",
+                  "label": "Fitch 米国格下げ",
+                  "d_sigma": 0.2296
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": -0.7272,
+              "p_perm": 0.2001,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2023-08-02",
+                  "label": "Fitch 米国格下げ",
+                  "d_sigma": -0.7272
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": -0.9569,
+              "p_perm": 0.1626,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2023-08-02",
+                  "label": "Fitch 米国格下げ",
+                  "d_sigma": -0.9569
+                }
+              ]
+            }
+          }
+        }
+      },
+      "n_valid": 1
+    },
+    "market_structure": {
+      "n_events": 5,
+      "events": [
+        "2018-02-05",
+        "2020-03-12",
+        "2022-09-23",
+        "2024-08-05",
+        "2025-08-01"
+      ],
+      "modes": {
+        "post_minus_pre": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.8589,
+              "p_perm": 0.0428,
+              "n_used": 4,
+              "per_event": [
+                {
+                  "date": "2018-02-05",
+                  "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+                  "d_sigma": null
+                },
+                {
+                  "date": "2020-03-12",
+                  "label": "COVID クラッシュ (株式 -10%)",
+                  "d_sigma": 0.2525
+                },
+                {
+                  "date": "2022-09-23",
+                  "label": "UK 年金危機 (LDI ショック)",
+                  "d_sigma": -1.0707
+                },
+                {
+                  "date": "2024-08-05",
+                  "label": "円キャリー巻き戻し (日経過去最大下げ)",
+                  "d_sigma": -1.1357
+                },
+                {
+                  "date": "2025-08-01",
+                  "label": "サマー・ボラショック",
+                  "d_sigma": -1.4815
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.0983,
+              "p_perm": 0.7612,
+              "n_used": 4,
+              "per_event": [
+                {
+                  "date": "2018-02-05",
+                  "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+                  "d_sigma": null
+                },
+                {
+                  "date": "2020-03-12",
+                  "label": "COVID クラッシュ (株式 -10%)",
+                  "d_sigma": 1.1513
+                },
+                {
+                  "date": "2022-09-23",
+                  "label": "UK 年金危機 (LDI ショック)",
+                  "d_sigma": -0.9166
+                },
+                {
+                  "date": "2024-08-05",
+                  "label": "円キャリー巻き戻し (日経過去最大下げ)",
+                  "d_sigma": 0.4171
+                },
+                {
+                  "date": "2025-08-01",
+                  "label": "サマー・ボラショック",
+                  "d_sigma": -0.2588
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": 0.9571,
+              "p_perm": 0.0322,
+              "n_used": 4,
+              "per_event": [
+                {
+                  "date": "2018-02-05",
+                  "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+                  "d_sigma": null
+                },
+                {
+                  "date": "2020-03-12",
+                  "label": "COVID クラッシュ (株式 -10%)",
+                  "d_sigma": 0.8988
+                },
+                {
+                  "date": "2022-09-23",
+                  "label": "UK 年金危機 (LDI ショック)",
+                  "d_sigma": 0.1542
+                },
+                {
+                  "date": "2024-08-05",
+                  "label": "円キャリー巻き戻し (日経過去最大下げ)",
+                  "d_sigma": 1.5528
+                },
+                {
+                  "date": "2025-08-01",
+                  "label": "サマー・ボラショック",
+                  "d_sigma": 1.2227
+                }
+              ]
+            }
+          }
+        },
+        "post_only": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.8057,
+              "p_perm": 0.0642,
+              "n_used": 4,
+              "per_event": [
+                {
+                  "date": "2018-02-05",
+                  "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+                  "d_sigma": null
+                },
+                {
+                  "date": "2020-03-12",
+                  "label": "COVID クラッシュ (株式 -10%)",
+                  "d_sigma": -0.6582
+                },
+                {
+                  "date": "2022-09-23",
+                  "label": "UK 年金危機 (LDI ショック)",
+                  "d_sigma": -1.7529
+                },
+                {
+                  "date": "2024-08-05",
+                  "label": "円キャリー巻き戻し (日経過去最大下げ)",
+                  "d_sigma": -0.6872
+                },
+                {
+                  "date": "2025-08-01",
+                  "label": "サマー・ボラショック",
+                  "d_sigma": -0.1243
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": -0.0702,
+              "p_perm": 0.9606,
+              "n_used": 4,
+              "per_event": [
+                {
+                  "date": "2018-02-05",
+                  "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+                  "d_sigma": null
+                },
+                {
+                  "date": "2020-03-12",
+                  "label": "COVID クラッシュ (株式 -10%)",
+                  "d_sigma": 0.8736
+                },
+                {
+                  "date": "2022-09-23",
+                  "label": "UK 年金危機 (LDI ショック)",
+                  "d_sigma": -1.215
+                },
+                {
+                  "date": "2024-08-05",
+                  "label": "円キャリー巻き戻し (日経過去最大下げ)",
+                  "d_sigma": 0.0525
+                },
+                {
+                  "date": "2025-08-01",
+                  "label": "サマー・ボラショック",
+                  "d_sigma": 0.008
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": 0.7354,
+              "p_perm": 0.0952,
+              "n_used": 4,
+              "per_event": [
+                {
+                  "date": "2018-02-05",
+                  "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+                  "d_sigma": null
+                },
+                {
+                  "date": "2020-03-12",
+                  "label": "COVID クラッシュ (株式 -10%)",
+                  "d_sigma": 1.5318
+                },
+                {
+                  "date": "2022-09-23",
+                  "label": "UK 年金危機 (LDI ショック)",
+                  "d_sigma": 0.5379
+                },
+                {
+                  "date": "2024-08-05",
+                  "label": "円キャリー巻き戻し (日経過去最大下げ)",
+                  "d_sigma": 0.7397
+                },
+                {
+                  "date": "2025-08-01",
+                  "label": "サマー・ボラショック",
+                  "d_sigma": 0.1323
+                }
+              ]
+            }
+          }
+        }
+      },
+      "n_valid": 5
+    },
+    "monetary": {
+      "n_events": 3,
+      "events": [
+        "2024-01-31",
+        "2024-09-18",
+        "2024-12-18"
+      ],
+      "modes": {
+        "post_minus_pre": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": 0.1348,
+              "p_perm": 0.789,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2024-01-31",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 0.5444
+                },
+                {
+                  "date": "2024-09-18",
+                  "label": "FOMC 50bp 利下げ",
+                  "d_sigma": 0.3256
+                },
+                {
+                  "date": "2024-12-18",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": -0.4657
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.3769,
+              "p_perm": 0.2723,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2024-01-31",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 0.2846
+                },
+                {
+                  "date": "2024-09-18",
+                  "label": "FOMC 50bp 利下げ",
+                  "d_sigma": 0.3116
+                },
+                {
+                  "date": "2024-12-18",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 0.5347
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": 0.2422,
+              "p_perm": 0.6447,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2024-01-31",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": -0.2598
+                },
+                {
+                  "date": "2024-09-18",
+                  "label": "FOMC 50bp 利下げ",
+                  "d_sigma": -0.014
+                },
+                {
+                  "date": "2024-12-18",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 1.0004
+                }
+              ]
+            }
+          }
+        },
+        "post_only": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": 0.3001,
+              "p_perm": 0.2867,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2024-01-31",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 1.173
+                },
+                {
+                  "date": "2024-09-18",
+                  "label": "FOMC 50bp 利下げ",
+                  "d_sigma": -0.5634
+                },
+                {
+                  "date": "2024-12-18",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 0.2907
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.1223,
+              "p_perm": 0.5539,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2024-01-31",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 0.1578
+                },
+                {
+                  "date": "2024-09-18",
+                  "label": "FOMC 50bp 利下げ",
+                  "d_sigma": -0.3606
+                },
+                {
+                  "date": "2024-12-18",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 0.5697
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": -0.1778,
+              "p_perm": 0.5835,
+              "n_used": 3,
+              "per_event": [
+                {
+                  "date": "2024-01-31",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": -1.0151
+                },
+                {
+                  "date": "2024-09-18",
+                  "label": "FOMC 50bp 利下げ",
+                  "d_sigma": 0.2028
+                },
+                {
+                  "date": "2024-12-18",
+                  "label": "FOMC タカ派サプライズ",
+                  "d_sigma": 0.279
+                }
+              ]
+            }
+          }
+        }
+      },
+      "n_valid": 3
+    },
+    "tech_shock": {
+      "n_events": 1,
+      "events": [
+        "2026-01-27"
+      ],
+      "modes": {
+        "post_minus_pre": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.0067,
+              "p_perm": 0.9897,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2026-01-27",
+                  "label": "DeepSeek AI 投資見直し",
+                  "d_sigma": -0.0067
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": -0.0948,
+              "p_perm": 0.8876,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2026-01-27",
+                  "label": "DeepSeek AI 投資見直し",
+                  "d_sigma": -0.0948
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": -0.0881,
+              "p_perm": 0.9369,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2026-01-27",
+                  "label": "DeepSeek AI 投資見直し",
+                  "d_sigma": -0.0881
+                }
+              ]
+            }
+          }
+        },
+        "post_only": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": 1.031,
+              "p_perm": 0.1163,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2026-01-27",
+                  "label": "DeepSeek AI 投資見直し",
+                  "d_sigma": 1.031
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.1026,
+              "p_perm": 0.7177,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2026-01-27",
+                  "label": "DeepSeek AI 投資見直し",
+                  "d_sigma": 0.1026
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": -0.9284,
+              "p_perm": 0.1749,
+              "n_used": 1,
+              "per_event": [
+                {
+                  "date": "2026-01-27",
+                  "label": "DeepSeek AI 投資見直し",
+                  "d_sigma": -0.9284
+                }
+              ]
+            }
+          }
+        }
+      },
+      "n_valid": 1
+    },
+    "trade_policy": {
+      "n_events": 15,
+      "events": [
+        "2018-03-22",
+        "2018-07-06",
+        "2019-08-23",
+        "2020-01-15",
+        "2021-12-03",
+        "2022-08-09",
+        "2022-10-07",
+        "2023-07-03",
+        "2024-05-14",
+        "2025-04-02",
+        "2025-04-04",
+        "2025-04-08",
+        "2025-04-09",
+        "2025-04-15",
+        "2026-03-04"
+      ],
+      "modes": {
+        "post_minus_pre": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.4328,
+              "p_perm": 0.0412,
+              "n_used": 15,
+              "per_event": [
+                {
+                  "date": "2018-03-22",
+                  "label": "米中第1弾関税発表 (Section 301)",
+                  "d_sigma": 0.2542
+                },
+                {
+                  "date": "2018-07-06",
+                  "label": "米中第1弾関税発動 (340億ドル)",
+                  "d_sigma": -0.0733
+                },
+                {
+                  "date": "2019-08-23",
+                  "label": "米中再エスカレ (関税報復応酬)",
+                  "d_sigma": -0.439
+                },
+                {
+                  "date": "2020-01-15",
+                  "label": "米中 Phase One 合意",
+                  "d_sigma": 0.3874
+                },
+                {
+                  "date": "2021-12-03",
+                  "label": "対リトアニア輸入停止",
+                  "d_sigma": -1.8583
+                },
+                {
+                  "date": "2022-08-09",
+                  "label": "米 CHIPS 法成立",
+                  "d_sigma": 0.6066
+                },
+                {
+                  "date": "2022-10-07",
+                  "label": "対中先端半導体輸出規制",
+                  "d_sigma": -0.2714
+                },
+                {
+                  "date": "2023-07-03",
+                  "label": "ガリウム・ゲルマニウム規制",
+                  "d_sigma": -0.3846
+                },
+                {
+                  "date": "2024-05-14",
+                  "label": "バイデン 対中 EV 100% 関税",
+                  "d_sigma": -1.1511
+                },
+                {
+                  "date": "2025-04-02",
+                  "label": "Liberation Day 相互関税",
+                  "d_sigma": -0.5825
+                },
+                {
+                  "date": "2025-04-04",
+                  "label": "中国 34% 報復 + 希土類規制",
+                  "d_sigma": -0.5578
+                },
+                {
+                  "date": "2025-04-08",
+                  "label": "関税 180 日停止・株価反発",
+                  "d_sigma": -0.2482
+                },
+                {
+                  "date": "2025-04-09",
+                  "label": "関税エスカレート 145%",
+                  "d_sigma": -0.1887
+                },
+                {
+                  "date": "2025-04-15",
+                  "label": "Nvidia H20 輸出規制",
+                  "d_sigma": 0.0288
+                },
+                {
+                  "date": "2026-03-04",
+                  "label": "関税再発動",
+                  "d_sigma": -2.014
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.0122,
+              "p_perm": 0.9388,
+              "n_used": 15,
+              "per_event": [
+                {
+                  "date": "2018-03-22",
+                  "label": "米中第1弾関税発表 (Section 301)",
+                  "d_sigma": 0.5431
+                },
+                {
+                  "date": "2018-07-06",
+                  "label": "米中第1弾関税発動 (340億ドル)",
+                  "d_sigma": -0.185
+                },
+                {
+                  "date": "2019-08-23",
+                  "label": "米中再エスカレ (関税報復応酬)",
+                  "d_sigma": -0.5084
+                },
+                {
+                  "date": "2020-01-15",
+                  "label": "米中 Phase One 合意",
+                  "d_sigma": 0.4453
+                },
+                {
+                  "date": "2021-12-03",
+                  "label": "対リトアニア輸入停止",
+                  "d_sigma": -0.3806
+                },
+                {
+                  "date": "2022-08-09",
+                  "label": "米 CHIPS 法成立",
+                  "d_sigma": -0.0866
+                },
+                {
+                  "date": "2022-10-07",
+                  "label": "対中先端半導体輸出規制",
+                  "d_sigma": -0.4997
+                },
+                {
+                  "date": "2023-07-03",
+                  "label": "ガリウム・ゲルマニウム規制",
+                  "d_sigma": -0.4097
+                },
+                {
+                  "date": "2024-05-14",
+                  "label": "バイデン 対中 EV 100% 関税",
+                  "d_sigma": 0.0955
+                },
+                {
+                  "date": "2025-04-02",
+                  "label": "Liberation Day 相互関税",
+                  "d_sigma": 0.3935
+                },
+                {
+                  "date": "2025-04-04",
+                  "label": "中国 34% 報復 + 希土類規制",
+                  "d_sigma": 0.4237
+                },
+                {
+                  "date": "2025-04-08",
+                  "label": "関税 180 日停止・株価反発",
+                  "d_sigma": 0.4862
+                },
+                {
+                  "date": "2025-04-09",
+                  "label": "関税エスカレート 145%",
+                  "d_sigma": 0.4154
+                },
+                {
+                  "date": "2025-04-15",
+                  "label": "Nvidia H20 輸出規制",
+                  "d_sigma": -0.3656
+                },
+                {
+                  "date": "2026-03-04",
+                  "label": "関税再発動",
+                  "d_sigma": -0.1839
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": 0.445,
+              "p_perm": 0.0542,
+              "n_used": 15,
+              "per_event": [
+                {
+                  "date": "2018-03-22",
+                  "label": "米中第1弾関税発表 (Section 301)",
+                  "d_sigma": 0.2889
+                },
+                {
+                  "date": "2018-07-06",
+                  "label": "米中第1弾関税発動 (340億ドル)",
+                  "d_sigma": -0.1118
+                },
+                {
+                  "date": "2019-08-23",
+                  "label": "米中再エスカレ (関税報復応酬)",
+                  "d_sigma": -0.0694
+                },
+                {
+                  "date": "2020-01-15",
+                  "label": "米中 Phase One 合意",
+                  "d_sigma": 0.0579
+                },
+                {
+                  "date": "2021-12-03",
+                  "label": "対リトアニア輸入停止",
+                  "d_sigma": 1.4777
+                },
+                {
+                  "date": "2022-08-09",
+                  "label": "米 CHIPS 法成立",
+                  "d_sigma": -0.6933
+                },
+                {
+                  "date": "2022-10-07",
+                  "label": "対中先端半導体輸出規制",
+                  "d_sigma": -0.2283
+                },
+                {
+                  "date": "2023-07-03",
+                  "label": "ガリウム・ゲルマニウム規制",
+                  "d_sigma": -0.0252
+                },
+                {
+                  "date": "2024-05-14",
+                  "label": "バイデン 対中 EV 100% 関税",
+                  "d_sigma": 1.2467
+                },
+                {
+                  "date": "2025-04-02",
+                  "label": "Liberation Day 相互関税",
+                  "d_sigma": 0.976
+                },
+                {
+                  "date": "2025-04-04",
+                  "label": "中国 34% 報復 + 希土類規制",
+                  "d_sigma": 0.9816
+                },
+                {
+                  "date": "2025-04-08",
+                  "label": "関税 180 日停止・株価反発",
+                  "d_sigma": 0.7344
+                },
+                {
+                  "date": "2025-04-09",
+                  "label": "関税エスカレート 145%",
+                  "d_sigma": 0.6041
+                },
+                {
+                  "date": "2025-04-15",
+                  "label": "Nvidia H20 輸出規制",
+                  "d_sigma": -0.3944
+                },
+                {
+                  "date": "2026-03-04",
+                  "label": "関税再発動",
+                  "d_sigma": 1.83
+                }
+              ]
+            }
+          }
+        },
+        "post_only": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.8598,
+              "p_perm": 0.0002,
+              "n_used": 15,
+              "per_event": [
+                {
+                  "date": "2018-03-22",
+                  "label": "米中第1弾関税発表 (Section 301)",
+                  "d_sigma": -1.2615
+                },
+                {
+                  "date": "2018-07-06",
+                  "label": "米中第1弾関税発動 (340億ドル)",
+                  "d_sigma": -1.039
+                },
+                {
+                  "date": "2019-08-23",
+                  "label": "米中再エスカレ (関税報復応酬)",
+                  "d_sigma": -0.7746
+                },
+                {
+                  "date": "2020-01-15",
+                  "label": "米中 Phase One 合意",
+                  "d_sigma": 0.3046
+                },
+                {
+                  "date": "2021-12-03",
+                  "label": "対リトアニア輸入停止",
+                  "d_sigma": -0.9755
+                },
+                {
+                  "date": "2022-08-09",
+                  "label": "米 CHIPS 法成立",
+                  "d_sigma": 0.0261
+                },
+                {
+                  "date": "2022-10-07",
+                  "label": "対中先端半導体輸出規制",
+                  "d_sigma": -1.5185
+                },
+                {
+                  "date": "2023-07-03",
+                  "label": "ガリウム・ゲルマニウム規制",
+                  "d_sigma": 0.4543
+                },
+                {
+                  "date": "2024-05-14",
+                  "label": "バイデン 対中 EV 100% 関税",
+                  "d_sigma": -0.6211
+                },
+                {
+                  "date": "2025-04-02",
+                  "label": "Liberation Day 相互関税",
+                  "d_sigma": -1.3407
+                },
+                {
+                  "date": "2025-04-04",
+                  "label": "中国 34% 報復 + 希土類規制",
+                  "d_sigma": -1.3533
+                },
+                {
+                  "date": "2025-04-08",
+                  "label": "関税 180 日停止・株価反発",
+                  "d_sigma": -1.2838
+                },
+                {
+                  "date": "2025-04-09",
+                  "label": "関税エスカレート 145%",
+                  "d_sigma": -1.2892
+                },
+                {
+                  "date": "2025-04-15",
+                  "label": "Nvidia H20 輸出規制",
+                  "d_sigma": -1.1392
+                },
+                {
+                  "date": "2026-03-04",
+                  "label": "関税再発動",
+                  "d_sigma": -1.0854
+                }
+              ]
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.0966,
+              "p_perm": 0.2182,
+              "n_used": 15,
+              "per_event": [
+                {
+                  "date": "2018-03-22",
+                  "label": "米中第1弾関税発表 (Section 301)",
+                  "d_sigma": -0.3461
+                },
+                {
+                  "date": "2018-07-06",
+                  "label": "米中第1弾関税発動 (340億ドル)",
+                  "d_sigma": -0.0665
+                },
+                {
+                  "date": "2019-08-23",
+                  "label": "米中再エスカレ (関税報復応酬)",
+                  "d_sigma": -1.0729
+                },
+                {
+                  "date": "2020-01-15",
+                  "label": "米中 Phase One 合意",
+                  "d_sigma": 0.0269
+                },
+                {
+                  "date": "2021-12-03",
+                  "label": "対リトアニア輸入停止",
+                  "d_sigma": -0.6315
+                },
+                {
+                  "date": "2022-08-09",
+                  "label": "米 CHIPS 法成立",
+                  "d_sigma": -0.0508
+                },
+                {
+                  "date": "2022-10-07",
+                  "label": "対中先端半導体輸出規制",
+                  "d_sigma": -1.0205
+                },
+                {
+                  "date": "2023-07-03",
+                  "label": "ガリウム・ゲルマニウム規制",
+                  "d_sigma": -0.3393
+                },
+                {
+                  "date": "2024-05-14",
+                  "label": "バイデン 対中 EV 100% 関税",
+                  "d_sigma": -0.0186
+                },
+                {
+                  "date": "2025-04-02",
+                  "label": "Liberation Day 相互関税",
+                  "d_sigma": 1.0034
+                },
+                {
+                  "date": "2025-04-04",
+                  "label": "中国 34% 報復 + 希土類規制",
+                  "d_sigma": 1.0262
+                },
+                {
+                  "date": "2025-04-08",
+                  "label": "関税 180 日停止・株価反発",
+                  "d_sigma": 1.1089
+                },
+                {
+                  "date": "2025-04-09",
+                  "label": "関税エスカレート 145%",
+                  "d_sigma": 1.0284
+                },
+                {
+                  "date": "2025-04-15",
+                  "label": "Nvidia H20 輸出規制",
+                  "d_sigma": 0.6335
+                },
+                {
+                  "date": "2026-03-04",
+                  "label": "関税再発動",
+                  "d_sigma": 0.1682
+                }
+              ]
+            },
+            "e_div": {
+              "d_sigma_mean": 0.9564,
+              "p_perm": 0.0002,
+              "n_used": 15,
+              "per_event": [
+                {
+                  "date": "2018-03-22",
+                  "label": "米中第1弾関税発表 (Section 301)",
+                  "d_sigma": 0.9154
+                },
+                {
+                  "date": "2018-07-06",
+                  "label": "米中第1弾関税発動 (340億ドル)",
+                  "d_sigma": 0.9725
+                },
+                {
+                  "date": "2019-08-23",
+                  "label": "米中再エスカレ (関税報復応酬)",
+                  "d_sigma": -0.2982
+                },
+                {
+                  "date": "2020-01-15",
+                  "label": "米中 Phase One 合意",
+                  "d_sigma": -0.2776
+                },
+                {
+                  "date": "2021-12-03",
+                  "label": "対リトアニア輸入停止",
+                  "d_sigma": 0.344
+                },
+                {
+                  "date": "2022-08-09",
+                  "label": "米 CHIPS 法成立",
+                  "d_sigma": -0.0769
+                },
+                {
+                  "date": "2022-10-07",
+                  "label": "対中先端半導体輸出規制",
+                  "d_sigma": 0.498
+                },
+                {
+                  "date": "2023-07-03",
+                  "label": "ガリウム・ゲルマニウム規制",
+                  "d_sigma": -0.7936
+                },
+                {
+                  "date": "2024-05-14",
+                  "label": "バイデン 対中 EV 100% 関税",
+                  "d_sigma": 0.6024
+                },
+                {
+                  "date": "2025-04-02",
+                  "label": "Liberation Day 相互関税",
+                  "d_sigma": 2.3442
+                },
+                {
+                  "date": "2025-04-04",
+                  "label": "中国 34% 報復 + 希土類規制",
+                  "d_sigma": 2.3795
+                },
+                {
+                  "date": "2025-04-08",
+                  "label": "関税 180 日停止・株価反発",
+                  "d_sigma": 2.3927
+                },
+                {
+                  "date": "2025-04-09",
+                  "label": "関税エスカレート 145%",
+                  "d_sigma": 2.3176
+                },
+                {
+                  "date": "2025-04-15",
+                  "label": "Nvidia H20 輸出規制",
+                  "d_sigma": 1.7727
+                },
+                {
+                  "date": "2026-03-04",
+                  "label": "関税再発動",
+                  "d_sigma": 1.2536
+                }
+              ]
+            }
+          }
+        }
+      },
+      "n_valid": 15
+    },
+    "_ALL": {
+      "n_events": 28,
+      "modes": {
+        "post_minus_pre": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.4291,
+              "p_perm": 0.01,
+              "n_used": 27
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.0295,
+              "p_perm": 0.7682,
+              "n_used": 27
+            },
+            "e_div": {
+              "d_sigma_mean": 0.4587,
+              "p_perm": 0.0076,
+              "n_used": 27
+            }
+          }
+        },
+        "post_only": {
+          "indicators": {
+            "L1": {
+              "d_sigma_mean": -0.5369,
+              "p_perm": 0.0052,
+              "n_used": 27
+            },
+            "n_unb": {
+              "d_sigma_mean": 0.0025,
+              "p_perm": 0.5001,
+              "n_used": 27
+            },
+            "e_div": {
+              "d_sigma_mean": 0.5395,
+              "p_perm": 0.0014,
+              "n_used": 27
+            }
+          }
+        }
+      }
+    }
+  }
+}

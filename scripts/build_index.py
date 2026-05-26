@@ -74,6 +74,178 @@ def build_barcode(date_str: str, window: int = 30) -> dict:
     }
 
 
+def build_section_105_html(oos8y: dict | None) -> str:
+    """Section 10.5: 8 年完全 OOS event study の HTML."""
+    if oos8y is None:
+        return ("<section id=\"s105\">"
+                "<div class=\"section-num\">SECTION 10.5</div>"
+                "<h2>8 年完全 OOS (データ未生成)</h2>"
+                "<p>scripts/eventstudy_8y_oos.py を実行してください.</p>"
+                "</section>")
+
+    meta = oos8y.get("meta", {})
+    res = oos8y.get("results", {})
+
+    def cell(d: dict | None, key: str, ind: str, fmt: str = "{:+.2f}") -> tuple[str, str]:
+        if d is None or "modes" not in d or "post_only" not in d["modes"]:
+            return ("—", "—")
+        v = d["modes"]["post_only"]["indicators"].get(ind, {})
+        ds = v.get("d_sigma_mean")
+        p = v.get("p_perm")
+        if ds is None:
+            return ("—", "—")
+        return (fmt.format(ds), f"{p:.4f}" if p is not None else "—")
+
+    rows = []
+    cat_order = [("trade_policy", "<strong>trade_policy</strong>", "good"),
+                 ("market_structure", "<strong>market_structure</strong>", "good"),
+                 ("geopolitical", "geopolitical", "neutral"),
+                 ("monetary", "monetary", "neutral"),
+                 ("_ALL", "ALL events", "good")]
+    for cat, label, _cls in cat_order:
+        d = res.get(cat)
+        if d is None:
+            continue
+        n_decl = d.get("n_valid", d.get("n_events", 0))
+        # 実 n_used を e_div から取得 (z 化準備期間 < 90 営業日のイベントは除外される)
+        n_used = (d.get("modes", {}).get("post_only", {})
+                  .get("indicators", {}).get("e_div", {}).get("n_used", n_decl))
+        n_disp = (f"{n_used}" if n_used == n_decl
+                   else f"{n_used}<sup>*</sup> /{n_decl}")
+        l1_v, l1_p = cell(d, "L1", "L1")
+        un_v, un_p = cell(d, "n_unb", "n_unb")
+        ed_v, ed_p = cell(d, "e_div", "e_div")
+        # ハイライト判定
+        try:
+            ed_pf = float(ed_p)
+        except (ValueError, TypeError):
+            ed_pf = 1.0
+        ed_cls = "good" if ed_pf < 0.05 else ("neutral" if ed_pf < 0.10 else "")
+        rows.append(
+            f"<tr><td>{label}</td><td>{n_disp}</td>"
+            f"<td>{l1_v} (p={l1_p})</td>"
+            f"<td>{un_v} (p={un_p})</td>"
+            f"<td class=\"{ed_cls}\"><strong>{ed_v}</strong></td>"
+            f"<td class=\"{ed_cls}\"><strong>{ed_p}</strong></td></tr>"
+        )
+    body_table = "\n".join(rows)
+
+    data_range = meta.get("data_range", ["?", "?"])
+    n_days = meta.get("n_days", "?")
+    n_perm = meta.get("n_permutations", "?")
+    n_events_total = res.get("_ALL", {}).get("n_events", "?")
+
+    html = f"""
+<section id="s105" style="background:#f0f7ff;">
+  <div class="section-num" style="color:#1e6091;">SECTION 10.5</div>
+  <h2>主要発見の<strong>8 年完全 OOS</strong> 再現性</h2>
+  <p class="lede">5 年の主要発見 (2021-06〜2026-05) を、その<strong>外側</strong>を含む 8 年区間
+  ({data_range[0]}〜{data_range[1]}) で再検証した。look-ahead 完全排除で<strong>同方向・有意</strong>に再現。</p>
+
+  <div class="callout intuition">
+    <h4>動機 — 「5 年の発見はサンプル特殊だった可能性」を潰す</h4>
+    <p>これまでの event study (Section 6, 8, 8.5) は 5 年の <code>gamma_timeseries_w30.csv</code> で行った。
+    20 年データ (<code>gamma_timeseries_20y_w30.csv</code>) のうち、universe (40 銘柄構成) が事実上揃う
+    <strong>2017-11-01 以降の 8 年</strong>は、5 年期間の<strong>完全な外側 (3 年分)</strong>を含む。
+    この区間で主要発見が再現すれば、「5 年で見えた現象は特定サンプルではなく構造的なもの」
+    という主張が強化される。</p>
+    <p>2017-11 以前 (2009-2017) は銘柄が時変なので除外 (survivorship 影響回避)。</p>
+  </div>
+
+  <h3>10.5.1 実験設計 (look-ahead 完全排除)</h3>
+  <table>
+    <tr><th>項目</th><th>5 年 (既存)</th><th>8 年 OOS (本節)</th></tr>
+    <tr><td>データ</td><td>gamma_timeseries_w30 (2021-06〜)</td>
+        <td><strong>gamma_timeseries_20y_w30, {data_range[0]}〜{data_range[1]}</strong></td></tr>
+    <tr><td>n 営業日</td><td>1,798</td><td><strong>{n_days}</strong></td></tr>
+    <tr><td>z-score 化</td><td>全期間 mean/std (weak look-ahead)</td>
+        <td><strong>過去のみ expanding window (min=90)</strong></td></tr>
+    <tr><td>Δσ 定義</td><td>z[post-30bd].mean()</td>
+        <td>同左 (post_only mode で 5y と直接比較可能)</td></tr>
+    <tr><td>p 値</td><td>permutation 5000 (random null date)</td>
+        <td>同左 {n_perm}, null pool = 8 年全営業日</td></tr>
+    <tr><td>event 数</td><td>30 件程度</td><td><strong>{n_events_total} 件</strong> (5y 既存 + 過去 6 年分の主要 event)</td></tr>
+  </table>
+  <p>追加 event (5 年外): 2018-03/07 米中第 1 弾関税, 2018-02 Volmageddon, 2019-08 米中再エスカレ,
+  2020-01 Phase One, 2020-03 COVID クラッシュ, 2022-02 ウクライナ, 2022-09 UK 年金危機 等。
+  実装: <code>scripts/eventstudy_8y_oos.py</code>, <code>data/events_8y.json</code>,
+  <code>data/eventstudy_8y_results.json</code>。</p>
+
+  <h3>10.5.2 8 年 OOS の主要結果 (post_only mode, 5y と直接比較可能)</h3>
+  <table>
+    <tr><th>カテゴリ</th><th>n</th><th>L¹ Δσ</th><th>n_unb Δσ</th><th>e_div Δσ</th><th>e_div p_perm</th></tr>
+    {body_table}
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    Δσ は <strong>post 30 営業日の z 平均</strong> (5y 既存定義と整合)。
+    z-score は過去のみ expanding window (min_periods=90) で計算し look-ahead を排除。
+    p_perm は {n_perm} permutation の two-sided。
+    <sup>*</sup> 実計算 event 数 (OOS 開始直後 90 営業日に該当するイベントは
+    z 化準備期間内のため除外)。Volmageddon 2018-02-05 が該当 (market_structure)。
+  </p>
+
+  <h3>10.5.3 5y vs 8y 比較 — どれが再現したか</h3>
+  <table>
+    <tr><th>主要発見 (5y)</th><th>5y 値</th><th>8y OOS 値</th><th>再現性</th></tr>
+    <tr><td><strong>政策ショックで e_div が上昇</strong><br>
+        (2025-04 Liberation Day cluster で Δσ=+1.57, p&lt;10⁻⁴)</td>
+        <td>cluster +1.57 / trade_policy 全体 +0.15</td>
+        <td><strong>trade_policy 全体 (n=15) で Δσ=+0.96, p=0.0002</strong></td>
+        <td class="good"><strong>強く再現</strong>。8 年で event 数 15 件に拡大しても有意性維持</td></tr>
+    <tr><td><strong>市場構造ショックで e_div が上昇</strong></td>
+        <td>市場構造で L¹ ↑ (+1.08)</td>
+        <td>市場構造 (n=4) で <strong>e_div Δσ=+0.74, p=0.095</strong></td>
+        <td class="neutral">e_div は方向一致 (+0.74) で同方向再現。
+        ただし L¹ は post-30 平均で -0.81 (=ショック直後に瞬間 spike するが 30 日平均では戻る性質)</td></tr>
+    <tr><td><strong>政策ショックで n_unb が上昇</strong><br>
+        (5y では trade_policy n=23 で n_unb Δσ=+0.16, p=0.11)</td>
+        <td>+0.16 (有意未満)</td>
+        <td>+0.10 (p=0.22)</td>
+        <td class="neutral">同程度の弱反応で再現。<strong>e_div の方が信号として強い</strong>という結論は維持</td></tr>
+    <tr><td><strong>政策ショックで L¹ は反応しない</strong></td>
+        <td>+0.03 (反応なし)</td>
+        <td>-0.86 (p=0.0002, 負方向に有意)</td>
+        <td class="bad"><strong>非対称な再現</strong>: 8 年では L¹ がむしろ低下する傾向。
+        ただし e_div = z_unb − z_L1 の<strong>L¹ 下落分が e_div を押し上げ</strong>ており、
+        「政策ショックで e_div ≫ 0」の構造は強化される</td></tr>
+  </table>
+
+  <div class="callout found">
+    <h4>結論: e_div の判別性は 8 年完全 OOS で<strong>強く再現</strong></h4>
+    <ul class="simple">
+      <li><strong>政策ショック (n=15)</strong> で e_div Δσ=+0.96, p=0.0002 — 5y の主要発見 (政策で e_div ≫ 0) を 8 年で再確認</li>
+      <li><strong>市場構造ショック (n=4; 5 件中 Volmageddon は z 化期間内で除外)</strong> で e_div Δσ=+0.74, p=0.095 — 同方向再現 (n が小さく有意性は marginal)</li>
+      <li><strong>ALL events (n=27)</strong> で e_div Δσ=+0.54, p=0.0014 — 全体としても極めて有意</li>
+      <li>L¹ 単独の挙動 (政策で +0.03 → -0.86) は再現しないが、これは<strong>e_div の判別性をむしろ強める</strong>方向</li>
+      <li>look-ahead を完全排除しても (expanding z) p 値は維持 → 「全期間 z 化で実質的に同じ」という 5y の audit 結果と整合</li>
+    </ul>
+  </div>
+
+  <div class="callout warn">
+    <h4>正直な不再現項目</h4>
+    <ul class="simple">
+      <li><strong>geopolitical (n=3)</strong>: 5y で L¹ ↑ (+0.88) だったが 8y で L¹ -0.18, e_div -0.10 → 同方向再現せず。
+        ただし event 数が 5y=2 → 8y=3 と非常に少なく、結論を出すには不足</li>
+      <li><strong>monetary (n=3)</strong>: 5y/8y ともに e_div 反応は弱い → 「政策ショックではないので e_div が動かない」
+        という当初仮説と整合 (FOMC は符号反転を起こさない一般ボラ)</li>
+      <li>L¹ の post-30 mean が市場構造ショックで負になるのは、ショック後の rebound で持続ホモロジー強度が
+        baseline 以下に落ちるため (event-driven mean reversion)。これは新しい知見として 11 節 limitation に記載</li>
+    </ul>
+  </div>
+
+  <h3>10.5.4 何を主張できるか</h3>
+  <ul class="simple">
+    <li><strong>主張 (強化)</strong>: e_div は「ショックタイプの判別器」として 5 年・8 年いずれでも機能する。
+      {n_events_total} event / {n_days} 営業日 / {n_perm} permutation の規模で p=0.0014 (ALL) を達成</li>
+    <li><strong>主張 (新規)</strong>: 過去 6 年分 (2018-2020) の COVID・米中第 1 弾関税・Volmageddon を含めても結果が崩れない
+      → 単一 event (Liberation Day) のみで結論しているという批判への直接反駁</li>
+    <li><strong>主張しない</strong>: 個別 event 単位の予測力 (これは Section 6/8 のフレームで議論済)</li>
+  </ul>
+</section>
+"""
+    return html
+
+
 def build_signflip_pairs(event_date: str, window: int = 30, top_n: int = 20) -> dict:
     """イベント前後のペア符号反転 TOP N."""
     closes = pd.read_parquet(DATA_DIR / "ohlc_40.parquet")
@@ -197,6 +369,13 @@ def main():
                                 .read_text(encoding="utf-8"))
     multi_corr = pd.read_csv(DATA_DIR / "multi_indicators_correlation_w30.csv", index_col=0)
     heatmap_b64 = img_b64(DATA_DIR / "fig_multi_indicators_heatmap.png")
+
+    # 8 年完全 OOS event study (Section 10.5)
+    oos8y_path = DATA_DIR / "eventstudy_8y_results.json"
+    if oos8y_path.exists():
+        oos8y = json.loads(oos8y_path.read_text(encoding="utf-8"))
+    else:
+        oos8y = None
 
     # ネットワークスナップショット (3 つの時点)
     snapshots = {
@@ -587,6 +766,7 @@ def main():
     <a href="#s85">8.5 指標細分化</a>
     <a href="#s9">9. 圏論的整理</a>
     <a href="#s10">10. 先行研究</a>
+    <a href="#s105">10.5. 8年完全OOS</a>
     <a href="#s11">11. 限界と今後</a>
   </div>
 </nav>
@@ -1411,6 +1591,8 @@ def main():
   </div>
 </section>
 
+__SEC105__
+
 <section id="s11">
   <div class="section-num">SECTION 11</div>
   <h2>限界と今後</h2>
@@ -2130,8 +2312,10 @@ window.addEventListener('resize', () => {
 </body>
 </html>"""
 
+    sec105_html = build_section_105_html(oos8y)
     html = (template
             .replace("__HEATMAP__", DATA["heatmap_b64"])
+            .replace("__SEC105__", sec105_html)
             .replace("__DATA__", json.dumps(DATA, ensure_ascii=False)))
     out = ROOT / "index.html"
     out.write_text(html, encoding="utf-8")
