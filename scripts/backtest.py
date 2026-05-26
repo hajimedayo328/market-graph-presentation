@@ -36,12 +36,22 @@ ROOT = HERE.parent
 DATA_DIR = ROOT / "data"
 
 
-def load_indicators() -> pd.DataFrame:
-    """指標時系列をロードし、z-score と e_div を計算."""
+def load_indicators(zscore_min_periods: int = 30) -> pd.DataFrame:
+    """指標時系列をロードし、z-score と e_div を計算.
+
+    z-score は過去のみの expanding window で計算し look-ahead bias を完全排除.
+    """
     df = pd.read_csv(DATA_DIR / "gamma_timeseries_w30.csv", parse_dates=["date"])
     df = df.dropna(subset=["L1_H1", "n_unb"]).set_index("date")
-    df["z_L1"] = (df["L1_H1"] - df["L1_H1"].mean()) / df["L1_H1"].std()
-    df["z_unb"] = (df["n_unb"] - df["n_unb"].mean()) / df["n_unb"].std()
+    mp = zscore_min_periods
+    df["z_L1"] = (
+        (df["L1_H1"] - df["L1_H1"].expanding(min_periods=mp).mean())
+        / df["L1_H1"].expanding(min_periods=mp).std()
+    )
+    df["z_unb"] = (
+        (df["n_unb"] - df["n_unb"].expanding(min_periods=mp).mean())
+        / df["n_unb"].expanding(min_periods=mp).std()
+    )
     df["e_div"] = df["z_unb"] - df["z_L1"]
     return df
 

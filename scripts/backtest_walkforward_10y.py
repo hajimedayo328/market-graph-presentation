@@ -18,11 +18,19 @@ ROOT = HERE.parent
 DATA_DIR = ROOT / "data"
 
 
-def load_10y() -> pd.DataFrame:
+def load_10y(zscore_min_periods: int = 30) -> pd.DataFrame:
+    """10y 指標を expanding z-score で計算 (look-ahead 完全排除)."""
     df = pd.read_csv(DATA_DIR / "gamma_timeseries_10y_w30.csv", parse_dates=["date"])
     df = df.dropna(subset=["L1_H1", "n_unb"]).set_index("date")
-    df["z_L1"] = (df["L1_H1"] - df["L1_H1"].mean()) / df["L1_H1"].std()
-    df["z_unb"] = (df["n_unb"] - df["n_unb"].mean()) / df["n_unb"].std()
+    mp = zscore_min_periods
+    df["z_L1"] = (
+        (df["L1_H1"] - df["L1_H1"].expanding(min_periods=mp).mean())
+        / df["L1_H1"].expanding(min_periods=mp).std()
+    )
+    df["z_unb"] = (
+        (df["n_unb"] - df["n_unb"].expanding(min_periods=mp).mean())
+        / df["n_unb"].expanding(min_periods=mp).std()
+    )
     df["e_div"] = df["z_unb"] - df["z_L1"]
     return df
 
@@ -54,8 +62,15 @@ def walkforward_eval(df: pd.DataFrame, ohlc: pd.DataFrame,
     while start + train_days + test_days <= n:
         train = df_c.iloc[start: start + train_days]
         test = df_c.iloc[start + train_days: start + train_days + test_days]
-        thr = float(np.percentile(train["e_div"], percentile))
-        sig_test = test["e_div"] >= thr
+        # expanding z-score 化で最初の min_periods 日は NaN なので除外
+        train_ediv = train["e_div"].dropna()
+        if len(train_ediv) < 30:
+            # train 期間がほぼ全部 NaN なら fold スキップ
+            start += test_days
+            continue
+        thr = float(np.percentile(train_ediv, percentile))
+        # test 側は NaN を False (シグナル発火しない) 扱い
+        sig_test = (test["e_div"] >= thr).fillna(False)
         sig_test_h = apply_hysteresis(sig_test, HYSTERESIS_DAYS)
         sig_pos = sig_test_h.shift(1).fillna(False).astype(bool)
         rets_test = rets.loc[test.index]

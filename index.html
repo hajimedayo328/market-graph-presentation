@@ -1345,14 +1345,20 @@
   <h3>11.2 残る制約 (今後の課題)</h3>
   <ol>
     <li><strong>過去最適化バイアス</strong>: バックテストの閾値 0.8 / -0.5 は in-sample 選択。
-        Walk-forward OOS で Sharpe +1.16 → +0.65 に低下しており、過去最適化を認容。
+        In-sample (5y, expanding z-score) Sharpe +0.88 に対し、Walk-forward OOS は 10y で +0.45、
+        15y で +0.54 に低下しており、過去最適化を認容。
         閾値の自由化は future work。</li>
     <li><strong>20y OOS 初期 (2006-2017) の universe 時変</strong>: TSLA/META/BTC/ETH の IPO 前は欠落。
         この期間の結果は universe が時間と共に変化する residual bias を持つ。
         主要発見 (2017-11 以降) には影響なし。</li>
-    <li><strong>z-score の weak look-ahead</strong>: 既存バックテストは全期間 mean/std で正規化 (実装簡便化)。
-        過去のみ expanding window 計算と相関 0.99 で実質同一、主要日 (Liberation Day) でも 3σ 超は両方で出る。
-        <strong>VPS 実運用 (<code>vps_daily.py</code>) は過去のみで計算しており正しい</strong>。</li>
+    <li><strong>z-score look-ahead 完全排除済み</strong>: バックテスト (<code>backtest.py</code>,
+        <code>backtest_v2.py</code>, <code>backtest_walkforward*.py</code>) の z-score は全て
+        <strong>過去のみの expanding window (min_periods=30)</strong> で計算するように修正済み
+        (旧版の全期間 mean/std による weak look-ahead を完全に排除)。
+        修正前後の比較: S1 short Sharpe +1.16→+0.88, MaxDD -11.2%→-17.3% と数値は低下するが、
+        S1 short Sharpe > B&H (+0.71) は維持され、MaxDD (-17.3%) も B&H (-25.4%) を下回り、
+        主要主張 (e_div 高値検知で下方リスク軽減) は健在。
+        <strong>VPS 実運用 (<code>vps_daily.py</code>) も過去 90 日の rolling 統計で計算しており整合</strong>。</li>
     <li><strong>タイムゾーン</strong>: 24h 銘柄 (FX/暗号) と日中銘柄 (株/指数) を tz-naive UTC midnight に揃えて
         close-to-close return を取っている。event 発表時刻と各市場 close の関係で最大 ~30h ずれが発生する。
         日次粒度では実用上問題ないが、より高頻度な検出には asset_class 別 sub-graph + 時刻揃え resampling が必要。

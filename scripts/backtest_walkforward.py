@@ -57,9 +57,14 @@ def walkforward_s1(df: pd.DataFrame, ohlc: pd.DataFrame,
         test = df_c.iloc[start + train_days: start + train_days + test_days]
 
         # 学習: train 期間の e_div 80 パーセンタイルを閾値とする
-        thr = float(np.percentile(train["e_div"], percentile))
-        # テスト: その閾値で test 期間の S1 short 戦略実行
-        sig_test = test["e_div"] >= thr
+        # (expanding z-score の最初の min_periods 日は NaN なので除外)
+        train_ediv = train["e_div"].dropna()
+        if len(train_ediv) < 30:
+            start += test_days
+            continue
+        thr = float(np.percentile(train_ediv, percentile))
+        # テスト: その閾値で test 期間の S1 short 戦略実行 (NaN は False 扱い)
+        sig_test = (test["e_div"] >= thr).fillna(False)
         sig_test_h = apply_hysteresis(sig_test, HYSTERESIS_DAYS)
         # 翌日寄付き約定
         sig_pos = sig_test_h.shift(1).fillna(False).astype(bool)

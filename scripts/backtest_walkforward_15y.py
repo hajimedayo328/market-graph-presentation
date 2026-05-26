@@ -11,11 +11,19 @@ HERE = Path(__file__).parent
 DATA_DIR = HERE.parent / "data"
 
 
-def load_15y():
+def load_15y(zscore_min_periods: int = 30):
+    """15y 指標を expanding z-score で計算 (look-ahead 完全排除)."""
     df = pd.read_csv(DATA_DIR / "gamma_timeseries_15y_w30.csv", parse_dates=["date"])
     df = df.dropna(subset=["L1_H1", "n_unb"]).set_index("date")
-    df["z_L1"]  = (df["L1_H1"] - df["L1_H1"].mean()) / df["L1_H1"].std()
-    df["z_unb"] = (df["n_unb"] - df["n_unb"].mean()) / df["n_unb"].std()
+    mp = zscore_min_periods
+    df["z_L1"]  = (
+        (df["L1_H1"] - df["L1_H1"].expanding(min_periods=mp).mean())
+        / df["L1_H1"].expanding(min_periods=mp).std()
+    )
+    df["z_unb"] = (
+        (df["n_unb"] - df["n_unb"].expanding(min_periods=mp).mean())
+        / df["n_unb"].expanding(min_periods=mp).std()
+    )
     df["e_div"] = df["z_unb"] - df["z_L1"]
     return df
 

@@ -51,13 +51,14 @@ unbalanced cycle count ($\Delta\sigma = +0.38$, $p = 0.018$). A divergence index
 $e_{\mathrm{div}} = z(\text{unb}) - z(L^1)$ acts as a three-way shock classifier:
 $e_{\mathrm{div}} \geq +0.8 \Rightarrow$ policy-shock type; $\leq -0.5 \Rightarrow$
 magnitude-change type; near zero $\Rightarrow$ general volatility or calm.
-A practical backtest with transaction cost ($0.05\%$/leg), 5-day hysteresis, and
-next-day open execution yields in-sample Sharpe $1.16$ and maximum drawdown
-$-11\%$ on S\&P 500 (vs.\ Buy \& Hold: $0.71$, $-25\%$). Walk-forward out-of-sample
-evaluation reveals significant alpha in volatile/bear years (2015 China shock,
-2018 trade war, 2022) but underperformance in bull markets, positioning the
-method as a risk-management complement rather than a pure return-enhancement
-strategy. The work bridges three previously separate research lines:
+A practical backtest with transaction cost ($0.05\%$/leg), 5-day hysteresis,
+next-day open execution, and \emph{strictly past-only (expanding window)
+z-score} (look-ahead bias completely eliminated) yields in-sample Sharpe $0.88$
+and maximum drawdown $-17\%$ on S\&P 500 (vs.\ Buy \& Hold: $0.71$, $-25\%$).
+Walk-forward out-of-sample evaluation reveals significant alpha in
+volatile/bear years (2015 China shock, 2018 trade war, 2022) but
+underperformance in bull markets, positioning the method as a risk-management
+complement rather than a pure return-enhancement strategy. The work bridges three previously separate research lines:
 TDA $\times$ finance \cite{gidea2017topological, majumdar2024multi},
 signed-balance $\times$ finance \cite{ferreira2021loss, wang2025core}, and
 category-theoretic finance \cite{adachi2026martingale}, providing a third
@@ -375,22 +376,24 @@ vs. Buy \& Hold benchmark on S\&P 500 over 5 years (in-sample).}
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\linewidth]{figs/fig6_drawdown_curve.pdf}
-\caption{Drawdown curve. $S_1$ achieves $-11.2\%$ MaxDD vs. Buy \& Hold's $-25.4\%$,
-roughly half the worst-case loss.}
+\caption{Drawdown curve. $S_1$ (expanding-z, look-ahead-free) achieves $-17.3\%$ MaxDD
+vs. Buy \& Hold's $-25.4\%$, a meaningful reduction in worst-case loss.}
 \label{fig:drawdown}
 \end{figure}
 
 \begin{table}[h]
 \centering
-\caption{Backtest v2 results: 5y in-sample (S\&P 500 underlying).}
+\caption{Backtest v2 results: 5y in-sample (S\&P 500 underlying), with
+\emph{expanding-window z-score (min\_periods=30)} for complete look-ahead bias
+removal.}
 \begin{tabular}{lrrrrr}
 \toprule
 Strategy & Total Return & CAGR & Sharpe & Max DD & Trades/year \\
 \midrule
 Buy \& Hold (benchmark) & $+75.4\%$ & $+11.9\%$ & $+0.71$ & $-25.4\%$ & $0.2$ \\
-$S_1$: $e_{\mathrm{div}} \geq 0.8$ (short) & $+74.7\%$ & $+11.8\%$ & $\mathbf{+1.16}$ & $\mathbf{-11.2\%}$ & $17.8$ \\
-$S_2$: $e_{\mathrm{div}} \leq -0.5$ (long) & $+47.8\%$ & $+8.1\%$ & $+0.65$ & $-22.9\%$ & $16.3$ \\
-$S_6$: $z_{L^1} \wedge z_{\text{unb}}$ (short) & $+79.3\%$ & $+12.4\%$ & $+0.78$ & $-21.8\%$ & $7.8$ \\
+$S_1$: $e_{\mathrm{div}} \geq 0.8$ (short) & $+57.9\%$ & $+9.5\%$ & $\mathbf{+0.88}$ & $\mathbf{-17.3\%}$ & $16.5$ \\
+$S_2$: $e_{\mathrm{div}} \leq -0.5$ (long) & $+53.5\%$ & $+8.9\%$ & $+0.70$ & $-20.9\%$ & $17.1$ \\
+$S_6$: $z_{L^1} \wedge z_{\text{unb}}$ (short) & $+76.5\%$ & $+12.0\%$ & $+0.76$ & $-22.8\%$ & $9.0$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -408,14 +411,15 @@ bull markets show opportunity cost.}
 
 \begin{table}[h]
 \centering
-\caption{Walk-forward OOS results on 15y data (2011--2026). Training: 3 years,
-Testing: 1 year, $S_1$ short strategy.}
+\caption{Walk-forward OOS results on 15y data (2011--2026), with
+expanding-window z-score (no look-ahead). Training: 3 years, Testing: 1 year,
+$S_1$ short strategy.}
 \begin{tabular}{lrrrrr}
 \toprule
 Setting & Folds & OOS Sharpe & vs B\&H Alpha & Win rate & OOS MaxDD \\
 \midrule
-3y train, 1y test & 11 & $+0.63$ & $-100\%$ & 27\% (3/11) & $-15.8\%$ \\
-5y train, 1y test & 9  & $+0.80$ & $-94\%$  & 22\% (2/9)  & $-17.8\%$ \\
+3y train, 1y test & 11 & $+0.54$ & $-140\%$ & 27\% (3/11) & $-16.1\%$ \\
+5y train, 1y test & 9  & $+0.69$ & $-110\%$ & 22\% (2/9)  & $-15.6\%$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -451,8 +455,9 @@ demonstrates external validity beyond a single calibration period.
         replicate (Section~3.6 in supplementary), suggesting a ``speed-of-event-chain''
         dependency.
   \item \textbf{Out-of-sample underperformance:} Walk-forward OOS yields Sharpe
-        $+0.63$ versus in-sample $+1.16$, indicating overfitting risk. We
-        explicitly position the method as a risk-management complement.
+        $+0.54$ versus in-sample $+0.88$ (both with strict expanding-window
+        z-score), indicating overfitting risk. We explicitly position the
+        method as a risk-management complement.
   \item \textbf{Method-dependent sensitivity:} A categorical-theoretic
         ``limit'' over four threshold variants (0.2, 0.3, 0.4 cycle ranks +
         VR PH) loses the trade\_policy signal, indicating that the discovery is
@@ -498,8 +503,9 @@ classifier, leveraging the empirical independence of two topological invariants
 on financial correlation networks. The method bridges previously separate TDA,
 signed-balance, and category-theoretic approaches. While direct trading
 profitability is limited and concentrated in bear/volatile years, the
-risk-management value (Sharpe $+1.16$, MaxDD $-11\%$ in-sample versus B\&H
-$+0.71$, $-25\%$) and the partial independence from existing indicators
+risk-management value (Sharpe $+0.88$, MaxDD $-17\%$ in-sample with strict
+expanding-window z-score, versus B\&H $+0.71$, $-25\%$) and the partial
+independence from existing indicators
 ($K, F$) make the method a useful complement to standard market structure
 analytics.
 

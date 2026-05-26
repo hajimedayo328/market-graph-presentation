@@ -417,9 +417,9 @@
           <li>AAPL ↔ ポンドドル: +0.37 → -0.39</li>
           <li>ドイツ DAX ↔ ドルスイス: -0.33 → +0.30</li>
         </ul>
-        <p><strong>対応策 (バックテスト S1)</strong>:
+        <p><strong>対応策 (バックテスト S1, look-ahead 完全排除版)</strong>:
           <span class="action good">株式ポジション → 現金化</span>
-          検出後 +85.2% (Buy & Hold +75.4%), MaxDD -18.9%</p>
+          検出後 +57.9% (Buy & Hold +75.4%), MaxDD -17.3% (B&H -25.4%)</p>
       </div>
     </div>
 
@@ -455,9 +455,9 @@
           → 共通点は「<strong>単発</strong>」「<strong>強さ (相関絶対値) が一気に変わる</strong>」。
           連鎖性がないので符号反転は起こりにくい。
         </p>
-        <p><strong>対応策 (バックテスト S2 long)</strong>:
+        <p><strong>対応策 (バックテスト S2 long, look-ahead 完全排除版)</strong>:
           <span class="action good">逆張りで買い増し</span>
-          シャープレシオ <strong>+1.16 (最高)</strong>, MaxDD -7.6%</p>
+          シャープレシオ <strong>+0.70 (B&H +0.71 と同等)</strong>, MaxDD -20.9% (B&H -25.4%)</p>
       </div>
     </div>
 
@@ -709,14 +709,15 @@
 
     <h3 style="margin-top:24px; font-size:14px;">💡 主な結論 (このバックテストから)</h3>
     <ul style="font-size:13px; line-height:1.7;">
-      <li><strong>S1 (e_div ≥ 0.8 で現金化) が最強</strong>:
-        Buy & Hold の +75% を上回る <strong>+85%</strong>、しかも最大ドローダウンが -25% → -19% に改善。
-        「政策ショック検知でリスクオフ」が機能している証拠。</li>
-      <li><strong>S2 long (e_div ≤ -0.5 で保有) は Sharpe 最高 +1.16</strong>:
+      <li><strong>S1 short (e_div ≥ 0.8 で現金化) は Sharpe +0.88 で B&H (+0.71) 上回り</strong>:
+        リターン自体は +57.9% と Buy & Hold (+75%) を下回るが、
+        最大ドローダウンが -25.4% → <strong>-17.3% に大幅改善</strong>。
+        「政策ショック検知でリスクオフ」によりリスク調整後リターンで優位。</li>
+      <li><strong>S2 long (e_div ≤ -0.5 で保有) は Sharpe +0.70 (B&H +0.71 と同等)</strong>:
         強さ変化型ショックが過ぎた後の方が S&P500 がよく上がるという、逆張り効果。
-        最大ドローダウンも -7.6% と極端に小さい。</li>
-      <li><strong>S6 short (両指標 AND で現金化) は発火率 2.9% でも +70%</strong>:
-        非常に稀な「両指標同時異常」を捉えると、効果が大きい。</li>
+        最大 DD は -20.9% (B&H -25.4% より浅い)。</li>
+      <li><strong>S6 short (両指標 AND で現金化) は発火率でも +76.5%</strong>:
+        非常に稀な「両指標同時異常」を捉えると、Sharpe +0.76 と高水準。</li>
       <li>L¹ や n_unb の<strong>絶対値だけ</strong>を見る S3/S4 は Buy & Hold に勝てない。
         <strong>e_div (乖離) を見ることに意味がある</strong>。</li>
     </ul>
@@ -724,9 +725,10 @@
     <p class="panel-desc" style="margin-top:14px; padding:12px; background:#fff8e1;
                                   border-radius:6px; border-left:3px solid var(--gold);">
       <strong>⚠️ Limitation (正直に)</strong>:<br>
-      ・取引コスト 0% で計算 (実際は 0.05〜0.1% かかる、頻繁売買だと差が出る)<br>
+      ・取引コスト 0.05%/片道で計算 (より厳しめのフルコストでは差が出る可能性)<br>
       ・スリッページなし (実際は約定価格がズレる)<br>
-      ・シグナル当日終値で売買 (同日 look-ahead bias の疑義あり)<br>
+      ・シグナル翌日寄付き約定 + z-score は過去のみ expanding window
+        → <strong>look-ahead bias は完全排除済み (v2)</strong><br>
       ・S&P500 のみ (他資産では結果が違う可能性)<br>
       ・過去最適化リスク: 閾値 0.8 / -0.5 は<strong>過去データから決めた値</strong>。
         本当に未来でも効くかは out-of-sample 評価が必要。<br>
@@ -743,20 +745,24 @@
       と<strong>別市場・別期間での再現性</strong>を独立に検証。
     </p>
 
-    <h3 style="margin-top:14px; font-size:14px;">Walk-forward OOS (3 年学習 → 1 年テストの転がし)</h3>
+    <h3 style="margin-top:14px; font-size:14px;">Walk-forward OOS (3 年学習 → 1 年テストの転がし) — look-ahead 完全排除版</h3>
     <table class="bt-table" style="font-size:12px;">
       <thead>
         <tr><th>期間</th><th>fold 数</th><th>OOS Sharpe</th><th>勝率 (vs B&H)</th><th>代表的な fold</th></tr>
       </thead>
       <tbody>
-        <tr><td>15y (2011-2026)</td><td>11</td><td>+0.63</td><td>3/11 (27%)</td>
-            <td>2018 米中貿易戦争 α=+4.4%、2022 α=+9.7%</td></tr>
-        <tr><td>20y (2009-2025)</td><td>16</td><td><strong>+0.65</strong></td><td>3/16 (19%)</td>
-            <td>2014 Sharpe +1.8、2018 +1.2、2024 <strong>+2.2</strong></td></tr>
+        <tr><td>10y (2016-2026)</td><td>6</td><td>+0.45</td><td>1/6 (17%)</td>
+            <td>2023 fold Sharpe +1.70 (24-06)、2022 fold +0.78</td></tr>
+        <tr><td>15y (2011-2026)</td><td>11</td><td>+0.54</td><td>3/11 (27%)</td>
+            <td>2023 fold Sharpe +2.23 (24-07)、2016 fold +1.37</td></tr>
+        <tr><td>20y (2009-2025) ※旧 weak look-ahead 版</td><td>16</td><td>+0.65</td><td>3/16 (19%)</td>
+            <td>2014 Sharpe +1.8、2018 +1.2、2024 <strong>+2.2</strong> (再計算 future work)</td></tr>
       </tbody>
     </table>
     <p style="font-size:12px; color:var(--sub); margin-top:8px;">
-      → In-sample の Sharpe +1.16 から低下 (過去最適化バイアスを正直に受容)。<br>
+      → z-score look-ahead を完全排除した結果、In-sample Sharpe は +1.16 → +0.88、
+      Walk-forward OOS Sharpe も 10y +0.45 / 15y +0.54 とやや低下したが、
+      <strong>MaxDD (-17%) が B&H (-25%) を大きく下回り、リスク管理ツールとしての価値は健在</strong>。<br>
       → Bull market では機会損失が出るが、<strong>bear / volatile 年に α</strong> が出る傾向。
       <strong>リターン狙いではなくリスク管理ツール</strong>として位置付けるのが妥当。
     </p>
@@ -778,7 +784,8 @@
     <h3 style="margin-top:18px; font-size:14px;">⚠️ 正直な制約 (Limitation)</h3>
     <ol style="font-size:12px; line-height:1.7; color:var(--sub);">
       <li>trade_policy の強反応は 2025-04 Liberation Day cluster が大きく寄与している (単一イベント駆動の側面)</li>
-      <li>OOS Sharpe +0.65 (in-sample +1.16 からの低下) → <strong>過去最適化バイアスを認容</strong>している</li>
+      <li>OOS Sharpe +0.45 〜 +0.54 (in-sample +0.88 からの低下、いずれも look-ahead 完全排除版)
+        → <strong>過去最適化バイアスを認容</strong>している</li>
       <li>現在は Vantage デモ口座 + 単一ブローカー (CFD SP500.r) で paper trading 検証中。
         <strong>ライブ資金での運用は future work</strong></li>
       <li>4 手法の (α) limit (関手の合成) では trade_policy 前兆が消失 → <strong>手法選択依存性</strong>が残る</li>
