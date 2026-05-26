@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "input_multi": "data\\multi_indicators_w30.csv",
+    "input_gamma": "data\\gamma_timeseries_w30.csv",
+    "n_indicators": 12,
+    "indicators": [
+      "L1",
+      "L2",
+      "Linf",
+      "nH1",
+      "meanP",
+      "entropy",
+      "n_unb_total",
+      "n_unb_3",
+      "n_unb_4",
+      "n_unb_5plus",
+      "balance_rate",
+      "e_div"
+    ],
+    "z_window": 90,
+    "sigma_threshold_for_alpha_naive": 2.0,
+    "event_pre_days": 30,
+    "event_post_days": 30,
+    "alpha_naive_definition": "alpha_naive(t) = #{i in 12 indicators : |z_i(t)| >= 2} / 12  (関手族の余極限 = 複数手法の同時発火)",
+    "alpha_norm_definition": "alpha_norm(t) = sqrt(Σ_i z_i(t)^2) / sqrt(12)  (関手族の極限 = 全手法の Frobenius ノルム)",
+    "ediv_definition": "e_div(t) = z(n_unb)(t) - z(L1_H1)(t)",
+    "events": {
+      "trade_policy": [
+        {
+          "date": "2025-04-02",
+          "label": "Liberation Day (reciprocal tariff)"
+        },
+        {
+          "date": "2024-05-14",
+          "label": "Biden 100% EV tariff on China"
+        }
+      ],
+      "market_structure": [
+        {
+          "date": "2024-08-05",
+          "label": "JPY carry unwind / vol spike"
+        }
+      ],
+      "war": [
+        {
+          "date": "2023-10-07",
+          "label": "Hamas attack on Israel"
+        },
+        {
+          "date": "2022-02-24",
+          "label": "Russia invades Ukraine"
+        }
+      ]
+    }
+  },
+  "shock_event_study": {
+    "trade_policy": {
+      "events": [
+        {
+          "date": "2025-04-02",
+          "label": "Liberation Day (reciprocal tariff)"
+        },
+        {
+          "date": "2024-05-14",
+          "label": "Biden 100% EV tariff on China"
+        }
+      ],
+      "events_used": [
+        "2025-04-02",
+        "2024-05-14"
+      ],
+      "per_event": {
+        "2025-04-02": {
+          "label": "Liberation Day (reciprocal tariff)",
+          "alpha_naive_dsigma": 0.1816497536376886,
+          "alpha_norm_dsigma": 0.3117724284335168,
+          "ediv_dsigma": 0.17871262347384165
+        },
+        "2024-05-14": {
+          "label": "Biden 100% EV tariff on China",
+          "alpha_naive_dsigma": 1.0593069184806556,
+          "alpha_norm_dsigma": 0.9661538682437996,
+          "ediv_dsigma": 1.4004144906857652
+        }
+      },
+      "mean_alpha_naive_dsigma": 0.6204783360591721,
+      "mean_alpha_norm_dsigma": 0.6389631483386582,
+      "mean_ediv_dsigma": 0.7895635570798034
+    },
+    "market_structure": {
+      "events": [
+        {
+          "date": "2024-08-05",
+          "label": "JPY carry unwind / vol spike"
+        }
+      ],
+      "events_used": [
+        "2024-08-05"
+      ],
+      "per_event": {
+        "2024-08-05": {
+          "label": "JPY carry unwind / vol spike",
+          "alpha_naive_dsigma": 2.5768670711620003,
+          "alpha_norm_dsigma": 1.6631935129206268,
+          "ediv_dsigma": 1.6183892420536166
+        }
+      },
+      "mean_alpha_naive_dsigma": 2.5768670711620003,
+      "mean_alpha_norm_dsigma": 1.6631935129206268,
+      "mean_ediv_dsigma": 1.6183892420536166
+    },
+    "war": {
+      "events": [
+        {
+          "date": "2023-10-07",
+          "label": "Hamas attack on Israel"
+        },
+        {
+          "date": "2022-02-24",
+          "label": "Russia invades Ukraine"
+        }
+      ],
+      "events_used": [
+        "2023-10-07",
+        "2022-02-24"
+      ],
+      "per_event": {
+        "2023-10-07": {
+          "label": "Hamas attack on Israel",
+          "alpha_naive_dsigma": 0.12724664963982196,
+          "alpha_norm_dsigma": 0.2528037473328222,
+          "ediv_dsigma": 1.181701961758155
+        },
+        "2022-02-24": {
+          "label": "Russia invades Ukraine",
+          "alpha_naive_dsigma": 0.3048553804248463,
+          "alpha_norm_dsigma": 0.9087246599845321,
+          "ediv_dsigma": -0.02771280365052579
+        }
+      },
+      "mean_alpha_naive_dsigma": 0.21605101503233412,
+      "mean_alpha_norm_dsigma": 0.5807642036586771,
+      "mean_ediv_dsigma": 0.5769945790538146
+    }
+  }
+}
