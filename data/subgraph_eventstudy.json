@@ -1,0 +1,245 @@
+{
+  "meta": {
+    "window": 30,
+    "threshold": 0.3,
+    "min_symbols": 5,
+    "returns_period": [
+      "2025-01-01",
+      "2025-04-30"
+    ],
+    "baseline_window": [
+      "2025-02-15",
+      "2025-03-25"
+    ],
+    "event_window": [
+      "2025-04-02",
+      "2025-04-15"
+    ],
+    "event_name": "2025-04 Liberation Day (reciprocal tariff cluster)",
+    "tz_aware": false,
+    "tz_note": "tz-naive UTC midnight close-to-close. 24h (FX/crypto) と日中銘柄を 同じ日付でアライメントしているため最大 ~30h のずれは残るが、同じ tz-naive 系列内での asset class 比較は fair。",
+    "grouping_rule": "asset_class を 1 段まとめ: METAL+ENERGY+COMMODITY を COMMODITY、それ以外は CSV の asset_class を直接使用。"
+  },
+  "all_40": {
+    "symbols": [
+      "EURUSD",
+      "USDJPY",
+      "GBPUSD",
+      "AUDUSD",
+      "USDCHF",
+      "USDCAD",
+      "NZDUSD",
+      "EURJPY",
+      "GBPJPY",
+      "EURGBP",
+      "USDTRY",
+      "USDHUF",
+      "EURTRY",
+      "XAUUSD",
+      "XAGUSD",
+      "BTCUSD",
+      "ETHUSD",
+      "USOUSD",
+      "UKOUSD",
+      "SP500",
+      "NAS100",
+      "DJ30",
+      "RUS2000",
+      "GER40",
+      "UK100",
+      "FRA40",
+      "JP225",
+      "CHINA50",
+      "DXY",
+      "VIX",
+      "AAPL",
+      "MSFT",
+      "GOOG",
+      "META",
+      "TSLA",
+      "US10Y",
+      "EUB10Y",
+      "UKGILT",
+      "COPPER",
+      "NGAS"
+    ],
+    "n_symbols": 40,
+    "skipped": false,
+    "delta_sigma_L1": -1.461267803010267,
+    "delta_sigma_unb": 1.2851782690269071,
+    "delta_sigma_ediv": 2.7464460720371733,
+    "n_baseline": 39,
+    "n_event": 14,
+    "mu_L1_baseline": 1.0582029492797782,
+    "sd_L1_baseline": 0.28376474046794486,
+    "mu_unb_baseline": 36.41025641025641,
+    "sd_unb_baseline": 8.628953552210593
+  },
+  "by_asset_class": {
+    "FX": {
+      "symbols": [
+        "EURUSD",
+        "USDJPY",
+        "GBPUSD",
+        "AUDUSD",
+        "USDCHF",
+        "USDCAD",
+        "NZDUSD",
+        "EURJPY",
+        "GBPJPY",
+        "EURGBP",
+        "USDTRY",
+        "USDHUF",
+        "EURTRY"
+      ],
+      "n_symbols": 13,
+      "skipped": false,
+      "delta_sigma_L1": 0.7383823612441339,
+      "delta_sigma_unb": 1.2075799859782115,
+      "delta_sigma_ediv": 0.4691976247340773,
+      "n_baseline": 39,
+      "n_event": 14,
+      "mu_L1_baseline": 0.06829990918277577,
+      "sd_L1_baseline": 0.05789610102548299,
+      "mu_unb_baseline": 2.4615384615384617,
+      "sd_unb_baseline": 1.0965533045855869
+    },
+    "INDEX": {
+      "symbols": [
+        "SP500",
+        "NAS100",
+        "DJ30",
+        "RUS2000",
+        "GER40",
+        "UK100",
+        "FRA40",
+        "JP225",
+        "CHINA50"
+      ],
+      "n_symbols": 9,
+      "skipped": false,
+      "delta_sigma_L1": -0.8134693799304872,
+      "delta_sigma_unb": -0.8733309431954511,
+      "delta_sigma_ediv": -0.0598615632649636,
+      "n_baseline": 39,
+      "n_event": 14,
+      "mu_L1_baseline": 0.029740315217238206,
+      "sd_L1_baseline": 0.032315614637014295,
+      "mu_unb_baseline": 1.205128205128205,
+      "sd_unb_baseline": 1.3799215686996427
+    },
+    "COMMODITY": {
+      "symbols": [
+        "XAUUSD",
+        "XAGUSD",
+        "USOUSD",
+        "UKOUSD",
+        "COPPER",
+        "NGAS"
+      ],
+      "n_symbols": 6,
+      "skipped": false,
+      "delta_sigma_L1": null,
+      "delta_sigma_unb": null,
+      "delta_sigma_ediv": null,
+      "n_baseline": 39,
+      "n_event": 14,
+      "mu_L1_baseline": 0.004227558771769206,
+      "sd_L1_baseline": 0.015399421100336427,
+      "mu_unb_baseline": 0.0,
+      "sd_unb_baseline": 0.0,
+      "degenerate_reason": "sd_unb=0.0 (baseline で n_unb が定数; 小サブグラフは独立サイクル不足で常に 0 になりがち)"
+    },
+    "STOCK": {
+      "symbols": [
+        "AAPL",
+        "MSFT",
+        "GOOG",
+        "META",
+        "TSLA"
+      ],
+      "n_symbols": 5,
+      "skipped": false,
+      "delta_sigma_L1": null,
+      "delta_sigma_unb": null,
+      "delta_sigma_ediv": null,
+      "n_baseline": 39,
+      "n_event": 14,
+      "mu_L1_baseline": 0.007178208766839443,
+      "sd_L1_baseline": 0.018723209451901784,
+      "mu_unb_baseline": 0.0,
+      "sd_unb_baseline": 0.0,
+      "degenerate_reason": "sd_unb=0.0 (baseline で n_unb が定数; 小サブグラフは独立サイクル不足で常に 0 になりがち)"
+    },
+    "CRYPTO": {
+      "symbols": [
+        "BTCUSD",
+        "ETHUSD"
+      ],
+      "n_symbols": 2,
+      "skipped": true,
+      "skip_reason": "n=2 < MIN_SYMBOLS(5)"
+    },
+    "BOND": {
+      "symbols": [
+        "US10Y",
+        "EUB10Y",
+        "UKGILT"
+      ],
+      "n_symbols": 3,
+      "skipped": true,
+      "skip_reason": "n=3 < MIN_SYMBOLS(5)"
+    },
+    "SPECIAL": {
+      "symbols": [
+        "DXY",
+        "VIX"
+      ],
+      "n_symbols": 2,
+      "skipped": true,
+      "skip_reason": "n=2 < MIN_SYMBOLS(5)"
+    }
+  },
+  "ranking_by_delta_sigma_ediv": [
+    {
+      "asset_class": "FX",
+      "delta_sigma_ediv": 0.4691976247340773,
+      "n_symbols": 13
+    },
+    {
+      "asset_class": "INDEX",
+      "delta_sigma_ediv": -0.0598615632649636,
+      "n_symbols": 9
+    }
+  ],
+  "degenerate_classes": [
+    {
+      "asset_class": "COMMODITY",
+      "n_symbols": 6,
+      "reason": "sd_unb=0.0 (baseline で n_unb が定数; 小サブグラフは独立サイクル不足で常に 0 になりがち)"
+    },
+    {
+      "asset_class": "STOCK",
+      "n_symbols": 5,
+      "reason": "sd_unb=0.0 (baseline で n_unb が定数; 小サブグラフは独立サイクル不足で常に 0 になりがち)"
+    }
+  ],
+  "skipped_classes": [
+    {
+      "asset_class": "CRYPTO",
+      "n_symbols": 2,
+      "reason": "n=2 < MIN_SYMBOLS(5)"
+    },
+    {
+      "asset_class": "BOND",
+      "n_symbols": 3,
+      "reason": "n=3 < MIN_SYMBOLS(5)"
+    },
+    {
+      "asset_class": "SPECIAL",
+      "n_symbols": 2,
+      "reason": "n=2 < MIN_SYMBOLS(5)"
+    }
+  ],
+  "finding": "全 40 銘柄が最大 (Δσ_ediv = +2.746) で、市場横断的なクロスアセット相関が主因。FX (+0.469) が単一クラスでは最大反応。 1/2 クラスのみ正方向 → 反応は不均一。 別途 COMMODITY, STOCK は baseline で n_unb=定数のため Δσ 算出不能 (小サブグラフ n≦6 で独立サイクル不足、これ自体が finding)。"
+}

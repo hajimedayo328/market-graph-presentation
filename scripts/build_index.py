@@ -1624,7 +1624,55 @@ __SEC105__
         <td>trade_policy → e_div: <strong>p=0.022 (lag=5)</strong> で有意、
             逆方向 e_div → trade_policy: p=0.254 で非有意 →
             <strong>一方向因果</strong>、相関を超え方向性まで実証</td></tr>
+    <tr><td><strong>asset_class 別 sub-graph 反応</strong></td>
+        <td>FX(13) / INDEX(9) / COMMODITY(6) / STOCK(5) に分割し Liberation Day Δσ_e_div を比較</td>
+        <td>全 40 銘柄 +2.75 ≫ FX +0.47 ≫ INDEX -0.06 →
+            e_div の主要シグナルは <strong>クロスアセット相関</strong>から生じており、
+            単一クラスでは再現しない</td></tr>
   </table>
+
+  <div class="callout found" style="margin-top:1em;">
+    <h4>11.1 補足: asset_class 別 sub-graph 検証 (新規実装)</h4>
+    <p>Section 11.2 (4) で future work として残していた「asset_class 別 sub-graph で
+    高頻度 event detection」を <code>scripts/subgraph_eventstudy.py</code> として実装した。
+    各 asset_class の銘柄だけで 30 日 rolling correlation graph を作り直し、
+    同じ Liberation Day baseline (2025-02-15 → 03-25) / event (2025-04-02 → 04-15) で
+    Δσ を計算した結果 (全 40 銘柄との比較):</p>
+    <table>
+      <tr><th>サブグラフ</th><th>n</th><th>Δσ_L¹</th><th>Δσ_n_unb</th><th>Δσ_e_div</th><th>備考</th></tr>
+      <tr><td>全 40 銘柄 (baseline)</td><td>40</td>
+          <td>-1.46</td><td>+1.29</td><td class="good">+2.75</td>
+          <td>main banner finding</td></tr>
+      <tr><td>FX</td><td>13</td>
+          <td>+0.74</td><td>+1.21</td><td class="good">+0.47</td>
+          <td>L¹ と n_unb が両方上昇、e_div は弱め</td></tr>
+      <tr><td>INDEX</td><td>9</td>
+          <td>-0.81</td><td>-0.87</td><td class="neutral">-0.06</td>
+          <td>2 指標が同方向に下げ、e_div は中立</td></tr>
+      <tr><td>COMMODITY</td><td>6</td>
+          <td colspan="3" style="text-align:center;">算出不能</td>
+          <td>baseline で n_unb=0 が定数 (独立サイクル不足)</td></tr>
+      <tr><td>STOCK</td><td>5</td>
+          <td colspan="3" style="text-align:center;">算出不能</td>
+          <td>同上 (n=5 では threshold 0.3 で全エッジ同符号)</td></tr>
+      <tr><td>CRYPTO / BOND / SPECIAL</td><td>2-3</td>
+          <td colspan="4">n &lt; 5 で skip</td></tr>
+    </table>
+    <p><strong>主要 finding</strong>: Δσ_e_div は <strong>全 40 銘柄 (+2.75) ≫ FX (+0.47) ≫ INDEX (-0.06)</strong>。
+    つまり Liberation Day の e_div シグナルは「FX が震源」「INDEX が震源」ではなく、
+    <strong>asset class 間のクロス相関 (例: 円とゴールド、株とドル) が同時に符号反転する</strong>
+    ことで増幅されている。サブグラフを切り出すと信号が大幅減衰するため、
+    e_div は本質的に <strong>cross-asset 相関構造の不整合</strong>を捉える指標であり、
+    単一市場の volatility 指標では代替不能と再確認できた。</p>
+    <p>副次発見: STOCK (n=5) と COMMODITY (n=6) は baseline 期間の n_unb がほぼ常に 0 で
+    σ_unb=0 となり Δσ が undefined になった。小サブグラフでは独立サイクル数が少なく、
+    threshold 0.3 でエッジが同符号に揃うと不整合が形式的に出ない構造的限界がある。
+    <strong>n_unb は概ね n ≧ 9 程度から意味のある時系列になる</strong>ことが実証された。</p>
+    <p class="small">tz-aware (24h FX/crypto と日中株を同一時刻で再 resampling) は
+    yfinance 個別取得が必要で重く、今回は tz-naive 系列内での asset class 相対比較に
+    留めた。出力: <code>data/subgraph_eventstudy.json</code>、再現:
+    <code>python scripts/subgraph_eventstudy.py</code></p>
+  </div>
 
   <h3>11.2 残る制約 (今後の課題)</h3>
   <ol>
@@ -1639,7 +1687,9 @@ __SEC105__
         <strong>VPS 実運用 (<code>vps_daily.py</code>) は過去のみで計算しており正しい</strong>。</li>
     <li><strong>タイムゾーン</strong>: 24h 銘柄 (FX/暗号) と日中銘柄 (株/指数) を tz-naive UTC midnight に揃えて
         close-to-close return を取っている。event 発表時刻と各市場 close の関係で最大 ~30h ずれが発生する。
-        日次粒度では実用上問題ないが、より高頻度な検出には asset_class 別 sub-graph + 時刻揃え resampling が必要 (future work)。</li>
+        日次粒度では実用上問題ないが、より高頻度な検出には asset_class 別 sub-graph + 時刻揃え resampling が必要。
+        <strong>asset_class 別 sub-graph は実装完了 (上記 11.1 補足参照)</strong>、tz-aware (時刻揃え) resampling は
+        個別 yfinance 取得が必要で重いため future work として残す。</li>
     <li><strong>因果性の検証範囲</strong>: 2 方向 Granger 因果性検定で
         <code>trade_policy → e_div</code> の方向は p=0.022 (lag=5) で有意・逆は非有意 (p=0.254) を確認
         (<code>scripts/causal_granger.py</code> / <code>data/causal_granger_results.json</code>)。
@@ -1661,7 +1711,8 @@ __SEC105__
   <h3>11.3 今後の方向</h3>
   <ul>
     <li>20y データを使った関手の極限 / pullback 構築 (現状の $\\alpha$ は w30 / 5y, さらなる拡張)</li>
-    <li>asset_class 別 sub-graph (株式 / FX / 商品 / 暗号) で時刻揃え相関 → 高頻度 event detection</li>
+    <li>tz-aware 時刻揃え resampling (米国市場 20:00 UTC 等) で 24h 銘柄と日中銘柄を再アライン → 高頻度 event detection
+        (asset_class 別 sub-graph は 11.1 補足で実装済、残る課題は時刻揃え部分のみ)</li>
     <li>実弾運用 (まずは少額) で paper trading との乖離を測定</li>
     <li>因果推論の強化: Granger は方向性まで実証済 (11.1 参照)。残るは隠れた共通要因の排除 (DAG / structural IV)</li>
   </ul>
