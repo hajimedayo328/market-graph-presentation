@@ -26,7 +26,7 @@ DATA_DIR = ROOT / "data"
 LOG_DIR = ROOT / "logs"
 
 
-def load_env():
+def load_env() -> dict[str, str]:
     """C:\\tools\\market-graph\\.env から認証情報を読む."""
     env_path = ROOT / ".env"
     if not env_path.exists():
@@ -41,7 +41,8 @@ def load_env():
     return env
 
 
-def log(msg):
+def log(msg: str) -> None:
+    """タイムスタンプ付きメッセージを stdout とログファイルに書く."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     line = f"[{ts}] [trade] {msg}"
     print(line)
@@ -50,7 +51,7 @@ def log(msg):
         f.write(line + "\n")
 
 
-def connect_demo_mt5():
+def connect_demo_mt5() -> object | None:
     """Vantage デモ MT5 に接続. 失敗 or ライブ口座なら None."""
     try:
         import MetaTrader5 as mt5
@@ -107,7 +108,7 @@ def connect_demo_mt5():
     return mt5
 
 
-def find_us500_symbol(mt5):
+def find_us500_symbol(mt5: object) -> str | None:
     """Vantage の US500 系シンボルを探す (名前ブローカー依存)."""
     # Vantage Trading: SP500.r (spot), SP500ft.r (futures), SPX
     candidates = ["SP500.r", "SP500", "SPX", "SP500ft.r", "US500",
@@ -132,7 +133,7 @@ def find_us500_symbol(mt5):
     return None
 
 
-def _best_filling(mt5, symbol):
+def _best_filling(mt5: object, symbol: str) -> int:
     """symbol がサポートする filling mode を選ぶ.
     Vantage の SP500.r 等は FOK 非対応のことがある."""
     info = mt5.symbol_info(symbol)
@@ -147,7 +148,7 @@ def _best_filling(mt5, symbol):
     return mt5.ORDER_FILLING_RETURN
 
 
-def get_current_position(mt5, symbol):
+def get_current_position(mt5: object, symbol: str) -> object | None:
     """その symbol の現在のポジション (なければ None)."""
     positions = mt5.positions_get(symbol=symbol)
     if not positions:

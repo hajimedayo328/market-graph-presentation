@@ -25,7 +25,8 @@ DATA_DIR = ROOT / "data"
 LOG_DIR = ROOT / "logs"
 
 
-def load_env():
+def load_env() -> dict[str, str]:
+    """.env ファイルから環境変数を key-value dict として読み込む."""
     env_path = ROOT / ".env"
     if not env_path.exists():
         return {}
@@ -39,7 +40,8 @@ def load_env():
     return env
 
 
-def log(msg):
+def log(msg: str) -> None:
+    """タイムスタンプ付きメッセージを stdout とログファイルに書く."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     line = f"[{ts}] [publish] {msg}"
     print(line)
@@ -147,6 +149,7 @@ def push_to_github(content_json: dict, env: dict, target_path: str = "data/live_
 
 
 def main():
+    """DB をエクスポートし GitHub Pages に push する."""
     log("=" * 60)
     log("VPS publish job started")
     env = load_env()

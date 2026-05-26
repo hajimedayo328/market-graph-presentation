@@ -25,10 +25,28 @@ from homology import signed_cycle_balance
 
 HERE = Path(__file__).parent
 
+# ウィンドウ内で有効とみなす最小銘柄数
+_MIN_SYMBOLS: int = 5
 
-def main(window: int = 30, threshold: float = 0.3, save_every: int = 100,
-         suffix: str | None = None, input_file: str = "ohlc_40.parquet",
-         out_prefix: str = "gamma_timeseries"):
+
+def main(
+    window: int = 30,
+    threshold: float = 0.3,
+    save_every: int = 100,
+    suffix: str | None = None,
+    input_file: str = "ohlc_40.parquet",
+    out_prefix: str = "gamma_timeseries",
+) -> None:
+    """ローリング窓で L^1 と不整合サイクル数を日次計算し CSV に保存する.
+
+    Args:
+        window: ローリング窓幅 (営業日).
+        threshold: 相関グラフのエッジ閾値 (|corr| >= threshold).
+        save_every: 中間保存の間隔 (行数).
+        suffix: 出力ファイル名のサフィックス. None の場合 ``_w{window}``.
+        input_file: 入力 parquet ファイルパス (相対 or 絶対).
+        out_prefix: 出力 CSV のプレフィックス (相対 or 絶対).
+    """
     # 絶対パスが渡された場合はそのまま使い、相対パスの場合は HERE 基準で解決する
     input_path = Path(input_file)
     if not input_path.is_absolute():
@@ -49,7 +67,7 @@ def main(window: int = 30, threshold: float = 0.3, save_every: int = 100,
     print(f"window={window}, threshold={threshold}, output={out_path.name}")
     print(f"Computing for idx {window}..{n} ({n - window} days)")
 
-    rows = []
+    rows: list[dict] = []
     t0 = time.time()
 
     for i, t_idx in enumerate(range(window, n)):
@@ -57,7 +75,7 @@ def main(window: int = 30, threshold: float = 0.3, save_every: int = 100,
         win_clean = win.dropna(axis=1, how="any")
         date = returns.index[t_idx - 1]
 
-        if win_clean.shape[1] < 5:
+        if win_clean.shape[1] < _MIN_SYMBOLS:
             rows.append({"date": date, "n_symbols": win_clean.shape[1],
                          "L1_H1": np.nan, "n_unb": np.nan,
                          "n_edges": 0, "balance_rate": np.nan})

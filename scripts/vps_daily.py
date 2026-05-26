@@ -54,7 +54,8 @@ SYMBOL_MAP = [
 ]
 
 
-def log(msg):
+def log(msg: str) -> None:
+    """タイムスタンプ付きメッセージを stdout とログファイルに書く."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     line = f"[{ts}] {msg}"
     print(line)
@@ -62,7 +63,7 @@ def log(msg):
         f.write(line + "\n")
 
 
-def init_db(conn):
+def init_db(conn: object) -> None:
     """SQLite テーブル初期化."""
     c = conn.cursor()
     c.execute("""
@@ -168,13 +169,14 @@ def compute_gamma_for_day(closes: pd.DataFrame, window: int = 30, threshold: flo
 
 
 def classify(e_div: float, l1: float) -> str:
+    """e_div と L1 から市場レジームを分類して文字列ラベルを返す."""
     if e_div >= 0.8: return "政策ショック型"
     if e_div <= -0.5: return "強さ変化型"
     if l1 >= 0.7: return "一般ボラ上昇"
     return "平常"
 
 
-def get_recent_stats(conn, n_days: int = 90) -> tuple:
+def get_recent_stats(conn: object, n_days: int = 90) -> tuple[float, float, float, float]:
     """過去 N 日の L¹/n_unb の mean/std (z-score 用)."""
     c = conn.cursor()
     c.execute("SELECT L1_H1, n_unb FROM gamma_daily WHERE date >= date('now', ?)",
@@ -190,7 +192,8 @@ def get_recent_stats(conn, n_days: int = 90) -> tuple:
     return (np.mean(L1s), np.std(L1s), np.mean(unbs), np.std(unbs))
 
 
-def get_last_classification(conn) -> str | None:
+def get_last_classification(conn: object) -> str | None:
+    """DB から最新の classification ラベルを取得する."""
     c = conn.cursor()
     c.execute("SELECT classification FROM gamma_daily ORDER BY date DESC LIMIT 1")
     r = c.fetchone()
@@ -198,6 +201,7 @@ def get_last_classification(conn) -> str | None:
 
 
 def main():
+    """VPS 日次ジョブ: データ取得 → γ計算 → DB保存 → publish を実行する."""
     log("=" * 60)
     log("VPS daily job started")
     t0 = time.time()

@@ -27,7 +27,8 @@ OPERATION_START = "2026-05-23"
 CLASS_KEYS = ["政策ショック型", "強さ変化型", "一般ボラ上昇", "平常"]
 
 
-def _safe_float(v):
+def _safe_float(v: object) -> float | None:
+    """値を float に変換する. 変換不可 or NaN は None を返す."""
     try:
         f = float(v)
         if f != f:  # NaN チェック
@@ -45,6 +46,7 @@ def _month_key(date_str: str) -> str | None:
 
 
 def _empty_summary(generated_at: str | None = None) -> dict:
+    """データ未蓄積時の空サマリ dict を返す."""
     return {
         "generated_at": generated_at or datetime.now().isoformat(),
         "operation_start": OPERATION_START,
@@ -66,6 +68,7 @@ def _empty_summary(generated_at: str | None = None) -> dict:
 
 
 def aggregate(live: dict) -> dict:
+    """live_status.json の内容を月次・累積サマリに集計する."""
     gamma_rows = live.get("gamma_daily_recent") or []
     changes = live.get("classification_changes") or []
     trades = live.get("trades") or []
@@ -193,6 +196,7 @@ def aggregate(live: dict) -> dict:
 
 
 def main():
+    """live_status.json を読み込み live_summary.json に書き出す."""
     if not LIVE_PATH.exists():
         print(f"[aggregate] live_status.json not found: {LIVE_PATH}")
         # 空サマリーでも書いて Pages 側で落ちないようにする

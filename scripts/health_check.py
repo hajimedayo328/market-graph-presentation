@@ -1,5 +1,8 @@
 """VPS 運用ヘルスチェック (ローカルから ssh 越しに実行する想定)."""
-import sys, json, sqlite3
+from __future__ import annotations
+import sys
+import json
+import sqlite3
 from pathlib import Path
 from datetime import datetime, timedelta
 

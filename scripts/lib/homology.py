@@ -20,7 +20,6 @@ Adachi 2026 (Martingale Cohomology) + Gidea & Katz 2017 (TDA Crashes) 直結.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Optional
 import numpy as np
 import pandas as pd
@@ -28,23 +27,41 @@ import networkx as nx
 
 from market_category import MarketCategory
 
+# signed_cycle_balance でサンプリングするサイクル数のデフォルト上限
+_MAX_CYCLES_DEFAULT: int = 1000
+
 
 # ============================================================
 #  ベッチ数 (Betti numbers)
 # ============================================================
 
-def betti_numbers(G: nx.Graph) -> dict:
-    """グラフのベッチ数 (H_0, H_1)."""
+def betti_numbers(G: nx.Graph) -> dict[str, int]:
+    """グラフのベッチ数 (H_0, H_1) を返す.
+
+    Args:
+        G: 無向グラフ.
+
+    Returns:
+        H_0=連結成分数, H_1=独立サイクル数 (cycle rank),
+        n=ノード数, m=エッジ数, components=連結成分数 を含む dict.
+    """
     n = G.number_of_nodes()
     m = G.number_of_edges()
     c = nx.number_connected_components(G)
     h0 = c
-    h1 = m - n + c   # cycle rank (Euler特性数: χ = n - m, dim H_0 - dim H_1 = χ から H_1 = m - n + c)
+    h1 = m - n + c   # cycle rank
     return {"H_0": h0, "H_1": max(0, h1), "n": n, "m": m, "components": c}
 
 
 def euler_characteristic(G: nx.Graph) -> int:
-    """オイラー標数 χ = n - m  (1次元複体ではこれで決まる)."""
+    """オイラー標数 χ = n - m を返す (1次元複体ではこれで決まる).
+
+    Args:
+        G: 無向グラフ.
+
+    Returns:
+        χ = ノード数 - エッジ数.
+    """
     return G.number_of_nodes() - G.number_of_edges()
 
 
@@ -61,6 +78,14 @@ def persistent_homology(
 
     use_abs=True なら相関の絶対値で閾値判定（正負を一旦無視）.
     use_abs=False なら相関値そのままで閾値以上のエッジ.
+
+    Args:
+        corr_matrix: 銘柄間相関行列 (n×n の DataFrame).
+        thresholds: 閾値の配列. None の場合 np.arange(0.1, 0.95, 0.05).
+        use_abs: True なら絶対値で閾値判定.
+
+    Returns:
+        各閾値での threshold, H_0, H_1, n, m, components を行とする DataFrame.
     """
     if thresholds is None:
         thresholds = np.arange(0.1, 0.95, 0.05)
@@ -85,8 +110,17 @@ def persistent_homology(
 
 
 def homology_summary(ph: pd.DataFrame) -> dict:
-    """持続ホモロジーの集約.
-    H_1 が最大化される閾値、H_0=1 になる閾値（連結化点）等."""
+    """持続ホモロジー DataFrame を集約する.
+
+    H_1 が最大化される閾値、H_0=1 になる閾値（連結化点）等を返す.
+
+    Args:
+        ph: persistent_homology の戻り値.
+
+    Returns:
+        h0_collapse_threshold, h1_max_value, h1_max_threshold,
+        ph_signature を含む dict.
+    """
     h0_collapse = ph[ph["H_0"] == 1]["threshold"].min() if (ph["H_0"] == 1).any() else None
     h1_max_idx = ph["H_1"].idxmax()
     return {
@@ -101,22 +135,26 @@ def homology_summary(ph: pd.DataFrame) -> dict:
 #  構造的整合性 / コホモロジー的障害 (Adachi 2026 風)
 # ============================================================
 
-def signed_cycle_balance(G: nx.Graph, max_cycles: int = 1000) -> dict:
-    """符号付きエッジで閉路の符号積をチェック.
+def signed_cycle_balance(G: nx.Graph, max_cycles: int = _MAX_CYCLES_DEFAULT) -> dict:
+    """符号付きエッジで閉路の符号積をチェックする.
 
-    Heider (1946) / Cartwright-Harary (1956) のstructural balance theory:
-      全閉路で符号積=+1 → balanced（friend-of-friend is friend）
-      -1の閉路 → unbalanced（構造緊張）
+    Heider (1946) / Cartwright-Harary (1956) の structural balance theory:
+      全閉路で符号積=+1 → balanced  -1の閉路 → unbalanced（構造緊張）
 
-    Adachi 2026 "Homological Arbitrage" の発想に近い:
-      確率/期待値の閉路で整合性が破れる = コホモロジー的障害 = 裁定可能性
+    Args:
+        G: sign 属性付きの無向グラフ.
+        max_cycles: サンプリング上限 (計算コスト抑制).
+
+    Returns:
+        n_cycles_in_basis, n_balanced, n_unbalanced, balance_rate,
+        unbalanced_examples を含む dict.
     """
     cycles = nx.cycle_basis(G)
     cycles = cycles[:max_cycles]
     n_total = len(cycles)
     n_balanced = 0
     n_unbalanced = 0
-    unbalanced_examples = []
+    unbalanced_examples: list[list] = []
     for cycle in cycles:
         sign_product = 1
         for i in range(len(cycle)):
@@ -148,7 +186,18 @@ def homology_timeseries(
     threshold: float = 0.3,
     step: int = 1,
 ) -> pd.DataFrame:
-    """ローリング窓で各時点の H_0, H_1, balance を計算."""
+    """ローリング窓で各時点の H_0, H_1, balance_rate を計算する.
+
+    Args:
+        returns: 銘柄リターン時系列 (行=日付, 列=銘柄).
+        window: ローリング窓幅 (営業日).
+        threshold: 相関グラフのエッジ閾値.
+        step: ステップ幅 (1 なら毎日, 30 なら月次相当).
+
+    Returns:
+        各時点での date, H_0, H_1, n_edges, balance_rate,
+        n_unbalanced_cycles を行とする DataFrame.
+    """
     rows = []
     n = len(returns)
     for i in range(window, n, step):
@@ -174,55 +223,25 @@ if __name__ == "__main__":
     closes = pd.read_parquet(here / "ohlc_40.parquet")
     returns = closes.pct_change()
 
-    # ===== 1. 直近の単一時点 =====
     print("=== 1. 直近30日の市場圏のベッチ数 ===")
     win = returns.iloc[-30:]
     cat = MarketCategory.from_returns(win, threshold=0.3)
     bn = betti_numbers(cat.G)
-    print(f"  H_0 (連結成分): {bn['H_0']}  ← コミュニティ数 / 「孤立島」の数")
-    print(f"  H_1 (独立サイクル): {bn['H_1']}  ← グラフの「穴」 / 独立な閉路")
+    print(f"  H_0 (連結成分): {bn['H_0']}")
+    print(f"  H_1 (独立サイクル): {bn['H_1']}")
     print(f"  Euler χ = n - m = {euler_characteristic(cat.G)}")
 
-    # ===== 2. 構造的整合性 =====
     print()
-    print("=== 2. Structural Balance / Cohomological Consistency ===")
+    print("=== 2. Structural Balance ===")
     bal = signed_cycle_balance(cat.G)
-    print(f"  サイクル基底: {bal['n_cycles_in_basis']}")
-    print(f"  balanced (符号積+1): {bal['n_balanced']}")
-    print(f"  unbalanced (符号積-1): {bal['n_unbalanced']}  ← 構造緊張・裁定可能性")
     print(f"  balance_rate: {bal['balance_rate']:.4f}")
-    if bal["unbalanced_examples"]:
-        print(f"  unbalanced examples (前3つ):")
-        for c in bal["unbalanced_examples"][:3]:
-            print(f"    {' → '.join(c)} → ({c[0]})")
 
-    # ===== 3. 持続ホモロジー =====
     print()
-    print("=== 3. Persistent Homology (閾値スイープ) ===")
+    print("=== 3. Persistent Homology ===")
     ph = persistent_homology(cat.corr_matrix)
     print(ph.to_string(index=False))
-    summary = homology_summary(ph)
-    print()
-    print(f"  H_0 が 1 になる閾値（全連結化）: {summary['h0_collapse_threshold']}")
-    print(f"  H_1 最大値: {summary['h1_max_value']} at threshold {summary['h1_max_threshold']}")
 
-    # ===== 4. 5年時系列 =====
     print()
-    print("=== 4. 5年ホモロジー時系列（30日step） ===")
+    print("=== 4. ホモロジー時系列（30日step） ===")
     ts = homology_timeseries(returns, window=20, threshold=0.3, step=30)
     print(f"  Computed {len(ts)} time points")
-    out_path = here / "homology_timeseries.csv"
-    ts.to_csv(out_path, index=False)
-    print(f"  Saved: {out_path}")
-    print()
-
-    # 統計
-    print("  === 時系列統計 ===")
-    print(f"    H_0 平均: {ts['H_0'].mean():.2f},  最大: {ts['H_0'].max()}")
-    print(f"    H_1 平均: {ts['H_1'].mean():.2f},  最大: {ts['H_1'].max()}")
-    print(f"    balance_rate 平均: {ts['balance_rate'].mean():.3f}")
-
-    # 構造緊張トップ
-    print()
-    print("  === Top 10 構造緊張日 (balance_rate最低) ===")
-    print(ts.nsmallest(10, "balance_rate")[["date", "H_0", "H_1", "balance_rate", "n_unbalanced_cycles"]].to_string(index=False))

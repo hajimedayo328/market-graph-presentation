@@ -24,15 +24,18 @@ SYMBOL = "SP500.r"
 LOT = 0.1  # SP500.r の volume_min は 0.1
 
 def log(msg: str) -> None:
+    """タイムスタンプ付きメッセージを標準出力に書く."""
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
-def best_filling(symbol_info) -> int:
+def best_filling(symbol_info: object) -> int:
+    """symbol がサポートする filling mode を返す."""
     fm = getattr(symbol_info, "filling_mode", 0)
     if fm & 1: return mt5.ORDER_FILLING_FOK
     if fm & 2: return mt5.ORDER_FILLING_IOC
     return mt5.ORDER_FILLING_RETURN
 
 def main() -> int:
+    """デモ口座での BUY → 即 CLOSE スモークテストを実行する. 0=OK, 1=NG."""
     log("[1] init MT5-Demo...")
     if not mt5.initialize(path=DEMO_PATH):
         log(f"NG: init failed err={mt5.last_error()}")

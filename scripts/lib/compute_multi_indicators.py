@@ -102,9 +102,14 @@ def signed_cycle_decomposition(G: nx.Graph, max_cycles: int = 1500) -> dict:
     }
 
 
-def main(window: int = 30, threshold: float = 0.3, save_every: int = 100,
-         input_file: str = "ohlc_40.parquet",
-         out_prefix: str = "multi_indicators"):
+def main(
+    window: int = 30,
+    threshold: float = 0.3,
+    save_every: int = 100,
+    input_file: str = "ohlc_40.parquet",
+    out_prefix: str = "multi_indicators",
+) -> None:
+    """ローリング窓で 11 指標を日次計算し CSV に保存する."""
     closes = pd.read_parquet(HERE / input_file)
     returns = closes.pct_change()
     print(f"Loaded {input_file}: {closes.shape}, "

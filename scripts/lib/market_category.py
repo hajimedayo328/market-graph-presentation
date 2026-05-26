@@ -55,6 +55,10 @@ class MarketCategory:
         return cat
 
     def _build_graph(self):
+        """corr_matrix と threshold からグラフを構築する.
+
+        weight=|corr|, sign=sign(corr) 属性を各エッジに付与する.
+        """
         self.G = nx.Graph()
         self.G.add_nodes_from(self.symbols)
         for i, a in enumerate(self.symbols):
@@ -71,17 +75,21 @@ class MarketCategory:
     # ===== 基本指標 =====
 
     def n_objects(self) -> int:
+        """銘柄数（圏の対象数）を返す."""
         return len(self.symbols)
 
     def n_morphisms(self) -> int:
+        """エッジ数（圏の射数）を返す."""
         return self.G.number_of_edges()
 
     def density(self) -> float:
+        """グラフ密度 = エッジ数 / 最大エッジ数 を返す."""
         n = self.n_objects()
         max_e = n * (n - 1) / 2
         return self.n_morphisms() / max_e if max_e > 0 else 0.0
 
     def avg_clustering(self) -> float:
+        """重み付き平均クラスタリング係数を返す."""
         return float(nx.average_clustering(self.G, weight="weight"))
 
     # ===== グラフ理論的位相不変量 =====
@@ -95,6 +103,7 @@ class MarketCategory:
         return out
 
     def max_k_core(self) -> int:
+        """最大 k-core 番号を返す."""
         cores = nx.core_number(self.G)
         return max(cores.values()) if cores else 0
 
@@ -103,9 +112,11 @@ class MarketCategory:
         return [n for n in self.G.nodes if self.G.degree(n) == 0]
 
     def degree_centrality(self) -> dict[str, float]:
+        """次数中心性を返す (networkx標準)."""
         return nx.degree_centrality(self.G)
 
     def eigenvector_centrality(self) -> dict[str, float]:
+        """固有ベクトル中心性を返す. 計算失敗時は全ノード 0.0."""
         try:
             return nx.eigenvector_centrality_numpy(self.G, weight="weight")
         except Exception:
@@ -161,6 +172,7 @@ class MarketCategory:
             return [{n} for n in self.G.nodes]
 
     def num_communities(self) -> int:
+        """コミュニティ数を返す."""
         return len(self.communities())
 
     # ===== Battiston系: ノード除去耐性 (DebtRank の応用) =====
@@ -216,6 +228,7 @@ class MarketCategory:
         }
 
     def __repr__(self) -> str:
+        """インスタンスの文字列表現を返す."""
         d = self.density()
         return f"<MarketCategory n={self.n_objects()} edges={self.n_morphisms()} density={d:.3f} label='{self.label}'>"
 
