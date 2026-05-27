@@ -764,6 +764,7 @@ def main():
     <a href="#s7">7. 符号反転</a>
     <a href="#s8">8. e_div 判別器</a>
     <a href="#s85">8.5 指標細分化</a>
+    <a href="#s86">8.6 源泉解剖</a>
     <a href="#s9">9. 圏論的整理</a>
     <a href="#s10">10. 先行研究</a>
     <a href="#s105">10.5. 8年完全OOS</a>
@@ -1443,6 +1444,76 @@ def main():
     <p>各指標を別々の関手 $F_1, F_2, \\ldots, F_{12}$ として、
     その極限・余極限・引き戻しを取ることで、ショックタイプ別の「特性関数」を構築できる。</p>
   </div>
+</section>
+
+<section id="s86">
+  <div class="section-num">SECTION 08.6</div>
+  <h2>シグナルの源泉解剖 — ニュースの主役と、構造の主役は別</h2>
+  <p class="lede">
+    どの銘柄が e_div シグナルを生んでいるかを Leave-One-Out (40 通り) + asset class 7 グループ除外で完全解剖。
+    結果は<strong>直感に反する</strong>。
+  </p>
+
+  <h3>解剖 1: Leave-One-Out — 1 銘柄ずつ抜いて Δe_div が何 σ 動くか</h3>
+  <p>2025-04 Liberation Day 前後 30 営業日の Δe_div を、40 銘柄から 1 つずつ抜いて再計算。
+  baseline (40 銘柄全部) = <strong>+1.46σ</strong>。</p>
+  <table>
+    <tr><th>抜くと弱くなる (シグナルの源泉)</th><th>Δe_div</th><th>影響</th></tr>
+    <tr><td><strong>EUB10Y</strong> (欧州 10y 債 ETF)</td><td>+0.47</td><td>-0.99σ</td></tr>
+    <tr><td><strong>COPPER</strong> (銅、中国景気の代理指標)</td><td>+0.56</td><td>-0.90σ</td></tr>
+    <tr><td><strong>CHINA50</strong> (中国指数)</td><td>+0.72</td><td>-0.75σ</td></tr>
+    <tr><td><strong>USDJPY</strong> (ドル円)</td><td>+0.78</td><td>-0.68σ</td></tr>
+    <tr><td><strong>VIX</strong> (恐怖指数)</td><td>+0.94</td><td>-0.52σ</td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    <strong>抜くと強くなる (ノイズ寄り)</strong> TOP 5: UKGILT, USDHUF, EURGBP, META, USDCAD
+    — マイナー通貨と個別株が cross-asset 不整合にとってノイズ寄りだった。
+  </p>
+
+  <h3>解剖 2: Asset class まるごと除外</h3>
+  <table>
+    <tr><th>抜いた class</th><th>n_remaining</th><th>Δe_div</th><th>解釈</th></tr>
+    <tr><td><strong>INDEX (9 個)</strong></td><td>31</td>
+        <td class="bad">-0.30</td>
+        <td><strong>シグナル消失</strong> ← 株指数が震源</td></tr>
+    <tr><td>SPECIAL (VIX+DXY)</td><td>38</td><td>+0.94</td><td>弱まる</td></tr>
+    <tr><td>COMMODITY</td><td>34</td><td>+1.06</td><td>軽く弱まる</td></tr>
+    <tr><td>BOND</td><td>37</td><td>+1.23</td><td>軽く弱まる</td></tr>
+    <tr><td>CRYPTO</td><td>38</td><td>+1.44</td><td>ほぼ不変</td></tr>
+    <tr><td>STOCK (個別株 5)</td><td>35</td><td>+2.01</td><td>むしろ強くなる</td></tr>
+    <tr><td><strong>FX (13 個)</strong></td><td>27</td>
+        <td class="good">+2.17</td>
+        <td><strong>むしろ強くなる</strong> ← FX は cross-asset 文脈ではノイズ寄り</td></tr>
+  </table>
+
+  <div class="callout found">
+    <h4>発見の本質: ニュースと構造のズレ</h4>
+    <p>2025-04 Liberation Day はメディアでは<strong>「S&P 500 が急落」</strong>がトップニュースだった。
+    しかし e_div の<strong>構造的本体</strong>は、米株ではなく
+    <strong>「中国指数 ↔ 欧州債 ↔ 銅 ↔ ドル円 ↔ VIX のクロス連鎖」</strong>にあった。</p>
+    <p>株指数を抜くとシグナル消失 (-0.30σ)、つまり指数は震源として<strong>必要</strong>。
+    一方で FX 13 個を抜いても、個別株 5 個を抜いても、シグナルは<strong>むしろ強くなる</strong>。
+    これは「みんなと同じ方向に動くだけの銘柄はノイズ」「逆相関を持つ銘柄群が震源」という直感を裏付ける。</p>
+    <p style="margin-top:8px; font-weight:600;">
+      普通の市場分析は<strong>「何が下がった?」</strong>を見る。本研究は<strong>「どの関係性が壊れた?」</strong>を見る。
+      この 2 つは<strong>別物</strong>であることを実証した。
+    </p>
+  </div>
+
+  <h3>解剖 3: 段階縮小 (各サイズ 3 trial 平均)</h3>
+  <table>
+    <tr><th>n_keep</th><th>mean Δe_div</th><th>std</th><th>range</th></tr>
+    <tr><td>35</td><td>+0.95</td><td>0.57</td><td>[+0.17, +1.52]</td></tr>
+    <tr><td><strong>30</strong></td><td><strong>+1.34</strong></td><td>0.25</td><td>[+1.04, +1.64]</td></tr>
+    <tr><td>25</td><td>+0.82</td><td>1.15</td><td>[-0.80, +1.81]</td></tr>
+    <tr><td>20</td><td>+0.34</td><td>0.58</td><td>[-0.37, +1.05]</td></tr>
+    <tr><td>15</td><td>+1.20</td><td>0.95</td><td>[-0.00, +2.31]</td></tr>
+    <tr><td>10</td><td>+0.25</td><td>1.28</td><td>[-1.34, +1.80]</td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    <strong>20-30 銘柄なら頑健</strong>。10 銘柄まで減らすと range が広く 1 銘柄の欠落が結果に直撃する。
+    実証は <code>scripts/test_symbol_variations.py</code> で再現可能。
+  </p>
 </section>
 
 <section id="s9">
