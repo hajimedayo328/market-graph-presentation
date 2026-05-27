@@ -1,0 +1,28 @@
+{
+  "fetched": [
+    "NVDA",
+    "AMZN",
+    "JPM",
+    "WMT",
+    "V",
+    "JNJ",
+    "KO",
+    "XOM",
+    "BA",
+    "MA",
+    "SOLUSD",
+    "BNBUSD",
+    "XRPUSD",
+    "DOGEUSD",
+    "ADAUSD",
+    "KS11",
+    "BSESN",
+    "BVSP",
+    "STI",
+    "HSI"
+  ],
+  "skipped": [],
+  "n_total": 60,
+  "period_start": "2021-05-17",
+  "period_end": "2026-05-19"
+}

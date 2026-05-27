@@ -370,6 +370,14 @@ def main():
     multi_corr = pd.read_csv(DATA_DIR / "multi_indicators_correlation_w30.csv", index_col=0)
     heatmap_b64 = img_b64(DATA_DIR / "fig_multi_indicators_heatmap.png")
 
+    # Section 8.6 拡張: 8 パターン銘柄構成 event study
+    pattern_path = DATA_DIR / "symbol_pattern_results_extended.json"
+    if pattern_path.exists():
+        pattern_results = json.loads(pattern_path.read_text(encoding="utf-8"))
+    else:
+        pattern_results = None
+    pattern_fig_b64 = img_b64(DATA_DIR / "fig_symbol_patterns.png")
+
     # 8 年完全 OOS event study (Section 10.5)
     oos8y_path = DATA_DIR / "eventstudy_8y_results.json"
     if oos8y_path.exists():
@@ -430,6 +438,7 @@ def main():
             "matrix": multi_corr.round(2).values.tolist(),
         },
         "heatmap_b64": heatmap_b64,
+        "pattern_results": pattern_results,
         "snapshots": snapshots,
         "barcodes": barcodes,
         "signflip": signflip,
@@ -1450,11 +1459,30 @@ def main():
   <div class="section-num">SECTION 08.6</div>
   <h2>シグナルの源泉解剖 — ニュースの主役と、構造の主役は別</h2>
   <p class="lede">
-    どの銘柄が e_div シグナルを生んでいるかを Leave-One-Out (40 通り) + asset class 7 グループ除外で完全解剖。
-    結果は<strong>直感に反する</strong>。
+    どの銘柄が e_div シグナルを生んでいるかを<strong>合計 7 種類の実験</strong>で完全解剖。
+    LOO (40 通り)、asset class 7 グループ除外、段階縮小、そして<strong>新規追加 20 銘柄を使った 8 パターンの構成入替え</strong>。
+    結論は一貫している ——
+    <strong>「ニュースの主役」と「構造の主役」は別物</strong>であり、
+    <strong>銘柄を増やしても減らしても本質は変わらない</strong>。
+    変わるのは「どの asset class が震源か」だけ。
   </p>
 
-  <h3>解剖 1: Leave-One-Out — 1 銘柄ずつ抜いて Δe_div が何 σ 動くか</h3>
+  <!-- ===== ヒーロー: 8 パターン Δe_div 比較バーチャート ===== -->
+  <div class="plot" style="margin-top:20px;">
+    <div class="plot-title">
+      Liberation Day (2025-04-02) を <strong>8 種類の銘柄構成</strong>で実証
+      — 9 銘柄〜60 銘柄まで構成を入れ替えても、構造シグナルの符号 (+) は反転しない
+    </div>
+    <img src="data:image/png;base64,__SYMPATTERN_FIG__" style="width:100%; border-radius:8px;">
+    <p style="font-size:12px; color:var(--sub); margin-top:8px;">
+      左パネル <strong>Δe_div</strong> が本研究の主指標。中央 <strong>Δ L¹</strong>・右 <strong>Δ n_unb</strong>
+      は分解成分。<strong>baseline (40 銘柄, P0)</strong> から横破線で参照。
+      生成スクリプト: <code>scripts/test_symbol_patterns_extended.py</code>
+    </p>
+  </div>
+
+  <!-- ===== 既存 3 解剖 ===== -->
+  <h3 style="margin-top:30px;">解剖 1: Leave-One-Out — 1 銘柄ずつ抜いて Δe_div が何 σ 動くか</h3>
   <p>2025-04 Liberation Day 前後 30 営業日の Δe_div を、40 銘柄から 1 つずつ抜いて再計算。
   baseline (40 銘柄全部) = <strong>+1.46σ</strong>。</p>
   <table>
@@ -1486,20 +1514,6 @@ def main():
         <td><strong>むしろ強くなる</strong> ← FX は cross-asset 文脈ではノイズ寄り</td></tr>
   </table>
 
-  <div class="callout found">
-    <h4>発見の本質: ニュースと構造のズレ</h4>
-    <p>2025-04 Liberation Day はメディアでは<strong>「S&P 500 が急落」</strong>がトップニュースだった。
-    しかし e_div の<strong>構造的本体</strong>は、米株ではなく
-    <strong>「中国指数 ↔ 欧州債 ↔ 銅 ↔ ドル円 ↔ VIX のクロス連鎖」</strong>にあった。</p>
-    <p>株指数を抜くとシグナル消失 (-0.30σ)、つまり指数は震源として<strong>必要</strong>。
-    一方で FX 13 個を抜いても、個別株 5 個を抜いても、シグナルは<strong>むしろ強くなる</strong>。
-    これは「みんなと同じ方向に動くだけの銘柄はノイズ」「逆相関を持つ銘柄群が震源」という直感を裏付ける。</p>
-    <p style="margin-top:8px; font-weight:600;">
-      普通の市場分析は<strong>「何が下がった?」</strong>を見る。本研究は<strong>「どの関係性が壊れた?」</strong>を見る。
-      この 2 つは<strong>別物</strong>であることを実証した。
-    </p>
-  </div>
-
   <h3>解剖 3: 段階縮小 (各サイズ 3 trial 平均)</h3>
   <table>
     <tr><th>n_keep</th><th>mean Δe_div</th><th>std</th><th>range</th></tr>
@@ -1514,6 +1528,147 @@ def main():
     <strong>20-30 銘柄なら頑健</strong>。10 銘柄まで減らすと range が広く 1 銘柄の欠落が結果に直撃する。
     実証は <code>scripts/test_symbol_variations.py</code> で再現可能。
   </p>
+
+  <!-- ===== 新規: 4 つの拡張実験 (Phase 2) ===== -->
+  <h3 style="margin-top:36px; border-top:2px solid var(--accent); padding-top:24px;">
+    解剖 4〜7: 銘柄プールを物理的に組み替えたらどうなる?
+  </h3>
+  <p>LOO / asset class 除外 / 段階縮小は<strong>既存 40 銘柄プールの内部</strong>での操作だった。
+  ここでは<strong>新たに 20 銘柄を yfinance で取得</strong>し (個別株 10 + 暗号 5 + 地域指数 5)、
+  最大 60 銘柄まで膨らませた上で<strong>合計 8 つの構成</strong>で同一 event study を回す。
+  生成スクリプト: <code>scripts/fetch_extended_symbols.py</code> +
+  <code>scripts/test_symbol_patterns_extended.py</code></p>
+
+  <h4 style="margin-top:18px;">解剖 4: 個別株を 5 → 15 に増やしたら? (P1)</h4>
+  <p>追加銘柄: NVDA / AMZN / JPM / WMT / V / JNJ / KO / XOM / BA / MA (40 → 50 銘柄)。</p>
+  <table>
+    <tr><th>構成</th><th>n</th><th>Δe_div</th><th>baseline 比</th><th>結果</th></tr>
+    <tr><td>P0 baseline</td><td>40</td><td>+1.461</td><td>±0</td><td>—</td></tr>
+    <tr><td><strong>P1 個別株増</strong></td><td>50</td>
+        <td class="bad">+0.276</td><td>-1.185σ</td>
+        <td><strong>大幅に弱まる</strong></td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    解釈: 個別株は<strong>市場全体と同方向に動くだけのノイズ</strong>。Asset class 除外実験で
+    「STOCK を抜くとむしろ強くなる」(+2.01σ) が観測されたのと同じ現象。
+    <strong>個別株を増やすほど、構造シグナルは希釈される</strong>。
+  </p>
+
+  <h4>解剖 5: 暗号を 2 → 7 に増やしたら? (P2)</h4>
+  <p>追加: SOL / BNB / XRP / DOGE / ADA (40 → 45 銘柄)。</p>
+  <table>
+    <tr><th>構成</th><th>n</th><th>Δe_div</th><th>baseline 比</th><th>結果</th></tr>
+    <tr><td>P0 baseline</td><td>40</td><td>+1.461</td><td>±0</td><td>—</td></tr>
+    <tr><td><strong>P2 暗号増</strong></td><td>45</td>
+        <td>+1.664</td><td>+0.203σ</td>
+        <td><strong>ほぼ不変 (やや強化)</strong></td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    解釈: 暗号は asset class 除外実験でも「抜いてもほぼ不変」(+1.44σ) だったが、
+    <strong>増やしてもほぼ不変</strong>。暗号は<strong>独立な軌道</strong>を描き、
+    cross-asset 不整合の主役にも脇役にもならない<strong>中立的な存在</strong>。
+  </p>
+
+  <h4>解剖 6: 地域指数を 9 → 14 に増やしたら? (P3)  <span style="color:var(--accent);">★ 新発見</span></h4>
+  <p>追加: KOSPI (韓国) / SENSEX (インド) / BOVESPA (ブラジル) / STI (シンガポール) / HSI (香港) (40 → 45 銘柄)。</p>
+  <table>
+    <tr><th>構成</th><th>n</th><th>Δe_div</th><th>baseline 比</th><th>結果</th></tr>
+    <tr><td>P0 baseline</td><td>40</td><td>+1.461</td><td>±0</td><td>—</td></tr>
+    <tr><td><strong>P3 地域指数増</strong></td><td>45</td>
+        <td class="good">+2.251</td><td>+0.790σ</td>
+        <td><strong>明確に強まる (全 8 パターン中で最強)</strong></td></tr>
+  </table>
+  <div class="callout intuition" style="margin-top:8px;">
+    <h4>新発見: 地域指数を増やすと構造シグナルが強くなる</h4>
+    <p>これは事前仮説 (「強まる」) と整合するが、<strong>強まり方の大きさは想定外</strong>だった。
+    P3 (+2.25σ) は baseline (+1.46σ) を <strong>0.79σ 上回り</strong>、全 8 構成中で<strong>最強の e_div</strong> を記録。
+    既存 9 個の地域指数 (米欧日中) に対して、新興 5 個 (韓国・印・伯・新加・香港) を足すと
+    <strong>構造的不整合がさらにくっきり浮かび上がる</strong>。</p>
+    <p style="margin-top:6px;">解釈仮説:
+    <strong>Liberation Day の関税ショックは「米国 → 新興国」へ波及する構造</strong>であり、
+    新興国指数を追加することで「米中欧」内部の連鎖だけでなく
+    「米国 ↔ 新興国」の不整合も拾えるようになった、と考えられる。</p>
+  </div>
+
+  <h4 style="margin-top:18px;">解剖 7: 60 銘柄全部詰め込んだら? (P4)</h4>
+  <p>40 + 個別株 10 + 暗号 5 + 地域指数 5 = <strong>60 銘柄プール</strong>。</p>
+  <table>
+    <tr><th>構成</th><th>n</th><th>Δe_div</th><th>baseline 比</th><th>結果</th></tr>
+    <tr><td>P0 baseline</td><td>40</td><td>+1.461</td><td>±0</td><td>—</td></tr>
+    <tr><td><strong>P4 全部入り</strong></td><td>60</td>
+        <td>+1.490</td><td>+0.029σ</td>
+        <td><strong>ほぼ baseline と同じ</strong></td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    解釈: P1 (個別株増, -1.185σ) と P3 (地域指数増, +0.790σ) が<strong>打ち消し合う</strong>形になり、
+    結果として baseline とほぼ同値に落ち着いた。これは
+    <strong>「銘柄を闇雲に増やしても良くならない、構造的に意味のある追加だけが効く」</strong>
+    という重要な含意を持つ。
+  </p>
+
+  <!-- ===== まとめ表: 全 8 パターン一覧 ===== -->
+  <h3 style="margin-top:30px;">まとめ: 全 8 パターン一覧</h3>
+  <table>
+    <tr>
+      <th>#</th><th>構成</th><th>n</th>
+      <th>Δe_div</th><th>Δ L¹</th><th>Δ n_unb</th>
+      <th>baseline 比</th><th>解釈</th>
+    </tr>
+    <tr><td>P0</td><td>baseline (40)</td><td>40</td>
+        <td><strong>+1.461</strong></td><td>-1.006</td><td>+0.455</td>
+        <td>±0</td><td>参照点</td></tr>
+    <tr><td>P1</td><td>+個別株 10 (50)</td><td>50</td>
+        <td class="bad">+0.276</td><td>-1.304</td><td>-1.028</td>
+        <td>-1.19σ</td><td>大幅弱化</td></tr>
+    <tr><td>P2</td><td>+暗号 5 (45)</td><td>45</td>
+        <td>+1.664</td><td>-1.063</td><td>+0.601</td>
+        <td>+0.20σ</td><td>ほぼ不変</td></tr>
+    <tr style="background:rgba(46,125,91,0.10);">
+        <td>P3</td><td><strong>+地域指数 5 (45)</strong></td><td>45</td>
+        <td class="good"><strong>+2.251</strong></td><td>-1.311</td><td>+0.941</td>
+        <td><strong>+0.79σ</strong></td>
+        <td><strong>★ 最強</strong></td></tr>
+    <tr><td>P4</td><td>全部入り (60)</td><td>60</td>
+        <td>+1.490</td><td>-1.285</td><td>+0.206</td>
+        <td>+0.03σ</td><td>baseline 同等</td></tr>
+    <tr><td>P5</td><td>minimal (15)</td><td>15</td>
+        <td>+0.747</td><td>-0.708</td><td>+0.039</td>
+        <td>-0.71σ</td><td>弱まる</td></tr>
+    <tr><td>P6</td><td>INDEX のみ (9)</td><td>9</td>
+        <td>+0.239</td><td>-1.404</td><td>-1.166</td>
+        <td>-1.22σ</td><td>大幅弱化</td></tr>
+    <tr><td>P7</td><td>FX のみ (13)</td><td>13</td>
+        <td>+0.850</td><td>-0.273</td><td>+0.577</td>
+        <td>-0.61σ</td><td>弱まる</td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    P5: 主要 FX 3 + 主要指数 4 + 主要商品 3 + BTC + 主要債 2 + VIX + DXY。
+    P6/P7: 単一 asset class のみ (株指数 9 個 / FX 13 個)。
+    全 8 構成で Δe_div は<strong>符号反転しない</strong> (常に正)。
+  </p>
+
+  <!-- ===== 発見の本質 callout (拡張版) ===== -->
+  <div class="callout found" style="margin-top:24px;">
+    <h4>発見の本質 (Section 8.6 全体のまとめ)</h4>
+    <p><strong>① ニュースの主役と構造の主役は別物</strong>。
+    2025-04 Liberation Day はメディアでは「S&P 500 が急落」がトップニュースだったが、
+    e_div の構造的本体は米株ではなく
+    <strong>「中国指数 ↔ 欧州債 ↔ 銅 ↔ ドル円 ↔ VIX のクロス連鎖」</strong>にあった。</p>
+
+    <p style="margin-top:10px;"><strong>② 銘柄を増やしても減らしても、本質は変わらない</strong>。
+    9 銘柄 (P6) から 60 銘柄 (P4) まで構成を 6.7 倍にしても、Δe_div の符号は<strong>常に正</strong>。
+    変わるのは「どの asset class が震源か」と「シグナルの濃淡」だけ。</p>
+
+    <p style="margin-top:10px;"><strong>③ どの asset class を加えるかで、シグナルの濃淡が大きく変わる</strong>。
+    個別株を増やすと希釈、暗号を増やしてもほぼ不変、<strong>地域指数を増やすと最強 (+0.79σ)</strong>。
+    これは「個別株は同方向ノイズ、暗号は独立軌道、地域指数は cross-asset 連鎖の主役」
+    という階層構造を示している。</p>
+
+    <p style="margin-top:12px; font-weight:600;">
+      普通の市場分析は<strong>「何が下がった?」</strong>を見る。本研究は<strong>「どの関係性が壊れた?」</strong>を見る。
+      この 2 つは<strong>別物</strong>であり、構成銘柄を入れ替えても本研究の指標は<strong>頑健に保たれる</strong>ことを 7 種類の実験で実証した。
+    </p>
+  </div>
 </section>
 
 <section id="s9">
@@ -2514,6 +2669,7 @@ window.addEventListener('resize', () => {
     sec105_html = build_section_105_html(oos8y)
     html = (template
             .replace("__HEATMAP__", DATA["heatmap_b64"])
+            .replace("__SYMPATTERN_FIG__", pattern_fig_b64)
             .replace("__SEC105__", sec105_html)
             .replace("__DATA__", json.dumps(DATA, ensure_ascii=False)))
     out = ROOT / "index.html"

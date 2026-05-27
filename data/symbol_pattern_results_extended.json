@@ -1,0 +1,78 @@
+{
+  "event": "2025-04-02",
+  "n_patterns": 8,
+  "patterns": [
+    {
+      "name": "P0_baseline_40",
+      "label": "現状 40 (baseline)",
+      "n": 40,
+      "missing": [],
+      "delta_L1": -1.006,
+      "delta_n_unb": 0.455,
+      "delta_e_div": 1.461
+    },
+    {
+      "name": "P1_stocks_50",
+      "label": "個別株増 50 (40+株 10)",
+      "n": 50,
+      "missing": [],
+      "delta_L1": -1.304,
+      "delta_n_unb": -1.028,
+      "delta_e_div": 0.276
+    },
+    {
+      "name": "P2_crypto_45",
+      "label": "暗号増 45 (40+暗号 5)",
+      "n": 45,
+      "missing": [],
+      "delta_L1": -1.063,
+      "delta_n_unb": 0.601,
+      "delta_e_div": 1.664
+    },
+    {
+      "name": "P3_index_45",
+      "label": "地域指数増 45 (40+指数 5)",
+      "n": 45,
+      "missing": [],
+      "delta_L1": -1.311,
+      "delta_n_unb": 0.941,
+      "delta_e_div": 2.251
+    },
+    {
+      "name": "P4_all_60",
+      "label": "全部入り 60 (40+全 20)",
+      "n": 60,
+      "missing": [],
+      "delta_L1": -1.285,
+      "delta_n_unb": 0.206,
+      "delta_e_div": 1.49
+    },
+    {
+      "name": "P5_minimal_15",
+      "label": "minimal 15 (主要のみ)",
+      "n": 15,
+      "missing": [],
+      "delta_L1": -0.708,
+      "delta_n_unb": 0.039,
+      "delta_e_div": 0.747
+    },
+    {
+      "name": "P6_index_only_9",
+      "label": "単一資産: 既存 INDEX 9",
+      "n": 9,
+      "missing": [],
+      "delta_L1": -1.404,
+      "delta_n_unb": -1.166,
+      "delta_e_div": 0.239
+    },
+    {
+      "name": "P7_fx_only_13",
+      "label": "単一資産: 既存 FX 13",
+      "n": 13,
+      "missing": [],
+      "delta_L1": -0.273,
+      "delta_n_unb": 0.577,
+      "delta_e_div": 0.85
+    }
+  ]
+}
