@@ -1330,6 +1330,9 @@
     <tr><td><strong>銘柄選択依存性</strong></td>
         <td>40→30 リサンプリング 30 回</td>
         <td>29/30 で e_div 符号保持、影響小</td></tr>
+    <tr><td><strong>銘柄構成バリエーション総当たり</strong></td>
+        <td>LOO (40 通り) + asset class 7 グループ除外 + 段階縮小 (35→10)</td>
+        <td>20-30 銘柄で頑健、シグナル源泉は CHINA50/EUB10Y/COPPER/USDJPY/VIX のクロス連鎖と判明 (<code>scripts/test_symbol_variations.py</code>)</td></tr>
     <tr><td><strong>e_div の cherry-pick 疑惑</strong></td>
         <td>11 指標 55 ペアスイープ</td>
         <td>trade/structure 上位 22-36%、war 中央値以下、Bonferroni 通過</td></tr>

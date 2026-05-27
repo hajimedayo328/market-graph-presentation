@@ -1,0 +1,439 @@
+{
+ "baseline_40": {
+  "n_symbols": 40,
+  "delta_L1": -1.006,
+  "delta_n_unb": 0.455,
+  "delta_e_div": 1.461
+ },
+ "leave_one_out": [
+  {
+   "removed": "EURUSD",
+   "n_symbols": 39,
+   "delta_L1": -0.929,
+   "delta_n_unb": 0.527,
+   "delta_e_div": 1.456
+  },
+  {
+   "removed": "USDJPY",
+   "n_symbols": 39,
+   "delta_L1": -0.242,
+   "delta_n_unb": 0.54,
+   "delta_e_div": 0.782
+  },
+  {
+   "removed": "GBPUSD",
+   "n_symbols": 39,
+   "delta_L1": -1.021,
+   "delta_n_unb": 0.429,
+   "delta_e_div": 1.45
+  },
+  {
+   "removed": "AUDUSD",
+   "n_symbols": 39,
+   "delta_L1": -1.012,
+   "delta_n_unb": 0.424,
+   "delta_e_div": 1.436
+  },
+  {
+   "removed": "USDCHF",
+   "n_symbols": 39,
+   "delta_L1": -0.607,
+   "delta_n_unb": 0.486,
+   "delta_e_div": 1.094
+  },
+  {
+   "removed": "USDCAD",
+   "n_symbols": 39,
+   "delta_L1": -1.356,
+   "delta_n_unb": 0.389,
+   "delta_e_div": 1.744
+  },
+  {
+   "removed": "NZDUSD",
+   "n_symbols": 39,
+   "delta_L1": -0.94,
+   "delta_n_unb": 0.384,
+   "delta_e_div": 1.324
+  },
+  {
+   "removed": "EURJPY",
+   "n_symbols": 39,
+   "delta_L1": -0.963,
+   "delta_n_unb": 0.446,
+   "delta_e_div": 1.409
+  },
+  {
+   "removed": "GBPJPY",
+   "n_symbols": 39,
+   "delta_L1": -1.076,
+   "delta_n_unb": 0.439,
+   "delta_e_div": 1.515
+  },
+  {
+   "removed": "EURGBP",
+   "n_symbols": 39,
+   "delta_L1": -1.452,
+   "delta_n_unb": 0.348,
+   "delta_e_div": 1.8
+  },
+  {
+   "removed": "USDTRY",
+   "n_symbols": 39,
+   "delta_L1": -0.61,
+   "delta_n_unb": 0.632,
+   "delta_e_div": 1.242
+  },
+  {
+   "removed": "USDHUF",
+   "n_symbols": 39,
+   "delta_L1": -1.275,
+   "delta_n_unb": 0.653,
+   "delta_e_div": 1.927
+  },
+  {
+   "removed": "EURTRY",
+   "n_symbols": 39,
+   "delta_L1": -0.617,
+   "delta_n_unb": 0.615,
+   "delta_e_div": 1.233
+  },
+  {
+   "removed": "XAUUSD",
+   "n_symbols": 39,
+   "delta_L1": -0.91,
+   "delta_n_unb": 0.319,
+   "delta_e_div": 1.23
+  },
+  {
+   "removed": "XAGUSD",
+   "n_symbols": 39,
+   "delta_L1": -0.724,
+   "delta_n_unb": 0.333,
+   "delta_e_div": 1.056
+  },
+  {
+   "removed": "BTCUSD",
+   "n_symbols": 39,
+   "delta_L1": -1.169,
+   "delta_n_unb": 0.431,
+   "delta_e_div": 1.6
+  },
+  {
+   "removed": "ETHUSD",
+   "n_symbols": 39,
+   "delta_L1": -0.968,
+   "delta_n_unb": 0.407,
+   "delta_e_div": 1.375
+  },
+  {
+   "removed": "USOUSD",
+   "n_symbols": 39,
+   "delta_L1": -1.002,
+   "delta_n_unb": 0.647,
+   "delta_e_div": 1.649
+  },
+  {
+   "removed": "UKOUSD",
+   "n_symbols": 39,
+   "delta_L1": -0.919,
+   "delta_n_unb": 0.566,
+   "delta_e_div": 1.485
+  },
+  {
+   "removed": "SP500",
+   "n_symbols": 39,
+   "delta_L1": -1.082,
+   "delta_n_unb": 0.498,
+   "delta_e_div": 1.579
+  },
+  {
+   "removed": "NAS100",
+   "n_symbols": 39,
+   "delta_L1": -0.993,
+   "delta_n_unb": 0.43,
+   "delta_e_div": 1.422
+  },
+  {
+   "removed": "DJ30",
+   "n_symbols": 39,
+   "delta_L1": -0.997,
+   "delta_n_unb": 0.591,
+   "delta_e_div": 1.588
+  },
+  {
+   "removed": "RUS2000",
+   "n_symbols": 39,
+   "delta_L1": -0.99,
+   "delta_n_unb": 0.451,
+   "delta_e_div": 1.441
+  },
+  {
+   "removed": "GER40",
+   "n_symbols": 39,
+   "delta_L1": -0.978,
+   "delta_n_unb": 0.366,
+   "delta_e_div": 1.345
+  },
+  {
+   "removed": "UK100",
+   "n_symbols": 39,
+   "delta_L1": -0.842,
+   "delta_n_unb": 0.403,
+   "delta_e_div": 1.244
+  },
+  {
+   "removed": "FRA40",
+   "n_symbols": 39,
+   "delta_L1": -1.066,
+   "delta_n_unb": 0.32,
+   "delta_e_div": 1.386
+  },
+  {
+   "removed": "JP225",
+   "n_symbols": 39,
+   "delta_L1": -0.914,
+   "delta_n_unb": 0.616,
+   "delta_e_div": 1.53
+  },
+  {
+   "removed": "CHINA50",
+   "n_symbols": 39,
+   "delta_L1": -0.567,
+   "delta_n_unb": 0.147,
+   "delta_e_div": 0.715
+  },
+  {
+   "removed": "DXY",
+   "n_symbols": 39,
+   "delta_L1": -1.006,
+   "delta_n_unb": 0.455,
+   "delta_e_div": 1.461
+  },
+  {
+   "removed": "VIX",
+   "n_symbols": 39,
+   "delta_L1": -0.473,
+   "delta_n_unb": 0.471,
+   "delta_e_div": 0.944
+  },
+  {
+   "removed": "AAPL",
+   "n_symbols": 39,
+   "delta_L1": -0.908,
+   "delta_n_unb": 0.575,
+   "delta_e_div": 1.483
+  },
+  {
+   "removed": "MSFT",
+   "n_symbols": 39,
+   "delta_L1": -1.098,
+   "delta_n_unb": 0.394,
+   "delta_e_div": 1.492
+  },
+  {
+   "removed": "GOOG",
+   "n_symbols": 39,
+   "delta_L1": -1.03,
+   "delta_n_unb": 0.504,
+   "delta_e_div": 1.534
+  },
+  {
+   "removed": "META",
+   "n_symbols": 39,
+   "delta_L1": -1.212,
+   "delta_n_unb": 0.545,
+   "delta_e_div": 1.757
+  },
+  {
+   "removed": "TSLA",
+   "n_symbols": 39,
+   "delta_L1": -1.174,
+   "delta_n_unb": 0.526,
+   "delta_e_div": 1.699
+  },
+  {
+   "removed": "US10Y",
+   "n_symbols": 39,
+   "delta_L1": -1.333,
+   "delta_n_unb": 0.23,
+   "delta_e_div": 1.563
+  },
+  {
+   "removed": "EUB10Y",
+   "n_symbols": 39,
+   "delta_L1": -0.413,
+   "delta_n_unb": 0.056,
+   "delta_e_div": 0.469
+  },
+  {
+   "removed": "UKGILT",
+   "n_symbols": 39,
+   "delta_L1": -0.745,
+   "delta_n_unb": 1.337,
+   "delta_e_div": 2.082
+  },
+  {
+   "removed": "COPPER",
+   "n_symbols": 39,
+   "delta_L1": -0.878,
+   "delta_n_unb": -0.314,
+   "delta_e_div": 0.564
+  },
+  {
+   "removed": "NGAS",
+   "n_symbols": 39,
+   "delta_L1": -1.248,
+   "delta_n_unb": -0.223,
+   "delta_e_div": 1.025
+  }
+ ],
+ "asset_class_excluded": {
+  "FX": {
+   "n_removed": 13,
+   "removed": [
+    "EURUSD",
+    "USDJPY",
+    "GBPUSD",
+    "AUDUSD",
+    "USDCHF",
+    "USDCAD",
+    "NZDUSD",
+    "EURJPY",
+    "GBPJPY",
+    "EURGBP",
+    "USDTRY",
+    "USDHUF",
+    "EURTRY"
+   ],
+   "n_symbols": 27,
+   "delta_L1": -0.972,
+   "delta_n_unb": 1.193,
+   "delta_e_div": 2.165
+  },
+  "INDEX": {
+   "n_removed": 9,
+   "removed": [
+    "SP500",
+    "NAS100",
+    "DJ30",
+    "RUS2000",
+    "GER40",
+    "UK100",
+    "FRA40",
+    "JP225",
+    "CHINA50"
+   ],
+   "n_symbols": 31,
+   "delta_L1": 0.404,
+   "delta_n_unb": 0.103,
+   "delta_e_div": -0.301
+  },
+  "STOCK": {
+   "n_removed": 5,
+   "removed": [
+    "AAPL",
+    "MSFT",
+    "GOOG",
+    "META",
+    "TSLA"
+   ],
+   "n_symbols": 35,
+   "delta_L1": -1.384,
+   "delta_n_unb": 0.627,
+   "delta_e_div": 2.011
+  },
+  "COMMODITY": {
+   "n_removed": 6,
+   "removed": [
+    "XAUUSD",
+    "XAGUSD",
+    "USOUSD",
+    "UKOUSD",
+    "COPPER",
+    "NGAS"
+   ],
+   "n_symbols": 34,
+   "delta_L1": -0.591,
+   "delta_n_unb": 0.47,
+   "delta_e_div": 1.061
+  },
+  "CRYPTO": {
+   "n_removed": 2,
+   "removed": [
+    "BTCUSD",
+    "ETHUSD"
+   ],
+   "n_symbols": 38,
+   "delta_L1": -1.046,
+   "delta_n_unb": 0.391,
+   "delta_e_div": 1.437
+  },
+  "BOND": {
+   "n_removed": 3,
+   "removed": [
+    "US10Y",
+    "EUB10Y",
+    "UKGILT"
+   ],
+   "n_symbols": 37,
+   "delta_L1": -0.821,
+   "delta_n_unb": 0.413,
+   "delta_e_div": 1.234
+  },
+  "SPECIAL": {
+   "n_removed": 2,
+   "removed": [
+    "DXY",
+    "VIX"
+   ],
+   "n_symbols": 38,
+   "delta_L1": -0.473,
+   "delta_n_unb": 0.471,
+   "delta_e_div": 0.944
+  }
+ },
+ "progressive_reduction": {
+  "35": {
+   "n_trials": 3,
+   "mean": 0.947,
+   "std": 0.574,
+   "min": 0.165,
+   "max": 1.524
+  },
+  "30": {
+   "n_trials": 3,
+   "mean": 1.341,
+   "std": 0.245,
+   "min": 1.035,
+   "max": 1.635
+  },
+  "25": {
+   "n_trials": 3,
+   "mean": 0.817,
+   "std": 1.151,
+   "min": -0.796,
+   "max": 1.809
+  },
+  "20": {
+   "n_trials": 3,
+   "mean": 0.338,
+   "std": 0.577,
+   "min": -0.366,
+   "max": 1.048
+  },
+  "15": {
+   "n_trials": 3,
+   "mean": 1.2,
+   "std": 0.948,
+   "min": -0.002,
+   "max": 2.314
+  },
+  "10": {
+   "n_trials": 3,
+   "mean": 0.245,
+   "std": 1.282,
+   "min": -1.343,
+   "max": 1.797
+  }
+ }
+}
