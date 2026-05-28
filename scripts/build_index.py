@@ -74,6 +74,198 @@ def build_barcode(date_str: str, window: int = 30) -> dict:
     }
 
 
+def _fmt_pct(x: float | None, plus: bool = True) -> str:
+    if x is None:
+        return "—"
+    fmt = "{:+.2f}%" if plus else "{:.2f}%"
+    return fmt.format(x * 100)
+
+
+def _fmt_num(x: float | None, plus: bool = True, digits: int = 2) -> str:
+    if x is None:
+        return "—"
+    fmt = f"{{:+.{digits}f}}" if plus else f"{{:.{digits}f}}"
+    return fmt.format(x)
+
+
+def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
+    """Section 9.5: 期間別 in-sample バックテスト + Walk-forward OOS 併記."""
+    if bt_multi is None:
+        return ("<section id=\"s95\">"
+                "<div class=\"section-num\">SECTION 9.5</div>"
+                "<h2>期間別 in-sample バックテスト (データ未生成)</h2>"
+                "<p><code>python scripts/backtest_v2_multi_period.py</code> "
+                "を実行してください.</p>"
+                "</section>")
+
+    periods = bt_multi.get("periods", {})
+    wf_oos = wf_oos or {}
+
+    # 4 期間 × 6 戦略 + B&H のテーブル
+    strategy_order = [
+        ("Z_buy_and_hold", "Buy &amp; Hold"),
+        ("S1_ediv_high_short", "S1 e_div&nbsp;≥&nbsp;+0.8 (short)"),
+        ("S1_ediv_high_long",  "S1 e_div&nbsp;≥&nbsp;+0.8 (long)"),
+        ("S2_ediv_low_short",  "S2 e_div&nbsp;≤&nbsp;-0.5 (short)"),
+        ("S2_ediv_low_long",   "S2 e_div&nbsp;≤&nbsp;-0.5 (long)"),
+        ("S6_zL1_AND_zunb_short", "S6 z_L1∧z_unb&nbsp;≥&nbsp;1 (short)"),
+        ("S6_zL1_AND_zunb_long",  "S6 z_L1∧z_unb&nbsp;≥&nbsp;1 (long)"),
+    ]
+    period_order = ["5y", "10y", "15y", "20y"]
+
+    # サマリーテーブル (S1 short focus)
+    summary_rows: list[str] = []
+    for p in period_order:
+        pr = periods.get(p)
+        if pr is None:
+            continue
+        bh = pr["strategies"].get("Z_buy_and_hold", {})
+        s1 = pr["strategies"].get("S1_ediv_high_short", {})
+        alpha_ret = s1.get("total_return", 0) - bh.get("total_return", 0)
+        alpha_sharpe = s1.get("sharpe", 0) - bh.get("sharpe", 0)
+        beat = "good" if s1.get("sharpe", 0) > bh.get("sharpe", 0) else "warn"
+        summary_rows.append(
+            f"<tr><td><strong>{p}</strong></td>"
+            f"<td>{pr['n_years']:.1f}</td>"
+            f"<td>{_fmt_num(bh.get('sharpe'))}</td>"
+            f"<td>{_fmt_pct(bh.get('max_drawdown'))}</td>"
+            f"<td class=\"{beat}\"><strong>{_fmt_num(s1.get('sharpe'))}</strong></td>"
+            f"<td>{_fmt_pct(s1.get('max_drawdown'))}</td>"
+            f"<td>{_fmt_num(alpha_sharpe)}σ</td>"
+            f"<td>{_fmt_pct(alpha_ret)}</td>"
+            f"<td>{s1.get('trades_per_year', 0):.1f}</td></tr>"
+        )
+
+    # 詳細テーブル (4 期間 × 7 戦略)
+    detail_header = "<tr><th>戦略</th>" + "".join(
+        f"<th colspan=\"2\">{p}</th>" for p in period_order
+    ) + "</tr>"
+    detail_subhead = "<tr><th></th>" + "".join(
+        "<th>Sharpe</th><th>MaxDD</th>" for _ in period_order
+    ) + "</tr>"
+    detail_rows: list[str] = []
+    for key, label in strategy_order:
+        cells = [f"<td>{label}</td>"]
+        for p in period_order:
+            pr = periods.get(p)
+            s = pr["strategies"].get(key, {}) if pr else {}
+            if s:
+                sh = _fmt_num(s.get("sharpe"))
+                dd = _fmt_pct(s.get("max_drawdown"))
+                # B&H の Sharpe を超えたら強調
+                bh_sh = pr["strategies"].get("Z_buy_and_hold", {}).get("sharpe", 0) if pr else 0
+                cls = " class=\"good\"" if s.get("sharpe", 0) > bh_sh else ""
+                cells.append(f"<td{cls}>{sh}</td><td>{dd}</td>")
+            else:
+                cells.append("<td>—</td><td>—</td>")
+        detail_rows.append("<tr>" + "".join(cells) + "</tr>")
+
+    # Walk-forward OOS 併記
+    wf_rows: list[str] = []
+    for p in ("10y", "15y", "20y"):
+        wf = wf_oos.get(p)
+        if wf is None:
+            wf_rows.append(
+                f"<tr><td><strong>{p}</strong></td><td colspan=\"4\">未生成</td></tr>"
+            )
+            continue
+        # キー名が微妙に違う (oos_max_dd / oos_max_drawdown, oos_total_return / oos_bh_return)
+        oos_sh = wf.get("oos_sharpe")
+        oos_dd = wf.get("oos_max_dd") or wf.get("oos_max_drawdown")
+        oos_ret = wf.get("oos_total_return")
+        bh_ret = wf.get("oos_bh_return") or wf.get("oos_bh_total_return")
+        n_folds = wf.get("n_folds", "—")
+        wf_rows.append(
+            f"<tr><td><strong>{p}</strong></td>"
+            f"<td>{n_folds}</td>"
+            f"<td>{_fmt_num(oos_sh)}</td>"
+            f"<td>{_fmt_pct(oos_dd)}</td>"
+            f"<td>{_fmt_pct(oos_ret)}</td>"
+            f"<td>{_fmt_pct(bh_ret)}</td></tr>"
+        )
+
+    return f"""
+<section id="s95" style="background:#f7f9fc;">
+  <div class="section-num" style="color:#1e6091;">SECTION 9.5</div>
+  <h2>期間別 in-sample バックテスト (5y / 10y / 15y / 20y)</h2>
+  <p class="lede">同一ロジック (S&amp;P500 を売買、コスト 0.05%/leg、5日ヒステリシス、翌日寄付き約定、
+  z-score は <strong>expanding window (min_periods=30)</strong> で look-ahead 完全排除) を
+  4 つの期間で実行し、結果が長期にわたり安定するかを確認する。
+  実装: <code>scripts/backtest_v2_multi_period.py</code>、出力:
+  <code>data/backtest_v2_multi_period.json</code>。</p>
+
+  <h3>9.5.1 主戦略 (S1 e_div ≥ +0.8 short) vs Buy &amp; Hold</h3>
+  <p>e_div が +0.8σ 以上のときに S&amp;P500 を売り (= 現金保有)、それ以外は買い持ちする戦略。</p>
+  <table>
+    <tr><th rowspan="2">期間</th><th rowspan="2">年数</th>
+        <th colspan="2">Buy &amp; Hold</th>
+        <th colspan="2">S1 short</th>
+        <th colspan="2">α (S1 − B&amp;H)</th>
+        <th rowspan="2">取引/年</th></tr>
+    <tr><th>Sharpe</th><th>MaxDD</th><th>Sharpe</th><th>MaxDD</th>
+        <th>ΔSharpe</th><th>Δreturn</th></tr>
+    {''.join(summary_rows)}
+  </table>
+
+  <div class="callout found">
+    <h4>主要発見: S1 short の Sharpe は全 4 期間で B&amp;H を上回り、MaxDD は大幅に改善</h4>
+    <ul class="simple">
+      <li><strong>Sharpe</strong>: 5y +0.88 / 10y +1.04 / 15y +0.82 / 20y +0.76 — どの期間でも B&amp;H を上回る。
+      10y が最も高く、長期化に伴い緩やかに低下するが <strong>Sharpe &gt; 0.7 は維持</strong>。</li>
+      <li><strong>MaxDD</strong>: 5y -17% / 10y -17% / 15y -17% / 20y -20% と全期間で <strong>-20% 圏内</strong>。
+      B&amp;H は 15y/20y で <strong>-34% / -57%</strong> まで沈むため、ドローダウン抑制効果が極めて明確。</li>
+      <li><strong>20y は 2008/2015/2020/2022 等の bear / volatile を含む</strong>ため B&amp;H の Sharpe は +0.48 に落ちる一方、
+      S1 short は +0.76 を維持。つまり<strong>長期化するほどリスク調整後の優位が広がる</strong>形になっており、
+      e_div が真に bear / 高ボラ期を回避していることを示唆する。</li>
+      <li>絶対リターンでは長期 B&amp;H に劣る期間がある (15y で -231pp) が、これは
+      「現金にしている期間の市場上昇分」を取りこぼした副作用であり、リスク調整後の優位とは別軸の現象。</li>
+    </ul>
+  </div>
+
+  <h3>9.5.2 詳細: 全戦略 (S1 / S2 / S6) × short / long × 4 期間</h3>
+  <p>each cell は (Sharpe, MaxDD)。Sharpe が同期間の B&amp;H を超えるセルは緑で強調。</p>
+  <table>
+    {detail_header}
+    {detail_subhead}
+    {''.join(detail_rows)}
+  </table>
+  <p style="margin-top:6px;">
+    <strong>S2 (e_div ≤ -0.5) は long 方向</strong>で安定 (5y +0.70 / 10y +0.71 / 15y +0.96 / 20y +0.66)。
+    e_div が低い (= L¹ 系の強さが unb 系を上回る) ときは買い持ちが効く、という鏡像構造。
+    <strong>S6 (z_L1 と z_unb が同時に +1σ)</strong> は short 方向で 5y/10y で B&amp;H 超だが、
+    シグナル発火が稀 (取引/年 6〜12 回) で長期では S1 に劣る。
+  </p>
+
+  <h3>9.5.3 Walk-forward OOS との対比 (10y / 15y / 20y)</h3>
+  <p>上の in-sample 値 (閾値 0.8 / -0.5 は 5y で選定済み) が <strong>過去最適化バイアス</strong>
+  に晒されていることを正直に併記する。Walk-forward は train 期間で閾値を percentile 80 で再決定し
+  test 期間に適用する完全 OOS 手順 (<code>scripts/backtest_walkforward_*.py</code>)。</p>
+  <table>
+    <tr><th>期間</th><th>n_folds</th><th>OOS Sharpe</th><th>OOS MaxDD</th>
+        <th>OOS Return</th><th>OOS B&amp;H Return</th></tr>
+    {''.join(wf_rows)}
+  </table>
+  <p>OOS Sharpe は in-sample より低い (10y +0.45, 15y +0.54, 20y +0.65) が、
+  <strong>20y の OOS Sharpe +0.65 は同期間 B&amp;H Sharpe +0.48 を上回り</strong>、
+  かつ MaxDD -18% で B&amp;H -57% を大幅に下回る。
+  in-sample / OOS のいずれも「下方リスクを削る」効果は再現しており、e_div シグナルの本質的な貢献は
+  リターン上乗せではなく <strong>テールリスク削減</strong>側にあると読める。</p>
+
+  <div class="callout intuition">
+    <h4>注意: バックテストの限界</h4>
+    <ul class="simple">
+      <li>20y 初期 (2006-2017) は universe (40 銘柄) の一部が IPO 前で欠落しており、
+      その期間の信号品質には residual bias が残る (Section 11.2 参照)。</li>
+      <li>取引コストは片道 0.05% で固定。CFD / spot / 機関プライムで実コストは変動する。</li>
+      <li>S&amp;P500 (^GSPC) を直接売買する想定だが、実運用では SPY / ES future / CFD などで代替する必要がある。</li>
+      <li>本セクションの主張はあくまで「e_div シグナルが過去 20 年でリスク削減に寄与した」までで、
+      未来の予測ではない。</li>
+    </ul>
+  </div>
+</section>
+"""
+
+
 def build_section_105_html(oos8y: dict | None) -> str:
     """Section 10.5: 8 年完全 OOS event study の HTML."""
     if oos8y is None:
@@ -384,6 +576,29 @@ def main():
         oos8y = json.loads(oos8y_path.read_text(encoding="utf-8"))
     else:
         oos8y = None
+
+    # 期間別 in-sample バックテスト (Section 9.5)
+    bt_multi_path = DATA_DIR / "backtest_v2_multi_period.json"
+    if bt_multi_path.exists():
+        bt_multi = json.loads(bt_multi_path.read_text(encoding="utf-8"))
+    else:
+        bt_multi = None
+    # Walk-forward OOS (10y/15y/20y) の併記
+    wf_oos: dict[str, dict | None] = {}
+    for wf_period, wf_file, wf_main_key in [
+        ("10y", "backtest_walkforward_10y.json", "train3y_test1y_pct80_short"),
+        ("15y", "backtest_walkforward_15y.json", "15y_train3y_test1y_pct80_short"),
+        ("20y", "backtest_walkforward_20y.json", None),  # top-level summary
+    ]:
+        wp = DATA_DIR / wf_file
+        if wp.exists():
+            d = json.loads(wp.read_text(encoding="utf-8"))
+            if wf_main_key is not None:
+                wf_oos[wf_period] = d.get(wf_main_key)
+            else:
+                wf_oos[wf_period] = d
+        else:
+            wf_oos[wf_period] = None
 
     # ネットワークスナップショット (3 つの時点)
     snapshots = {
@@ -775,6 +990,7 @@ def main():
     <a href="#s85">8.5 指標細分化</a>
     <a href="#s86">8.6 源泉解剖</a>
     <a href="#s9">9. 圏論的整理</a>
+    <a href="#s95">9.5 期間別バックテスト</a>
     <a href="#s10">10. 先行研究</a>
     <a href="#s105">10.5. 8年完全OOS</a>
     <a href="#s11">11. 限界と今後</a>
@@ -1908,6 +2124,8 @@ def main():
   </div>
 </section>
 
+__SEC95__
+
 __SEC105__
 
 <section id="s11">
@@ -2003,8 +2221,10 @@ __SEC105__
   <h3>11.2 残る制約 (今後の課題)</h3>
   <ol>
     <li><strong>過去最適化バイアス</strong>: バックテストの閾値 0.8 / -0.5 は in-sample 選択。
-        In-sample (5y, expanding z-score) Sharpe +0.88 に対し、Walk-forward OOS は 10y で +0.45、
-        15y で +0.54 に低下しており、過去最適化を認容。
+        In-sample S1 short Sharpe は 5y +0.88 / 10y +1.04 / 15y +0.82 / 20y +0.76 と
+        4 期間で安定して B&amp;H を上回る (Section 9.5 参照)。
+        Walk-forward OOS は 10y で +0.45、15y で +0.54、20y で +0.65 に低下するが、
+        20y の B&amp;H Sharpe +0.48 を上回り、リスク調整後の優位は維持。
         閾値の自由化は future work。</li>
     <li><strong>20y OOS 初期 (2006-2017) の universe 時変</strong>: TSLA/META/BTC/ETH の IPO 前は欠落。
         この期間の結果は universe が時間と共に変化する residual bias を持つ。
@@ -2712,9 +2932,11 @@ window.addEventListener('resize', () => {
 </html>"""
 
     sec105_html = build_section_105_html(oos8y)
+    sec95_html = build_section_95_html(bt_multi, wf_oos)
     html = (template
             .replace("__HEATMAP__", DATA["heatmap_b64"])
             .replace("__SYMPATTERN_FIG__", pattern_fig_b64)
+            .replace("__SEC95__", sec95_html)
             .replace("__SEC105__", sec105_html)
             .replace("__DATA__", json.dumps(DATA, ensure_ascii=False)))
     out = ROOT / "index.html"
