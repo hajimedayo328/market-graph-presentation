@@ -13,7 +13,6 @@ DB:   C:\\tools\\market-graph\\data\\market_graph.db
 """
 from __future__ import annotations
 
-import json
 import sqlite3
 import sys
 import time
@@ -189,7 +188,7 @@ def get_recent_stats(conn: object, n_days: int = 90) -> tuple[float, float, floa
     unbs = [r[1] for r in rows if r[1] is not None]
     if len(L1s) < 30:
         return (1.045, 0.312, 29.0, 14.1)
-    return (np.mean(L1s), np.std(L1s), np.mean(unbs), np.std(unbs))
+    return (np.mean(L1s), np.std(L1s, ddof=1), np.mean(unbs), np.std(unbs, ddof=1))
 
 
 def get_last_classification(conn: object) -> str | None:
@@ -269,7 +268,7 @@ def main():
 
     # 判定変化があれば trade_executor を呼ぶ
     if classification_changed:
-        log(f"Triggering trade_executor...")
+        log("Triggering trade_executor...")
         try:
             from trade_executor import execute_trade
             tr_res = execute_trade(prev_class, classification,
@@ -281,7 +280,7 @@ def main():
             log(traceback.format_exc())
 
     # GitHub Pages に最新データを publish
-    log(f"Publishing to GitHub Pages...")
+    log("Publishing to GitHub Pages...")
     try:
         from vps_publish import main as publish_main
         publish_main()

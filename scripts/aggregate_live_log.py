@@ -8,7 +8,6 @@ VPS の live_status.json (Pages 配布版, 直近 90 日) を集計し、
 from __future__ import annotations
 
 import json
-import sys
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path

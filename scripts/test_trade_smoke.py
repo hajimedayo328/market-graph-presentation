@@ -54,9 +54,9 @@ def main() -> int:
     log(f"[2] symbol_info({SYMBOL})...")
     sym = mt5.symbol_info(SYMBOL)
     if sym is None:
-        log(f"NG: symbol_info None. trying symbol_select...")
+        log("NG: symbol_info None. trying symbol_select...")
         if not mt5.symbol_select(SYMBOL, True):
-            log(f"NG: symbol_select failed")
+            log("NG: symbol_select failed")
             mt5.shutdown(); return 1
         sym = mt5.symbol_info(SYMBOL)
     log(f"  visible={sym.visible}  trade_mode={sym.trade_mode}  filling_mode={sym.filling_mode}")
@@ -91,7 +91,7 @@ def main() -> int:
     log(f"[4] closing position ticket={res.order}...")
     positions = mt5.positions_get(ticket=res.order)
     if not positions:
-        log(f"WARN: position not found, may already closed")
+        log("WARN: position not found, may already closed")
         mt5.shutdown(); return 0
 
     pos = positions[0]

@@ -14,10 +14,8 @@ Vantage MT5 デモ口座での自動売買執行.
 """
 from __future__ import annotations
 
-import os
 import sqlite3
-import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -64,7 +62,7 @@ def connect_demo_mt5() -> object | None:
     pw = env.get("VANTAGE_DEMO_PASSWORD")
     server = env.get("VANTAGE_DEMO_SERVER")
     if not path:
-        log(f"Missing VANTAGE_DEMO_PATH in .env")
+        log("Missing VANTAGE_DEMO_PATH in .env")
         return None
     log(f"Connecting to demo MT5: {path}")
     try:
@@ -88,8 +86,8 @@ def connect_demo_mt5() -> object | None:
         mt5.shutdown()
         return None
     # 安全装置: ライブ口座だったら即停止
-    if info.trade_mode == 2:  # 2 = REAL
-        log(f"[NG] SAFETY: Connected account is LIVE (trade_mode=2). Login={info.login}. ABORTING.")
+    if info.trade_mode != 0:  # 0=DEMO のみ許可
+        log(f"[NG] SAFETY: Not a DEMO account (trade_mode={info.trade_mode}). Login={info.login}. ABORTING.")
         mt5.shutdown()
         return None
     if info.trade_mode == 0:
@@ -102,8 +100,8 @@ def connect_demo_mt5() -> object | None:
     # autotrading check
     term = mt5.terminal_info()
     if term is not None and not term.trade_allowed:
-        log(f"[NG] Auto-trading is DISABLED in MT5 terminal. Enable 'Algo Trading' toolbar button.")
-        log(f"     Trades will be rejected with retcode=10027 until enabled.")
+        log("[NG] Auto-trading is DISABLED in MT5 terminal. Enable 'Algo Trading' toolbar button.")
+        log("     Trades will be rejected with retcode=10027 until enabled.")
         # 接続は返す (情報取得は可能、発注のみ失敗する)
     return mt5
 
@@ -191,7 +189,6 @@ def execute_trade(classification_prev: str, classification_new: str,
             return {"action": action, "error": "US500 symbol not found"}
 
         current = get_current_position(mt5, symbol)
-        info = mt5.account_info()
         # ポジションサイズ: 残高の 10% (FX みたいに大きく出ない)
         # CFD なので 0.1 lot 程度に固定
         volume = 0.1
@@ -253,7 +250,7 @@ def execute_trade(classification_prev: str, classification_new: str,
               f"trigger_e_div={trigger_e_div:+.3f}"))
         conn.commit()
         conn.close()
-        log(f"Trade recorded in DB.")
+        log("Trade recorded in DB.")
 
         return {"action": action, "symbol": symbol, "volume": volume}
     finally:

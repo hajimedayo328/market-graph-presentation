@@ -164,7 +164,7 @@ def main():
     obs_n1 = ediv_dsigma_window(LD_CLUSTER_REPRESENTATIVE,
                                  CLUSTER_EVENT_BDAYS)
 
-    print(f"\n[observed]")
+    print("\n[observed]")
     print(f"  n=5 (independent) Δσ mean = {obs_n5:+.4f}")
     for d, v in n5_per_event.items():
         v_str = f"{v:+.4f}" if v is not None else "N/A"
@@ -217,15 +217,15 @@ def main():
     p_n1_two = p_two_sided(obs_n1, null_n1)
     p_n1_one = p_one_sided(obs_n1, null_n1)
 
-    print(f"\n[permutation results]")
-    print(f"  n=5 (independent):")
+    print("\n[permutation results]")
+    print("  n=5 (independent):")
     print(f"    null distribution: n={len(null_n5)}, "
           f"mean={null_n5.mean():+.4f}, std={null_n5.std(ddof=1):.4f}, "
           f"p05={np.percentile(null_n5, 5):+.4f}, "
           f"p95={np.percentile(null_n5, 95):+.4f}")
     print(f"    p (two-sided)   = {p_n5_two:.4f}")
     print(f"    p (one-sided +) = {p_n5_one:.4f}")
-    print(f"  n=1 (cluster):")
+    print("  n=1 (cluster):")
     print(f"    null distribution: n={len(null_n1)}, "
           f"mean={null_n1.mean():+.4f}, std={null_n1.std(ddof=1):.4f}, "
           f"p05={np.percentile(null_n1, 5):+.4f}, "

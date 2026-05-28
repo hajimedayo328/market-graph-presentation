@@ -23,8 +23,6 @@ Limitation:
 from __future__ import annotations
 
 import json
-import sys
-import time
 from pathlib import Path
 
 import numpy as np
@@ -104,7 +102,6 @@ def simulate_strategy(prices: pd.Series, signal: pd.Series,
         raise ValueError(direction)
 
     eq = (1 + strat_rets).cumprod()
-    bench = (1 + rets).cumprod()
 
     # 指標
     days_per_year = 252
@@ -119,7 +116,6 @@ def simulate_strategy(prices: pd.Series, signal: pd.Series,
     max_dd = float(dd)
     # 勝率
     n_signal_days = int(sig.sum())
-    days_in_market = int((~sig).sum() if direction == "short" else sig.sum())
     # 戦略リターン vs Buy&Hold で勝った日数 (cumulative ベース)
     # 「ベンチに勝った日」の割合 (簡単版)
     win_days = int((strat_rets > rets).sum())
@@ -212,13 +208,13 @@ def main():
     print(f"\nSaved: {out_path}")
 
     # ランキング
-    print(f"\n=== Sharpe ランキング (上位 5) ===")
+    print("\n=== Sharpe ランキング (上位 5) ===")
     ranked = sorted(summary.items(), key=lambda x: -x[1]["sharpe"])
     for k, v in ranked[:5]:
         print(f"  {k:<24} Sharpe={v['sharpe']:>+5.2f}  "
               f"Ret={v['total_return']*100:>+7.2f}%  MaxDD={v['max_drawdown']*100:>+6.2f}%")
 
-    print(f"\n=== トータルリターン ランキング (上位 5) ===")
+    print("\n=== トータルリターン ランキング (上位 5) ===")
     ranked = sorted(summary.items(), key=lambda x: -x[1]["total_return"])
     for k, v in ranked[:5]:
         print(f"  {k:<24} Ret={v['total_return']*100:>+7.2f}%  "

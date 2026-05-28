@@ -19,14 +19,12 @@ Walk-forward Out-of-Sample 評価.
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import yfinance as yf
 
-from backtest_v2 import (load_indicators, fetch_spy_ohlc, simulate_v2,
+from backtest_v2 import (load_indicators, fetch_spy_ohlc,
                           apply_hysteresis, TRANSACTION_COST, HYSTERESIS_DAYS)
 
 HERE = Path(__file__).parent
@@ -140,7 +138,7 @@ def main():
     print(f"Loaded: indicators {df.shape}, ohlc {ohlc.shape}")
 
     res = walkforward_s1(df, ohlc, train_years=3, test_years=1, percentile=80)
-    print(f"\n=== Walk-Forward S1 (train=3y, test=1y, percentile=80%) ===")
+    print("\n=== Walk-Forward S1 (train=3y, test=1y, percentile=80%) ===")
     print(f"{'fold':<5} {'train':<25} {'test':<25} {'thr':>6} "
           f"{'OOS_ret':>8} {'BH_ret':>8} {'sharpe':>7} {'MaxDD':>7}")
     print("-" * 110)
@@ -150,7 +148,7 @@ def main():
               f"{f['fold_return']*100:>+7.2f}% {f['bh_return']*100:>+7.2f}% "
               f"{f['sharpe']:>+7.2f} {f['max_dd']*100:>+6.2f}%")
 
-    print(f"\n=== OOS 全体 (連結) ===")
+    print("\n=== OOS 全体 (連結) ===")
     print(f"  期間: {len(res['oos_dates'])} 営業日 ({res['n_folds']} folds)")
     print(f"  OOS Total Return:    {res['oos_total_return']*100:+.2f}%")
     print(f"  OOS B&H Return:      {res['oos_bh_total_return']*100:+.2f}%")

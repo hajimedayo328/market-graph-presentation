@@ -163,11 +163,11 @@ def main(
             "n_unb_total", "n_unb_3", "n_unb_4", "n_unb_5plus",
             "weighted_unb", "balance_rate"]
     valid_cols = [c for c in cols if c in df.columns]
-    print(f"\n=== 11 指標サマリー ===")
+    print("\n=== 11 指標サマリー ===")
     print(df[valid_cols].describe().round(3))
 
     # 相関行列
-    print(f"\n=== 指標間相関 (Pearson) ===")
+    print("\n=== 指標間相関 (Pearson) ===")
     corr_mat = df[valid_cols].corr().round(3)
     print(corr_mat)
     corr_mat.to_csv(HERE / f"{out_prefix}_correlation_w{window}.csv")

@@ -1,10 +1,8 @@
 """VPS 運用ヘルスチェック (ローカルから ssh 越しに実行する想定)."""
 from __future__ import annotations
-import sys
-import json
 import sqlite3
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 
 print("=" * 50)
 print("Market Graph VPS Health Check")
@@ -67,7 +65,7 @@ if env.exists():
     has_pat = "GITHUB_PAT=" in content and len([l for l in content.splitlines() if l.startswith("GITHUB_PAT=") and len(l) > 20]) > 0
     print(f"  .env exists, GITHUB_PAT set: {has_pat}")
 else:
-    print(f"  NG: .env not found")
+    print("  NG: .env not found")
 
 # 5. yfinance smoke
 print("\n[5] yfinance smoke (SPY 5d):")

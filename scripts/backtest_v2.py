@@ -12,7 +12,6 @@ v1 からの改善:
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -72,7 +71,6 @@ SIGNALS = {
 
 def apply_hysteresis(sig: pd.Series, min_days: int = 5) -> pd.Series:
     """シグナル ON 後、最低 min_days は ON を維持. 連続OFFが min_days 以上で完全OFF."""
-    out = sig.copy()
     n = len(sig)
     arr = sig.values.astype(bool)
     last_on = -10**9
@@ -119,7 +117,6 @@ def simulate_v2(ohlc: pd.DataFrame, signal: pd.Series,
     strat_rets = strat_rets - pos_change.astype(float) * cost
 
     eq = (1 + strat_rets).cumprod()
-    bench_eq = (1 + rets).cumprod()
 
     days_per_year = 252
     n_years = len(rets) / days_per_year
@@ -219,7 +216,7 @@ def main():
     print(f"\nSaved: {out_path}")
 
     # ランキング
-    print(f"\n=== Sharpe ランキング (上位 5) ===")
+    print("\n=== Sharpe ランキング (上位 5) ===")
     ranked = sorted(summary.items(), key=lambda x: -x[1]["sharpe"])
     for k, v in ranked[:5]:
         print(f"  {k:<25} Sharpe={v['sharpe']:>+5.2f}  Ret={v['total_return']*100:>+7.2f}%  "

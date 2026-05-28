@@ -103,7 +103,7 @@ python scripts/update_data.py 5
 # 2. γ (L¹, n_unb) 時系列を計算 (window=30)
 python scripts/lib/compute_gamma_timeseries.py 30
 
-# 3. バックテスト (look-ahead 修正済み v2)
+# 3. バックテスト (look-ahead 完全排除済み v2: expanding-window z-score)
 python scripts/backtest_v2.py
 
 # 4. (任意) HTML を再生成して挙動確認
@@ -120,19 +120,24 @@ pytest -v
 
 ## 主要発見 (要約)
 
-1. `L¹` (強さ) と `n_unb` (符号) は **corr ≈ 0.16 で独立**
+1. `L¹` (強さ) と `n_unb` (符号) は **corr ≈ 0.16 で独立** (5y/10y/15y/EM/CN で再現)
 2. **ショック種別で反応指標が分岐** — 戦争・市場構造 → `L¹`、関税 → `n_unb`
 3. `e_div = z(n_unb) − z(L¹)` が **ショックタイプ 3 区分判別器**
 4. 集約スカラーを **12 指標に分解**すると `trade_policy` で `n_unb_4` (4-cycle) が特異
+5. **cross-asset 連鎖が震源** — 個別銘柄 LOO で `e_div` の源泉は EUB10Y / COPPER / CHINA50 / USDJPY / VIX に集中し、米株指数は脇役
+6. **Granger 一方向因果** `trade_policy → e_div` (lag5, p = 0.022)。DAG 分析で VIX が媒介と判明
+7. **α 不変量** (関手族の極限/余極限) は 20y データでも `e_div` の shock 別相対順序を保持 (絶対値は 5y より減衰)
+8. **売買対象を 11 種で比較** — 米国株指数 (S&P500 / NASDAQ100 / DJ30 / Russell2000) は **4 種すべて B&H を Sharpe で上回る** (全 11 種では 6 種が B&H 超え)
 
 詳細は Paper PDF (`./docs/paper/main.pdf`) または `index.html` 参照。
 
 ## Limitation
 
-- バックテストの look-ahead bias は v2 で部分的に修正済み。残存リスクは Walk-forward OOS で検証中
-- 多市場再現性は新興国市場 (EM) で追加検証中
-- 取引コストは現在 0% 想定
-- `trade_policy` 反応は 2025-04 cluster 駆動の側面が大きい
+- バックテストの look-ahead bias は **完全排除済み** (expanding-window z-score, `min_periods=30`、シグナルは前日終値で確定し翌日始値で執行)
+- 取引コストは **0.05%/leg を実装済み** (リテール口座では過小評価の可能性あり)
+- 多市場再現性は **検証済み** — 8y OOS (2017-11 以降) に加え新興国 (EM)・中国 (CN) で再現を確認
+- in-sample (Sharpe +0.88) に対し walk-forward OOS は Sharpe +0.45〜0.65 と低下し、過学習リスクが残る。本手法は純粋なリターン増強ではなく **リスク管理の補完** と位置づける
+- `trade_policy` 反応は 2025-04 Liberation Day cluster 駆動の側面が大きく、2018-2019 米中貿易戦争では再現しない (event-chain の速度依存の可能性)
 
 ## 用語集
 

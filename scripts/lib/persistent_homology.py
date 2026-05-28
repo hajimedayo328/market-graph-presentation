@@ -129,6 +129,6 @@ if __name__ == "__main__":
     print(f"  L^1 norm of H_1: {summ['L1_norm_H1']:.4f}  (Gidea 2017 crash indicator)")
     print(f"  L^2 norm of H_1: {summ['L2_norm_H1']:.4f}")
     print()
-    print(f"  Top 5 H_1 bars (longest persistence):")
+    print("  Top 5 H_1 bars (longest persistence):")
     for b, d in summ["top_H1_bars"]:
         print(f"    birth={b:.4f}  death={d:.4f}  persistence={d-b:.4f}")

@@ -1675,7 +1675,8 @@ def main():
     <h4>パターン</h4>
     <ul class="simple">
       <li><strong>戦争・地政学・市場構造・AI</strong> ショック → <strong>L¹ で大きく反応</strong> (Δσ +0.7 〜 +1.1)</li>
-      <li><strong>関税ショック (USA-issued)</strong> → <strong>不整合サイクル数で反応</strong> (Δσ +0.38, p=0.018)、L¹ は逆方向</li>
+      <li><strong>関税ショック (USA-issued)</strong> → <strong>不整合サイクル数 (n_unb) 側に寄った反応</strong> (Δσ +0.16, p=0.11)、L¹ はほぼ反応なし (Δσ +0.03)。
+      集約版では弱いが、4-cycle に絞ると Δσ +0.39 (p=0.004) と顕著に出る (Section 8.5)</li>
       <li><strong>利上げ・利下げ</strong> → どちらも弱い</li>
     </ul>
     <p>「強さ」と「符号」が <strong>別タイプのショックに別感度</strong>。</p>
