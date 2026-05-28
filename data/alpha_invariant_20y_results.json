@@ -1,0 +1,389 @@
+{
+  "meta": {
+    "input_csv": "data\\gamma_timeseries_20y_w30.csv",
+    "events_json": "data\\events_8y.json",
+    "oos_start": "2017-11-01",
+    "expanding_min_periods": 90,
+    "n_indicators": 2,
+    "indicators": [
+      "L1_H1",
+      "n_unb"
+    ],
+    "sigma_threshold_for_alpha_naive": 2.0,
+    "event_pre_bdays": 30,
+    "event_post_bdays": 30,
+    "version": "simplified_2indicator",
+    "alpha_naive_2_definition": "alpha_naive_2(t) = #{i in {L1, n_unb} : |z_i(t)| >= 2} / 2  (余極限 colimit / 縮退版)",
+    "alpha_norm_2_definition": "alpha_norm_2(t) = sqrt(z_L1² + z_n_unb²) / sqrt(2)  (極限 limit / 縮退版)",
+    "note": "20y データ (2006-) には multi_indicators の 12 指標が存在せず, L1_H1 と n_unb のみが通史で取れるため, α を 2 指標に縮退して構築した. 5y 版 (12 指標) との Δσ の絶対値は直接比較できないが, shock type ごとの相対順序と長期再現性を検証できる. z-score は過去のみの expanding window (min_periods=90) で計算し look-ahead を完全排除している."
+  },
+  "shock_event_study_20y": {
+    "trade_policy": {
+      "n_events": 15,
+      "n_used": 15,
+      "events": [
+        {
+          "date": "2018-03-22",
+          "label": "米中第1弾関税発表 (Section 301)"
+        },
+        {
+          "date": "2018-07-06",
+          "label": "米中第1弾関税発動 (340億ドル)"
+        },
+        {
+          "date": "2019-08-23",
+          "label": "米中再エスカレ (関税報復応酬)"
+        },
+        {
+          "date": "2020-01-15",
+          "label": "米中 Phase One 合意"
+        },
+        {
+          "date": "2021-12-03",
+          "label": "対リトアニア輸入停止"
+        },
+        {
+          "date": "2022-08-09",
+          "label": "米 CHIPS 法成立"
+        },
+        {
+          "date": "2022-10-07",
+          "label": "対中先端半導体輸出規制"
+        },
+        {
+          "date": "2023-07-03",
+          "label": "ガリウム・ゲルマニウム規制"
+        },
+        {
+          "date": "2024-05-14",
+          "label": "バイデン 対中 EV 100% 関税"
+        },
+        {
+          "date": "2025-04-02",
+          "label": "Liberation Day 相互関税"
+        },
+        {
+          "date": "2025-04-04",
+          "label": "中国 34% 報復 + 希土類規制"
+        },
+        {
+          "date": "2025-04-08",
+          "label": "関税 180 日停止・株価反発"
+        },
+        {
+          "date": "2025-04-09",
+          "label": "関税エスカレート 145%"
+        },
+        {
+          "date": "2025-04-15",
+          "label": "Nvidia H20 輸出規制"
+        },
+        {
+          "date": "2026-03-04",
+          "label": "関税再発動"
+        }
+      ],
+      "events_used": [
+        "2018-03-22",
+        "2018-07-06",
+        "2019-08-23",
+        "2020-01-15",
+        "2021-12-03",
+        "2022-08-09",
+        "2022-10-07",
+        "2023-07-03",
+        "2024-05-14",
+        "2025-04-02",
+        "2025-04-04",
+        "2025-04-08",
+        "2025-04-09",
+        "2025-04-15",
+        "2026-03-04"
+      ],
+      "per_event": {
+        "2018-03-22": {
+          "label": "米中第1弾関税発表 (Section 301)",
+          "alpha_naive_2_dsigma": -0.5070201265633938,
+          "alpha_norm_2_dsigma": -0.7320457028709838,
+          "ediv_dsigma": 0.28894519306810895
+        },
+        "2018-07-06": {
+          "label": "米中第1弾関税発動 (340億ドル)",
+          "alpha_naive_2_dsigma": 0.13363062095621223,
+          "alpha_norm_2_dsigma": 0.5821841409445628,
+          "ediv_dsigma": -0.11177915811448669
+        },
+        "2019-08-23": {
+          "label": "米中再エスカレ (関税報復応酬)",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": 0.8528295799757807,
+          "ediv_dsigma": -0.06935667269143661
+        },
+        "2020-01-15": {
+          "label": "米中 Phase One 合意",
+          "alpha_naive_2_dsigma": 0.0,
+          "alpha_norm_2_dsigma": 0.3604935888039862,
+          "ediv_dsigma": 0.057905646509789466
+        },
+        "2021-12-03": {
+          "label": "対リトアニア輸入停止",
+          "alpha_naive_2_dsigma": 0.11111111111111109,
+          "alpha_norm_2_dsigma": 0.12424927177798148,
+          "ediv_dsigma": 1.4777403170177195
+        },
+        "2022-08-09": {
+          "label": "米 CHIPS 法成立",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": -0.26757185127223543,
+          "ediv_dsigma": -0.6932607373507922
+        },
+        "2022-10-07": {
+          "label": "対中先端半導体輸出規制",
+          "alpha_naive_2_dsigma": 0.686406472983644,
+          "alpha_norm_2_dsigma": 0.9688872782967866,
+          "ediv_dsigma": -0.22828995693687482
+        },
+        "2023-07-03": {
+          "label": "ガリウム・ゲルマニウム規制",
+          "alpha_naive_2_dsigma": -0.33333333333333337,
+          "alpha_norm_2_dsigma": -0.4092602045648208,
+          "ediv_dsigma": -0.02516231277386105
+        },
+        "2024-05-14": {
+          "label": "バイデン 対中 EV 100% 関税",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": -0.19666418905994107,
+          "ediv_dsigma": 1.2466505619653323
+        },
+        "2025-04-02": {
+          "label": "Liberation Day 相互関税",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": 1.6522528097617357,
+          "ediv_dsigma": 0.9759735798143307
+        },
+        "2025-04-04": {
+          "label": "中国 34% 報復 + 希土類規制",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": 1.6271824917951432,
+          "ediv_dsigma": 0.9815730531795805
+        },
+        "2025-04-08": {
+          "label": "関税 180 日停止・株価反発",
+          "alpha_naive_2_dsigma": 0.33686076842660756,
+          "alpha_norm_2_dsigma": 0.5553417717860044,
+          "ediv_dsigma": 0.7343616994850526
+        },
+        "2025-04-09": {
+          "label": "関税エスカレート 145%",
+          "alpha_naive_2_dsigma": 0.2342606428329091,
+          "alpha_norm_2_dsigma": 0.5045360558672615,
+          "ediv_dsigma": 0.6040922047216051
+        },
+        "2025-04-15": {
+          "label": "Nvidia H20 輸出規制",
+          "alpha_naive_2_dsigma": -0.2906190968595481,
+          "alpha_norm_2_dsigma": -0.2501175703284205,
+          "ediv_dsigma": -0.3943647708569069
+        },
+        "2026-03-04": {
+          "label": "関税再発動",
+          "alpha_naive_2_dsigma": 0.0,
+          "alpha_norm_2_dsigma": -0.059747685038471825,
+          "ediv_dsigma": 1.8300243281513435
+        }
+      },
+      "mean_alpha_naive_2_dsigma": 0.037129705955420866,
+      "mean_alpha_norm_2_dsigma": 0.354169985724958,
+      "mean_ediv_dsigma": 0.4450035316792336
+    },
+    "market_structure": {
+      "n_events": 5,
+      "n_used": 5,
+      "events": [
+        {
+          "date": "2018-02-05",
+          "label": "Volmageddon (VIX 急騰・XIV 崩壊)"
+        },
+        {
+          "date": "2020-03-12",
+          "label": "COVID クラッシュ (株式 -10%)"
+        },
+        {
+          "date": "2022-09-23",
+          "label": "UK 年金危機 (LDI ショック)"
+        },
+        {
+          "date": "2024-08-05",
+          "label": "円キャリー巻き戻し (日経過去最大下げ)"
+        },
+        {
+          "date": "2025-08-01",
+          "label": "サマー・ボラショック"
+        }
+      ],
+      "events_used": [
+        "2018-02-05",
+        "2020-03-12",
+        "2022-09-23",
+        "2024-08-05",
+        "2025-08-01"
+      ],
+      "per_event": {
+        "2018-02-05": {
+          "label": "Volmageddon (VIX 急騰・XIV 崩壊)",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": 1.894263941637929,
+          "ediv_dsigma": null
+        },
+        "2020-03-12": {
+          "label": "COVID クラッシュ (株式 -10%)",
+          "alpha_naive_2_dsigma": -0.3333333333333333,
+          "alpha_norm_2_dsigma": -0.054386817310305514,
+          "ediv_dsigma": 0.898798420352951
+        },
+        "2022-09-23": {
+          "label": "UK 年金危機 (LDI ショック)",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": 2.1864070705984804,
+          "ediv_dsigma": 0.15416749710952754
+        },
+        "2024-08-05": {
+          "label": "円キャリー巻き戻し (日経過去最大下げ)",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": 0.22134107548818907,
+          "ediv_dsigma": 1.5527816057721404
+        },
+        "2025-08-01": {
+          "label": "サマー・ボラショック",
+          "alpha_naive_2_dsigma": -0.5516772843673705,
+          "alpha_norm_2_dsigma": -1.3057461462366626,
+          "ediv_dsigma": 1.2227385417136754
+        }
+      },
+      "mean_alpha_naive_2_dsigma": -0.4425053088503519,
+      "mean_alpha_norm_2_dsigma": 0.588375824835526,
+      "mean_ediv_dsigma": 0.9571215162370736
+    },
+    "geopolitical": {
+      "n_events": 3,
+      "n_used": 3,
+      "events": [
+        {
+          "date": "2022-02-24",
+          "label": "ウクライナ侵攻"
+        },
+        {
+          "date": "2023-10-07",
+          "label": "ハマス・イスラエル戦争"
+        },
+        {
+          "date": "2024-04-13",
+          "label": "イラン・イスラエル攻撃"
+        }
+      ],
+      "events_used": [
+        "2022-02-24",
+        "2023-10-07",
+        "2024-04-13"
+      ],
+      "per_event": {
+        "2022-02-24": {
+          "label": "ウクライナ侵攻",
+          "alpha_naive_2_dsigma": 0.39223227027636803,
+          "alpha_norm_2_dsigma": 1.0931636454530225,
+          "ediv_dsigma": 0.5775971958398112
+        },
+        "2023-10-07": {
+          "label": "ハマス・イスラエル戦争",
+          "alpha_naive_2_dsigma": -0.2672612419124244,
+          "alpha_norm_2_dsigma": -0.41762411578090236,
+          "ediv_dsigma": 0.7546706356377331
+        },
+        "2024-04-13": {
+          "label": "イラン・イスラエル攻撃",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": -0.012776051017149638,
+          "ediv_dsigma": 0.07293114139320056
+        }
+      },
+      "mean_alpha_naive_2_dsigma": 0.06248551418197182,
+      "mean_alpha_norm_2_dsigma": 0.2209211595516568,
+      "mean_ediv_dsigma": 0.4683996576235816
+    },
+    "monetary": {
+      "n_events": 3,
+      "n_used": 3,
+      "events": [
+        {
+          "date": "2024-01-31",
+          "label": "FOMC タカ派サプライズ"
+        },
+        {
+          "date": "2024-09-18",
+          "label": "FOMC 50bp 利下げ"
+        },
+        {
+          "date": "2024-12-18",
+          "label": "FOMC タカ派サプライズ"
+        }
+      ],
+      "events_used": [
+        "2024-01-31",
+        "2024-09-18",
+        "2024-12-18"
+      ],
+      "per_event": {
+        "2024-01-31": {
+          "label": "FOMC タカ派サプライズ",
+          "alpha_naive_2_dsigma": 0.40089186286863654,
+          "alpha_norm_2_dsigma": 0.6105011541513216,
+          "ediv_dsigma": -0.25982884373475423
+        },
+        "2024-09-18": {
+          "label": "FOMC 50bp 利下げ",
+          "alpha_naive_2_dsigma": null,
+          "alpha_norm_2_dsigma": -0.6728543800570096,
+          "ediv_dsigma": -0.01403332609026442
+        },
+        "2024-12-18": {
+          "label": "FOMC タカ派サプライズ",
+          "alpha_naive_2_dsigma": -0.3333333333333333,
+          "alpha_norm_2_dsigma": -0.20378076435238782,
+          "ediv_dsigma": 1.0004008343422202
+        }
+      },
+      "mean_alpha_naive_2_dsigma": 0.03377926476765161,
+      "mean_alpha_norm_2_dsigma": -0.08871133008602528,
+      "mean_ediv_dsigma": 0.24217955483906717
+    }
+  },
+  "five_y_vs_twenty_y_compare": {
+    "trade_policy": {
+      "5y_alpha_naive_dsigma_12indic": 0.6204783360591721,
+      "5y_alpha_norm_dsigma_12indic": 0.6389631483386582,
+      "5y_ediv_dsigma": 0.7895635570798034,
+      "20y_alpha_naive_2_dsigma": 0.037129705955420866,
+      "20y_alpha_norm_2_dsigma": 0.354169985724958,
+      "20y_ediv_dsigma": 0.4450035316792336,
+      "20y_n_events_used": 15
+    },
+    "market_structure": {
+      "5y_alpha_naive_dsigma_12indic": 2.5768670711620003,
+      "5y_alpha_norm_dsigma_12indic": 1.6631935129206268,
+      "5y_ediv_dsigma": 1.6183892420536166,
+      "20y_alpha_naive_2_dsigma": -0.4425053088503519,
+      "20y_alpha_norm_2_dsigma": 0.588375824835526,
+      "20y_ediv_dsigma": 0.9571215162370736,
+      "20y_n_events_used": 5
+    },
+    "geopolitical": {
+      "5y_alpha_naive_dsigma_12indic": 0.21605101503233412,
+      "5y_alpha_norm_dsigma_12indic": 0.5807642036586771,
+      "5y_ediv_dsigma": 0.5769945790538146,
+      "20y_alpha_naive_2_dsigma": 0.06248551418197182,
+      "20y_alpha_norm_2_dsigma": 0.2209211595516568,
+      "20y_ediv_dsigma": 0.4683996576235816,
+      "20y_n_events_used": 3
+    }
+  }
+}
