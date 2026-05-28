@@ -632,6 +632,19 @@
       過去データでシミュレーションすること。
     </div>
 
+    <div style="margin:14px 0;">
+      <h3 style="font-size:14px; margin-bottom:6px;">📊 バックテスト 3 視点サマリー (1 枚)</h3>
+      <img src="./data/fig_backtest_summary.png" style="width:100%; border-radius:8px; border:1px solid var(--line);">
+      <p style="font-size:11px; color:var(--sub); margin-top:6px;">
+        <strong>読み方</strong>:
+        <strong>(1)</strong> 5y/10y/15y/20y どの期間でも S1 が B&H 超え、20y で優位最大。
+        <strong>(2)</strong> S1 の MaxDD は全期間 -20% 圏内、B&H は 20y で -57% まで沈む。
+        <strong>(3)</strong> Asset class 除外: <strong>INDEX 抜きで戦略崩壊</strong> (+0.16)。
+        <strong>(4)</strong> 段階縮小: N=40 だけ高 Sharpe、N≤35 で +0.5 にダウン。
+        → <strong>「市場の異変を察知する力」と「それで稼ぐ力」は別物</strong>という発見。
+      </p>
+    </div>
+
     <p class="panel-desc">
       <strong>対象資産</strong>: <code>^GSPC</code> (S&P500 指数)<br>
       <strong>期間</strong>: <span id="bt_period">—</span> (約 5 年)<br>
