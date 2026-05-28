@@ -1,0 +1,334 @@
+{
+  "meta": {
+    "window": 30,
+    "threshold": 0.3,
+    "min_symbols": 5,
+    "zscore_min_periods": 30,
+    "ediv_threshold": 0.8,
+    "transaction_cost": 0.0005,
+    "hysteresis_days": 5,
+    "asset_groups": {
+      "FX": [
+        "FX"
+      ],
+      "INDEX": [
+        "INDEX"
+      ],
+      "STOCK": [
+        "STOCK"
+      ],
+      "COMMODITY": [
+        "METAL",
+        "ENERGY",
+        "COMMODITY"
+      ],
+      "CRYPTO": [
+        "CRYPTO"
+      ],
+      "BOND": [
+        "BOND"
+      ],
+      "SPECIAL": [
+        "SPECIAL"
+      ]
+    },
+    "data_range": [
+      "2021-05-17",
+      "2026-05-18"
+    ],
+    "benchmark": "^GSPC Buy & Hold",
+    "strategy": "S1_ediv_high_short (e_div>=0.8 で SP500 を short=現金保有)"
+  },
+  "baseline_40": {
+    "n_remaining": 40,
+    "excluded_symbols": [],
+    "sharpe": 0.883132017963245,
+    "total_return": 0.5786281678894065,
+    "max_drawdown": -0.17300401240693086,
+    "n_trades": 81,
+    "n_signal_days": 574,
+    "signal_pct": 0.4647773279352227,
+    "alpha_vs_bh_return": -0.1754025770536216,
+    "alpha_vs_bh_sharpe": 0.16890246305930423,
+    "bh_total_return": 0.7540307449430281,
+    "bh_sharpe": 0.7142295549039408,
+    "bh_max_drawdown": -0.2542509661923045,
+    "source": "existing data/backtest_v2_results.json (40 symbols)"
+  },
+  "by_excluded_class": {
+    "FX": {
+      "n_remaining": 27,
+      "excluded_symbols": [
+        "EURUSD",
+        "USDJPY",
+        "GBPUSD",
+        "AUDUSD",
+        "USDCHF",
+        "USDCAD",
+        "NZDUSD",
+        "EURJPY",
+        "GBPJPY",
+        "EURGBP",
+        "USDTRY",
+        "USDHUF",
+        "EURTRY"
+      ],
+      "skipped": false,
+      "event_delta_sigma_ediv_ref": 2.17,
+      "total_return": 0.45206266008515605,
+      "CAGR": 0.07907811022940758,
+      "vol_ann": 0.12029576566439677,
+      "sharpe": 0.6573640376505111,
+      "max_drawdown": -0.18603302759540608,
+      "n_trades": 102,
+      "n_signal_days": 507,
+      "signal_pct": 0.4105263157894737,
+      "alpha_vs_bh_return": -0.3019680848578721,
+      "alpha_vs_bh_sharpe": -0.0568655172534297,
+      "bh_total_return": 0.7540307449430281,
+      "bh_sharpe": 0.7142295549039408,
+      "bh_max_drawdown": -0.2542509661923045,
+      "elapsed_sec": 8.2
+    },
+    "INDEX": {
+      "n_remaining": 31,
+      "excluded_symbols": [
+        "SP500",
+        "NAS100",
+        "DJ30",
+        "RUS2000",
+        "GER40",
+        "UK100",
+        "FRA40",
+        "JP225",
+        "CHINA50"
+      ],
+      "skipped": false,
+      "event_delta_sigma_ediv_ref": -0.3,
+      "total_return": 0.08538381074228796,
+      "CAGR": 0.01685898401140906,
+      "vol_ann": 0.10324922325808396,
+      "sharpe": 0.16328436650092742,
+      "max_drawdown": -0.24429739133567252,
+      "n_trades": 103,
+      "n_signal_days": 655,
+      "signal_pct": 0.5303643724696356,
+      "alpha_vs_bh_return": -0.6686469342007402,
+      "alpha_vs_bh_sharpe": -0.5509451884030134,
+      "bh_total_return": 0.7540307449430281,
+      "bh_sharpe": 0.7142295549039408,
+      "bh_max_drawdown": -0.2542509661923045,
+      "elapsed_sec": 10.6
+    },
+    "STOCK": {
+      "n_remaining": 35,
+      "excluded_symbols": [
+        "AAPL",
+        "MSFT",
+        "GOOG",
+        "META",
+        "TSLA"
+      ],
+      "skipped": false,
+      "event_delta_sigma_ediv_ref": 2.01,
+      "total_return": 0.4019153793226662,
+      "CAGR": 0.071367271844621,
+      "vol_ann": 0.10401246640563003,
+      "sharpe": 0.6861415204433418,
+      "max_drawdown": -0.138803286300773,
+      "n_trades": 97,
+      "n_signal_days": 648,
+      "signal_pct": 0.5246963562753036,
+      "alpha_vs_bh_return": -0.35211536562036194,
+      "alpha_vs_bh_sharpe": -0.028088034460599043,
+      "bh_total_return": 0.7540307449430281,
+      "bh_sharpe": 0.7142295549039408,
+      "bh_max_drawdown": -0.2542509661923045,
+      "elapsed_sec": 13.4
+    },
+    "COMMODITY": {
+      "n_remaining": 34,
+      "excluded_symbols": [
+        "XAUUSD",
+        "XAGUSD",
+        "USOUSD",
+        "UKOUSD",
+        "COPPER",
+        "NGAS"
+      ],
+      "skipped": false,
+      "event_delta_sigma_ediv_ref": 1.06,
+      "total_return": 0.4975102966050955,
+      "CAGR": 0.08588532181582553,
+      "vol_ann": 0.11169824979127475,
+      "sharpe": 0.7689048125312203,
+      "max_drawdown": -0.16221892062377086,
+      "n_trades": 93,
+      "n_signal_days": 618,
+      "signal_pct": 0.5004048582995951,
+      "alpha_vs_bh_return": -0.25652044833793264,
+      "alpha_vs_bh_sharpe": 0.05467525762727954,
+      "bh_total_return": 0.7540307449430281,
+      "bh_sharpe": 0.7142295549039408,
+      "bh_max_drawdown": -0.2542509661923045,
+      "elapsed_sec": 12.9
+    },
+    "CRYPTO": {
+      "n_remaining": 38,
+      "excluded_symbols": [
+        "BTCUSD",
+        "ETHUSD"
+      ],
+      "skipped": false,
+      "event_delta_sigma_ediv_ref": 1.44,
+      "total_return": 0.5710852165033982,
+      "CAGR": 0.09656474580691565,
+      "vol_ann": 0.11442946107454749,
+      "sharpe": 0.8438801065750586,
+      "max_drawdown": -0.19490972112463312,
+      "n_trades": 91,
+      "n_signal_days": 568,
+      "signal_pct": 0.45991902834008097,
+      "alpha_vs_bh_return": -0.18294552843962997,
+      "alpha_vs_bh_sharpe": 0.12965055167111783,
+      "bh_total_return": 0.7540307449430281,
+      "bh_sharpe": 0.7142295549039408,
+      "bh_max_drawdown": -0.2542509661923045,
+      "elapsed_sec": 15.9
+    },
+    "BOND": {
+      "n_remaining": 37,
+      "excluded_symbols": [
+        "US10Y",
+        "EUB10Y",
+        "UKGILT"
+      ],
+      "skipped": false,
+      "event_delta_sigma_ediv_ref": 1.23,
+      "total_return": 0.39759199054247363,
+      "CAGR": 0.0706922650761308,
+      "vol_ann": 0.10338351448065938,
+      "sharpe": 0.683786631081841,
+      "max_drawdown": -0.1774227296428016,
+      "n_trades": 103,
+      "n_signal_days": 664,
+      "signal_pct": 0.5376518218623482,
+      "alpha_vs_bh_return": -0.3564387544005545,
+      "alpha_vs_bh_sharpe": -0.030442923822099788,
+      "bh_total_return": 0.7540307449430281,
+      "bh_sharpe": 0.7142295549039408,
+      "bh_max_drawdown": -0.2542509661923045,
+      "elapsed_sec": 15.2
+    },
+    "SPECIAL": {
+      "n_remaining": 38,
+      "excluded_symbols": [
+        "DXY",
+        "VIX"
+      ],
+      "skipped": false,
+      "event_delta_sigma_ediv_ref": 0.94,
+      "total_return": 0.5845280301128657,
+      "CAGR": 0.09847277253976006,
+      "vol_ann": 0.11435755196092837,
+      "sharpe": 0.8610954926125427,
+      "max_drawdown": -0.20950427356761459,
+      "n_trades": 83,
+      "n_signal_days": 578,
+      "signal_pct": 0.4680161943319838,
+      "alpha_vs_bh_return": -0.16950271483016244,
+      "alpha_vs_bh_sharpe": 0.1468659377086019,
+      "bh_total_return": 0.7540307449430281,
+      "bh_sharpe": 0.7142295549039408,
+      "bh_max_drawdown": -0.2542509661923045,
+      "elapsed_sec": 13.3
+    }
+  },
+  "table": [
+    {
+      "excluded": "(baseline)",
+      "n_remaining": 40,
+      "sharpe": 0.883132017963245,
+      "max_drawdown": -0.17300401240693086,
+      "alpha_vs_bh_return": -0.1754025770536216,
+      "alpha_vs_bh_sharpe": 0.16890246305930423,
+      "event_delta_sigma_ediv_ref": 2.75,
+      "n_trades": 81
+    },
+    {
+      "excluded": "FX",
+      "n_remaining": 27,
+      "sharpe": 0.6573640376505111,
+      "max_drawdown": -0.18603302759540608,
+      "alpha_vs_bh_return": -0.3019680848578721,
+      "alpha_vs_bh_sharpe": -0.0568655172534297,
+      "event_delta_sigma_ediv_ref": 2.17,
+      "n_trades": 102
+    },
+    {
+      "excluded": "INDEX",
+      "n_remaining": 31,
+      "sharpe": 0.16328436650092742,
+      "max_drawdown": -0.24429739133567252,
+      "alpha_vs_bh_return": -0.6686469342007402,
+      "alpha_vs_bh_sharpe": -0.5509451884030134,
+      "event_delta_sigma_ediv_ref": -0.3,
+      "n_trades": 103
+    },
+    {
+      "excluded": "STOCK",
+      "n_remaining": 35,
+      "sharpe": 0.6861415204433418,
+      "max_drawdown": -0.138803286300773,
+      "alpha_vs_bh_return": -0.35211536562036194,
+      "alpha_vs_bh_sharpe": -0.028088034460599043,
+      "event_delta_sigma_ediv_ref": 2.01,
+      "n_trades": 97
+    },
+    {
+      "excluded": "COMMODITY",
+      "n_remaining": 34,
+      "sharpe": 0.7689048125312203,
+      "max_drawdown": -0.16221892062377086,
+      "alpha_vs_bh_return": -0.25652044833793264,
+      "alpha_vs_bh_sharpe": 0.05467525762727954,
+      "event_delta_sigma_ediv_ref": 1.06,
+      "n_trades": 93
+    },
+    {
+      "excluded": "CRYPTO",
+      "n_remaining": 38,
+      "sharpe": 0.8438801065750586,
+      "max_drawdown": -0.19490972112463312,
+      "alpha_vs_bh_return": -0.18294552843962997,
+      "alpha_vs_bh_sharpe": 0.12965055167111783,
+      "event_delta_sigma_ediv_ref": 1.44,
+      "n_trades": 91
+    },
+    {
+      "excluded": "BOND",
+      "n_remaining": 37,
+      "sharpe": 0.683786631081841,
+      "max_drawdown": -0.1774227296428016,
+      "alpha_vs_bh_return": -0.3564387544005545,
+      "alpha_vs_bh_sharpe": -0.030442923822099788,
+      "event_delta_sigma_ediv_ref": 1.23,
+      "n_trades": 103
+    },
+    {
+      "excluded": "SPECIAL",
+      "n_remaining": 38,
+      "sharpe": 0.8610954926125427,
+      "max_drawdown": -0.20950427356761459,
+      "alpha_vs_bh_return": -0.16950271483016244,
+      "alpha_vs_bh_sharpe": 0.1468659377086019,
+      "event_delta_sigma_ediv_ref": 0.94,
+      "n_trades": 83
+    }
+  ],
+  "correlations": {
+    "spearman_event_delta_sigma_vs_sharpe": 0.28571428571428575,
+    "pearson_event_delta_sigma_vs_sharpe": 0.684792377603437
+  },
+  "finding": "baseline (40銘柄) Sharpe=+0.883, event Δσ_e_div=+2.75. INDEX 抜き Sharpe=+0.163 (baseline 比 -0.720), event Δσ_e_div=-0.30 (シグナル消失). FX 抜き Sharpe=+0.657 (baseline 比 -0.226), event Δσ_e_div=+2.17 (むしろ強化). event Δσ_e_div ↔ Sharpe の Spearman 順位相関 ρ=+0.29 (Pearson r=+0.68). event 検出能力が高い構成ほど S1 バックテストでも勝てる対応関係。"
+}
