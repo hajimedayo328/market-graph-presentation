@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "input_csv": "gamma_timeseries_w30.csv",
+    "events_json": "events_8y.json",
+    "ohlc_parquet": "ohlc_40.parquet",
+    "n_obs": 1736,
+    "date_range": [
+      "2021-08-16",
+      "2026-05-17"
+    ],
+    "alpha": 0.05,
+    "indep_test": "fisherz",
+    "stable": true,
+    "event_half_width_bdays": 2,
+    "war_included": false
+  },
+  "node_names": [
+    "shock_trade",
+    "shock_struct",
+    "e_div",
+    "L1",
+    "n_unb",
+    "balance_rate",
+    "VIX"
+  ],
+  "adjacency_matrix": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      -1,
+      0,
+      1,
+      -1,
+      1
+    ],
+    [
+      0,
+      0,
+      -1,
+      -1,
+      0,
+      -1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      1,
+      1,
+      0,
+      -1,
+      0,
+      0,
+      0
+    ]
+  ],
+  "adjacency_legend": {
+    "(i,j)=-1, (j,i)=1": "i → j (directed)",
+    "(i,j)=-1, (j,i)=-1": "i — j (undirected)",
+    "(i,j)=1, (j,i)=1": "i ↔ j (bidirected / latent common cause)",
+    "(i,j)=0": "no edge"
+  },
+  "edges": [
+    {
+      "src": "shock_trade",
+      "dst": "VIX",
+      "type": "directed"
+    },
+    {
+      "src": "shock_struct",
+      "dst": "VIX",
+      "type": "directed"
+    },
+    {
+      "src": "L1",
+      "dst": "e_div",
+      "type": "directed"
+    },
+    {
+      "src": "n_unb",
+      "dst": "e_div",
+      "type": "directed"
+    },
+    {
+      "src": "n_unb",
+      "dst": "L1",
+      "type": "directed"
+    },
+    {
+      "src": "L1",
+      "dst": "balance_rate",
+      "type": "directed"
+    },
+    {
+      "src": "VIX",
+      "dst": "L1",
+      "type": "directed"
+    },
+    {
+      "src": "n_unb",
+      "dst": "balance_rate",
+      "type": "directed"
+    }
+  ],
+  "findings": [
+    "shock_trade ↔ e_div の辺が DAG では消失 (Granger 結果と非整合 -- 隠れた共通要因の可能性)",
+    "e_div → shock_trade の有向辺なし (Granger 逆方向 p=0.254 と一致, 一方向性 OK)",
+    "双方向辺 (潜在共通親) は検出されず",
+    "VIX に接続する辺: shock_trade→VIX, shock_struct→VIX, VIX→L1"
+  ],
+  "comparison_with_granger": {
+    "granger_main_pair": "trade_policy → e_div",
+    "granger_p": 0.022,
+    "granger_p_reverse": 0.254,
+    "dag_has_trade_to_ediv_directed": false,
+    "dag_has_trade_to_ediv_undirected": false,
+    "dag_has_ediv_to_trade_directed": false
+  }
+}
