@@ -194,15 +194,33 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
     長く運用しても通用するかを確認するため。
   </p>
 
+  <div style="background:#e8f4f8; padding:12px 16px; border-radius:6px; border-left:3px solid var(--blue);
+              font-size:13px; margin:8px 0 12px;">
+    <strong>⚠️ ここ大事 — 「観測する 40 銘柄」と「売買する S&amp;P500」は別物</strong>
+    <table style="width:100%; margin-top:6px; font-size:12px;">
+      <tr><th style="text-align:left; padding:4px 6px;">役割</th><th style="text-align:left; padding:4px 6px;">何</th><th style="text-align:left; padding:4px 6px;">数</th></tr>
+      <tr><td style="padding:4px 6px;">観測する (市場の機嫌を見る)</td>
+          <td style="padding:4px 6px;">FX / 指数 / 商品 / 株 ... の <strong>40 銘柄</strong></td>
+          <td style="padding:4px 6px;">40</td></tr>
+      <tr><td style="padding:4px 6px;">実際に売買する</td>
+          <td style="padding:4px 6px;"><strong>S&amp;P500 だけ</strong> (シグナルが出たら現金化)</td>
+          <td style="padding:4px 6px;">1</td></tr>
+    </table>
+    <p style="margin:8px 0 0; font-size:12px;">
+      <strong>例え</strong>: 40 銘柄 = 体温計・血圧計・心拍計 (患者を測る道具)、S&amp;P500 = 患者本体。
+      危ない兆候が出たら患者を休ませる (= 株を売る) という判断に使う。
+    </p>
+  </div>
+
   <div style="background:#fffbe6; padding:10px 14px; border-radius:6px; border-left:3px solid var(--gold);
               font-size:12px; margin:8px 0 16px;">
     <strong>📖 用語ミニ辞書</strong> (このセクションで使う言葉だけ先に説明):
     <ul style="margin:6px 0 0 20px; padding:0;">
-      <li><strong>S&amp;P500</strong>: 米国の代表的な株価指数 (大手 500 社の平均的な動き)</li>
-      <li><strong>Buy &amp; Hold (B&amp;H)</strong>: ずっと持ってるだけの戦略 (比較の基準)</li>
+      <li><strong>S&amp;P500</strong>: 米国の代表的な株価指数 (大手 500 社の平均的な動き) — 売買対象</li>
+      <li><strong>Buy &amp; Hold (B&amp;H)</strong>: <strong>S&amp;P500 をずっと持ってるだけ</strong>の戦略 (比較の基準)</li>
       <li><strong>Sharpe</strong>: <strong>効率</strong>を表す数字。リスク (値動きの荒さ) に対する儲けの良さ。<strong>高いほど良い</strong>。1 を超えれば優秀</li>
       <li><strong>MaxDD (最大ドローダウン)</strong>: <strong>一番沈んだ深さ</strong>。「過去の最高値から何 % まで下がったか」。<strong>小さいほど良い</strong></li>
-      <li><strong>S1 戦略</strong>: e_div ≥ +0.8 (= ふだんよりだいぶ高い) になったら株を売って現金にする戦略</li>
+      <li><strong>S1 戦略</strong>: e_div ≥ +0.8 (= ふだんよりだいぶ高い) になったら<strong>S&amp;P500 を売って現金にする</strong>戦略</li>
     </ul>
     <p style="margin:8px 0 0; font-size:11px; color:var(--sub);">
       バックテスト条件 (現実に近づけるための工夫): 取引手数料 0.05% / 1 回判定したら最低 5 日は続ける /
