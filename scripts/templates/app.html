@@ -635,14 +635,25 @@
     <div style="margin:14px 0;">
       <h3 style="font-size:14px; margin-bottom:6px;">📊 バックテスト 3 視点サマリー (1 枚)</h3>
       <img src="./data/fig_backtest_summary.png" style="width:100%; border-radius:8px; border:1px solid var(--line);">
-      <p style="font-size:11px; color:var(--sub); margin-top:6px;">
-        <strong>読み方</strong>:
-        <strong>(1)</strong> 5y/10y/15y/20y どの期間でも S1 が B&H 超え、20y で優位最大。
-        <strong>(2)</strong> S1 の MaxDD は全期間 -20% 圏内、B&H は 20y で -57% まで沈む。
-        <strong>(3)</strong> Asset class 除外: <strong>INDEX 抜きで戦略崩壊</strong> (+0.16)。
-        <strong>(4)</strong> 段階縮小: N=40 だけ高 Sharpe、N≤35 で +0.5 にダウン。
-        → <strong>「市場の異変を察知する力」と「それで稼ぐ力」は別物</strong>という発見。
-      </p>
+      <div style="font-size:12px; margin-top:10px; background:#fff8e1; padding:10px 14px; border-radius:6px; border-left:3px solid var(--gold);">
+        <strong>📌 何を発見したか — 4 つだけ</strong>
+        <ol style="margin:6px 0 0 20px; padding:0;">
+          <li><strong>5〜20 年どの期間でも、ただ持ってるより効率よく稼げる</strong>
+              (グラフ 1: 赤い棒 = この戦略、灰色棒 = ただ持ってるだけ)。20 年で差が最大。</li>
+          <li><strong>暴落の時 (2008 / 2020) の損失が半分で済む</strong>
+              (グラフ 2: 灰色は 20 年で 57% 沈むが、赤は 20% で踏み止まる)。</li>
+          <li><strong>株指数 (SP500 など) を抜くと戦略が完全に効かなくなる</strong>
+              (グラフ 3: INDEX 抜きだけ短い赤)。</li>
+          <li><strong>銘柄を 40 から減らすと「異変は察知できる、でも稼げない」</strong>
+              (グラフ 4: N=40 だけ高く、N=35 以下でガクッと落ちる)。
+              = <em>「シグナル察知の力」と「稼ぐ力」は別物</em>。</li>
+        </ol>
+        <p style="margin:8px 0 0; font-size:11px; color:var(--sub);">
+          用語: <strong>Sharpe</strong> = 効率 (リスクに対する儲けの良さ、高いほど良い) /
+          <strong>MaxDD</strong> = 最大の下落幅 (一番沈んだ深さ、小さいほど良い) /
+          <strong>B&amp;H</strong> = ただ持ってるだけ (比較基準)
+        </p>
+      </div>
     </div>
 
     <p class="panel-desc">

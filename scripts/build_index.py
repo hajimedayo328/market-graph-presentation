@@ -195,16 +195,27 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
   <code>data/backtest_v2_multi_period.json</code>。</p>
 
   <div class="plot" style="margin:14px 0;">
-    <div class="plot-title">バックテスト 3 視点サマリー — 期間別 / asset 除外 / 段階縮小 を 1 枚で</div>
+    <div class="plot-title">バックテスト 3 視点サマリー (1 枚)</div>
     <img src="data:image/png;base64,__BACKTEST_SUMMARY__" style="width:100%; border-radius:8px;">
-    <p style="font-size:11px; color:var(--sub); margin-top:6px;">
-      <strong>読み方</strong>: (1) 全 4 期間で S1 が B&amp;H 超え、20y で優位最大。
-      (2) S1 の MaxDD は全期間 -20% 圏内、B&amp;H は 20y で -57% まで沈む。
-      (3) Asset class 除外: <strong>INDEX を抜くと戦略崩壊</strong> (Sharpe +0.16)、
-      他は baseline 周辺。
-      (4) 段階縮小: <strong>N=40 だけ高 Sharpe を再現</strong>、N≤35 で +0.5 前後にダウン
-      (ばらつき急増)。「シグナル検出」と「収益獲得」は別能力という発見。
-    </p>
+    <div style="font-size:12px; color:var(--text); margin-top:10px; background:#fff8e1; padding:10px 14px; border-radius:6px; border-left:3px solid var(--gold);">
+      <strong>📌 何を発見したか — 4 つだけ</strong>
+      <ol style="margin:6px 0 0 20px; padding:0;">
+        <li><strong>5〜20 年どの期間でも、ただ持ってるより効率よく稼げる</strong>
+            (グラフ 1: 赤い棒が灰色棒より高い)。差は 20 年で最大。</li>
+        <li><strong>市場が大荒れの時 (2008 / 2020)、損失が半分で済む</strong>
+            (グラフ 2: 灰色は 20 年で 57% 沈むが、赤は 20% で踏み止まる)。</li>
+        <li><strong>株指数 (SP500 など) を抜くと戦略は完全に効かなくなる</strong>
+            (グラフ 3: 一番下の INDEX 抜きだけ赤くて短い)。</li>
+        <li><strong>銘柄を 40 から減らすと「異変は察知できる、でも稼げない」</strong>
+            (グラフ 4: N=40 だけ高くて、35 以下はガクッと落ちる)。
+            <em>= 「シグナルを察知する力」と「それで稼ぐ力」は別物</em>。</li>
+      </ol>
+      <p style="margin:8px 0 0; font-size:11px; color:var(--sub);">
+        用語: <strong>Sharpe</strong> = 効率 (リスクに対する儲け方、高いほど良い) /
+        <strong>MaxDD</strong> = 最大の下落幅 (一番沈んだ深さ、小さいほど良い) /
+        <strong>B&amp;H (Buy &amp; Hold)</strong> = ずっと持ってるだけの戦略 (ベンチマーク)
+      </p>
+    </div>
   </div>
 
   <h3>9.5.1 主戦略 (S1 e_div ≥ +0.8 short) vs Buy &amp; Hold</h3>
