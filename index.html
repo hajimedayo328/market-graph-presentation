@@ -1063,89 +1063,6 @@
         <td><strong>むしろ強くなる</strong> ← FX は cross-asset 文脈ではノイズ寄り</td></tr>
   </table>
 
-  <!-- ===== 8.6.5 バックテスト版 (event 検出能力 ↔ バックテスト能力) ===== -->
-  <h3 style="margin-top:36px; border-top:2px solid var(--accent); padding-top:24px;">
-    解剖 2-B: 同じ 7 除外で <strong>バックテスト</strong>を回したらどうなる?
-  </h3>
-  <p>解剖 2 は単一 event (Liberation Day) での Δσ_e_div を見ただけだった。
-  「event 検出力が落ちる = 戦略が機能しなくなる」と言えるか?
-  <strong>同じ 7 除外で γ を 5 年分再計算 → S1_ediv_high_short (e_div ≥ 0.8 で SP500 を short=現金保有) を回す</strong>。
-  生成スクリプト: <code>scripts/backtest_by_asset_exclusion.py</code>、出力:
-  <code>data/backtest_by_asset_exclusion.json</code></p>
-
-  <table>
-    <tr>
-      <th>抜いた class</th><th>n_keep</th>
-      <th>S1 Sharpe</th><th>S1 MaxDD</th>
-      <th>S1 vs B&amp;H α (Sharpe)</th>
-      <th>event Δσ_e_div (解剖 2)</th>
-    </tr>
-    <tr><td><strong>baseline (なし)</strong></td><td>40</td>
-        <td><strong>+0.883</strong></td><td>-17.30%</td>
-        <td>+0.169</td>
-        <td>+2.75</td></tr>
-    <tr style="background:rgba(196,62,53,0.10);">
-        <td><strong>INDEX (9 個)</strong></td><td>31</td>
-        <td class="bad"><strong>+0.163</strong></td><td>-24.43%</td>
-        <td>-0.551</td>
-        <td class="bad">-0.30</td></tr>
-    <tr><td>FX (13 個)</td><td>27</td>
-        <td>+0.657</td><td>-18.60%</td>
-        <td>-0.057</td>
-        <td>+2.17</td></tr>
-    <tr><td>STOCK (個別株 5)</td><td>35</td>
-        <td>+0.686</td><td>-13.88%</td>
-        <td>-0.028</td>
-        <td>+2.01</td></tr>
-    <tr><td>COMMODITY (6 個)</td><td>34</td>
-        <td>+0.769</td><td>-16.22%</td>
-        <td>+0.055</td>
-        <td>+1.06</td></tr>
-    <tr><td>BOND (3 個)</td><td>37</td>
-        <td>+0.684</td><td>-17.74%</td>
-        <td>-0.030</td>
-        <td>+1.23</td></tr>
-    <tr><td>CRYPTO (2 個)</td><td>38</td>
-        <td>+0.844</td><td>-19.49%</td>
-        <td>+0.130</td>
-        <td>+1.44</td></tr>
-    <tr><td>SPECIAL (VIX+DXY)</td><td>38</td>
-        <td>+0.861</td><td>-20.95%</td>
-        <td>+0.147</td>
-        <td>+0.94</td></tr>
-  </table>
-  <p style="font-size:12px; color:var(--sub);">
-    バックテスト条件は <code>scripts/backtest_v2.py</code> と同一:
-    取引コスト 0.05% (片道) + ヒステリシス 5 営業日 + 翌日寄付き約定 +
-    expanding-window z-score (min_periods=30)。5 年 (2021-05 → 2026-05) 通し。
-  </p>
-
-  <div class="callout found" style="margin-top:18px;">
-    <h4>発見: event 検出力 ≒ バックテスト能力</h4>
-    <p><strong>① INDEX 抜きで Sharpe が崩壊</strong>。
-    INDEX を抜くと event Δσ_e_div は -0.30 (シグナル消失) になり、
-    バックテストでも Sharpe が <strong>+0.88 → +0.16</strong> へ大きく低下、
-    α(Sharpe) は -0.55 と B&amp;H に明確に負ける。
-    <strong>「INDEX が震源」</strong>という event 検出側の知見と、
-    <strong>「INDEX 抜きでは戦略が機能しない」</strong>というバックテスト側の事実が一致。</p>
-
-    <p style="margin-top:10px;"><strong>② event 検出力と Sharpe の順位相関は正</strong>
-    (8 構成で Spearman ρ = +0.29、Pearson r = <strong>+0.68</strong>)。
-    Δσ_e_div が高い構成ほど S1 の Sharpe が高いという全体傾向。</p>
-
-    <p style="margin-top:10px;"><strong>③ ただし FX 抜きは event は強化 / バックテストは弱化</strong>。
-    event Δσ_e_div は FX 抜きで +2.17 と <strong>baseline (+2.75) より相対的に保たれる</strong>が、
-    S1 バックテストでは Sharpe が +0.88 → +0.66 と低下する。
-    <strong>「単一 event の検出力 ≠ 5 年通しの戦略収益」</strong>であり、
-    FX の 13 銘柄分の情報が消えると平時のシグナル発火率や誤発火に影響することを示唆。</p>
-
-    <p style="margin-top:12px; font-weight:600;">
-      解剖 2 は「どの class を抜くと event 検出が崩れるか」を示した。
-      解剖 2-B は「event 検出が崩れる構成ではバックテストも勝てない」ことを示し、
-      <strong>2 つの解析が同じ「INDEX = 震源」という結論に独立に到達</strong>している。
-    </p>
-  </div>
-
   <h3>解剖 3: 段階縮小 (各サイズ 3 trial 平均)</h3>
   <table>
     <tr><th>n_keep</th><th>mean Δe_div</th><th>std</th><th>range</th></tr>
@@ -1159,36 +1076,6 @@
   <p style="font-size:12px; color:var(--sub);">
     <strong>20-30 銘柄なら頑健</strong>。10 銘柄まで減らすと range が広く 1 銘柄の欠落が結果に直撃する。
     実証は <code>scripts/test_symbol_variations.py</code> で再現可能。
-  </p>
-
-  <h3 style="margin-top:30px;">解剖 3b: 段階縮小 <strong>バックテスト</strong> (S1 戦略: e_div ≥ +0.8 で短期退避)</h3>
-  <p>同じ段階縮小を <strong>バックテスト</strong> でも検証。Section 8.6 の event study は単発イベント (Liberation Day) への反応だったが、
-  ここでは過去 5 年全期間で S1 戦略 (e_div ≥ +0.8 で現金退避) を回し、
-  <strong>Sharpe / MaxDD / α (vs S&amp;P500 Buy &amp; Hold)</strong> を見る。各サイズ <strong>3 trial</strong> (seed=42/43/44)。</p>
-  <table>
-    <tr><th>N</th><th>Sharpe (mean ± std)</th><th>MaxDD (mean ± std)</th><th>α vs B&amp;H (mean ± std)</th></tr>
-    <tr><td><strong>40 (baseline)</strong></td>
-        <td class="good"><strong>+1.00</strong></td>
-        <td><strong>-22.36%</strong></td>
-        <td class="good"><strong>+10.60%</strong></td></tr>
-    <tr><td>35</td><td>+0.50 ± 0.09</td><td>-22.39% ± 2.66%</td><td class="bad">-35.57% ± 7.27%</td></tr>
-    <tr><td>30</td><td>+0.48 ± 0.30</td><td>-22.57% ± 4.16%</td><td class="bad">-35.73% ± 26.13%</td></tr>
-    <tr><td>25</td><td>+0.70 ± 0.20</td><td>-22.73% ± 3.22%</td><td>-15.72% ± 19.85%</td></tr>
-    <tr><td>20</td><td>+0.56 ± 0.13</td><td>-22.97% ± 5.55%</td><td>-28.65% ± 13.56%</td></tr>
-    <tr><td>15</td><td>+0.69 ± 0.31</td><td>-23.59% ± 8.09%</td><td>-15.66% ± 28.59%</td></tr>
-  </table>
-  <p style="font-size:12px; color:var(--sub);">
-    <strong>3 つの読みどころ:</strong><br>
-    ① <strong>baseline (40) は Sharpe +1.00, α +10.6%</strong> と B&amp;H を超えるが、
-    1 銘柄でも抜くと Sharpe が <strong>+0.5 前後まで半減</strong>。S1 戦略は 40 銘柄プール全体の cross-asset 不整合に依存しており、
-    event study の Δe_div (頑健) よりも<strong>バックテストの方が銘柄入替えに敏感</strong>。<br>
-    ② <strong>std の発散点は N≤30 から</strong>。N=35 はまだ std=0.09 だが、
-    N=30 で 0.30, N=15 で 0.31 と<strong>3 倍以上に拡大</strong>。MaxDD の std も同様 (2.7% → 8.1%)。
-    Section 8.6 event study が示した「20-30 で頑健、10 以下でブレ」傾向と<strong>定性的に整合</strong>するが、
-    バックテストでは<strong>もう少し早い段階 (N=30 から) ばらつき始める</strong>。<br>
-    ③ <strong>α の符号は全サイズ平均で負</strong>。サブサンプルの 1〜2 trial では正の α も観測される (N=15 seed=42 で α=+9.9%) が、
-    seed 平均では baseline を再現できない。これは S1 の閾値 0.8 が <strong>40 銘柄プールに最適化された in-sample 値</strong>であることを示唆する。<br>
-    再現: <code>scripts/backtest_by_subsampling.py</code> / 出力: <code>data/backtest_by_subsampling.json</code>。
   </p>
 
   <!-- ===== 新規: 4 つの拡張実験 (Phase 2) ===== -->
@@ -1579,6 +1466,19 @@
   4 つの期間で実行し、結果が長期にわたり安定するかを確認する。
   実装: <code>scripts/backtest_v2_multi_period.py</code>、出力:
   <code>data/backtest_v2_multi_period.json</code>。</p>
+
+  <div class="plot" style="margin:14px 0;">
+    <div class="plot-title">バックテスト 3 視点サマリー — 期間別 / asset 除外 / 段階縮小 を 1 枚で</div>
+    <img src="data:image/png;base64,__BACKTEST_SUMMARY__" style="width:100%; border-radius:8px;">
+    <p style="font-size:11px; color:var(--sub); margin-top:6px;">
+      <strong>読み方</strong>: (1) 全 4 期間で S1 が B&amp;H 超え、20y で優位最大。
+      (2) S1 の MaxDD は全期間 -20% 圏内、B&amp;H は 20y で -57% まで沈む。
+      (3) Asset class 除外: <strong>INDEX を抜くと戦略崩壊</strong> (Sharpe +0.16)、
+      他は baseline 周辺。
+      (4) 段階縮小: <strong>N=40 だけ高 Sharpe を再現</strong>、N≤35 で +0.5 前後にダウン
+      (ばらつき急増)。「シグナル検出」と「収益獲得」は別能力という発見。
+    </p>
+  </div>
 
   <h3>9.5.1 主戦略 (S1 e_div ≥ +0.8 short) vs Buy &amp; Hold</h3>
   <p>e_div が +0.8σ 以上のときに S&amp;P500 を売り (= 現金保有)、それ以外は買い持ちする戦略。</p>

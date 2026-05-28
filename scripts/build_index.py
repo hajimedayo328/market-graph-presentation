@@ -194,6 +194,19 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
   実装: <code>scripts/backtest_v2_multi_period.py</code>、出力:
   <code>data/backtest_v2_multi_period.json</code>。</p>
 
+  <div class="plot" style="margin:14px 0;">
+    <div class="plot-title">バックテスト 3 視点サマリー — 期間別 / asset 除外 / 段階縮小 を 1 枚で</div>
+    <img src="data:image/png;base64,__BACKTEST_SUMMARY__" style="width:100%; border-radius:8px;">
+    <p style="font-size:11px; color:var(--sub); margin-top:6px;">
+      <strong>読み方</strong>: (1) 全 4 期間で S1 が B&amp;H 超え、20y で優位最大。
+      (2) S1 の MaxDD は全期間 -20% 圏内、B&amp;H は 20y で -57% まで沈む。
+      (3) Asset class 除外: <strong>INDEX を抜くと戦略崩壊</strong> (Sharpe +0.16)、
+      他は baseline 周辺。
+      (4) 段階縮小: <strong>N=40 だけ高 Sharpe を再現</strong>、N≤35 で +0.5 前後にダウン
+      (ばらつき急増)。「シグナル検出」と「収益獲得」は別能力という発見。
+    </p>
+  </div>
+
   <h3>9.5.1 主戦略 (S1 e_div ≥ +0.8 short) vs Buy &amp; Hold</h3>
   <p>e_div が +0.8σ 以上のときに S&amp;P500 を売り (= 現金保有)、それ以外は買い持ちする戦略。</p>
   <table>
@@ -569,6 +582,7 @@ def main():
     else:
         pattern_results = None
     pattern_fig_b64 = img_b64(DATA_DIR / "fig_symbol_patterns.png")
+    backtest_summary_fig_b64 = img_b64(DATA_DIR / "fig_backtest_summary.png")
 
     # 8 年完全 OOS event study (Section 10.5)
     oos8y_path = DATA_DIR / "eventstudy_8y_results.json"
@@ -2936,6 +2950,7 @@ window.addEventListener('resize', () => {
     html = (template
             .replace("__HEATMAP__", DATA["heatmap_b64"])
             .replace("__SYMPATTERN_FIG__", pattern_fig_b64)
+            .replace("__BACKTEST_SUMMARY__", backtest_summary_fig_b64)
             .replace("__SEC95__", sec95_html)
             .replace("__SEC105__", sec105_html)
             .replace("__DATA__", json.dumps(DATA, ensure_ascii=False)))
