@@ -2041,13 +2041,18 @@ __SEC105__
   </ol>
 
   <h3>11.3 今後の方向</h3>
+  <p style="font-size:12px; color:var(--sub); margin-bottom:8px;">
+    主要な future work はほぼ全て実装・検証済み (Section 11.1 参照: α 20y / tz-aware / DAG mediation 全て完了)。残るは以下のみ。
+  </p>
   <ul>
-    <li>α 関手の 12 指標を 20y 通史で再計算 (現在は 2 指標縮退版で長期再現性を確認済、Section 11.1 参照)。
-        universe 時変を含めた厳密な 12 指標再計算は future work</li>
-    <li>tz-aware 時刻揃え resampling (米国市場 20:00 UTC 等) で 24h 銘柄と日中銘柄を再アライン → 高頻度 event detection
-        (asset_class 別 sub-graph は 11.1 補足で実装済、残る課題は時刻揃え部分のみ)</li>
-    <li>実弾運用 (まずは少額) で paper trading との乖離を測定</li>
-    <li>因果推論の強化: Granger は方向性まで実証済 (11.1 参照)。残るは隠れた共通要因の排除 (DAG / structural IV)</li>
+    <li><strong>実弾運用</strong> (まずは少額) で paper trading との乖離を測定。
+        ただし PocketOS 事件等を踏まえ、全自動でのライブ資金投入は慎重に判断する</li>
+    <li><strong>残課題 (優先度・低)</strong>:
+      <ul>
+        <li>α 関手の 12 指標を 20y 通史で再計算 (現在は 2 指標縮退版で長期再現性を確認済 → 11.1)</li>
+        <li>structural IV (操作変数法) で因果推論の最終強化 (DAG で双方向辺ゼロ = confounder リスク既に低いため優先度低 → 11.1)</li>
+      </ul>
+    </li>
   </ul>
 </section>
 
