@@ -1078,6 +1078,36 @@
     実証は <code>scripts/test_symbol_variations.py</code> で再現可能。
   </p>
 
+  <h3 style="margin-top:30px;">解剖 3b: 段階縮小 <strong>バックテスト</strong> (S1 戦略: e_div ≥ +0.8 で短期退避)</h3>
+  <p>同じ段階縮小を <strong>バックテスト</strong> でも検証。Section 8.6 の event study は単発イベント (Liberation Day) への反応だったが、
+  ここでは過去 5 年全期間で S1 戦略 (e_div ≥ +0.8 で現金退避) を回し、
+  <strong>Sharpe / MaxDD / α (vs S&amp;P500 Buy &amp; Hold)</strong> を見る。各サイズ <strong>3 trial</strong> (seed=42/43/44)。</p>
+  <table>
+    <tr><th>N</th><th>Sharpe (mean ± std)</th><th>MaxDD (mean ± std)</th><th>α vs B&amp;H (mean ± std)</th></tr>
+    <tr><td><strong>40 (baseline)</strong></td>
+        <td class="good"><strong>+1.00</strong></td>
+        <td><strong>-22.36%</strong></td>
+        <td class="good"><strong>+10.60%</strong></td></tr>
+    <tr><td>35</td><td>+0.50 ± 0.09</td><td>-22.39% ± 2.66%</td><td class="bad">-35.57% ± 7.27%</td></tr>
+    <tr><td>30</td><td>+0.48 ± 0.30</td><td>-22.57% ± 4.16%</td><td class="bad">-35.73% ± 26.13%</td></tr>
+    <tr><td>25</td><td>+0.70 ± 0.20</td><td>-22.73% ± 3.22%</td><td>-15.72% ± 19.85%</td></tr>
+    <tr><td>20</td><td>+0.56 ± 0.13</td><td>-22.97% ± 5.55%</td><td>-28.65% ± 13.56%</td></tr>
+    <tr><td>15</td><td>+0.69 ± 0.31</td><td>-23.59% ± 8.09%</td><td>-15.66% ± 28.59%</td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    <strong>3 つの読みどころ:</strong><br>
+    ① <strong>baseline (40) は Sharpe +1.00, α +10.6%</strong> と B&amp;H を超えるが、
+    1 銘柄でも抜くと Sharpe が <strong>+0.5 前後まで半減</strong>。S1 戦略は 40 銘柄プール全体の cross-asset 不整合に依存しており、
+    event study の Δe_div (頑健) よりも<strong>バックテストの方が銘柄入替えに敏感</strong>。<br>
+    ② <strong>std の発散点は N≤30 から</strong>。N=35 はまだ std=0.09 だが、
+    N=30 で 0.30, N=15 で 0.31 と<strong>3 倍以上に拡大</strong>。MaxDD の std も同様 (2.7% → 8.1%)。
+    Section 8.6 event study が示した「20-30 で頑健、10 以下でブレ」傾向と<strong>定性的に整合</strong>するが、
+    バックテストでは<strong>もう少し早い段階 (N=30 から) ばらつき始める</strong>。<br>
+    ③ <strong>α の符号は全サイズ平均で負</strong>。サブサンプルの 1〜2 trial では正の α も観測される (N=15 seed=42 で α=+9.9%) が、
+    seed 平均では baseline を再現できない。これは S1 の閾値 0.8 が <strong>40 銘柄プールに最適化された in-sample 値</strong>であることを示唆する。<br>
+    再現: <code>scripts/backtest_by_subsampling.py</code> / 出力: <code>data/backtest_by_subsampling.json</code>。
+  </p>
+
   <!-- ===== 新規: 4 つの拡張実験 (Phase 2) ===== -->
   <h3 style="margin-top:36px; border-top:2px solid var(--accent); padding-top:24px;">
     解剖 4〜7: 銘柄プールを物理的に組み替えたらどうなる?
