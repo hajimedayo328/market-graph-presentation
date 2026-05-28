@@ -2948,11 +2948,11 @@ window.addEventListener('resize', () => {
     sec105_html = build_section_105_html(oos8y)
     sec95_html = build_section_95_html(bt_multi, wf_oos)
     html = (template
+            .replace("__SEC95__", sec95_html)
+            .replace("__SEC105__", sec105_html)
             .replace("__HEATMAP__", DATA["heatmap_b64"])
             .replace("__SYMPATTERN_FIG__", pattern_fig_b64)
             .replace("__BACKTEST_SUMMARY__", backtest_summary_fig_b64)
-            .replace("__SEC95__", sec95_html)
-            .replace("__SEC105__", sec105_html)
             .replace("__DATA__", json.dumps(DATA, ensure_ascii=False)))
     out = ROOT / "index.html"
     out.write_text(html, encoding="utf-8")
