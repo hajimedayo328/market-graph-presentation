@@ -1,0 +1,336 @@
+{
+  "anchor_hour_utc": 20,
+  "years": 5,
+  "n_symbols_requested": 40,
+  "n_symbols_fetched": 39,
+  "n_symbols_in_parquet": 39,
+  "n_rows": 1307,
+  "date_range": [
+    "2021-05-27 00:00:00",
+    "2026-05-29 00:00:00"
+  ],
+  "missing": [
+    "DXY"
+  ],
+  "by_symbol": {
+    "EURUSD": {
+      "yticker": "EURUSD=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "USDJPY": {
+      "yticker": "USDJPY=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "GBPUSD": {
+      "yticker": "GBPUSD=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "AUDUSD": {
+      "yticker": "AUDUSD=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "USDCHF": {
+      "yticker": "USDCHF=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "USDCAD": {
+      "yticker": "USDCAD=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "NZDUSD": {
+      "yticker": "NZDUSD=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "EURJPY": {
+      "yticker": "EURJPY=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "GBPJPY": {
+      "yticker": "GBPJPY=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "EURGBP": {
+      "yticker": "EURGBP=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "USDTRY": {
+      "yticker": "USDTRY=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "USDHUF": {
+      "yticker": "USDHUF=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "EURTRY": {
+      "yticker": "EURTRY=X",
+      "fetched": true,
+      "n_rows": 1300,
+      "close_time_first_utc": "2021-05-28 22:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 22:00:00+00:00",
+      "shift_hours_from_bar_start": 23
+    },
+    "XAUUSD": {
+      "yticker": "GC=F",
+      "fetched": true,
+      "n_rows": 1257,
+      "close_time_first_utc": "2021-05-28 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 21:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    },
+    "XAGUSD": {
+      "yticker": "SI=F",
+      "fetched": true,
+      "n_rows": 1257,
+      "close_time_first_utc": "2021-05-28 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 21:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    },
+    "BTCUSD": {
+      "yticker": "BTC-USD",
+      "fetched": true,
+      "n_rows": 1827,
+      "close_time_first_utc": "2021-05-29 00:00:00+00:00",
+      "close_time_last_utc": "2026-05-29 00:00:00+00:00",
+      "shift_hours_from_bar_start": 24
+    },
+    "ETHUSD": {
+      "yticker": "ETH-USD",
+      "fetched": true,
+      "n_rows": 1827,
+      "close_time_first_utc": "2021-05-29 00:00:00+00:00",
+      "close_time_last_utc": "2026-05-29 00:00:00+00:00",
+      "shift_hours_from_bar_start": 24
+    },
+    "USOUSD": {
+      "yticker": "CL=F",
+      "fetched": true,
+      "n_rows": 1257,
+      "close_time_first_utc": "2021-05-28 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 21:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    },
+    "UKOUSD": {
+      "yticker": "BZ=F",
+      "fetched": true,
+      "n_rows": 1258,
+      "close_time_first_utc": "2021-05-28 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 21:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    },
+    "SP500": {
+      "yticker": "^GSPC",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "NAS100": {
+      "yticker": "^IXIC",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "DJ30": {
+      "yticker": "^DJI",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "RUS2000": {
+      "yticker": "^RUT",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "GER40": {
+      "yticker": "^GDAXI",
+      "fetched": true,
+      "n_rows": 1275,
+      "close_time_first_utc": "2021-05-28 15:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 15:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    },
+    "UK100": {
+      "yticker": "^FTSE",
+      "fetched": true,
+      "n_rows": 1261,
+      "close_time_first_utc": "2021-05-28 15:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 15:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "FRA40": {
+      "yticker": "^FCHI",
+      "fetched": true,
+      "n_rows": 1281,
+      "close_time_first_utc": "2021-05-28 15:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 15:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    },
+    "JP225": {
+      "yticker": "^N225",
+      "fetched": true,
+      "n_rows": 1222,
+      "close_time_first_utc": "2021-05-28 06:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 06:00:00+00:00",
+      "shift_hours_from_bar_start": 15
+    },
+    "CHINA50": {
+      "yticker": "FXI",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "DXY": {
+      "yticker": "DX=F",
+      "fetched": false,
+      "skip_reason": "empty or <60 rows",
+      "n_rows": 0
+    },
+    "VIX": {
+      "yticker": "^VIX",
+      "fetched": true,
+      "n_rows": 1256,
+      "close_time_first_utc": "2021-05-28 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 21:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "AAPL": {
+      "yticker": "AAPL",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "MSFT": {
+      "yticker": "MSFT",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "GOOG": {
+      "yticker": "GOOG",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "META": {
+      "yticker": "META",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "TSLA": {
+      "yticker": "TSLA",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "US10Y": {
+      "yticker": "^TNX",
+      "fetched": true,
+      "n_rows": 1255,
+      "close_time_first_utc": "2021-05-27 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 21:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "EUB10Y": {
+      "yticker": "TLT",
+      "fetched": true,
+      "n_rows": 1254,
+      "close_time_first_utc": "2021-05-28 20:00:00+00:00",
+      "close_time_last_utc": "2026-05-27 20:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "UKGILT": {
+      "yticker": "IGLT.L",
+      "fetched": true,
+      "n_rows": 1260,
+      "close_time_first_utc": "2021-05-28 15:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 15:00:00+00:00",
+      "shift_hours_from_bar_start": 16
+    },
+    "COPPER": {
+      "yticker": "HG=F",
+      "fetched": true,
+      "n_rows": 1258,
+      "close_time_first_utc": "2021-05-28 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 21:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    },
+    "NGAS": {
+      "yticker": "NG=F",
+      "fetched": true,
+      "n_rows": 1258,
+      "close_time_first_utc": "2021-05-28 21:00:00+00:00",
+      "close_time_last_utc": "2026-05-28 21:00:00+00:00",
+      "shift_hours_from_bar_start": 17
+    }
+  },
+  "elapsed_sec": 9.4
+}
