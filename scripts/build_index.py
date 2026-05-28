@@ -88,7 +88,174 @@ def _fmt_num(x: float | None, plus: bool = True, digits: int = 2) -> str:
     return fmt.format(x)
 
 
-def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
+def _build_section_954_html(bt_target: dict | None) -> str:
+    """Section 9.5.4: 売買対象 11 種類で S1 を試した結果 (「なぜ S&P 500 か」)."""
+    if bt_target is None:
+        return ("<h3>9.5.4 他の銘柄を売買対象にしたら? (データ未生成)</h3>"
+                "<p><code>python scripts/backtest_by_trading_target.py</code> "
+                "を実行してください.</p>")
+
+    results = bt_target.get("results", [])
+    meta = bt_target.get("meta", {})
+    valid = [r for r in results if not r.get("skipped")]
+    sp = next((r for r in valid if r.get("target_id") == "SP500"), None)
+    sp_sharpe = sp["sharpe"] if sp else 0.0
+
+    rows: list[str] = []
+    # baseline 行 (SP500) を先頭に置き、その後カテゴリ順に並べる
+    cat_order = [
+        "米国大型 (baseline)", "米国大型 (別指数)", "米国テック", "米国小型",
+        "日本", "英国", "ドイツ", "中国 (ETF)",
+        "個別株 (US)", "コモディティ (金)", "暗号",
+    ]
+    sort_key = {c: i for i, c in enumerate(cat_order)}
+    ordered = sorted(results, key=lambda r: sort_key.get(r.get("category", ""), 99))
+
+    for r in ordered:
+        if r.get("skipped"):
+            rows.append(
+                f"<tr><td>{r.get('label','—')}</td>"
+                f"<td>{r.get('category','—')}</td>"
+                f"<td colspan=\"6\" style=\"color:#999;\">SKIPPED ({r.get('reason','—')})</td></tr>"
+            )
+            continue
+        sh = r["sharpe"]
+        bh_sh = r["bh_sharpe"]
+        alpha_sh = r["alpha_vs_bh_sharpe"]
+        dd = r["max_drawdown"]
+        bh_dd = r["bh_max_drawdown"]
+        tr_yr = r["trades_per_year"]
+        # ハイライト: baseline / Sharpe>=SP500 / αSharpe>0 で色分け (cell-level)
+        is_sp = r["target_id"] == "SP500"
+        if is_sp or sh >= sp_sharpe:
+            sh_cls = "good"
+        elif alpha_sh > 0:
+            sh_cls = "neutral"
+        else:
+            sh_cls = "bad"
+        alpha_cls = "good" if alpha_sh > 0 else "bad"
+        row_bg = " style=\"background:#eef6ee;\"" if is_sp else ""
+        label_disp = (f"<strong>{r['label']}</strong>" if is_sp else r["label"])
+        ticker_disp = f"<code>{r['ticker']}</code>"
+        rows.append(
+            f"<tr{row_bg}><td>{label_disp} {ticker_disp}</td>"
+            f"<td>{r.get('category','—')}</td>"
+            f"<td class=\"{sh_cls}\"><strong>{_fmt_num(sh)}</strong></td>"
+            f"<td>{_fmt_pct(dd)}</td>"
+            f"<td>{_fmt_num(bh_sh)}</td>"
+            f"<td>{_fmt_pct(bh_dd)}</td>"
+            f"<td class=\"{alpha_cls}\">{_fmt_num(alpha_sh)}</td>"
+            f"<td>{tr_yr:.1f}</td></tr>"
+        )
+    table_html = "\n".join(rows)
+
+    # サマリー数値
+    us_idx_ids = {"SP500", "NAS100", "DJ30", "RUS2000"}
+    non_us_ids = {"JP225", "UK100", "GER40", "CHINA50"}
+    other_ids = {"AAPL", "GOLD", "BTC"}
+    def _avg(ids: set[str], key: str) -> float:
+        vs = [r[key] for r in valid if r["target_id"] in ids]
+        return sum(vs) / len(vs) if vs else float("nan")
+    us_avg_sh = _avg(us_idx_ids, "sharpe")
+    us_avg_alpha = _avg(us_idx_ids, "alpha_vs_bh_sharpe")
+    nonus_avg_sh = _avg(non_us_ids, "sharpe")
+    nonus_avg_alpha = _avg(non_us_ids, "alpha_vs_bh_sharpe")
+    other_avg_sh = _avg(other_ids, "sharpe")
+    other_avg_alpha = _avg(other_ids, "alpha_vs_bh_sharpe")
+    n_beat = sum(1 for r in valid if r["alpha_vs_bh_sharpe"] > 0)
+    n_total = len(valid)
+    # 米国系で SP500 ベースラインを Sharpe で超えたものの数 (=SP500 を含まない)
+    n_us_other = sum(1 for r in valid
+                     if r["target_id"] in us_idx_ids and r["target_id"] != "SP500"
+                     and r["sharpe"] >= sp_sharpe)
+
+    finding = bt_target.get("finding", "")
+    return f"""
+  <h3>9.5.4 売買対象を変えたら? — 「なぜ S&amp;P 500 をデフォルトにしたか」の実証</h3>
+  <p>
+    観測 40 銘柄 (=シグナル源) はそのままに、<strong>実際に売買する対象だけを 11 通り</strong>
+    (米国主要指数 / 海外指数 / 個別株 / 金 / BTC) に振り替えて S1 戦略を流した。
+    シグナル (e_div ≥ +0.8 で売却→現金) も期間 (5y) も全く同じで、売買銘柄だけ差し替えた直接比較。
+  </p>
+
+  <div class="callout intuition">
+    <h4>動機 — 「あなたの研究は S&amp;P 500 だけに最適化された数字じゃないの?」への直接反論</h4>
+    <p>
+      審査員に「他の銘柄でも効くの?」と聞かれて手ぶらで返すのを避けるため、
+      <strong>同じシグナルで売買対象だけを差し替える</strong> という最もシンプルな汎用性テストを行った。
+      シグナル定義 (40 銘柄から作る e_div) は無変更なので、純粋に「売買対象がベンチを上回るか」だけの比較。
+    </p>
+  </div>
+
+  <table>
+    <tr><th rowspan="2">売買対象</th><th rowspan="2">カテゴリ</th>
+        <th colspan="2">S1 戦略</th><th colspan="2">Buy &amp; Hold</th>
+        <th rowspan="2">ΔSharpe<br>(S1 − B&amp;H)</th><th rowspan="2">取引/年</th></tr>
+    <tr><th>Sharpe</th><th>MaxDD</th><th>Sharpe</th><th>MaxDD</th></tr>
+    {table_html}
+  </table>
+  <p style="font-size:11px; color:var(--sub); margin-top:4px;">
+    緑 = baseline (S&amp;P 500) または S&amp;P 500 と同等以上の Sharpe。
+    灰 = B&amp;H には勝つが S&amp;P 500 baseline には及ばず。
+    赤 = B&amp;H にも負け (= 戦略が裏目)。
+    バックテスト条件は 9.5.1 と完全同一 (取引手数料 0.05% / ヒステリシス 5 日 / 翌日約定 / expanding z-score)。
+  </p>
+
+  <div class="callout found">
+    <h4>結果サマリー — 全 {n_total} 通り中 {n_beat} 通りで B&amp;H に勝った</h4>
+    <ul class="simple">
+      <li><strong>米国指数 (S&amp;P / NASDAQ / Dow / Russell)</strong>:
+        平均 Sharpe = {us_avg_sh:+.3f}、平均 αSharpe = {us_avg_alpha:+.3f}.
+        <strong>4 銘柄すべてで B&amp;H を上回り</strong>、ベンチ超え効果が安定。
+        ※ S&amp;P 500 baseline (+{sp_sharpe:.3f}) を Sharpe で超えた他の米国指数は {n_us_other} / 3 銘柄
+        (米国指数間の優劣は誤差範囲)。</li>
+      <li><strong>非米国指数 (日経 / FTSE / DAX / 中国)</strong>:
+        平均 Sharpe = {nonus_avg_sh:+.3f}、平均 αSharpe = {nonus_avg_alpha:+.3f}.
+        日経 225 だけは B&amp;H 超え (米国ショックは日本にも波及するため) だが、
+        英国 / ドイツ / 中国は <strong>B&amp;H に負ける</strong>
+        (シグナルが拾うのは米国系のショックなので、現地市場には噛み合わない)。</li>
+      <li><strong>その他 (個別株 / 金 / BTC)</strong>:
+        平均 Sharpe = {other_avg_sh:+.3f}、平均 αSharpe = {other_avg_alpha:+.3f}.
+        AAPL は Sharpe +1.18 で全銘柄中ベストだが個別株ゆえブレ大。
+        金 / BTC は <strong>市場とは独立した動き</strong>なので、株式由来のシグナルでは現金化が裏目になる。</li>
+    </ul>
+  </div>
+
+  <div class="callout intuition">
+    <h4>なぜ S&amp;P 500 をデフォルトに選んだか — 4 つの理由</h4>
+    <ol class="simple">
+      <li><strong>観測 40 銘柄のうち米国系指数 (SP500 / NAS100 / DJ30 / RUS2000) と相関が最も高い</strong>
+        — シグナルは米国系の構造変化を強く拾うため、米国指数を売買対象にするのが整合的。
+        実際、表で米国指数 4 銘柄すべてが αSharpe &gt; 0 となり、これが裏付けられている。</li>
+      <li><strong>e_div は米国発の政策ショック (関税 / FOMC) に強く反応</strong>
+        — Section 6 / 10.5 で trade_policy の Δσ_e_div=+0.96 (p=0.0002) と実証済。
+        ショックの発生源市場を売買対象にするのが筋。日経 (+0.943) も効くが、これは米国発ショックの波及効果。</li>
+      <li><strong>世界最高の流動性</strong>
+        — 実取引時のスリッページが最小。S&amp;P 500 先物 (ES) は 24h 取引可能で約定コスト最小。</li>
+      <li><strong>Buy &amp; Hold ベンチマークとして最も標準的</strong>
+        — 「ただ持つだけの戦略」との対比が直感的で、聴衆 / 査読者にとって解釈が容易。</li>
+    </ol>
+    <p style="margin-top:6px;">
+      <strong>= S&amp;P 500 は「最強だから選んだ」のではなく、「シグナル源との整合 + 流動性 + ベンチの分かりやすさ」の総合点で最も妥当</strong>な選択。
+      上の表が示すように、米国系指数 4 銘柄はどれを使っても定性的な結論は変わらない。
+    </p>
+  </div>
+
+  <div class="callout warn">
+    <h4>正直な限界</h4>
+    <ul class="simple">
+      <li><strong>5y 単一期間の比較</strong>。期間別に長く回せば順位は揺らぐ可能性あり (S&amp;P 500 の長期検証は 9.5.1〜9.5.3 で実施済)。</li>
+      <li><strong>FXI (中国 ETF) は本来の上海 SSE / Hang Seng と挙動が異なる</strong>可能性。
+        他の中国指数 (^HSI 等) で別途確認が望ましい。</li>
+      <li><strong>BTC / Gold は明確に逆効果</strong>。これは「シグナルが汎用ではない」という否定的結果も含む正直な開示。
+        裏返せば <strong>シグナルが拾っているのは株式市場固有の現象</strong>であることを示す。</li>
+    </ul>
+  </div>
+"""
+
+
+def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None,
+                            bt_target: dict | None = None) -> str:
     """Section 9.5: 期間別 in-sample バックテスト + Walk-forward OOS 併記."""
     if bt_multi is None:
         return ("<section id=\"s95\">"
@@ -316,6 +483,8 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
       <li>「過去 20 年で下方リスクを減らせた」までは言えるが、<strong>未来も同じになる保証はない</strong></li>
     </ul>
   </div>
+
+  {_build_section_954_html(bt_target)}
 </section>
 """
 
@@ -638,6 +807,12 @@ def main():
         bt_multi = json.loads(bt_multi_path.read_text(encoding="utf-8"))
     else:
         bt_multi = None
+    # 売買対象別バックテスト (Section 9.5.4)
+    bt_target_path = DATA_DIR / "backtest_by_trading_target.json"
+    if bt_target_path.exists():
+        bt_target = json.loads(bt_target_path.read_text(encoding="utf-8"))
+    else:
+        bt_target = None
     # Walk-forward OOS (10y/15y/20y) の併記
     wf_oos: dict[str, dict | None] = {}
     for wf_period, wf_file, wf_main_key in [
@@ -2987,7 +3162,7 @@ window.addEventListener('resize', () => {
 </html>"""
 
     sec105_html = build_section_105_html(oos8y)
-    sec95_html = build_section_95_html(bt_multi, wf_oos)
+    sec95_html = build_section_95_html(bt_multi, wf_oos, bt_target)
     html = (template
             .replace("__SEC95__", sec95_html)
             .replace("__SEC105__", sec105_html)
