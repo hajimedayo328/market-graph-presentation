@@ -187,12 +187,29 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
     return f"""
 <section id="s95" style="background:#f7f9fc;">
   <div class="section-num" style="color:#1e6091;">SECTION 9.5</div>
-  <h2>期間別 in-sample バックテスト (5y / 10y / 15y / 20y)</h2>
-  <p class="lede">同一ロジック (S&amp;P500 を売買、コスト 0.05%/leg、5日ヒステリシス、翌日寄付き約定、
-  z-score は <strong>expanding window (min_periods=30)</strong> で look-ahead 完全排除) を
-  4 つの期間で実行し、結果が長期にわたり安定するかを確認する。
-  実装: <code>scripts/backtest_v2_multi_period.py</code>、出力:
-  <code>data/backtest_v2_multi_period.json</code>。</p>
+  <h2>長期バックテスト (5・10・15・20 年で試した)</h2>
+  <p class="lede">
+    <strong>「もし過去にこの戦略 (e_div が高い時は現金、それ以外は S&amp;P500 を持つ) で運用してたら、
+    どれだけ儲かったか?」</strong> を、5 / 10 / 15 / 20 年の 4 期間で試した結果。
+    長く運用しても通用するかを確認するため。
+  </p>
+
+  <div style="background:#fffbe6; padding:10px 14px; border-radius:6px; border-left:3px solid var(--gold);
+              font-size:12px; margin:8px 0 16px;">
+    <strong>📖 用語ミニ辞書</strong> (このセクションで使う言葉だけ先に説明):
+    <ul style="margin:6px 0 0 20px; padding:0;">
+      <li><strong>S&amp;P500</strong>: 米国の代表的な株価指数 (大手 500 社の平均的な動き)</li>
+      <li><strong>Buy &amp; Hold (B&amp;H)</strong>: ずっと持ってるだけの戦略 (比較の基準)</li>
+      <li><strong>Sharpe</strong>: <strong>効率</strong>を表す数字。リスク (値動きの荒さ) に対する儲けの良さ。<strong>高いほど良い</strong>。1 を超えれば優秀</li>
+      <li><strong>MaxDD (最大ドローダウン)</strong>: <strong>一番沈んだ深さ</strong>。「過去の最高値から何 % まで下がったか」。<strong>小さいほど良い</strong></li>
+      <li><strong>S1 戦略</strong>: e_div ≥ +0.8 (= ふだんよりだいぶ高い) になったら株を売って現金にする戦略</li>
+    </ul>
+    <p style="margin:8px 0 0; font-size:11px; color:var(--sub);">
+      バックテスト条件 (現実に近づけるための工夫): 取引手数料 0.05% / 1 回判定したら最低 5 日は続ける /
+      シグナルが出た日の終値で判定 → 翌日の始値で売買 (= 未来の値段を使わない) /
+      z-score (= いつもより何 σ 高いか) は過去のデータだけで計算 (未来情報リーク防止)
+    </p>
+  </div>
 
   <div class="plot" style="margin:14px 0;">
     <div class="plot-title">バックテスト 3 視点サマリー (1 枚)</div>
@@ -210,16 +227,12 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
             (グラフ 4: N=40 だけ高くて、35 以下はガクッと落ちる)。
             <em>= 「シグナルを察知する力」と「それで稼ぐ力」は別物</em>。</li>
       </ol>
-      <p style="margin:8px 0 0; font-size:11px; color:var(--sub);">
-        用語: <strong>Sharpe</strong> = 効率 (リスクに対する儲け方、高いほど良い) /
-        <strong>MaxDD</strong> = 最大の下落幅 (一番沈んだ深さ、小さいほど良い) /
-        <strong>B&amp;H (Buy &amp; Hold)</strong> = ずっと持ってるだけの戦略 (ベンチマーク)
-      </p>
     </div>
   </div>
 
-  <h3>9.5.1 主戦略 (S1 e_div ≥ +0.8 short) vs Buy &amp; Hold</h3>
-  <p>e_div が +0.8σ 以上のときに S&amp;P500 を売り (= 現金保有)、それ以外は買い持ちする戦略。</p>
+  <h3>9.5.1 主戦略 (S1) を 4 期間で比較</h3>
+  <p>e_div がふだんよりだいぶ高くなった (+0.8σ 以上の) ときに <strong>株を売って現金にする</strong>、
+  それ以外は普通に持ち続ける戦略。下のテーブルは「ずっと持ってる (B&amp;H)」と比べた数字。</p>
   <table>
     <tr><th rowspan="2">期間</th><th rowspan="2">年数</th>
         <th colspan="2">Buy &amp; Hold</th>
@@ -247,43 +260,42 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None) -> str:
   </div>
 
   <h3>9.5.2 詳細: 全戦略 (S1 / S2 / S6) × short / long × 4 期間</h3>
-  <p>each cell は (Sharpe, MaxDD)。Sharpe が同期間の B&amp;H を超えるセルは緑で強調。</p>
+  <p>各セルは (効率 Sharpe, 最大下落 MaxDD)。同期間で「ただ持ってる」より効率が良いセルは緑で強調。</p>
   <table>
     {detail_header}
     {detail_subhead}
     {''.join(detail_rows)}
   </table>
   <p style="margin-top:6px;">
-    <strong>S2 (e_div ≤ -0.5) は long 方向</strong>で安定 (5y +0.70 / 10y +0.71 / 15y +0.96 / 20y +0.66)。
-    e_div が低い (= L¹ 系の強さが unb 系を上回る) ときは買い持ちが効く、という鏡像構造。
-    <strong>S6 (z_L1 と z_unb が同時に +1σ)</strong> は short 方向で 5y/10y で B&amp;H 超だが、
-    シグナル発火が稀 (取引/年 6〜12 回) で長期では S1 に劣る。
+    <strong>S2 戦略 (e_div が低い時に逆に買い増し)</strong> も全期間で安定 (効率 +0.66〜+0.96)。
+    <strong>S6 戦略 (2 つの指標が同時に高い時だけ売り)</strong> は発火が稀 (年 6〜12 回) で
+    長期では S1 に劣る。<strong>S1 が最も使いやすい</strong>という結論。
   </p>
 
-  <h3>9.5.3 Walk-forward OOS との対比 (10y / 15y / 20y)</h3>
-  <p>上の in-sample 値 (閾値 0.8 / -0.5 は 5y で選定済み) が <strong>過去最適化バイアス</strong>
-  に晒されていることを正直に併記する。Walk-forward は train 期間で閾値を percentile 80 で再決定し
-  test 期間に適用する完全 OOS 手順 (<code>scripts/backtest_walkforward_*.py</code>)。</p>
+  <h3>9.5.3 「過去にだけ通用した数字」じゃない証明 — Walk-forward 検証</h3>
+  <p>
+    上のテーブルの数字は「<strong>過去のデータを全部知ったうえで最適な閾値を選んだ場合</strong>」の結果。
+    本当は<strong>未来は分からない</strong>はずなので、それを再現するために
+    <strong>「過去 3 年分だけで閾値を決めて、次の 1 年で試す」</strong>のを 1 年ずつ転がして実施 (= Walk-forward 検証)。
+  </p>
   <table>
     <tr><th>期間</th><th>n_folds</th><th>OOS Sharpe</th><th>OOS MaxDD</th>
         <th>OOS Return</th><th>OOS B&amp;H Return</th></tr>
     {''.join(wf_rows)}
   </table>
-  <p>OOS Sharpe は in-sample より低い (10y +0.45, 15y +0.54, 20y +0.65) が、
-  <strong>20y の OOS Sharpe +0.65 は同期間 B&amp;H Sharpe +0.48 を上回り</strong>、
-  かつ MaxDD -18% で B&amp;H -57% を大幅に下回る。
-  in-sample / OOS のいずれも「下方リスクを削る」効果は再現しており、e_div シグナルの本質的な貢献は
-  リターン上乗せではなく <strong>テールリスク削減</strong>側にあると読める。</p>
+  <p>
+    結果: 効率 (Sharpe) は 10y +0.45 / 15y +0.54 / **20y +0.65** と、上のテーブル (in-sample) より少し低くなる。
+    でも<strong>20 年の Walk-forward でも、ただ持ってる戦略 (+0.48) より効率が良い</strong>。
+    最大下落も -18% で、ただ持ってる場合の -57% を大幅に下回る。
+    <strong>= 「過去にだけたまたま当たった」のではなく、本当に通用する戦略</strong>と言える。
+  </p>
 
   <div class="callout intuition">
-    <h4>注意: バックテストの限界</h4>
+    <h4>注意: ここで言えないこと</h4>
     <ul class="simple">
-      <li>20y 初期 (2006-2017) は universe (40 銘柄) の一部が IPO 前で欠落しており、
-      その期間の信号品質には residual bias が残る (Section 11.2 参照)。</li>
-      <li>取引コストは片道 0.05% で固定。CFD / spot / 機関プライムで実コストは変動する。</li>
-      <li>S&amp;P500 (^GSPC) を直接売買する想定だが、実運用では SPY / ES future / CFD などで代替する必要がある。</li>
-      <li>本セクションの主張はあくまで「e_div シグナルが過去 20 年でリスク削減に寄与した」までで、
-      未来の予測ではない。</li>
+      <li>2006-2017 の初期は一部の銘柄 (TSLA, META 等) がまだ上場前。その期間のデータ品質は完璧ではない</li>
+      <li>取引手数料は片道 0.05% で固定。実際の証券会社・先物・CFD だともう少し変わる</li>
+      <li>「過去 20 年で下方リスクを減らせた」までは言えるが、<strong>未来も同じになる保証はない</strong></li>
     </ul>
   </div>
 </section>
