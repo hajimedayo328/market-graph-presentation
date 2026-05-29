@@ -1647,8 +1647,8 @@ def main():
     <h4>結果</h4>
     <p>Pearson 相関 = <strong>+0.16</strong>。同じ相関行列から計算してるのに、ほぼ独立に動く。
     PCA 第 1 主成分の寄与率も 0.58 で、完全独立 (0.5) に近い。<br>
-    Window 4 通り (20/30/40/60 日) で再計算しても 0.06 〜 0.23、10 年データでも 0.19。
-    <strong>独立性は堅固</strong>。</p>
+    データ期間・市場を変えて再計算しても相関は 0.16 〜 0.41 (5y/10y/15y 米国 = 0.16/0.19/0.26、新興国 0.17、中国 0.41)、
+    PC1 寄与率も 0.58 〜 0.71 に収まる。<strong>独立性は堅固</strong>。</p>
   </div>
 </section>
 
@@ -1703,12 +1703,18 @@ def main():
   </div>
 
   <div class="callout found">
-    <h4>結果</h4>
-    <p>trade_policy ショック前 15 日で flip_rate が
-    <strong>Δσ = +0.45 (p = 0.0001)</strong> で有意に上昇。
-    つまり関税前に本当に銘柄ペアの符号がひっくり返っている。</p>
+    <h4>結果 (5y データ, n=11 trade_policy イベント, expanding z, perm 5000)</h4>
+    <p>trade_policy ショック<strong>前 15 日</strong>の flip_rate は
+    <strong>Δσ = +0.20 (p = 0.69)</strong> と弱い。
+    符号反転がはっきり出るのは<strong>ショック後 30 日窓</strong>で、
+    <strong>Δσ = +0.65 (post-only, p = 0.18)</strong> ・
+    <strong>+0.37 (post − pre, p = 0.16)</strong>。
+    方向 (関税で銘柄ペアの符号がひっくり返る) は一貫して正だが、
+    5y 範囲 (2021-07 以降) の 11 件単独では有意水準には届かない。</p>
     <p>L¹ は<strong>絶対値</strong>しか見ないので符号反転に気づかないが、
     不整合サイクル数は符号構造の整合性をチェックするので気づく。</p>
+    <p class="small">検証: <code>scripts/eventstudy_flip_rate_verify.py</code> →
+    <code>data/eventstudy_flip_rate_verify.json</code></p>
   </div>
 
   <h3>どの銘柄ペアが反転したか — 具体例</h3>
@@ -1721,7 +1727,7 @@ def main():
   長さ = Δr の絶対値。</p>
 
   <h3>さらに面白い副次発見</h3>
-  <p>利上げ前にも flip_rate は上昇している (Δσ=+0.54)。<strong>でも</strong> 不整合サイクル数は動かない。なぜか?</p>
+  <p>金融政策イベント (FOMC, n=3) の前 15 日にも flip_rate は上昇傾向 (Δσ=+1.02, ただし n=3 で p=0.22 と有意未満)。<strong>でも</strong> 不整合サイクル数は動かない。なぜか?</p>
   <p>→ 偶数本のサイクルでの符号反転は、サイクル一周すると符号積が変わらない (-1 × -1 = +1)。
   つまり「flip が起きても整合性は破れない」場合がある。
   <strong>不整合サイクル数の方が flip より厳しい条件を測っている</strong>。</p>
@@ -2350,8 +2356,10 @@ def main():
     <h4>我々の位置</h4>
     <p>TDA × 符号付き × event study × ペア符号反転 × 圏論整理 を <strong>橋渡し</strong>した実装と実証。
     特に e_div という 2 関手の差分指標は、どの先行研究にもない。</p>
-    <p><strong>追い風</strong>: Wang & Xu (2025) が「2024 年米国対中関税で中国市場の Balanced Module が 3.6 倍急増」
-    と<strong>独立に報告</strong>している。彼らは balanced 側、我々は unbalanced 側、同じ現象を別角度から。</p>
+    <p><strong>追い風</strong>: Wang & Xu (2025) が中国市場の Balanced Module を 2024 年に
+    <strong>約 3.6 倍 (31→113 ノード) に急増</strong>と報告。彼ら自身は原因を
+    「不動産不況 + 米国関税の複合要因」と<strong>慎重に</strong>述べており (関税のみと断定はしていない)、
+    我々の trade_policy 発見と<strong>部分的に</strong>整合する。彼らは balanced 側、我々は unbalanced 側。</p>
   </div>
 </section>
 

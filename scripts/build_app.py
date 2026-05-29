@@ -121,8 +121,10 @@ def main():
     events = [{"date": e, "label": l, "type": t, "country": c}
               for e, l, t, c in EVENTS_EXTENDED]
 
-    # バックテスト結果
-    bt_path = DATA_DIR / "backtest_results.json"
+    # バックテスト結果 (look-ahead 完全排除版 v2 を一次ソースとする)
+    bt_path = DATA_DIR / "backtest_v2_results.json"
+    if not bt_path.exists():
+        bt_path = DATA_DIR / "backtest_results.json"
     if bt_path.exists():
         bt = json.loads(bt_path.read_text(encoding="utf-8"))
     else:

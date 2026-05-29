@@ -1,0 +1,533 @@
+{
+  "meta": {
+    "event_set": "US-issued tariff",
+    "n_events_defined": 11,
+    "events": [
+      {
+        "date": "2018-03-22",
+        "label": "米中第1弾関税発表 (Section 301)"
+      },
+      {
+        "date": "2018-07-06",
+        "label": "米中第1弾関税発動 (340億ドル)"
+      },
+      {
+        "date": "2019-08-23",
+        "label": "米中再エスカレ (関税報復応酬)"
+      },
+      {
+        "date": "2022-08-09",
+        "label": "米 CHIPS 法成立"
+      },
+      {
+        "date": "2022-10-07",
+        "label": "対中先端半導体輸出規制"
+      },
+      {
+        "date": "2024-05-14",
+        "label": "バイデン 対中 EV 100% 関税"
+      },
+      {
+        "date": "2025-04-02",
+        "label": "Liberation Day 相互関税"
+      },
+      {
+        "date": "2025-04-08",
+        "label": "関税 180 日停止・株価反発"
+      },
+      {
+        "date": "2025-04-09",
+        "label": "関税エスカレート 145%"
+      },
+      {
+        "date": "2025-04-15",
+        "label": "Nvidia H20 輸出規制"
+      },
+      {
+        "date": "2026-03-04",
+        "label": "関税再発動"
+      }
+    ],
+    "expanding_min_periods": 90,
+    "baseline_bdays": 30,
+    "event_bdays": 30,
+    "n_permutations": 5000,
+    "rng_seed": 20260529,
+    "note": "z-score は過去のみ expanding window (min_periods=90) で計算し look-ahead を排除。Δσ = mean(z[post-30bd]) - mean(z[pre-30bd])。p_perm は 5000 perm の two-sided。20y ブロックは gamma_timeseries_20y_w30.csv (2006-) を使い US-issued 関税 11 件全てを対象にできる (L1/n_unb/e_div)。5y ブロックは multi_indicators_w30.csv / gamma_timeseries_w30.csv (2021-06-) を使い n_unb_total / n_unb_4 を計算するが、データ範囲の都合で 2018-2020 の 3 件は対象外 (n_used=8)。"
+  },
+  "results": {
+    "20y": {
+      "L1": {
+        "indicator": "L1 (z-expanding, 20y)",
+        "d_sigma_mean": -0.376,
+        "p_perm": 0.0934,
+        "n_used": 11,
+        "per_event": [
+          {
+            "date": "2018-03-22",
+            "label": "米中第1弾関税発表 (Section 301)",
+            "d_sigma": -0.1538
+          },
+          {
+            "date": "2018-07-06",
+            "label": "米中第1弾関税発動 (340億ドル)",
+            "d_sigma": -0.2297
+          },
+          {
+            "date": "2019-08-23",
+            "label": "米中再エスカレ (関税報復応酬)",
+            "d_sigma": -0.4099
+          },
+          {
+            "date": "2022-08-09",
+            "label": "米 CHIPS 法成立",
+            "d_sigma": 0.4964
+          },
+          {
+            "date": "2022-10-07",
+            "label": "対中先端半導体輸出規制",
+            "d_sigma": -0.2567
+          },
+          {
+            "date": "2024-05-14",
+            "label": "バイデン 対中 EV 100% 関税",
+            "d_sigma": -0.9678
+          },
+          {
+            "date": "2025-04-02",
+            "label": "Liberation Day 相互関税",
+            "d_sigma": -0.5031
+          },
+          {
+            "date": "2025-04-08",
+            "label": "関税 180 日停止・株価反発",
+            "d_sigma": -0.2224
+          },
+          {
+            "date": "2025-04-09",
+            "label": "関税エスカレート 145%",
+            "d_sigma": -0.1724
+          },
+          {
+            "date": "2025-04-15",
+            "label": "Nvidia H20 輸出規制",
+            "d_sigma": 0.0119
+          },
+          {
+            "date": "2026-03-04",
+            "label": "関税再発動",
+            "d_sigma": -1.7291
+          }
+        ],
+        "data_range": [
+          "2006-11-03",
+          "2026-05-22"
+        ]
+      },
+      "n_unb": {
+        "indicator": "n_unb (z-expanding, 20y)",
+        "d_sigma_mean": -0.0102,
+        "p_perm": 0.9504,
+        "n_used": 11,
+        "per_event": [
+          {
+            "date": "2018-03-22",
+            "label": "米中第1弾関税発表 (Section 301)",
+            "d_sigma": 0.4139
+          },
+          {
+            "date": "2018-07-06",
+            "label": "米中第1弾関税発動 (340億ドル)",
+            "d_sigma": -0.2065
+          },
+          {
+            "date": "2019-08-23",
+            "label": "米中再エスカレ (関税報復応酬)",
+            "d_sigma": -0.5521
+          },
+          {
+            "date": "2022-08-09",
+            "label": "米 CHIPS 法成立",
+            "d_sigma": -0.0847
+          },
+          {
+            "date": "2022-10-07",
+            "label": "対中先端半導体輸出規制",
+            "d_sigma": -0.4959
+          },
+          {
+            "date": "2024-05-14",
+            "label": "バイデン 対中 EV 100% 関税",
+            "d_sigma": 0.0887
+          },
+          {
+            "date": "2025-04-02",
+            "label": "Liberation Day 相互関税",
+            "d_sigma": 0.3764
+          },
+          {
+            "date": "2025-04-08",
+            "label": "関税 180 日停止・株価反発",
+            "d_sigma": 0.4645
+          },
+          {
+            "date": "2025-04-09",
+            "label": "関税エスカレート 145%",
+            "d_sigma": 0.3976
+          },
+          {
+            "date": "2025-04-15",
+            "label": "Nvidia H20 輸出規制",
+            "d_sigma": -0.3425
+          },
+          {
+            "date": "2026-03-04",
+            "label": "関税再発動",
+            "d_sigma": -0.1717
+          }
+        ],
+        "data_range": [
+          "2006-11-03",
+          "2026-05-22"
+        ]
+      },
+      "e_div": {
+        "indicator": "e_div = z_unb - z_L1 (20y)",
+        "d_sigma_mean": 0.3659,
+        "p_perm": 0.1426,
+        "n_used": 11,
+        "per_event": [
+          {
+            "date": "2018-03-22",
+            "label": "米中第1弾関税発表 (Section 301)",
+            "d_sigma": 0.5677
+          },
+          {
+            "date": "2018-07-06",
+            "label": "米中第1弾関税発動 (340億ドル)",
+            "d_sigma": 0.0232
+          },
+          {
+            "date": "2019-08-23",
+            "label": "米中再エスカレ (関税報復応酬)",
+            "d_sigma": -0.1423
+          },
+          {
+            "date": "2022-08-09",
+            "label": "米 CHIPS 法成立",
+            "d_sigma": -0.5811
+          },
+          {
+            "date": "2022-10-07",
+            "label": "対中先端半導体輸出規制",
+            "d_sigma": -0.2391
+          },
+          {
+            "date": "2024-05-14",
+            "label": "バイデン 対中 EV 100% 関税",
+            "d_sigma": 1.0565
+          },
+          {
+            "date": "2025-04-02",
+            "label": "Liberation Day 相互関税",
+            "d_sigma": 0.8794
+          },
+          {
+            "date": "2025-04-08",
+            "label": "関税 180 日停止・株価反発",
+            "d_sigma": 0.6869
+          },
+          {
+            "date": "2025-04-09",
+            "label": "関税エスカレート 145%",
+            "d_sigma": 0.57
+          },
+          {
+            "date": "2025-04-15",
+            "label": "Nvidia H20 輸出規制",
+            "d_sigma": -0.3544
+          },
+          {
+            "date": "2026-03-04",
+            "label": "関税再発動",
+            "d_sigma": 1.5574
+          }
+        ],
+        "data_range": [
+          "2006-11-03",
+          "2026-05-22"
+        ]
+      }
+    },
+    "5y": {
+      "L1": {
+        "indicator": "L1 (z-expanding, 5y)",
+        "d_sigma_mean": -0.4542,
+        "p_perm": 0.1808,
+        "n_used": 8,
+        "per_event": [
+          {
+            "date": "2018-03-22",
+            "label": "米中第1弾関税発表 (Section 301)",
+            "d_sigma": null
+          },
+          {
+            "date": "2018-07-06",
+            "label": "米中第1弾関税発動 (340億ドル)",
+            "d_sigma": null
+          },
+          {
+            "date": "2019-08-23",
+            "label": "米中再エスカレ (関税報復応酬)",
+            "d_sigma": null
+          },
+          {
+            "date": "2022-08-09",
+            "label": "米 CHIPS 法成立",
+            "d_sigma": 0.6021
+          },
+          {
+            "date": "2022-10-07",
+            "label": "対中先端半導体輸出規制",
+            "d_sigma": -0.196
+          },
+          {
+            "date": "2024-05-14",
+            "label": "バイデン 対中 EV 100% 関税",
+            "d_sigma": -1.1408
+          },
+          {
+            "date": "2025-04-02",
+            "label": "Liberation Day 相互関税",
+            "d_sigma": -0.5636
+          },
+          {
+            "date": "2025-04-08",
+            "label": "関税 180 日停止・株価反発",
+            "d_sigma": -0.2315
+          },
+          {
+            "date": "2025-04-09",
+            "label": "関税エスカレート 145%",
+            "d_sigma": -0.1726
+          },
+          {
+            "date": "2025-04-15",
+            "label": "Nvidia H20 輸出規制",
+            "d_sigma": 0.0418
+          },
+          {
+            "date": "2026-03-04",
+            "label": "関税再発動",
+            "d_sigma": -1.9732
+          }
+        ],
+        "data_range": [
+          "2021-09-13",
+          "2026-05-17"
+        ]
+      },
+      "n_unb_total": {
+        "indicator": "n_unb_total (z-expanding, 5y)",
+        "d_sigma_mean": 0.0339,
+        "p_perm": 0.7872,
+        "n_used": 8,
+        "per_event": [
+          {
+            "date": "2018-03-22",
+            "label": "米中第1弾関税発表 (Section 301)",
+            "d_sigma": null
+          },
+          {
+            "date": "2018-07-06",
+            "label": "米中第1弾関税発動 (340億ドル)",
+            "d_sigma": null
+          },
+          {
+            "date": "2019-08-23",
+            "label": "米中再エスカレ (関税報復応酬)",
+            "d_sigma": null
+          },
+          {
+            "date": "2022-08-09",
+            "label": "米 CHIPS 法成立",
+            "d_sigma": -0.0826
+          },
+          {
+            "date": "2022-10-07",
+            "label": "対中先端半導体輸出規制",
+            "d_sigma": -0.4178
+          },
+          {
+            "date": "2024-05-14",
+            "label": "バイデン 対中 EV 100% 関税",
+            "d_sigma": 0.096
+          },
+          {
+            "date": "2025-04-02",
+            "label": "Liberation Day 相互関税",
+            "d_sigma": 0.3793
+          },
+          {
+            "date": "2025-04-08",
+            "label": "関税 180 日停止・株価反発",
+            "d_sigma": 0.4708
+          },
+          {
+            "date": "2025-04-09",
+            "label": "関税エスカレート 145%",
+            "d_sigma": 0.3997
+          },
+          {
+            "date": "2025-04-15",
+            "label": "Nvidia H20 輸出規制",
+            "d_sigma": -0.3838
+          },
+          {
+            "date": "2026-03-04",
+            "label": "関税再発動",
+            "d_sigma": -0.1905
+          }
+        ],
+        "data_range": [
+          "2021-09-13",
+          "2026-05-17"
+        ]
+      },
+      "n_unb_4": {
+        "indicator": "n_unb_4 (z-expanding, 5y)",
+        "d_sigma_mean": 0.3381,
+        "p_perm": 0.146,
+        "n_used": 8,
+        "per_event": [
+          {
+            "date": "2018-03-22",
+            "label": "米中第1弾関税発表 (Section 301)",
+            "d_sigma": null
+          },
+          {
+            "date": "2018-07-06",
+            "label": "米中第1弾関税発動 (340億ドル)",
+            "d_sigma": null
+          },
+          {
+            "date": "2019-08-23",
+            "label": "米中再エスカレ (関税報復応酬)",
+            "d_sigma": null
+          },
+          {
+            "date": "2022-08-09",
+            "label": "米 CHIPS 法成立",
+            "d_sigma": -0.2941
+          },
+          {
+            "date": "2022-10-07",
+            "label": "対中先端半導体輸出規制",
+            "d_sigma": -0.1878
+          },
+          {
+            "date": "2024-05-14",
+            "label": "バイデン 対中 EV 100% 関税",
+            "d_sigma": -0.1633
+          },
+          {
+            "date": "2025-04-02",
+            "label": "Liberation Day 相互関税",
+            "d_sigma": 1.3374
+          },
+          {
+            "date": "2025-04-08",
+            "label": "関税 180 日停止・株価反発",
+            "d_sigma": 1.156
+          },
+          {
+            "date": "2025-04-09",
+            "label": "関税エスカレート 145%",
+            "d_sigma": 1.1382
+          },
+          {
+            "date": "2025-04-15",
+            "label": "Nvidia H20 輸出規制",
+            "d_sigma": -0.3441
+          },
+          {
+            "date": "2026-03-04",
+            "label": "関税再発動",
+            "d_sigma": 0.0622
+          }
+        ],
+        "data_range": [
+          "2021-09-13",
+          "2026-05-17"
+        ]
+      },
+      "e_div": {
+        "indicator": "e_div = z_unb - z_L1 (5y)",
+        "d_sigma_mean": 0.4881,
+        "p_perm": 0.1646,
+        "n_used": 8,
+        "per_event": [
+          {
+            "date": "2018-03-22",
+            "label": "米中第1弾関税発表 (Section 301)",
+            "d_sigma": null
+          },
+          {
+            "date": "2018-07-06",
+            "label": "米中第1弾関税発動 (340億ドル)",
+            "d_sigma": null
+          },
+          {
+            "date": "2019-08-23",
+            "label": "米中再エスカレ (関税報復応酬)",
+            "d_sigma": null
+          },
+          {
+            "date": "2022-08-09",
+            "label": "米 CHIPS 法成立",
+            "d_sigma": -0.6847
+          },
+          {
+            "date": "2022-10-07",
+            "label": "対中先端半導体輸出規制",
+            "d_sigma": -0.2217
+          },
+          {
+            "date": "2024-05-14",
+            "label": "バイデン 対中 EV 100% 関税",
+            "d_sigma": 1.2369
+          },
+          {
+            "date": "2025-04-02",
+            "label": "Liberation Day 相互関税",
+            "d_sigma": 0.9428
+          },
+          {
+            "date": "2025-04-08",
+            "label": "関税 180 日停止・株価反発",
+            "d_sigma": 0.7024
+          },
+          {
+            "date": "2025-04-09",
+            "label": "関税エスカレート 145%",
+            "d_sigma": 0.5723
+          },
+          {
+            "date": "2025-04-15",
+            "label": "Nvidia H20 輸出規制",
+            "d_sigma": -0.4256
+          },
+          {
+            "date": "2026-03-04",
+            "label": "関税再発動",
+            "d_sigma": 1.7826
+          }
+        ],
+        "data_range": [
+          "2021-09-13",
+          "2026-05-17"
+        ]
+      }
+    }
+  }
+}

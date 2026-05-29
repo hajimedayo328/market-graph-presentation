@@ -1,0 +1,133 @@
+{
+  "description": "PCA 第1主成分寄与率 (PC1 variance ratio) と Pearson 相関の再計算検証. L1_H1 と n_unb を z-score 標準化し, 2x2 相関行列の固有値分解で算出. 標準化2変数では PC1 = (1+|r|)/2 が成立する.",
+  "method": "z-score standardize (ddof=0) -> 2x2 corr matrix -> np.linalg.eigvalsh -> max/sum",
+  "window_correlation_note": "index.html の 'Window 4 通り (20/30/40/60 日)' のうち, data/ に存在するのは window=30 の gamma CSV のみ. window=20/40/60 の gamma timeseries は元データが無く再現不可. 再現できるのは window=30 の各市場・各期間の相関 (r=0.16〜0.41) と, 10年データの r=0.19 (10y USA で再現確認).",
+  "results": [
+    {
+      "dataset": "5y USA",
+      "file": "gamma_timeseries_w30.csv",
+      "n": 1797,
+      "pearson_r_calc": 0.1616,
+      "pearson_r_paper": 0.16,
+      "pearson_r_match_2dp": true,
+      "pc1_variance_calc": 0.5808,
+      "pc1_variance_paper": 0.58,
+      "pc1_match_2dp": true,
+      "correlation_matrix": [
+        [
+          1.0,
+          0.1616
+        ],
+        [
+          0.1616,
+          1.0
+        ]
+      ]
+    },
+    {
+      "dataset": "10y USA",
+      "file": "gamma_timeseries_10y_w30.csv",
+      "n": 3622,
+      "pearson_r_calc": 0.19,
+      "pearson_r_paper": 0.19,
+      "pearson_r_match_2dp": true,
+      "pc1_variance_calc": 0.595,
+      "pc1_variance_paper": 0.59,
+      "pc1_match_2dp": false,
+      "correlation_matrix": [
+        [
+          1.0,
+          0.19
+        ],
+        [
+          0.19,
+          1.0
+        ]
+      ]
+    },
+    {
+      "dataset": "15y USA",
+      "file": "gamma_timeseries_15y_w30.csv",
+      "n": 5102,
+      "pearson_r_calc": 0.2594,
+      "pearson_r_paper": 0.26,
+      "pearson_r_match_2dp": true,
+      "pc1_variance_calc": 0.6297,
+      "pc1_variance_paper": 0.62,
+      "pc1_match_2dp": false,
+      "correlation_matrix": [
+        [
+          1.0,
+          0.2594
+        ],
+        [
+          0.2594,
+          1.0
+        ]
+      ]
+    },
+    {
+      "dataset": "20y USA",
+      "file": "gamma_timeseries_20y_w30.csv",
+      "n": 6408,
+      "pearson_r_calc": 0.399,
+      "pearson_r_paper": null,
+      "pearson_r_match_2dp": false,
+      "pc1_variance_calc": 0.6995,
+      "pc1_variance_paper": null,
+      "pc1_match_2dp": false,
+      "correlation_matrix": [
+        [
+          1.0,
+          0.399
+        ],
+        [
+          0.399,
+          1.0
+        ]
+      ]
+    },
+    {
+      "dataset": "5y EM",
+      "file": "gamma_em_timeseries_w30.csv",
+      "n": 1797,
+      "pearson_r_calc": 0.1712,
+      "pearson_r_paper": 0.17,
+      "pearson_r_match_2dp": true,
+      "pc1_variance_calc": 0.5856,
+      "pc1_variance_paper": 0.59,
+      "pc1_match_2dp": true,
+      "correlation_matrix": [
+        [
+          1.0,
+          0.1712
+        ],
+        [
+          0.1712,
+          1.0
+        ]
+      ]
+    },
+    {
+      "dataset": "5y China",
+      "file": "gamma_cn_timeseries_w30.csv",
+      "n": 1272,
+      "pearson_r_calc": 0.4123,
+      "pearson_r_paper": 0.41,
+      "pearson_r_match_2dp": true,
+      "pc1_variance_calc": 0.7061,
+      "pc1_variance_paper": 0.71,
+      "pc1_match_2dp": true,
+      "correlation_matrix": [
+        [
+          1.0,
+          0.4123
+        ],
+        [
+          0.4123,
+          1.0
+        ]
+      ]
+    }
+  ]
+}
