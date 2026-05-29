@@ -753,6 +753,31 @@
     データ期間・市場を変えて再計算しても相関は 0.16 〜 0.41 (5y/10y/15y 米国 = 0.16/0.19/0.26、新興国 0.17、中国 0.41)、
     PC1 寄与率も 0.58 〜 0.71 に収まる。<strong>独立性は堅固</strong>。</p>
   </div>
+
+  <h3>設定を変えても独立か — 頑健性チェック</h3>
+  <p>「window=30・threshold=0.3 だから偶然 0.16 になっただけでは?」に答えるため、
+  window・threshold・市場を変えて L¹ と不整合サイクル数の相関 r を再計算した
+  (5y × 40 銘柄、持続ホモロジーも再実行。<code>scripts/independence_robustness.py</code>)。</p>
+  <table>
+    <tr><th>変える軸</th><th>設定</th><th>相関 r</th></tr>
+    <tr><td rowspan="4">window<br>(閾値 0.3 固定)</td><td>20 日</td><td>+0.23</td></tr>
+    <tr><td>30 日</td><td>+0.16</td></tr>
+    <tr><td>40 日</td><td>+0.06</td></tr>
+    <tr><td>60 日</td><td>−0.06</td></tr>
+    <tr><td rowspan="3">threshold<br>(窓 30 固定)</td><td>0.2</td><td>+0.22</td></tr>
+    <tr><td>0.3</td><td>+0.16</td></tr>
+    <tr><td>0.4</td><td>+0.05</td></tr>
+    <tr><td rowspan="3">市場<br>(窓 30 / 閾値 0.3)</td><td>米国</td><td>+0.16</td></tr>
+    <tr><td>新興国</td><td>+0.17</td></tr>
+    <tr><td>中国</td><td>+0.41</td></tr>
+  </table>
+  <div class="callout found">
+    <h4>結論: 独立性は設定非依存</h4>
+    <p>全 10 設定で <strong>|r| &lt; 0.5</strong>、うち 9/10 は <strong>|r| &lt; 0.3</strong>
+    (範囲 0.05〜0.41、平均 0.17)。window を 20〜60 日、threshold を 0.2〜0.4、市場を米国・新興国・中国と
+    変えても 2 指標は独立に動き続ける。<strong>独立性は特定パラメータ選択の「まぐれ」ではなく、
+    設定に対して頑健な性質</strong>と確認できた。</p>
+  </div>
 </section>
 
 <section id="s6">
@@ -1041,6 +1066,13 @@
   <h3 style="margin-top:30px;">解剖 1: Leave-One-Out — 1 銘柄ずつ抜いて Δe_div が何 σ 動くか</h3>
   <p>2025-04 Liberation Day 前後 30 営業日の Δe_div を、40 銘柄から 1 つずつ抜いて再計算。
   baseline (40 銘柄全部) = <strong>+1.46σ</strong>。</p>
+  <div class="callout warn" style="margin:10px 0;">
+    <p style="margin:0;"><strong>⚠️ 重要な注意</strong>: 下表は <strong>2025-04 Liberation Day 単独</strong>の源泉ランキング。
+    後述の<strong>解剖 8 で 4 ショックに拡張すると、この順位は大きく入れ替わる</strong> ——
+    EUB10Y / USDJPY / VIX はこのイベント固有 (他ショックでは効かない) で、
+    <strong>複数ショック共通の普遍核は NGAS / COPPER / CHINA50 (コモディティ・中国景気サイクル) だった</strong>。
+    つまり「1 イベントの源泉ランキングを普遍と読んではいけない」。詳細は解剖 8。</p>
+  </div>
   <table>
     <tr><th>抜くと弱くなる (シグナルの源泉)</th><th>Δe_div</th><th>影響</th></tr>
     <tr><td><strong>EUB10Y</strong> (欧州 10y 債 ETF)</td><td>+0.47</td><td>-0.99σ</td></tr>
@@ -1203,13 +1235,47 @@
     全 8 構成で Δe_div は<strong>符号反転しない</strong> (常に正)。
   </p>
 
+  <!-- ===== 解剖 8: 複数ショックで LOO 再現 ===== -->
+  <h3 style="margin-top:36px; border-top:2px solid var(--accent); padding-top:24px;">
+    解剖 8: 4 つの独立ショックで LOO を再現 — 震源は普遍か、イベント依存か</h3>
+  <p>解剖 1 の源泉ランキングは <strong>2025-04 Liberation Day の 1 イベント</strong>だけだった。
+  震源が本当に cross-asset なら、性質の違う他ショックでも同じ銘柄が源泉のはず。
+  4 つの独立ショックで LOO を回し直した (z-score は <strong>expanding window</strong> で look-ahead 排除。
+  このため Liberation Day baseline は +0.70σ と控えめに出る — 手法差)。
+  再現: <code>scripts/loo_multi_shock.py</code>、<code>data/loo_multi_shock.json</code>。</p>
+  <table>
+    <tr><th>ショック</th><th>baseline Δe_div</th><th>源泉 TOP3 (抜くと弱くなる)</th></tr>
+    <tr><td>2025-04 Liberation Day (関税)</td><td>+0.70</td><td>COPPER / EUB10Y / NGAS</td></tr>
+    <tr><td>2024-08 円キャリー巻き戻し</td><td>+1.80</td><td>NGAS / META / US10Y</td></tr>
+    <tr><td>2023-10 ハマス・イスラエル (戦争)</td><td>+0.95</td><td>COPPER / VIX / NGAS</td></tr>
+    <tr><td>2022-02 ウクライナ侵攻 (戦争)</td><td>+0.49</td><td>NGAS / COPPER / CHINA50</td></tr>
+  </table>
+  <h4 style="margin-top:18px;">震源は「共通核 + イベント依存の周辺」の二層構造</h4>
+  <table>
+    <tr><th>銘柄</th><th>源泉になったショック数</th><th>解釈</th></tr>
+    <tr><td><strong>NGAS</strong> (天然ガス)</td><td class="good">4 / 4</td><td><strong>唯一の普遍震源</strong></td></tr>
+    <tr><td><strong>COPPER</strong> (銅)</td><td>3 / 4</td><td>準普遍</td></tr>
+    <tr><td><strong>CHINA50</strong> (中国指数)</td><td>3 / 4</td><td>準普遍</td></tr>
+    <tr><td>EUB10Y / USDJPY / VIX</td><td>各 1 / 4</td><td><strong>イベント依存</strong> (解剖 1 の Liberation 固有結果だった)</td></tr>
+  </table>
+  <p style="font-size:12px; color:var(--sub);">
+    決定的検証: 核 3 銘柄 <strong>{NGAS, COPPER, CHINA50}</strong> を束で抜くと
+    <strong>全 4 ショックで Δe_div 低下、2 ショックで符号反転</strong> (Liberation +0.70→-0.19、ウクライナ +0.49→-0.67)。
+    「コモディティ・中国景気サイクル」のクロス連鎖が束で効いている証拠。<br>
+    asset class 別では <strong>INDEX 抜きで崩壊するのは 1/4 (Liberation のみ)</strong> →
+    解剖 2 の「INDEX が震源」も Liberation 固有だった。崩壊最多は COMMODITY/BOND (各 2/4)。
+  </p>
+
   <!-- ===== 発見の本質 callout (拡張版) ===== -->
   <div class="callout found" style="margin-top:24px;">
     <h4>発見の本質 (Section 8.6 全体のまとめ)</h4>
     <p><strong>① ニュースの主役と構造の主役は別物</strong>。
     2025-04 Liberation Day はメディアでは「S&P 500 が急落」がトップニュースだったが、
-    e_div の構造的本体は米株ではなく
-    <strong>「中国指数 ↔ 欧州債 ↔ 銅 ↔ ドル円 ↔ VIX のクロス連鎖」</strong>にあった。</p>
+    e_div の構造的本体は米株ではなく <strong>cross-asset の連鎖</strong>にあった。
+    さらに 4 ショックで再現すると (解剖 8)、共通の普遍核は
+    <strong>NGAS・COPPER・CHINA50 (コモディティ・中国景気サイクル)</strong> で、
+    株指数・債・VIX・円などの周辺はショックごとに入れ替わる
+    <strong>「常駐する商品コア + イベント依存の周辺」の二層構造</strong>と判明した。</p>
 
     <p style="margin-top:10px;"><strong>② 銘柄を増やしても減らしても、本質は変わらない</strong>。
     9 銘柄 (P6) から 60 銘柄 (P4) まで構成を 6.7 倍にしても、Δe_div の符号は<strong>常に正</strong>。
@@ -1820,7 +1886,7 @@
         <td>29/30 で e_div 符号保持、影響小</td></tr>
     <tr><td><strong>銘柄構成バリエーション総当たり</strong></td>
         <td>LOO (40 通り) + asset class 7 グループ除外 + 段階縮小 (35→10)</td>
-        <td>20-30 銘柄で頑健、シグナル源泉は CHINA50/EUB10Y/COPPER/USDJPY/VIX のクロス連鎖と判明 (<code>scripts/test_symbol_variations.py</code>)</td></tr>
+        <td>20-30 銘柄で頑健。4 ショック LOO で普遍核は NGAS/COPPER/CHINA50、周辺はイベント依存の二層構造 (<code>scripts/loo_multi_shock.py</code>)</td></tr>
     <tr><td><strong>e_div の cherry-pick 疑惑</strong></td>
         <td>11 指標 55 ペアスイープ</td>
         <td>trade/structure 上位 22-36%、war 中央値以下、Bonferroni 通過</td></tr>

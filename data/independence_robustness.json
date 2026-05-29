@@ -1,0 +1,91 @@
+{
+  "description": "L^1 (H1 persistence の L^1 ノルム) と n_unb (符号付きサイクルの不整合数) の Pearson 相関 r を, window (20/30/40/60), threshold (0.2/0.3/0.4), 市場 (USA/EM/CN) を変えて再計算した頑健性検証. 全設定で |r| < 0.5 なら 独立性は設定非依存で頑健と判断する. window=30 & threshold=0.3 の USA/EM/CN は既存 gamma CSV を再利用, それ以外は ohlc_40.parquet (5y) から再計算した.",
+  "method": "compute_gamma_timeseries.main() と同一ロジック (同じローリング窓・同じ |corr|>=threshold エッジ構築) で L1_H1, n_unb を日次計算し, 両者の Pearson 相関を取る. L^1 は Vietoris-Rips filtration なので threshold 非依存, n_unb は threshold 依存.",
+  "input_file_5y": "ohlc_40.parquet",
+  "window_scan": {
+    "20": {
+      "window": 20,
+      "threshold": 0.3,
+      "pearson_r": 0.2339,
+      "n": 1807,
+      "source": "recomputed"
+    },
+    "30": {
+      "window": 30,
+      "threshold": 0.3,
+      "pearson_r": 0.1616,
+      "n": 1797,
+      "source": "existing:gamma_timeseries_w30.csv"
+    },
+    "40": {
+      "window": 40,
+      "threshold": 0.3,
+      "pearson_r": 0.0594,
+      "n": 1787,
+      "source": "recomputed"
+    },
+    "60": {
+      "window": 60,
+      "threshold": 0.3,
+      "pearson_r": -0.0627,
+      "n": 1767,
+      "source": "recomputed"
+    }
+  },
+  "threshold_scan": {
+    "0.2": {
+      "window": 30,
+      "threshold": 0.2,
+      "pearson_r": 0.2169,
+      "n": 1797,
+      "source": "recomputed"
+    },
+    "0.3": {
+      "window": 30,
+      "threshold": 0.3,
+      "pearson_r": 0.1616,
+      "n": 1797,
+      "source": "existing:gamma_timeseries_w30.csv"
+    },
+    "0.4": {
+      "window": 30,
+      "threshold": 0.4,
+      "pearson_r": 0.0489,
+      "n": 1797,
+      "source": "recomputed"
+    }
+  },
+  "market_scan": {
+    "USA": {
+      "window": 30,
+      "threshold": 0.3,
+      "pearson_r": 0.1616,
+      "n": 1797,
+      "source": "gamma_timeseries_w30.csv"
+    },
+    "EM": {
+      "window": 30,
+      "threshold": 0.3,
+      "pearson_r": 0.1712,
+      "n": 1797,
+      "source": "gamma_em_timeseries_w30.csv"
+    },
+    "CN": {
+      "window": 30,
+      "threshold": 0.3,
+      "pearson_r": 0.4123,
+      "n": 1272,
+      "source": "gamma_cn_timeseries_w30.csv"
+    }
+  },
+  "regional_subset_note": "地域サブグラフ (日本中心 / 欧州中心) も検討したが, 40 銘柄を地域純粋に 分けると地域 INDEX は欧州 3 (GER40/UK100/FRA40) ・アジア 2 (JP225/CHINA50) しか取れず, 制約 n>=9 を満たす純地域サブグラフが構成できないため見送った. 代わりに市場全体が異なる EM (新興国 40 銘柄) ・ CN (中国 40 銘柄) で代替検証した.",
+  "summary": {
+    "n_settings": 10,
+    "max_abs_r": 0.4123,
+    "min_abs_r": 0.0489,
+    "mean_abs_r": 0.169,
+    "all_below_0.5": true,
+    "n_below_0.3": 9,
+    "fraction_in_0.1_0.3": 0.6
+  }
+}

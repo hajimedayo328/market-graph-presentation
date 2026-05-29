@@ -1,0 +1,1816 @@
+{
+ "meta": {
+  "window": 30,
+  "threshold": 0.3,
+  "pre_days": 30,
+  "post_days": 30,
+  "z_score_method": "expanding_window (look-ahead bias なし)",
+  "min_expanding": 20,
+  "n_shocks": 4
+ },
+ "shocks": {
+  "liberation_day": {
+   "label": "Liberation Day (米相互関税)",
+   "date": "2025-04-02",
+   "category": "trade_war",
+   "source": "ohlc_40.parquet",
+   "baseline_delta_e_div": 0.698,
+   "baseline_detail": {
+    "n_symbols": 40,
+    "n_pre": 30,
+    "n_post": 30,
+    "delta_L1": -0.395,
+    "delta_n_unb": 0.303,
+    "delta_e_div": 0.698
+   },
+   "leave_one_out": [
+    {
+     "removed": "EURUSD",
+     "delta_e_div": 0.761,
+     "contribution": -0.063
+    },
+    {
+     "removed": "USDJPY",
+     "delta_e_div": 0.317,
+     "contribution": 0.381
+    },
+    {
+     "removed": "GBPUSD",
+     "delta_e_div": 0.774,
+     "contribution": -0.076
+    },
+    {
+     "removed": "AUDUSD",
+     "delta_e_div": 0.715,
+     "contribution": -0.017
+    },
+    {
+     "removed": "USDCHF",
+     "delta_e_div": 0.518,
+     "contribution": 0.18
+    },
+    {
+     "removed": "USDCAD",
+     "delta_e_div": 0.867,
+     "contribution": -0.169
+    },
+    {
+     "removed": "NZDUSD",
+     "delta_e_div": 0.621,
+     "contribution": 0.077
+    },
+    {
+     "removed": "EURJPY",
+     "delta_e_div": 0.748,
+     "contribution": -0.05
+    },
+    {
+     "removed": "GBPJPY",
+     "delta_e_div": 0.787,
+     "contribution": -0.089
+    },
+    {
+     "removed": "EURGBP",
+     "delta_e_div": 1.071,
+     "contribution": -0.373
+    },
+    {
+     "removed": "USDTRY",
+     "delta_e_div": 0.596,
+     "contribution": 0.102
+    },
+    {
+     "removed": "USDHUF",
+     "delta_e_div": 1.244,
+     "contribution": -0.546
+    },
+    {
+     "removed": "EURTRY",
+     "delta_e_div": 0.576,
+     "contribution": 0.122
+    },
+    {
+     "removed": "XAUUSD",
+     "delta_e_div": 0.518,
+     "contribution": 0.18
+    },
+    {
+     "removed": "XAGUSD",
+     "delta_e_div": 0.413,
+     "contribution": 0.285
+    },
+    {
+     "removed": "BTCUSD",
+     "delta_e_div": 0.789,
+     "contribution": -0.091
+    },
+    {
+     "removed": "ETHUSD",
+     "delta_e_div": 0.62,
+     "contribution": 0.078
+    },
+    {
+     "removed": "USOUSD",
+     "delta_e_div": 0.896,
+     "contribution": -0.198
+    },
+    {
+     "removed": "UKOUSD",
+     "delta_e_div": 0.73,
+     "contribution": -0.032
+    },
+    {
+     "removed": "SP500",
+     "delta_e_div": 0.804,
+     "contribution": -0.106
+    },
+    {
+     "removed": "NAS100",
+     "delta_e_div": 0.639,
+     "contribution": 0.059
+    },
+    {
+     "removed": "DJ30",
+     "delta_e_div": 0.81,
+     "contribution": -0.112
+    },
+    {
+     "removed": "RUS2000",
+     "delta_e_div": 0.696,
+     "contribution": 0.002
+    },
+    {
+     "removed": "GER40",
+     "delta_e_div": 0.577,
+     "contribution": 0.121
+    },
+    {
+     "removed": "UK100",
+     "delta_e_div": 0.565,
+     "contribution": 0.133
+    },
+    {
+     "removed": "FRA40",
+     "delta_e_div": 0.66,
+     "contribution": 0.038
+    },
+    {
+     "removed": "JP225",
+     "delta_e_div": 0.806,
+     "contribution": -0.108
+    },
+    {
+     "removed": "CHINA50",
+     "delta_e_div": 0.173,
+     "contribution": 0.525
+    },
+    {
+     "removed": "DXY",
+     "delta_e_div": 0.698,
+     "contribution": 0.0
+    },
+    {
+     "removed": "VIX",
+     "delta_e_div": 0.419,
+     "contribution": 0.279
+    },
+    {
+     "removed": "AAPL",
+     "delta_e_div": 0.746,
+     "contribution": -0.048
+    },
+    {
+     "removed": "MSFT",
+     "delta_e_div": 0.696,
+     "contribution": 0.002
+    },
+    {
+     "removed": "GOOG",
+     "delta_e_div": 0.768,
+     "contribution": -0.07
+    },
+    {
+     "removed": "META",
+     "delta_e_div": 0.944,
+     "contribution": -0.246
+    },
+    {
+     "removed": "TSLA",
+     "delta_e_div": 0.929,
+     "contribution": -0.231
+    },
+    {
+     "removed": "US10Y",
+     "delta_e_div": 0.815,
+     "contribution": -0.117
+    },
+    {
+     "removed": "EUB10Y",
+     "delta_e_div": 0.012,
+     "contribution": 0.686
+    },
+    {
+     "removed": "UKGILT",
+     "delta_e_div": 1.905,
+     "contribution": -1.207
+    },
+    {
+     "removed": "COPPER",
+     "delta_e_div": -0.043,
+     "contribution": 0.741
+    },
+    {
+     "removed": "NGAS",
+     "delta_e_div": 0.1,
+     "contribution": 0.598
+    }
+   ],
+   "source_top5": [
+    {
+     "removed": "COPPER",
+     "contribution": 0.741,
+     "loo_delta_e_div": -0.043
+    },
+    {
+     "removed": "EUB10Y",
+     "contribution": 0.686,
+     "loo_delta_e_div": 0.012
+    },
+    {
+     "removed": "NGAS",
+     "contribution": 0.598,
+     "loo_delta_e_div": 0.1
+    },
+    {
+     "removed": "CHINA50",
+     "contribution": 0.525,
+     "loo_delta_e_div": 0.173
+    },
+    {
+     "removed": "USDJPY",
+     "contribution": 0.381,
+     "loo_delta_e_div": 0.317
+    }
+   ],
+   "noise_top5": [
+    {
+     "removed": "UKGILT",
+     "contribution": -1.207,
+     "loo_delta_e_div": 1.905
+    },
+    {
+     "removed": "USDHUF",
+     "contribution": -0.546,
+     "loo_delta_e_div": 1.244
+    },
+    {
+     "removed": "EURGBP",
+     "contribution": -0.373,
+     "loo_delta_e_div": 1.071
+    },
+    {
+     "removed": "META",
+     "contribution": -0.246,
+     "loo_delta_e_div": 0.944
+    },
+    {
+     "removed": "TSLA",
+     "contribution": -0.231,
+     "loo_delta_e_div": 0.929
+    }
+   ],
+   "asset_class_excluded": {
+    "FX": {
+     "n_removed": 13,
+     "delta_e_div": 1.715,
+     "drop_vs_base": -1.017
+    },
+    "INDEX": {
+     "n_removed": 9,
+     "delta_e_div": -0.451,
+     "drop_vs_base": 1.149
+    },
+    "STOCK": {
+     "n_removed": 5,
+     "delta_e_div": 1.308,
+     "drop_vs_base": -0.61
+    },
+    "COMMODITY": {
+     "n_removed": 6,
+     "delta_e_div": 0.575,
+     "drop_vs_base": 0.123
+    },
+    "CRYPTO": {
+     "n_removed": 2,
+     "delta_e_div": 0.659,
+     "drop_vs_base": 0.039
+    },
+    "BOND": {
+     "n_removed": 3,
+     "delta_e_div": 0.635,
+     "drop_vs_base": 0.063
+    },
+    "SPECIAL": {
+     "n_removed": 2,
+     "delta_e_div": 0.419,
+     "drop_vs_base": 0.279
+    }
+   }
+  },
+  "yen_carry_unwind": {
+   "label": "円キャリー巻き戻し",
+   "date": "2024-08-05",
+   "category": "market_structure",
+   "source": "ohlc_40.parquet",
+   "baseline_delta_e_div": 1.8,
+   "baseline_detail": {
+    "n_symbols": 40,
+    "n_pre": 30,
+    "n_post": 30,
+    "delta_L1": -1.217,
+    "delta_n_unb": 0.583,
+    "delta_e_div": 1.8
+   },
+   "leave_one_out": [
+    {
+     "removed": "EURUSD",
+     "delta_e_div": 1.696,
+     "contribution": 0.104
+    },
+    {
+     "removed": "USDJPY",
+     "delta_e_div": 1.802,
+     "contribution": -0.002
+    },
+    {
+     "removed": "GBPUSD",
+     "delta_e_div": 1.855,
+     "contribution": -0.055
+    },
+    {
+     "removed": "AUDUSD",
+     "delta_e_div": 1.689,
+     "contribution": 0.111
+    },
+    {
+     "removed": "USDCHF",
+     "delta_e_div": 1.578,
+     "contribution": 0.222
+    },
+    {
+     "removed": "USDCAD",
+     "delta_e_div": 1.31,
+     "contribution": 0.49
+    },
+    {
+     "removed": "NZDUSD",
+     "delta_e_div": 1.574,
+     "contribution": 0.226
+    },
+    {
+     "removed": "EURJPY",
+     "delta_e_div": 1.838,
+     "contribution": -0.038
+    },
+    {
+     "removed": "GBPJPY",
+     "delta_e_div": 1.888,
+     "contribution": -0.088
+    },
+    {
+     "removed": "EURGBP",
+     "delta_e_div": 1.54,
+     "contribution": 0.26
+    },
+    {
+     "removed": "USDTRY",
+     "delta_e_div": 1.578,
+     "contribution": 0.222
+    },
+    {
+     "removed": "USDHUF",
+     "delta_e_div": 1.297,
+     "contribution": 0.503
+    },
+    {
+     "removed": "EURTRY",
+     "delta_e_div": 1.499,
+     "contribution": 0.301
+    },
+    {
+     "removed": "XAUUSD",
+     "delta_e_div": 1.781,
+     "contribution": 0.019
+    },
+    {
+     "removed": "XAGUSD",
+     "delta_e_div": 1.545,
+     "contribution": 0.255
+    },
+    {
+     "removed": "BTCUSD",
+     "delta_e_div": 1.709,
+     "contribution": 0.091
+    },
+    {
+     "removed": "ETHUSD",
+     "delta_e_div": 1.672,
+     "contribution": 0.128
+    },
+    {
+     "removed": "USOUSD",
+     "delta_e_div": 1.87,
+     "contribution": -0.07
+    },
+    {
+     "removed": "UKOUSD",
+     "delta_e_div": 1.998,
+     "contribution": -0.198
+    },
+    {
+     "removed": "SP500",
+     "delta_e_div": 1.8,
+     "contribution": 0.0
+    },
+    {
+     "removed": "NAS100",
+     "delta_e_div": 1.799,
+     "contribution": 0.001
+    },
+    {
+     "removed": "DJ30",
+     "delta_e_div": 1.579,
+     "contribution": 0.221
+    },
+    {
+     "removed": "RUS2000",
+     "delta_e_div": 1.928,
+     "contribution": -0.128
+    },
+    {
+     "removed": "GER40",
+     "delta_e_div": 1.994,
+     "contribution": -0.194
+    },
+    {
+     "removed": "UK100",
+     "delta_e_div": 2.008,
+     "contribution": -0.208
+    },
+    {
+     "removed": "FRA40",
+     "delta_e_div": 1.902,
+     "contribution": -0.102
+    },
+    {
+     "removed": "JP225",
+     "delta_e_div": 1.939,
+     "contribution": -0.139
+    },
+    {
+     "removed": "CHINA50",
+     "delta_e_div": 1.758,
+     "contribution": 0.042
+    },
+    {
+     "removed": "DXY",
+     "delta_e_div": 1.8,
+     "contribution": 0.0
+    },
+    {
+     "removed": "VIX",
+     "delta_e_div": 2.224,
+     "contribution": -0.424
+    },
+    {
+     "removed": "AAPL",
+     "delta_e_div": 1.796,
+     "contribution": 0.004
+    },
+    {
+     "removed": "MSFT",
+     "delta_e_div": 1.717,
+     "contribution": 0.083
+    },
+    {
+     "removed": "GOOG",
+     "delta_e_div": 1.856,
+     "contribution": -0.056
+    },
+    {
+     "removed": "META",
+     "delta_e_div": 1.101,
+     "contribution": 0.699
+    },
+    {
+     "removed": "TSLA",
+     "delta_e_div": 1.372,
+     "contribution": 0.428
+    },
+    {
+     "removed": "US10Y",
+     "delta_e_div": 1.103,
+     "contribution": 0.697
+    },
+    {
+     "removed": "EUB10Y",
+     "delta_e_div": 2.354,
+     "contribution": -0.554
+    },
+    {
+     "removed": "UKGILT",
+     "delta_e_div": 1.397,
+     "contribution": 0.403
+    },
+    {
+     "removed": "COPPER",
+     "delta_e_div": 1.685,
+     "contribution": 0.115
+    },
+    {
+     "removed": "NGAS",
+     "delta_e_div": 1.1,
+     "contribution": 0.7
+    }
+   ],
+   "source_top5": [
+    {
+     "removed": "NGAS",
+     "contribution": 0.7,
+     "loo_delta_e_div": 1.1
+    },
+    {
+     "removed": "META",
+     "contribution": 0.699,
+     "loo_delta_e_div": 1.101
+    },
+    {
+     "removed": "US10Y",
+     "contribution": 0.697,
+     "loo_delta_e_div": 1.103
+    },
+    {
+     "removed": "USDHUF",
+     "contribution": 0.503,
+     "loo_delta_e_div": 1.297
+    },
+    {
+     "removed": "USDCAD",
+     "contribution": 0.49,
+     "loo_delta_e_div": 1.31
+    }
+   ],
+   "noise_top5": [
+    {
+     "removed": "EUB10Y",
+     "contribution": -0.554,
+     "loo_delta_e_div": 2.354
+    },
+    {
+     "removed": "VIX",
+     "contribution": -0.424,
+     "loo_delta_e_div": 2.224
+    },
+    {
+     "removed": "UK100",
+     "contribution": -0.208,
+     "loo_delta_e_div": 2.008
+    },
+    {
+     "removed": "UKOUSD",
+     "contribution": -0.198,
+     "loo_delta_e_div": 1.998
+    },
+    {
+     "removed": "GER40",
+     "contribution": -0.194,
+     "loo_delta_e_div": 1.994
+    }
+   ],
+   "asset_class_excluded": {
+    "FX": {
+     "n_removed": 13,
+     "delta_e_div": 0.488,
+     "drop_vs_base": 1.312
+    },
+    "INDEX": {
+     "n_removed": 9,
+     "delta_e_div": 1.655,
+     "drop_vs_base": 0.145
+    },
+    "STOCK": {
+     "n_removed": 5,
+     "delta_e_div": 0.974,
+     "drop_vs_base": 0.826
+    },
+    "COMMODITY": {
+     "n_removed": 6,
+     "delta_e_div": 1.071,
+     "drop_vs_base": 0.729
+    },
+    "CRYPTO": {
+     "n_removed": 2,
+     "delta_e_div": 1.33,
+     "drop_vs_base": 0.47
+    },
+    "BOND": {
+     "n_removed": 3,
+     "delta_e_div": 1.226,
+     "drop_vs_base": 0.574
+    },
+    "SPECIAL": {
+     "n_removed": 2,
+     "delta_e_div": 2.224,
+     "drop_vs_base": -0.424
+    }
+   }
+  },
+  "hamas_israel": {
+   "label": "ハマス・イスラエル衝突",
+   "date": "2023-10-07",
+   "category": "war",
+   "source": "ohlc_40.parquet",
+   "baseline_delta_e_div": 0.95,
+   "baseline_detail": {
+    "n_symbols": 40,
+    "n_pre": 30,
+    "n_post": 30,
+    "delta_L1": -0.585,
+    "delta_n_unb": 0.365,
+    "delta_e_div": 0.95
+   },
+   "leave_one_out": [
+    {
+     "removed": "EURUSD",
+     "delta_e_div": 1.16,
+     "contribution": -0.21
+    },
+    {
+     "removed": "USDJPY",
+     "delta_e_div": 0.927,
+     "contribution": 0.023
+    },
+    {
+     "removed": "GBPUSD",
+     "delta_e_div": 0.832,
+     "contribution": 0.118
+    },
+    {
+     "removed": "AUDUSD",
+     "delta_e_div": 1.053,
+     "contribution": -0.103
+    },
+    {
+     "removed": "USDCHF",
+     "delta_e_div": 1.072,
+     "contribution": -0.122
+    },
+    {
+     "removed": "USDCAD",
+     "delta_e_div": 1.134,
+     "contribution": -0.184
+    },
+    {
+     "removed": "NZDUSD",
+     "delta_e_div": 0.84,
+     "contribution": 0.11
+    },
+    {
+     "removed": "EURJPY",
+     "delta_e_div": 1.077,
+     "contribution": -0.127
+    },
+    {
+     "removed": "GBPJPY",
+     "delta_e_div": 1.189,
+     "contribution": -0.239
+    },
+    {
+     "removed": "EURGBP",
+     "delta_e_div": 1.314,
+     "contribution": -0.364
+    },
+    {
+     "removed": "USDTRY",
+     "delta_e_div": 1.018,
+     "contribution": -0.068
+    },
+    {
+     "removed": "USDHUF",
+     "delta_e_div": 0.927,
+     "contribution": 0.023
+    },
+    {
+     "removed": "EURTRY",
+     "delta_e_div": 1.272,
+     "contribution": -0.322
+    },
+    {
+     "removed": "XAUUSD",
+     "delta_e_div": 0.624,
+     "contribution": 0.326
+    },
+    {
+     "removed": "XAGUSD",
+     "delta_e_div": 1.018,
+     "contribution": -0.068
+    },
+    {
+     "removed": "BTCUSD",
+     "delta_e_div": 0.994,
+     "contribution": -0.044
+    },
+    {
+     "removed": "ETHUSD",
+     "delta_e_div": 0.941,
+     "contribution": 0.009
+    },
+    {
+     "removed": "USOUSD",
+     "delta_e_div": 0.653,
+     "contribution": 0.297
+    },
+    {
+     "removed": "UKOUSD",
+     "delta_e_div": 0.528,
+     "contribution": 0.422
+    },
+    {
+     "removed": "SP500",
+     "delta_e_div": 0.957,
+     "contribution": -0.007
+    },
+    {
+     "removed": "NAS100",
+     "delta_e_div": 0.871,
+     "contribution": 0.079
+    },
+    {
+     "removed": "DJ30",
+     "delta_e_div": 1.194,
+     "contribution": -0.244
+    },
+    {
+     "removed": "RUS2000",
+     "delta_e_div": 1.053,
+     "contribution": -0.103
+    },
+    {
+     "removed": "GER40",
+     "delta_e_div": 1.163,
+     "contribution": -0.213
+    },
+    {
+     "removed": "UK100",
+     "delta_e_div": 0.821,
+     "contribution": 0.129
+    },
+    {
+     "removed": "FRA40",
+     "delta_e_div": 1.018,
+     "contribution": -0.068
+    },
+    {
+     "removed": "JP225",
+     "delta_e_div": 0.685,
+     "contribution": 0.265
+    },
+    {
+     "removed": "CHINA50",
+     "delta_e_div": 0.543,
+     "contribution": 0.407
+    },
+    {
+     "removed": "DXY",
+     "delta_e_div": 0.95,
+     "contribution": 0.0
+    },
+    {
+     "removed": "VIX",
+     "delta_e_div": 0.431,
+     "contribution": 0.519
+    },
+    {
+     "removed": "AAPL",
+     "delta_e_div": 1.125,
+     "contribution": -0.175
+    },
+    {
+     "removed": "MSFT",
+     "delta_e_div": 1.109,
+     "contribution": -0.159
+    },
+    {
+     "removed": "GOOG",
+     "delta_e_div": 1.094,
+     "contribution": -0.144
+    },
+    {
+     "removed": "META",
+     "delta_e_div": 0.929,
+     "contribution": 0.021
+    },
+    {
+     "removed": "TSLA",
+     "delta_e_div": 0.647,
+     "contribution": 0.303
+    },
+    {
+     "removed": "US10Y",
+     "delta_e_div": 0.581,
+     "contribution": 0.369
+    },
+    {
+     "removed": "EUB10Y",
+     "delta_e_div": 0.609,
+     "contribution": 0.341
+    },
+    {
+     "removed": "UKGILT",
+     "delta_e_div": 0.753,
+     "contribution": 0.197
+    },
+    {
+     "removed": "COPPER",
+     "delta_e_div": 0.131,
+     "contribution": 0.819
+    },
+    {
+     "removed": "NGAS",
+     "delta_e_div": 0.487,
+     "contribution": 0.463
+    }
+   ],
+   "source_top5": [
+    {
+     "removed": "COPPER",
+     "contribution": 0.819,
+     "loo_delta_e_div": 0.131
+    },
+    {
+     "removed": "VIX",
+     "contribution": 0.519,
+     "loo_delta_e_div": 0.431
+    },
+    {
+     "removed": "NGAS",
+     "contribution": 0.463,
+     "loo_delta_e_div": 0.487
+    },
+    {
+     "removed": "UKOUSD",
+     "contribution": 0.422,
+     "loo_delta_e_div": 0.528
+    },
+    {
+     "removed": "CHINA50",
+     "contribution": 0.407,
+     "loo_delta_e_div": 0.543
+    }
+   ],
+   "noise_top5": [
+    {
+     "removed": "EURGBP",
+     "contribution": -0.364,
+     "loo_delta_e_div": 1.314
+    },
+    {
+     "removed": "EURTRY",
+     "contribution": -0.322,
+     "loo_delta_e_div": 1.272
+    },
+    {
+     "removed": "DJ30",
+     "contribution": -0.244,
+     "loo_delta_e_div": 1.194
+    },
+    {
+     "removed": "GBPJPY",
+     "contribution": -0.239,
+     "loo_delta_e_div": 1.189
+    },
+    {
+     "removed": "GER40",
+     "contribution": -0.213,
+     "loo_delta_e_div": 1.163
+    }
+   ],
+   "asset_class_excluded": {
+    "FX": {
+     "n_removed": 13,
+     "delta_e_div": 1.019,
+     "drop_vs_base": -0.069
+    },
+    "INDEX": {
+     "n_removed": 9,
+     "delta_e_div": 0.776,
+     "drop_vs_base": 0.174
+    },
+    "STOCK": {
+     "n_removed": 5,
+     "delta_e_div": 1.166,
+     "drop_vs_base": -0.216
+    },
+    "COMMODITY": {
+     "n_removed": 6,
+     "delta_e_div": 0.574,
+     "drop_vs_base": 0.376
+    },
+    "CRYPTO": {
+     "n_removed": 2,
+     "delta_e_div": 0.822,
+     "drop_vs_base": 0.128
+    },
+    "BOND": {
+     "n_removed": 3,
+     "delta_e_div": -0.414,
+     "drop_vs_base": 1.364
+    },
+    "SPECIAL": {
+     "n_removed": 2,
+     "delta_e_div": 0.431,
+     "drop_vs_base": 0.519
+    }
+   }
+  },
+  "ukraine_invasion": {
+   "label": "ウクライナ侵攻",
+   "date": "2022-02-24",
+   "category": "war",
+   "source": "ohlc_40.parquet",
+   "baseline_delta_e_div": 0.485,
+   "baseline_detail": {
+    "n_symbols": 40,
+    "n_pre": 30,
+    "n_post": 30,
+    "delta_L1": -1.117,
+    "delta_n_unb": -0.631,
+    "delta_e_div": 0.485
+   },
+   "leave_one_out": [
+    {
+     "removed": "EURUSD",
+     "delta_e_div": 0.575,
+     "contribution": -0.09
+    },
+    {
+     "removed": "USDJPY",
+     "delta_e_div": 0.703,
+     "contribution": -0.218
+    },
+    {
+     "removed": "GBPUSD",
+     "delta_e_div": 0.566,
+     "contribution": -0.081
+    },
+    {
+     "removed": "AUDUSD",
+     "delta_e_div": 0.489,
+     "contribution": -0.004
+    },
+    {
+     "removed": "USDCHF",
+     "delta_e_div": 0.571,
+     "contribution": -0.086
+    },
+    {
+     "removed": "USDCAD",
+     "delta_e_div": 0.728,
+     "contribution": -0.243
+    },
+    {
+     "removed": "NZDUSD",
+     "delta_e_div": 0.624,
+     "contribution": -0.139
+    },
+    {
+     "removed": "EURJPY",
+     "delta_e_div": 0.649,
+     "contribution": -0.164
+    },
+    {
+     "removed": "GBPJPY",
+     "delta_e_div": 0.594,
+     "contribution": -0.109
+    },
+    {
+     "removed": "EURGBP",
+     "delta_e_div": 0.463,
+     "contribution": 0.022
+    },
+    {
+     "removed": "USDTRY",
+     "delta_e_div": 0.776,
+     "contribution": -0.291
+    },
+    {
+     "removed": "USDHUF",
+     "delta_e_div": 0.541,
+     "contribution": -0.056
+    },
+    {
+     "removed": "EURTRY",
+     "delta_e_div": 0.594,
+     "contribution": -0.109
+    },
+    {
+     "removed": "XAUUSD",
+     "delta_e_div": 0.528,
+     "contribution": -0.043
+    },
+    {
+     "removed": "XAGUSD",
+     "delta_e_div": 0.384,
+     "contribution": 0.101
+    },
+    {
+     "removed": "BTCUSD",
+     "delta_e_div": 0.729,
+     "contribution": -0.244
+    },
+    {
+     "removed": "ETHUSD",
+     "delta_e_div": 0.721,
+     "contribution": -0.236
+    },
+    {
+     "removed": "USOUSD",
+     "delta_e_div": 0.366,
+     "contribution": 0.119
+    },
+    {
+     "removed": "UKOUSD",
+     "delta_e_div": 0.369,
+     "contribution": 0.116
+    },
+    {
+     "removed": "SP500",
+     "delta_e_div": 0.453,
+     "contribution": 0.032
+    },
+    {
+     "removed": "NAS100",
+     "delta_e_div": 0.557,
+     "contribution": -0.072
+    },
+    {
+     "removed": "DJ30",
+     "delta_e_div": 0.408,
+     "contribution": 0.077
+    },
+    {
+     "removed": "RUS2000",
+     "delta_e_div": 0.409,
+     "contribution": 0.076
+    },
+    {
+     "removed": "GER40",
+     "delta_e_div": 0.521,
+     "contribution": -0.036
+    },
+    {
+     "removed": "UK100",
+     "delta_e_div": 0.171,
+     "contribution": 0.314
+    },
+    {
+     "removed": "FRA40",
+     "delta_e_div": 0.525,
+     "contribution": -0.04
+    },
+    {
+     "removed": "JP225",
+     "delta_e_div": 0.271,
+     "contribution": 0.214
+    },
+    {
+     "removed": "CHINA50",
+     "delta_e_div": 0.023,
+     "contribution": 0.462
+    },
+    {
+     "removed": "DXY",
+     "delta_e_div": 0.485,
+     "contribution": 0.0
+    },
+    {
+     "removed": "VIX",
+     "delta_e_div": 0.459,
+     "contribution": 0.026
+    },
+    {
+     "removed": "AAPL",
+     "delta_e_div": 0.534,
+     "contribution": -0.049
+    },
+    {
+     "removed": "MSFT",
+     "delta_e_div": 0.579,
+     "contribution": -0.094
+    },
+    {
+     "removed": "GOOG",
+     "delta_e_div": 0.524,
+     "contribution": -0.039
+    },
+    {
+     "removed": "META",
+     "delta_e_div": 0.802,
+     "contribution": -0.317
+    },
+    {
+     "removed": "TSLA",
+     "delta_e_div": 0.864,
+     "contribution": -0.379
+    },
+    {
+     "removed": "US10Y",
+     "delta_e_div": 0.333,
+     "contribution": 0.152
+    },
+    {
+     "removed": "EUB10Y",
+     "delta_e_div": 0.5,
+     "contribution": -0.015
+    },
+    {
+     "removed": "UKGILT",
+     "delta_e_div": 0.837,
+     "contribution": -0.352
+    },
+    {
+     "removed": "COPPER",
+     "delta_e_div": -0.162,
+     "contribution": 0.647
+    },
+    {
+     "removed": "NGAS",
+     "delta_e_div": -0.204,
+     "contribution": 0.689
+    }
+   ],
+   "source_top5": [
+    {
+     "removed": "NGAS",
+     "contribution": 0.689,
+     "loo_delta_e_div": -0.204
+    },
+    {
+     "removed": "COPPER",
+     "contribution": 0.647,
+     "loo_delta_e_div": -0.162
+    },
+    {
+     "removed": "CHINA50",
+     "contribution": 0.462,
+     "loo_delta_e_div": 0.023
+    },
+    {
+     "removed": "UK100",
+     "contribution": 0.314,
+     "loo_delta_e_div": 0.171
+    },
+    {
+     "removed": "JP225",
+     "contribution": 0.214,
+     "loo_delta_e_div": 0.271
+    }
+   ],
+   "noise_top5": [
+    {
+     "removed": "TSLA",
+     "contribution": -0.379,
+     "loo_delta_e_div": 0.864
+    },
+    {
+     "removed": "UKGILT",
+     "contribution": -0.352,
+     "loo_delta_e_div": 0.837
+    },
+    {
+     "removed": "META",
+     "contribution": -0.317,
+     "loo_delta_e_div": 0.802
+    },
+    {
+     "removed": "USDTRY",
+     "contribution": -0.291,
+     "loo_delta_e_div": 0.776
+    },
+    {
+     "removed": "BTCUSD",
+     "contribution": -0.244,
+     "loo_delta_e_div": 0.729
+    }
+   ],
+   "asset_class_excluded": {
+    "FX": {
+     "n_removed": 13,
+     "delta_e_div": 0.123,
+     "drop_vs_base": 0.362
+    },
+    "INDEX": {
+     "n_removed": 9,
+     "delta_e_div": 0.037,
+     "drop_vs_base": 0.448
+    },
+    "STOCK": {
+     "n_removed": 5,
+     "delta_e_div": 1.239,
+     "drop_vs_base": -0.754
+    },
+    "COMMODITY": {
+     "n_removed": 6,
+     "delta_e_div": -0.86,
+     "drop_vs_base": 1.345
+    },
+    "CRYPTO": {
+     "n_removed": 2,
+     "delta_e_div": 1.23,
+     "drop_vs_base": -0.745
+    },
+    "BOND": {
+     "n_removed": 3,
+     "delta_e_div": 1.255,
+     "drop_vs_base": -0.77
+    },
+    "SPECIAL": {
+     "n_removed": 2,
+     "delta_e_div": 0.459,
+     "drop_vs_base": 0.026
+    }
+   }
+  }
+ },
+ "cross_analysis": {
+  "n_valid_shocks": 4,
+  "shocks": [
+   "Liberation Day (米相互関税)",
+   "円キャリー巻き戻し",
+   "ハマス・イスラエル衝突",
+   "ウクライナ侵攻"
+  ],
+  "source_appearance_count": {
+   "NGAS": 4,
+   "COPPER": 3,
+   "CHINA50": 3,
+   "EUB10Y": 1,
+   "USDJPY": 1,
+   "META": 1,
+   "US10Y": 1,
+   "USDHUF": 1,
+   "USDCAD": 1,
+   "VIX": 1,
+   "UKOUSD": 1,
+   "UK100": 1,
+   "JP225": 1
+  },
+  "source_events": {
+   "COPPER": [
+    "Liberation Day (米相互関税)",
+    "ハマス・イスラエル衝突",
+    "ウクライナ侵攻"
+   ],
+   "EUB10Y": [
+    "Liberation Day (米相互関税)"
+   ],
+   "NGAS": [
+    "Liberation Day (米相互関税)",
+    "円キャリー巻き戻し",
+    "ハマス・イスラエル衝突",
+    "ウクライナ侵攻"
+   ],
+   "CHINA50": [
+    "Liberation Day (米相互関税)",
+    "ハマス・イスラエル衝突",
+    "ウクライナ侵攻"
+   ],
+   "USDJPY": [
+    "Liberation Day (米相互関税)"
+   ],
+   "META": [
+    "円キャリー巻き戻し"
+   ],
+   "US10Y": [
+    "円キャリー巻き戻し"
+   ],
+   "USDHUF": [
+    "円キャリー巻き戻し"
+   ],
+   "USDCAD": [
+    "円キャリー巻き戻し"
+   ],
+   "VIX": [
+    "ハマス・イスラエル衝突"
+   ],
+   "UKOUSD": [
+    "ハマス・イスラエル衝突"
+   ],
+   "UK100": [
+    "ウクライナ侵攻"
+   ],
+   "JP225": [
+    "ウクライナ侵攻"
+   ]
+  },
+  "noise_appearance_count": {
+   "UKGILT": 2,
+   "EURGBP": 2,
+   "META": 2,
+   "TSLA": 2,
+   "GER40": 2,
+   "USDHUF": 1,
+   "EUB10Y": 1,
+   "VIX": 1,
+   "UK100": 1,
+   "UKOUSD": 1,
+   "EURTRY": 1,
+   "DJ30": 1,
+   "GBPJPY": 1,
+   "USDTRY": 1,
+   "BTCUSD": 1
+  },
+  "universal_sources": [
+   "NGAS"
+  ],
+  "near_universal_sources": [
+   "COPPER",
+   "CHINA50"
+  ],
+  "contribution_matrix": {
+   "AAPL": {
+    "Liberation Day (米相互関税)": -0.048,
+    "円キャリー巻き戻し": 0.004,
+    "ハマス・イスラエル衝突": -0.175,
+    "ウクライナ侵攻": -0.049
+   },
+   "AUDUSD": {
+    "Liberation Day (米相互関税)": -0.017,
+    "円キャリー巻き戻し": 0.111,
+    "ハマス・イスラエル衝突": -0.103,
+    "ウクライナ侵攻": -0.004
+   },
+   "BTCUSD": {
+    "Liberation Day (米相互関税)": -0.091,
+    "円キャリー巻き戻し": 0.091,
+    "ハマス・イスラエル衝突": -0.044,
+    "ウクライナ侵攻": -0.244
+   },
+   "CHINA50": {
+    "Liberation Day (米相互関税)": 0.525,
+    "円キャリー巻き戻し": 0.042,
+    "ハマス・イスラエル衝突": 0.407,
+    "ウクライナ侵攻": 0.462
+   },
+   "COPPER": {
+    "Liberation Day (米相互関税)": 0.741,
+    "円キャリー巻き戻し": 0.115,
+    "ハマス・イスラエル衝突": 0.819,
+    "ウクライナ侵攻": 0.647
+   },
+   "DJ30": {
+    "Liberation Day (米相互関税)": -0.112,
+    "円キャリー巻き戻し": 0.221,
+    "ハマス・イスラエル衝突": -0.244,
+    "ウクライナ侵攻": 0.077
+   },
+   "DXY": {
+    "Liberation Day (米相互関税)": 0.0,
+    "円キャリー巻き戻し": 0.0,
+    "ハマス・イスラエル衝突": 0.0,
+    "ウクライナ侵攻": 0.0
+   },
+   "ETHUSD": {
+    "Liberation Day (米相互関税)": 0.078,
+    "円キャリー巻き戻し": 0.128,
+    "ハマス・イスラエル衝突": 0.009,
+    "ウクライナ侵攻": -0.236
+   },
+   "EUB10Y": {
+    "Liberation Day (米相互関税)": 0.686,
+    "円キャリー巻き戻し": -0.554,
+    "ハマス・イスラエル衝突": 0.341,
+    "ウクライナ侵攻": -0.015
+   },
+   "EURGBP": {
+    "Liberation Day (米相互関税)": -0.373,
+    "円キャリー巻き戻し": 0.26,
+    "ハマス・イスラエル衝突": -0.364,
+    "ウクライナ侵攻": 0.022
+   },
+   "EURJPY": {
+    "Liberation Day (米相互関税)": -0.05,
+    "円キャリー巻き戻し": -0.038,
+    "ハマス・イスラエル衝突": -0.127,
+    "ウクライナ侵攻": -0.164
+   },
+   "EURTRY": {
+    "Liberation Day (米相互関税)": 0.122,
+    "円キャリー巻き戻し": 0.301,
+    "ハマス・イスラエル衝突": -0.322,
+    "ウクライナ侵攻": -0.109
+   },
+   "EURUSD": {
+    "Liberation Day (米相互関税)": -0.063,
+    "円キャリー巻き戻し": 0.104,
+    "ハマス・イスラエル衝突": -0.21,
+    "ウクライナ侵攻": -0.09
+   },
+   "FRA40": {
+    "Liberation Day (米相互関税)": 0.038,
+    "円キャリー巻き戻し": -0.102,
+    "ハマス・イスラエル衝突": -0.068,
+    "ウクライナ侵攻": -0.04
+   },
+   "GBPJPY": {
+    "Liberation Day (米相互関税)": -0.089,
+    "円キャリー巻き戻し": -0.088,
+    "ハマス・イスラエル衝突": -0.239,
+    "ウクライナ侵攻": -0.109
+   },
+   "GBPUSD": {
+    "Liberation Day (米相互関税)": -0.076,
+    "円キャリー巻き戻し": -0.055,
+    "ハマス・イスラエル衝突": 0.118,
+    "ウクライナ侵攻": -0.081
+   },
+   "GER40": {
+    "Liberation Day (米相互関税)": 0.121,
+    "円キャリー巻き戻し": -0.194,
+    "ハマス・イスラエル衝突": -0.213,
+    "ウクライナ侵攻": -0.036
+   },
+   "GOOG": {
+    "Liberation Day (米相互関税)": -0.07,
+    "円キャリー巻き戻し": -0.056,
+    "ハマス・イスラエル衝突": -0.144,
+    "ウクライナ侵攻": -0.039
+   },
+   "JP225": {
+    "Liberation Day (米相互関税)": -0.108,
+    "円キャリー巻き戻し": -0.139,
+    "ハマス・イスラエル衝突": 0.265,
+    "ウクライナ侵攻": 0.214
+   },
+   "META": {
+    "Liberation Day (米相互関税)": -0.246,
+    "円キャリー巻き戻し": 0.699,
+    "ハマス・イスラエル衝突": 0.021,
+    "ウクライナ侵攻": -0.317
+   },
+   "MSFT": {
+    "Liberation Day (米相互関税)": 0.002,
+    "円キャリー巻き戻し": 0.083,
+    "ハマス・イスラエル衝突": -0.159,
+    "ウクライナ侵攻": -0.094
+   },
+   "NAS100": {
+    "Liberation Day (米相互関税)": 0.059,
+    "円キャリー巻き戻し": 0.001,
+    "ハマス・イスラエル衝突": 0.079,
+    "ウクライナ侵攻": -0.072
+   },
+   "NGAS": {
+    "Liberation Day (米相互関税)": 0.598,
+    "円キャリー巻き戻し": 0.7,
+    "ハマス・イスラエル衝突": 0.463,
+    "ウクライナ侵攻": 0.689
+   },
+   "NZDUSD": {
+    "Liberation Day (米相互関税)": 0.077,
+    "円キャリー巻き戻し": 0.226,
+    "ハマス・イスラエル衝突": 0.11,
+    "ウクライナ侵攻": -0.139
+   },
+   "RUS2000": {
+    "Liberation Day (米相互関税)": 0.002,
+    "円キャリー巻き戻し": -0.128,
+    "ハマス・イスラエル衝突": -0.103,
+    "ウクライナ侵攻": 0.076
+   },
+   "SP500": {
+    "Liberation Day (米相互関税)": -0.106,
+    "円キャリー巻き戻し": 0.0,
+    "ハマス・イスラエル衝突": -0.007,
+    "ウクライナ侵攻": 0.032
+   },
+   "TSLA": {
+    "Liberation Day (米相互関税)": -0.231,
+    "円キャリー巻き戻し": 0.428,
+    "ハマス・イスラエル衝突": 0.303,
+    "ウクライナ侵攻": -0.379
+   },
+   "UK100": {
+    "Liberation Day (米相互関税)": 0.133,
+    "円キャリー巻き戻し": -0.208,
+    "ハマス・イスラエル衝突": 0.129,
+    "ウクライナ侵攻": 0.314
+   },
+   "UKGILT": {
+    "Liberation Day (米相互関税)": -1.207,
+    "円キャリー巻き戻し": 0.403,
+    "ハマス・イスラエル衝突": 0.197,
+    "ウクライナ侵攻": -0.352
+   },
+   "UKOUSD": {
+    "Liberation Day (米相互関税)": -0.032,
+    "円キャリー巻き戻し": -0.198,
+    "ハマス・イスラエル衝突": 0.422,
+    "ウクライナ侵攻": 0.116
+   },
+   "US10Y": {
+    "Liberation Day (米相互関税)": -0.117,
+    "円キャリー巻き戻し": 0.697,
+    "ハマス・イスラエル衝突": 0.369,
+    "ウクライナ侵攻": 0.152
+   },
+   "USDCAD": {
+    "Liberation Day (米相互関税)": -0.169,
+    "円キャリー巻き戻し": 0.49,
+    "ハマス・イスラエル衝突": -0.184,
+    "ウクライナ侵攻": -0.243
+   },
+   "USDCHF": {
+    "Liberation Day (米相互関税)": 0.18,
+    "円キャリー巻き戻し": 0.222,
+    "ハマス・イスラエル衝突": -0.122,
+    "ウクライナ侵攻": -0.086
+   },
+   "USDHUF": {
+    "Liberation Day (米相互関税)": -0.546,
+    "円キャリー巻き戻し": 0.503,
+    "ハマス・イスラエル衝突": 0.023,
+    "ウクライナ侵攻": -0.056
+   },
+   "USDJPY": {
+    "Liberation Day (米相互関税)": 0.381,
+    "円キャリー巻き戻し": -0.002,
+    "ハマス・イスラエル衝突": 0.023,
+    "ウクライナ侵攻": -0.218
+   },
+   "USDTRY": {
+    "Liberation Day (米相互関税)": 0.102,
+    "円キャリー巻き戻し": 0.222,
+    "ハマス・イスラエル衝突": -0.068,
+    "ウクライナ侵攻": -0.291
+   },
+   "USOUSD": {
+    "Liberation Day (米相互関税)": -0.198,
+    "円キャリー巻き戻し": -0.07,
+    "ハマス・イスラエル衝突": 0.297,
+    "ウクライナ侵攻": 0.119
+   },
+   "VIX": {
+    "Liberation Day (米相互関税)": 0.279,
+    "円キャリー巻き戻し": -0.424,
+    "ハマス・イスラエル衝突": 0.519,
+    "ウクライナ侵攻": 0.026
+   },
+   "XAGUSD": {
+    "Liberation Day (米相互関税)": 0.285,
+    "円キャリー巻き戻し": 0.255,
+    "ハマス・イスラエル衝突": -0.068,
+    "ウクライナ侵攻": 0.101
+   },
+   "XAUUSD": {
+    "Liberation Day (米相互関税)": 0.18,
+    "円キャリー巻き戻し": 0.019,
+    "ハマス・イスラエル衝突": 0.326,
+    "ウクライナ侵攻": -0.043
+   }
+  },
+  "asset_class_breakdown": {
+   "INDEX": {
+    "mean_drop_vs_base": 0.479,
+    "n_shocks_collapsed": 1,
+    "n_shocks": 4,
+    "per_shock": [
+     {
+      "shock": "Liberation Day (米相互関税)",
+      "drop_vs_base": 1.149,
+      "loo_delta_e_div": -0.451
+     },
+     {
+      "shock": "円キャリー巻き戻し",
+      "drop_vs_base": 0.145,
+      "loo_delta_e_div": 1.655
+     },
+     {
+      "shock": "ハマス・イスラエル衝突",
+      "drop_vs_base": 0.174,
+      "loo_delta_e_div": 0.776
+     },
+     {
+      "shock": "ウクライナ侵攻",
+      "drop_vs_base": 0.448,
+      "loo_delta_e_div": 0.037
+     }
+    ]
+   },
+   "FX": {
+    "mean_drop_vs_base": 0.147,
+    "n_shocks_collapsed": 1,
+    "n_shocks": 4,
+    "per_shock": [
+     {
+      "shock": "Liberation Day (米相互関税)",
+      "drop_vs_base": -1.017,
+      "loo_delta_e_div": 1.715
+     },
+     {
+      "shock": "円キャリー巻き戻し",
+      "drop_vs_base": 1.312,
+      "loo_delta_e_div": 0.488
+     },
+     {
+      "shock": "ハマス・イスラエル衝突",
+      "drop_vs_base": -0.069,
+      "loo_delta_e_div": 1.019
+     },
+     {
+      "shock": "ウクライナ侵攻",
+      "drop_vs_base": 0.362,
+      "loo_delta_e_div": 0.123
+     }
+    ]
+   },
+   "COMMODITY": {
+    "mean_drop_vs_base": 0.643,
+    "n_shocks_collapsed": 2,
+    "n_shocks": 4,
+    "per_shock": [
+     {
+      "shock": "Liberation Day (米相互関税)",
+      "drop_vs_base": 0.123,
+      "loo_delta_e_div": 0.575
+     },
+     {
+      "shock": "円キャリー巻き戻し",
+      "drop_vs_base": 0.729,
+      "loo_delta_e_div": 1.071
+     },
+     {
+      "shock": "ハマス・イスラエル衝突",
+      "drop_vs_base": 0.376,
+      "loo_delta_e_div": 0.574
+     },
+     {
+      "shock": "ウクライナ侵攻",
+      "drop_vs_base": 1.345,
+      "loo_delta_e_div": -0.86
+     }
+    ]
+   },
+   "BOND": {
+    "mean_drop_vs_base": 0.308,
+    "n_shocks_collapsed": 2,
+    "n_shocks": 4,
+    "per_shock": [
+     {
+      "shock": "Liberation Day (米相互関税)",
+      "drop_vs_base": 0.063,
+      "loo_delta_e_div": 0.635
+     },
+     {
+      "shock": "円キャリー巻き戻し",
+      "drop_vs_base": 0.574,
+      "loo_delta_e_div": 1.226
+     },
+     {
+      "shock": "ハマス・イスラエル衝突",
+      "drop_vs_base": 1.364,
+      "loo_delta_e_div": -0.414
+     },
+     {
+      "shock": "ウクライナ侵攻",
+      "drop_vs_base": -0.77,
+      "loo_delta_e_div": 1.255
+     }
+    ]
+   },
+   "SPECIAL": {
+    "mean_drop_vs_base": 0.1,
+    "n_shocks_collapsed": 1,
+    "n_shocks": 4,
+    "per_shock": [
+     {
+      "shock": "Liberation Day (米相互関税)",
+      "drop_vs_base": 0.279,
+      "loo_delta_e_div": 0.419
+     },
+     {
+      "shock": "円キャリー巻き戻し",
+      "drop_vs_base": -0.424,
+      "loo_delta_e_div": 2.224
+     },
+     {
+      "shock": "ハマス・イスラエル衝突",
+      "drop_vs_base": 0.519,
+      "loo_delta_e_div": 0.431
+     },
+     {
+      "shock": "ウクライナ侵攻",
+      "drop_vs_base": 0.026,
+      "loo_delta_e_div": 0.459
+     }
+    ]
+   },
+   "STOCK": {
+    "mean_drop_vs_base": -0.188,
+    "n_shocks_collapsed": 1,
+    "n_shocks": 4,
+    "per_shock": [
+     {
+      "shock": "Liberation Day (米相互関税)",
+      "drop_vs_base": -0.61,
+      "loo_delta_e_div": 1.308
+     },
+     {
+      "shock": "円キャリー巻き戻し",
+      "drop_vs_base": 0.826,
+      "loo_delta_e_div": 0.974
+     },
+     {
+      "shock": "ハマス・イスラエル衝突",
+      "drop_vs_base": -0.216,
+      "loo_delta_e_div": 1.166
+     },
+     {
+      "shock": "ウクライナ侵攻",
+      "drop_vs_base": -0.754,
+      "loo_delta_e_div": 1.239
+     }
+    ]
+   },
+   "CRYPTO": {
+    "mean_drop_vs_base": -0.027,
+    "n_shocks_collapsed": 0,
+    "n_shocks": 4,
+    "per_shock": [
+     {
+      "shock": "Liberation Day (米相互関税)",
+      "drop_vs_base": 0.039,
+      "loo_delta_e_div": 0.659
+     },
+     {
+      "shock": "円キャリー巻き戻し",
+      "drop_vs_base": 0.47,
+      "loo_delta_e_div": 1.33
+     },
+     {
+      "shock": "ハマス・イスラエル衝突",
+      "drop_vs_base": 0.128,
+      "loo_delta_e_div": 0.822
+     },
+     {
+      "shock": "ウクライナ侵攻",
+      "drop_vs_base": -0.745,
+      "loo_delta_e_div": 1.23
+     }
+    ]
+   }
+  },
+  "core_block_test": {
+   "core_symbols": [
+    "NGAS",
+    "COPPER",
+    "CHINA50"
+   ],
+   "n_shocks": 4,
+   "mean_drop": 0.779,
+   "min_drop": 0.297,
+   "n_sign_flip_to_neg": 2,
+   "all_weakened": true,
+   "per_shock": [
+    {
+     "shock": "Liberation Day (米相互関税)",
+     "baseline": 0.698,
+     "core_removed": -0.186,
+     "drop": 0.884,
+     "sign_flip_to_neg": true
+    },
+    {
+     "shock": "円キャリー巻き戻し",
+     "baseline": 1.8,
+     "core_removed": 1.503,
+     "drop": 0.297,
+     "sign_flip_to_neg": false
+    },
+    {
+     "shock": "ハマス・イスラエル衝突",
+     "baseline": 0.95,
+     "core_removed": 0.166,
+     "drop": 0.784,
+     "sign_flip_to_neg": false
+    },
+    {
+     "shock": "ウクライナ侵攻",
+     "baseline": 0.485,
+     "core_removed": -0.666,
+     "drop": 1.151,
+     "sign_flip_to_neg": true
+    }
+   ]
+  }
+ }
+}
