@@ -2410,7 +2410,7 @@ def main():
   <h3>3 つの系統</h3>
   <table>
     <tr><th>系統</th><th>代表</th><th>違い</th></tr>
-    <tr><td>TDA × 金融</td><td>Gidea & Katz 2017<br>Majumdar 2024<br>Wang 2023</td>
+    <tr><td>TDA × 金融</td><td>Gidea & Katz 2017<br>Rai et al. 2024<br>Wang 2023</td>
         <td>全て $|r|$ ベース、<strong>符号情報を使わない</strong></td></tr>
     <tr><td>符号 × 金融</td><td>Ferreira 2021 (Walk-based K)<br>Wang & Xu 2025 (LSCBM)</td>
         <td>TDA なし、event study も permutation も使わない</td></tr>
