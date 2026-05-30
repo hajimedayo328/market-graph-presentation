@@ -1,29 +1,29 @@
 {
- "generated_at": "2026-05-30T07:00:30.959241",
+ "generated_at": "2026-05-31T07:00:31.561570",
  "latest": {
   "date": "2026-05-30",
-  "L1_H1": 0.603194,
-  "n_unb": 8,
-  "n_edges": 453,
-  "balance_rate": 0.9807,
-  "z_L1": -1.4160448717948715,
-  "z_unb": -1.4893617021276595,
-  "e_div": -0.07331683033278802,
-  "classification": "平常",
-  "computed_at": "2026-05-30T07:00:30.896673"
+  "L1_H1": 0.579084,
+  "n_unb": 28,
+  "n_edges": 452,
+  "balance_rate": 0.9324,
+  "z_L1": -1.4933205128205125,
+  "z_unb": -0.07092198581560284,
+  "e_div": 1.4223985270049095,
+  "classification": "政策ショック型",
+  "computed_at": "2026-05-31T07:00:31.327261"
  },
  "gamma_daily_recent": [
   {
    "date": "2026-05-30",
-   "L1_H1": 0.603194,
-   "n_unb": 8,
-   "n_edges": 453,
-   "balance_rate": 0.9807,
-   "z_L1": -1.4160448717948715,
-   "z_unb": -1.4893617021276595,
-   "e_div": -0.07331683033278802,
-   "classification": "平常",
-   "computed_at": "2026-05-30T07:00:30.896673"
+   "L1_H1": 0.579084,
+   "n_unb": 28,
+   "n_edges": 452,
+   "balance_rate": 0.9324,
+   "z_L1": -1.4933205128205125,
+   "z_unb": -0.07092198581560284,
+   "e_div": 1.4223985270049095,
+   "classification": "政策ショック型",
+   "computed_at": "2026-05-31T07:00:31.327261"
   },
   {
    "date": "2026-05-29",
@@ -100,6 +100,15 @@
  ],
  "classification_changes": [
   {
+   "changed_at": "2026-05-31T07:00:31.327261",
+   "date": "2026-05-30",
+   "prev_class": "平常",
+   "new_class": "政策ショック型",
+   "e_div": 1.4223985270049095,
+   "L1_H1": 0.579084,
+   "n_unb": 28
+  },
+  {
    "changed_at": "2026-05-30T07:00:30.896673",
    "date": "2026-05-30",
    "prev_class": "一般ボラ上昇",
@@ -129,6 +138,16 @@
  ],
  "trades": [
   {
+   "trade_id": 12,
+   "executed_at": "2026-05-31T07:00:31.546243",
+   "symbol": "SP500.r",
+   "side": "close",
+   "volume": 0.1,
+   "classification_trigger": "平常->政策ショック型",
+   "mt5_ticket": null,
+   "note": "trigger_e_div=+1.422"
+  },
+  {
    "trade_id": 11,
    "executed_at": "2026-05-28T07:00:37.196095",
    "symbol": "SP500.r",
@@ -151,7 +170,7 @@
  ],
  "summary": {
   "n_days": 7,
-  "n_changes": 3,
-  "n_trades": 2
+  "n_changes": 4,
+  "n_trades": 3
  }
 }
