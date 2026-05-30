@@ -312,16 +312,19 @@
 
 <nav class="toc">
   <div class="toc-inner">
+    <div style="font-size:11px; color:var(--sub); padding:4px 0 8px; border-bottom:1px solid var(--line); margin-bottom:6px;">
+      <span style="color:var(--green)">●</span> 確実な発見 (再現済) ／ <span style="color:var(--orange)">◐</span> 示唆的観察 (有意性は限定的)
+    </div>
     <a href="#s1">1. なぜこの研究</a>
     <a href="#s2">2. 市場ネットワーク</a>
     <a href="#s3">3. 強さ (L¹)</a>
     <a href="#s4">4. 符号 (n_unb)</a>
-    <a href="#s5">5. 独立性</a>
-    <a href="#s6">6. ショック反応</a>
-    <a href="#s7">7. 符号反転</a>
-    <a href="#s8">8. e_div 判別器</a>
+    <a href="#s5">5. 独立性 <span style="color:var(--green)">●</span></a>
+    <a href="#s6">6. ショック反応 <span style="color:var(--orange)">◐</span></a>
+    <a href="#s7">7. 符号反転 <span style="color:var(--orange)">◐</span></a>
+    <a href="#s8">8. e_div 判別器 <span style="color:var(--orange)">◐</span></a>
     <a href="#s85">8.5 指標細分化</a>
-    <a href="#s86">8.6 源泉解剖</a>
+    <a href="#s86">8.6 源泉解剖 <span style="color:var(--green)">●</span></a>
     <a href="#s9">9. 圏論的整理</a>
     <a href="#s95">9.5 期間別バックテスト</a>
     <a href="#s10">10. 先行研究</a>
@@ -733,8 +736,9 @@
 
 <section id="s5">
   <div class="section-num">SECTION 05</div>
-  <h2>発見 1: 2 つの指標は独立に動く</h2>
-  <p class="lede">理論的に「違う情報を見ている」と言ったが、実データでも本当に独立に動くかを確認。</p>
+  <h2><span style="color:var(--green); font-size:0.7em; vertical-align:middle;">● 確実な発見</span><br>発見 1: 2 つの指標は独立に動く</h2>
+  <p class="lede">理論的に「違う情報を見ている」と言ったが、実データでも本当に独立に動くかを確認。
+  <strong>全 10 設定 (window/threshold/市場) で |r|&lt;0.5 が再現する、最も確実な発見</strong>。</p>
 
   <div class="plot">
     <div class="plot-title">5 年 × 40 銘柄での日次時系列 (週次サンプリング表示)</div>
@@ -782,8 +786,10 @@
 
 <section id="s6">
   <div class="section-num">SECTION 06</div>
-  <h2>発見 2: ショックの種類で反応する指標が変わる</h2>
-  <p class="lede">市場ショック (戦争・関税・利上げ等) の前 15 日に、2 つの指標は<strong>異なる感度</strong>で反応する。</p>
+  <h2><span style="color:var(--orange); font-size:0.7em; vertical-align:middle;">◐ 示唆的な観察 (有意性は限定的)</span><br>観察 2: ショックの種類で反応する指標が変わる (方向性)</h2>
+  <p class="lede">市場ショック (戦争・関税・利上げ等) の前後で、2 つの指標は<strong>異なる感度</strong>で反応する傾向。
+  <strong>ただし方向は見えるが、関税 11 件単独では集約 n_unb は有意でない (p=0.11)。
+  有意なのは 4-cycle 成分 (+0.39, p=0.004) で、それも 2025-04 クラスタ駆動</strong> (下表 + Section 11 参照)。</p>
 
   <h3>イベント・スタディとは</h3>
   <ol class="simple">
@@ -813,7 +819,7 @@
 
 <section id="s7">
   <div class="section-num">SECTION 07</div>
-  <h2>観察 3: 関税前後の符号反転を直接検証 — 個別では起こるが、一般化は弱い</h2>
+  <h2><span style="color:var(--orange); font-size:0.7em; vertical-align:middle;">◐ 示唆的な観察 (有意性は弱い)</span><br>観察 3: 関税前後の符号反転を直接検証 — 個別では起こるが、一般化は弱い</h2>
   <p class="lede">「関税ショックで銘柄ペアの符号が反転する」という仮説を flip_rate で直接検証。
   <strong>2025-04 では主要ペアが実際に反転したが、関税ショック一般 (11 件) では統計的有意性に届かなかった</strong>。
   正直な結果を示す。</p>
@@ -866,8 +872,10 @@
 
 <section id="s8">
   <div class="section-num">SECTION 08</div>
-  <h2>発見 4: 2 指標の<strong>乖離</strong>がショックタイプを判別する — e_div</h2>
-  <p class="lede">最大の発見。「政策ショック」と「単なる市場ボラ」を区別する指標が出てきた。</p>
+  <h2><span style="color:var(--orange); font-size:0.7em; vertical-align:middle;">◐ 示唆段階 (2025-04 クラスタ依存)</span><br>観察 4: 2 指標の<strong>乖離</strong> e_div でショックタイプを区別できそう</h2>
+  <p class="lede">「政策ショック」と「単なる市場ボラ」を区別する指標の<strong>候補</strong>。
+  <strong>2025-04 Liberation Day では強く出た (Δσ=+1.57, p&lt;10⁻⁴) が、これは 5 件の連鎖クラスタ 1 件への依存が大きい</strong>。
+  trade_policy 全体 (n=36) では +0.15 (p=0.09) と弱く、判別器としての一般性は VPS 運用データで検証中。</p>
 
   <h3>乖離インデックスの定義</h3>
   <div class="formula-box">
