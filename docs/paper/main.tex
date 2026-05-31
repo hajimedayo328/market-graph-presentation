@@ -24,9 +24,9 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
 
-\title{Independence-Based Shock-Type Classification of Financial Markets \\
-       Using Two Topological Invariants:\\
-       Persistent Homology and Signed Cycle Balance}
+\title{Two Independent Topological Invariants of Financial Markets \\
+       --- Persistent Homology and Signed Cycle Balance --- \\
+       and Their Shock-Type Response}
 \author{Hajime\\
         \small{Tokyo City University}\\
         \small{\href{https://github.com/hajimedayo328/market-graph-presentation}{github.com/hajimedayo328/market-graph-presentation}}}
@@ -56,9 +56,11 @@ $\Delta\sigma = +0.34$, $e_{\mathrm{div}}$ $\Delta\sigma = +0.37$ to $+0.49$,
 $L^1$ negative) but is not individually significant ($p \approx 0.15$),
 consistent with the response being driven largely by the 2025 tariff cluster.
 A divergence index
-$e_{\mathrm{div}} = z(\text{unb}) - z(L^1)$ acts as a three-way shock classifier:
-$e_{\mathrm{div}} \geq +0.8 \Rightarrow$ policy-shock type; $\leq -0.5 \Rightarrow$
-magnitude-change type; near zero $\Rightarrow$ general volatility or calm.
+$e_{\mathrm{div}} = z(\text{unb}) - z(L^1)$ is proposed as a candidate three-way
+classifier (policy / magnitude-change / calm). It is strong for the 2025 Liberation
+Day cluster ($\Delta\sigma = +1.57$, $p < 10^{-4}$) but weak for the full
+trade-policy set ($\Delta\sigma = +0.15$, $p = 0.09$); its generality therefore
+remains under live forward-test rather than established.
 A practical backtest with transaction cost ($0.05\%$/leg), 5-day hysteresis,
 next-day open execution, and \emph{strictly past-only (expanding window)
 z-score} (look-ahead bias completely eliminated) yields in-sample Sharpe $0.88$
@@ -66,7 +68,12 @@ and maximum drawdown $-17\%$ on S\&P 500 (vs.\ Buy \& Hold: $0.71$, $-25\%$).
 Walk-forward out-of-sample evaluation reveals significant alpha in
 volatile/bear years (2015 China shock, 2018 trade war, 2022) but
 underperformance in bull markets, positioning the method as a risk-management
-complement rather than a pure return-enhancement strategy. The work bridges three previously separate research lines:
+complement rather than a pure return-enhancement strategy. A leave-one-out
+analysis across four independent shocks identifies a persistent cross-asset core
+(natural gas, copper, the China index) that anchors the divergence signal
+regardless of shock type, while the peripheral contributors rotate per event ---
+a robust, shock-independent finding that contrasts with the shock-dependent
+classifier behavior above. The work bridges three previously separate research lines:
 TDA $\times$ finance \cite{gidea2017topological, majumdar2024multi},
 signed-balance $\times$ finance \cite{ferreira2021loss, wang2025core}, and
 category-theoretic finance \cite{adachi2026martingale}, providing a third
@@ -97,25 +104,38 @@ same correlation network, in parallel:
   \item The count of unbalanced cycles in the signed graph at a fixed threshold
         (sign-based, $\mathbb{Z}/2$ coefficients).
 \end{itemize}
-We show empirically that:
+We report findings at two levels of evidential strength --- \emph{robust}
+(reproduced across settings/shocks) and \emph{suggestive} (visible but not yet
+individually significant):
 \begin{enumerate}
-  \item The two indicators are nearly independent (Pearson $r = 0.16$--$0.26$
-        across five-, ten-, and fifteen-year windows; reproduced in emerging
-        market basket with $r = 0.17$).
-  \item Different shock types activate different indicators:
-        geopolitical/market-structure shocks move $L^1$; trade-policy shocks
-        (US-issued, especially the 2025-04 Liberation Day cluster) move only
-        the unbalanced cycle count.
-  \item The divergence $e_{\mathrm{div}} = z(\text{unb}) - z(L^1)$ classifies
-        shocks into three types with high statistical significance.
+  \item \textbf{(Robust)} The two indicators are nearly independent: Pearson
+        $|r| < 0.5$ across all ten tested configurations (window 20--60,
+        threshold 0.2--0.4, US/EM/China markets; 9/10 with $|r| < 0.3$),
+        so the independence is parameter-robust rather than an artifact.
+  \item \textbf{(Suggestive)} Different shock types tend to activate different
+        indicators: geopolitical/market-structure shocks move $L^1$;
+        trade-policy shocks lean toward the sign-based channel. The direction is
+        consistent, but for US-issued tariffs alone ($n=11$) it is not
+        individually significant ($p \approx 0.15$); significance appears only in
+        the 4-cycle component of the full set and is largely driven by the
+        2025-04 cluster.
+  \item \textbf{(Suggestive)} The divergence $e_{\mathrm{div}} = z(\text{unb}) -
+        z(L^1)$ is proposed as a candidate three-way shock classifier; it is
+        strong for the 2025 cluster but weak for the full trade-policy set, so
+        its generality is under live forward-test.
   \item The proposed indicator is partially independent from both Walk-based
         $K$ \cite{ferreira2021loss} and frustration index
         \cite{aref2018frustration} (pairwise correlations $|r| < 0.5$),
         confirming complementarity.
-  \item Walk-forward out-of-sample backtests reveal nuanced practical value:
-        alpha is concentrated in volatile/bear years, while bull markets see
-        opportunity-cost; thus the method is best positioned as a
-        risk-management complement.
+  \item \textbf{(Robust)} A leave-one-out analysis across four independent shocks
+        reveals a two-layer source structure: a persistent cross-asset core
+        (natural gas, copper, China index) anchors the signal regardless of shock
+        type, while the peripheral contributors rotate per event.
+  \item \textbf{(Suggestive)} Walk-forward out-of-sample backtests reveal nuanced
+        practical value: alpha is concentrated in volatile/bear years, while bull
+        markets see opportunity-cost; the method reliably reduces drawdown but
+        is best positioned as a risk-management complement rather than a
+        return generator.
 \end{enumerate}
 
 \section{Related Work}
