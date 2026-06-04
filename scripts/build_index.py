@@ -1208,10 +1208,10 @@ def main():
 </section>
 
 <nav class="toc">
+  <div style="max-width:880px; margin:0 auto 6px; font-size:11px; color:var(--sub); white-space:nowrap;">
+    <span style="color:var(--green)">●</span> 確実な発見 (再現済) ／ <span style="color:var(--orange)">◐</span> 示唆的観察 (有意性は限定的)
+  </div>
   <div class="toc-inner">
-    <div style="font-size:11px; color:var(--sub); padding:4px 0 8px; border-bottom:1px solid var(--line); margin-bottom:6px;">
-      <span style="color:var(--green)">●</span> 確実な発見 (再現済) ／ <span style="color:var(--orange)">◐</span> 示唆的観察 (有意性は限定的)
-    </div>
     <a href="#s1">1. なぜこの研究</a>
     <a href="#s2">2. 市場ネットワーク</a>
     <a href="#s3">3. 強さ (L¹)</a>
