@@ -151,7 +151,7 @@ pytest -v
 
 ```bibtex
 @misc{marketgraph2026,
-  author       = {Hajime},
+  author       = {Market Graph Research},
   title        = {Market Graph Research: Topological Analysis of Financial Networks
                   with Categorical and Sign-based Invariants},
   year         = {2026},
