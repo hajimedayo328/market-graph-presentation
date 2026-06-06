@@ -1697,6 +1697,32 @@
     2008・2015・2018・2020・2022 という性質の違う複数の暴落で機能している。</p>
   </div>
 
+  <h3 style="margin-top:28px;">9.5.6 <span style="color:var(--green); font-size:0.65em;">● 確実</span> 「VIX (恐怖指数) で代用できるのでは?」への決着</h3>
+  <p>
+    次の疑問: <strong>「結局ボラが高い時に避けてるだけなら、恐怖指数 VIX で同じことができるのでは?」</strong><br>
+    e_div と<strong>同じ現金化率になるよう VIX の閾値を調整</strong>して、「VIX が高い日に避ける」戦略と
+    正面比較した (5y、<code>scripts/backtest_vix_compare.py</code>)。
+  </p>
+  <table>
+    <tr><th>戦略 (同じ ~48% 現金化)</th><th>Sharpe</th><th>MaxDD</th><th>リターン</th></tr>
+    <tr><td><strong>e_div で避ける</strong></td>
+        <td class="good"><strong>+0.85</strong></td><td>-15.6%</td><td class="good"><strong>+55.3%</strong></td></tr>
+    <tr><td>VIX で避ける</td><td class="bad">+0.06</td><td>-15.7%</td><td class="bad">+2.1%</td></tr>
+    <tr><td>ランダムに避ける</td><td>+0.40</td><td>-21.8%</td><td>—</td></tr>
+  </table>
+  <div class="callout found">
+    <h4>結論: VIX では代用できない (符号構造ならではの情報がある)</h4>
+    <p><strong>VIX で避けると、ランダムに避けるより悪い (+0.06 &lt; +0.40)</strong>。
+    理由: VIX が高い = <strong>既に暴落が起きた後</strong>。後追いで底値圏で現金化し、回復を取りこぼす。
+    一方 e_div は +0.85 で圧勝。<br>
+    → 「ボラが高い時に避ける」なら何でもいい、ではない。
+    <strong>e_div は VIX が捉えない『符号構造の崩れ』で、より良いタイミングを掴んでいる</strong>。
+    これが本指標の独自性。</p>
+    <p style="font-size:11px; color:var(--sub);">
+      ※ VIX データが 5 年分しか揃わないため本比較は 5y のみ。20y 版・walk-forward OOS 版は future work。
+      また「暴落を予知」か「暴落初動に反応して残りを回避」かの厳密な区別も今後の課題。</p>
+  </div>
+
   <div class="callout intuition">
     <h4>注意: ここで言えないこと</h4>
     <ul class="simple">
