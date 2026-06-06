@@ -26,15 +26,16 @@
                  "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
     color: var(--ink);
     font-weight: 300;
+    font-size: 30px;   /* reveal.js デフォルト(40px)は大きすぎる → 縮める */
   }
   .reveal .slides section { text-align: left; }
   .reveal h1, .reveal h2, .reveal h3 { color: var(--ink); font-weight: 600; letter-spacing: -0.01em; }
-  .reveal h1 { font-size: 2.0em; line-height: 1.25; }
-  .reveal h2 { font-size: 1.5em; line-height: 1.3; margin-bottom: 0.4em; }
-  .reveal h3 { font-size: 1.1em; color: var(--muted); font-weight: 400; }
+  .reveal h1 { font-size: 1.9em; line-height: 1.25; }
+  .reveal h2 { font-size: 1.35em; line-height: 1.3; margin-bottom: 0.4em; }
+  .reveal h3 { font-size: 1.0em; color: var(--muted); font-weight: 400; }
   .reveal strong { color: var(--accent); font-weight: 600; }
-  .reveal .big { font-size: 1.3em; line-height: 1.5; }
-  .reveal .lead { font-size: 1.15em; color: var(--ink); }
+  .reveal .big { font-size: 1.2em; line-height: 1.5; }
+  .reveal .lead { font-size: 1.0em; color: var(--ink); }
   .reveal .muted { color: var(--muted); font-size: 0.8em; }
   .reveal .center { text-align: center; }
   .reveal .green { color: var(--green); }
@@ -54,8 +55,10 @@
   .reveal .tag.weak  { background: #fdf0dd; color: var(--orange); }
   .reveal .pagenum { position: absolute; bottom: 12px; right: 18px; font-size: 0.5em; color: var(--muted); }
   .reveal section .act { font-size: 0.6em; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
-  .reveal .two-col { display: flex; gap: 30px; align-items: center; }
-  .reveal .two-col > div { flex: 1; }
+  .reveal .two-col { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 30px; align-items: center; }
+  .reveal .two-col > div { flex: 1 1 0; min-width: 0; }   /* min-width:0 で確実に縮む */
+  .reveal ul { line-height: 1.55; }
+  .reveal li { margin-bottom: 0.2em; }
 </style>
 </head>
 <body>
@@ -392,9 +395,9 @@
     controls: true,
     progress: true,
     transition: 'slide',
-    width: 1100,
-    height: 700,
-    margin: 0.08,
+    width: 1200,
+    height: 720,
+    margin: 0.06,
   });
 </script>
 </body>
