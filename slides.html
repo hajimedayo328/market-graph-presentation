@@ -56,7 +56,7 @@
   .reveal .pagenum { position: absolute; bottom: 12px; right: 18px; font-size: 0.5em; color: var(--muted); }
   .reveal section .act { font-size: 0.6em; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
   .reveal .two-col { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 30px; align-items: center; }
-  .reveal .two-col > div { flex: 1 1 0; min-width: 0; }   /* min-width:0 で確実に縮む */
+  .reveal .two-col > div { flex: 1 1 50%; min-width: 0; }   /* basis 50% で初期幅確保 (日本語が1文字に潰れるの防止) */
   .reveal ul { line-height: 1.55; }
   .reveal li { margin-bottom: 0.2em; }
 </style>
