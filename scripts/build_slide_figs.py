@@ -1,0 +1,148 @@
+"""
+発表スライド用のシンプルな図を生成する (初学者向け、数字最小、Cミニマル配色).
+出力: figs/slide_*.png (slides.html から相対参照)
+
+既存 Pages の専門的な図とは別。発表では「一目で分かる」ことを最優先。
+"""
+from __future__ import annotations
+import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+
+ROOT = Path(__file__).parent.parent
+DATA = ROOT / "data"
+FIGS = ROOT / "figs"
+FIGS.mkdir(exist_ok=True)
+
+# 日本語フォント (Windows: Meiryo / Yu Gothic)
+for fname in ["Meiryo", "Yu Gothic", "MS Gothic", "Noto Sans CJK JP"]:
+    try:
+        font_manager.findfont(fname, fallback_to_default=False)
+        plt.rcParams["font.family"] = fname
+        break
+    except Exception:
+        continue
+plt.rcParams["axes.unicode_minus"] = False
+
+# Cミニマル配色
+INK = "#1a1a1f"; ACCENT = "#2f6df6"; GREEN = "#2a9d5c"
+RED = "#d24b4b"; ORANGE = "#e08a2b"; MUTED = "#8a8d93"; GRID = "#e8eaed"
+
+
+def style_ax(ax):
+    for s in ["top", "right"]:
+        ax.spines[s].set_visible(False)
+    for s in ["left", "bottom"]:
+        ax.spines[s].set_color("#cfd3da")
+    ax.tick_params(colors=MUTED, labelsize=11)
+    ax.grid(True, color=GRID, linewidth=0.8)
+    ax.set_axisbelow(True)
+
+
+def fig_scatter():
+    """発見①: 穴の量 vs 矛盾の数 が無相関 (バラけてる)."""
+    df = pd.read_csv(DATA / "gamma_timeseries_w30.csv").dropna(subset=["L1_H1", "n_unb"])
+    # expanding z-score
+    mp = 90
+    zL1 = (df["L1_H1"] - df["L1_H1"].expanding(mp).mean()) / df["L1_H1"].expanding(mp).std()
+    zU = (df["n_unb"] - df["n_unb"].expanding(mp).mean()) / df["n_unb"].expanding(mp).std()
+    m = zL1.notna() & zU.notna()
+    x, y = zL1[m], zU[m]
+    r = np.corrcoef(x, y)[0, 1]
+
+    fig, ax = plt.subplots(figsize=(6.2, 5.0), dpi=150)
+    ax.scatter(x, y, s=14, c=ACCENT, alpha=0.35, edgecolors="none")
+    style_ax(ax)
+    ax.set_xlabel("穴の量  (大きい →)", fontsize=13, color=INK)
+    ax.set_ylabel("矛盾の数  (大きい →)", fontsize=13, color=INK)
+    ax.axhline(0, color=MUTED, lw=0.8, ls="--"); ax.axvline(0, color=MUTED, lw=0.8, ls="--")
+    ax.set_title(f"バラけている = 連動しない  (相関 {r:.2f})",
+                 fontsize=14, color=INK, weight="bold", pad=12)
+    fig.tight_layout()
+    fig.savefig(FIGS / "slide_scatter.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print(f"slide_scatter.png  (相関 r={r:.3f}, n={m.sum()})")
+
+
+def fig_equity():
+    """発見③: 暴落で戦略の方が浅い (ただ持つ vs 矛盾の日に避ける)."""
+    d = json.load(open(DATA / "backtest_v2_results.json", encoding="utf-8"))
+    dates = pd.to_datetime(d["common_dates"])
+    bh = np.array(d["equity_curves"]["Z_buy_and_hold"])
+    s1 = np.array(d["equity_curves"]["S1_ediv_high_short"])
+    # 100 を起点に正規化
+    bh = bh / bh[0] * 100
+    s1 = s1 / s1[0] * 100
+
+    fig, ax = plt.subplots(figsize=(7.6, 4.6), dpi=150)
+    ax.plot(dates, bh, color=MUTED, lw=2.2, label="ただ持ち続ける")
+    ax.plot(dates, s1, color=ACCENT, lw=2.4, label="矛盾の日に避ける (守り)")
+    style_ax(ax)
+    ax.set_ylabel("資産 (100 から開始)", fontsize=12, color=INK)
+    ax.legend(loc="upper left", fontsize=12, frameon=False)
+    # 暴落局面を矢印で (2025-04 関税)
+    try:
+        idx = (dates >= "2025-03-20") & (dates <= "2025-05-10")
+        if idx.any():
+            lo = min(bh[idx].min(), s1[idx].min())
+            xpos = dates[idx][np.argmin(bh[idx])]
+            ax.annotate("暴落時:\n戦略の方が浅い", xy=(xpos, lo),
+                        xytext=(xpos, lo - 22), fontsize=11, color=RED, ha="center",
+                        arrowprops=dict(arrowstyle="->", color=RED, lw=1.5))
+    except Exception:
+        pass
+    ax.set_title("お金は増えないが、暴落で沈みにくい",
+                 fontsize=14, color=INK, weight="bold", pad=12)
+    fig.tight_layout()
+    fig.savefig(FIGS / "slide_equity.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print("slide_equity.png")
+
+
+def fig_source():
+    """発見②: 暴落の震源 — 何回の暴落で「上位5の震源」に入ったか (一貫性)."""
+    d = json.load(open(DATA / "loo_multi_shock.json", encoding="utf-8"))
+    n_shocks = len(d["shocks"])
+    # 各ショックで上位5に入った回数をカウント
+    from collections import Counter
+    count = Counter()
+    for sk, sv in d["shocks"].items():
+        loo = sorted(sv.get("leave_one_out", []),
+                     key=lambda x: abs(x.get("contribution", 0)), reverse=True)
+        for r in loo[:5]:
+            count[r["removed"]] += 1
+    top = sorted(count.items(), key=lambda kv: kv[1], reverse=True)[:8]
+    names = [t[0] for t in top][::-1]
+    vals = [t[1] for t in top][::-1]
+    # 一貫性で色分け: 4回=真の共通(赤) / 3回=準(オレンジ) / 2回以下=event依存(グレー)
+    def col(v):
+        return RED if v >= 4 else (ORANGE if v == 3 else "#c3c8cf")
+    colors = [col(v) for v in vals]
+
+    fig, ax = plt.subplots(figsize=(6.8, 4.8), dpi=150)
+    bars = ax.barh(names, vals, color=colors)
+    for b, v in zip(bars, vals):
+        ax.text(v + 0.05, b.get_y() + b.get_height()/2, f"{v}/{n_shocks}",
+                va="center", fontsize=11, color=INK)
+    style_ax(ax)
+    ax.set_xlim(0, n_shocks + 0.6)
+    ax.set_xlabel(f"{n_shocks} 個の暴落のうち、何回「震源」になったか", fontsize=12, color=INK)
+    ax.set_title("天然ガス (赤) だけが全暴落で共通の震源\n銅・中国 (橙/灰) は暴落の種類で変わる",
+                 fontsize=13, color=INK, weight="bold", pad=12)
+    fig.tight_layout()
+    fig.savefig(FIGS / "slide_source.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print(f"slide_source.png  (NGAS={count['NGAS']}, COPPER={count['COPPER']}, CHINA50={count['CHINA50']})")
+
+
+if __name__ == "__main__":
+    fig_scatter()
+    fig_equity()
+    fig_source()
+    print("Done.")
