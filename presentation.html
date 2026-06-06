@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>発表 — 市場の「形」で暴落を見る</title>
+<style>
+  :root {
+    --paper:#ffffff; --ink:#1a1a1f; --sub:#5a5e66; --subtle:#f2f3f5;
+    --accent:#2f6df6; --muted:#8a8d93; --green:#2a9d5c; --orange:#e08a2b; --red:#d24b4b;
+    --line:#eceef1;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:#fafbfc; color:var(--ink); line-height:1.65;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    font-weight:300; -webkit-font-smoothing:antialiased;
+  }
+  /* ===== top nav (index/app と統一) ===== */
+  .topnav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+  .topnav-inner { max-width:920px; margin:0 auto; padding:10px 20px; display:flex; gap:8px; align-items:center; }
+  .topnav-tab { padding:8px 16px; font-size:13px; color:var(--sub); text-decoration:none;
+    border-radius:8px; transition:.15s; }
+  .topnav-tab:hover { background:rgba(47,109,246,0.08); color:var(--accent); }
+  .topnav-tab.active { background:var(--accent); color:#fff; }
+  .topnav-spacer { flex:1; }
+  .topnav-gh { font-size:12px; color:var(--muted); text-decoration:none; }
+  /* ===== layout ===== */
+  .wrap { max-width:920px; margin:0 auto; padding:0 20px 80px; }
+  .hero { text-align:center; padding:70px 20px 40px; }
+  .hero h1 { font-size:42px; font-weight:600; letter-spacing:-0.02em; line-height:1.25; margin:0 0 18px; }
+  .hero .sub { font-size:18px; color:var(--sub); }
+  .hero .by { margin-top:26px; color:var(--muted); font-size:14px; }
+  .step { background:#fff; border:1px solid var(--line); border-radius:16px;
+    padding:34px 40px; margin:22px 0; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
+  .step-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .step-num { flex:none; width:34px; height:34px; border-radius:50%; background:var(--accent);
+    color:#fff; font-size:15px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  .act { font-size:11px; color:var(--accent); letter-spacing:0.12em; text-transform:uppercase; font-weight:500; }
+  h2 { font-size:26px; font-weight:600; letter-spacing:-0.01em; line-height:1.3; margin:0; }
+  h3 { font-size:17px; font-weight:600; margin:0 0 8px; }
+  strong { color:var(--accent); font-weight:600; }
+  .lead { font-size:17px; color:var(--ink); }
+  .big { font-size:20px; line-height:1.5; }
+  .muted { color:var(--muted); font-size:14px; }
+  .center { text-align:center; }
+  .green{color:var(--green);} .orange{color:var(--orange);} .red{color:var(--red);}
+  strong.green{color:var(--green);} strong.orange{color:var(--orange);} strong.red{color:var(--red);}
+  ul { line-height:1.7; padding-left:22px; }
+  li { margin-bottom:5px; }
+  img { display:block; }
+  .tag { display:inline-block; font-size:12px; padding:3px 11px; border-radius:20px;
+    vertical-align:middle; margin-left:8px; font-weight:500; }
+  .tag.sure { background:#e3f6ea; color:var(--green); }
+  .tag.weak { background:#fdf0dd; color:var(--orange); }
+  .two-col { display:flex; flex-wrap:wrap; gap:30px; align-items:center; }
+  .two-col > div { flex:1 1 300px; min-width:0; }
+  .divider-act { text-align:center; margin:40px 0 8px; color:var(--muted);
+    font-size:13px; letter-spacing:0.15em; }
+  .divider-act::before, .divider-act::after { content:"—"; margin:0 10px; color:#d0d3d8; }
+  @media (max-width:640px){ .step{padding:24px 22px;} .hero h1{font-size:32px;} h2{font-size:22px;} }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <a href="./index.html" class="topnav-tab">研究内容</a>
+    <a href="./app.html" class="topnav-tab">実装デモ</a>
+    <a href="./presentation.html" class="topnav-tab active">発表</a>
+    <span class="topnav-spacer"></span>
+    <a href="https://github.com/hajimedayo328/market-graph-presentation" class="topnav-gh">GitHub</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ヒーロー -->
+  <div class="hero">
+    <h1>市場の「形」で<br>暴落は見えるか</h1>
+    <p class="sub">— 銘柄のつながりを"地図"にして、2つの目で市場を見る —</p>
+    <p class="by">あなたの名前 ／ 所属研究室 ／ 2026<br>
+    <span class="muted">この発表は上から順にスクロールしながら説明します。所要 10〜15 分。</span></p>
+  </div>
+
+  <!-- ============ 第1幕: つかみ・問い ============ -->
+  <div class="divider-act">第1幕　つかみと問い</div>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">1</div><div class="act">つかみ</div></div>
+    <h2>普通、市場は「値段」で見る</h2>
+    <p class="big" style="margin-top:14px;">でも値段だけ見てても、暴落は急に来る。</p>
+    <p class="lead">この研究は、値段じゃなく<strong>市場の"形"</strong>を見た。
+    銘柄同士のつながりが作る"形"が崩れる瞬間を捉えられないか?</p>
+    <div class="center">
+      <svg viewBox="0 0 620 200" style="margin:10px auto; width:100%; max-width:620px;">
+        <text x="130" y="20" text-anchor="middle" font-size="15" fill="#8a8d93">普通の見方：値段</text>
+        <polyline points="30,150 60,120 90,135 120,90 150,110 180,60 210,80 240,40" fill="none" stroke="#8a8d93" stroke-width="2.5"/>
+        <text x="310" y="105" text-anchor="middle" font-size="34" fill="#2f6df6">→</text>
+        <text x="480" y="20" text-anchor="middle" font-size="15" fill="#2f6df6" font-weight="600">この研究：形</text>
+        <g stroke="#9fc0f5" stroke-width="1.6">
+          <line x1="420" y1="60" x2="500" y2="50"/><line x1="500" y1="50" x2="560" y2="90"/>
+          <line x1="560" y1="90" x2="490" y2="140"/><line x1="490" y1="140" x2="420" y2="120"/>
+          <line x1="420" y1="120" x2="420" y2="60"/><line x1="420" y1="60" x2="560" y2="90"/>
+        </g>
+        <line x1="490" y1="140" x2="500" y2="50" stroke="#f0b3b3" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <g fill="#1a1a1f">
+          <circle cx="420" cy="60" r="8"/><circle cx="500" cy="50" r="8"/><circle cx="560" cy="90" r="8"/>
+          <circle cx="490" cy="140" r="8"/><circle cx="420" cy="120" r="8"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">2</div><div class="act">問い</div></div>
+    <h2>研究の問い</h2>
+    <p class="big center" style="margin:24px 0;">「銘柄同士のつながりを"地図"にしたら、<br>暴落の前兆や正体が見えるんじゃないか?」</p>
+    <p class="lead center">株・為替・金・原油…<strong>40個の銘柄</strong>がどう連動してるかを毎日"地図"にして、
+    その地図の<strong>形の変化</strong>を追いかけた。</p>
+  </section>
+
+  <!-- ============ 第2幕: 道具 ============ -->
+  <div class="divider-act">第2幕　2つの道具（ここが核心）</div>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">3</div><div class="act">道具の前提</div></div>
+    <h2>まず、市場を"地図"にする</h2>
+    <p class="lead center">40銘柄を <strong>● 点</strong>、似た動きをするペアを <strong>— 線</strong> で結ぶ。市場が1枚の<strong>地図</strong>になる。</p>
+    <div class="center"><img src="figs/slide_network.png" alt="相関ネットワーク" style="margin:10px auto; max-height:380px; max-width:78%; border-radius:8px;"></div>
+    <p class="muted center">この地図が毎日少しずつ形を変える。その"形"を次の2つの目で測る。</p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">4</div><div class="act">道具①</div></div>
+    <h2>道具① 「穴の量」</h2>
+    <p class="lead center">市場の地図にできる <strong>"穴 (輪っか)"</strong> の大きさを測る。</p>
+    <div class="center">
+      <svg viewBox="0 0 560 320" style="margin:6px auto; width:100%; max-width:660px;">
+        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">しっかり繋がってる</text>
+        <g stroke="#9aa0a8" stroke-width="2">
+          <line x1="140" y1="75" x2="205" y2="112"/><line x1="205" y1="112" x2="205" y2="188"/>
+          <line x1="205" y1="188" x2="140" y2="225"/><line x1="140" y1="225" x2="75" y2="188"/>
+          <line x1="75" y1="188" x2="75" y2="112"/><line x1="75" y1="112" x2="140" y2="75"/>
+          <line x1="140" y1="150" x2="140" y2="75" stroke="#c3c8cf"/><line x1="140" y1="150" x2="205" y2="112" stroke="#c3c8cf"/>
+          <line x1="140" y1="150" x2="205" y2="188" stroke="#c3c8cf"/><line x1="140" y1="150" x2="140" y2="225" stroke="#c3c8cf"/>
+          <line x1="140" y1="150" x2="75" y2="188" stroke="#c3c8cf"/><line x1="140" y1="150" x2="75" y2="112" stroke="#c3c8cf"/>
+        </g>
+        <g fill="#1a1a1f">
+          <circle cx="140" cy="75" r="9"/><circle cx="205" cy="112" r="9"/><circle cx="205" cy="188" r="9"/>
+          <circle cx="140" cy="225" r="9"/><circle cx="75" cy="188" r="9"/><circle cx="75" cy="112" r="9"/><circle cx="140" cy="150" r="9"/>
+        </g>
+        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2a9d5c">小さい</tspan> → 安定</text>
+        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">バラバラ (大きな輪)</text>
+        <polygon points="420,75 485,112 485,188 420,225 355,188 355,112" fill="#fbe4e4" stroke="none"/>
+        <g stroke="#9aa0a8" stroke-width="2">
+          <line x1="420" y1="75" x2="485" y2="112"/><line x1="485" y1="112" x2="485" y2="188"/>
+          <line x1="485" y1="188" x2="420" y2="225"/><line x1="420" y1="225" x2="355" y2="188"/>
+          <line x1="355" y1="188" x2="355" y2="112"/><line x1="355" y1="112" x2="420" y2="75"/>
+        </g>
+        <text x="420" y="156" text-anchor="middle" font-size="15" font-weight="700" fill="#d24b4b">穴</text>
+        <g fill="#1a1a1f">
+          <circle cx="420" cy="75" r="9"/><circle cx="485" cy="112" r="9"/><circle cx="485" cy="188" r="9"/>
+          <circle cx="420" cy="225" r="9"/><circle cx="355" cy="188" r="9"/><circle cx="355" cy="112" r="9"/>
+        </g>
+        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#d24b4b">大きい</tspan> → 不安定</text>
+      </svg>
+    </div>
+    <p class="lead center">穴が大きい = つながりがバラバラ = <strong class="green">不安定</strong>
+    <span class="muted">(数学では「ホモロジー」。難しくない、ただの"穴の量")</span></p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">5</div><div class="act">道具②</div></div>
+    <h2>道具② 「矛盾の数」</h2>
+    <p class="lead center">線の <strong>+ (一緒に動く) / − (逆に動く)</strong> で、"つじつまの合わない三角" を数える。</p>
+    <div class="center">
+      <svg viewBox="0 0 560 320" style="margin:6px auto; width:100%; max-width:660px;">
+        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">つじつまが合う</text>
+        <line x1="140" y1="80" x2="80" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="80" y1="210" x2="200" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="200" y1="210" x2="140" y2="80" stroke="#2a9d5c" stroke-width="3"/>
+        <text x="98" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="135" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="182" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <circle cx="140" cy="80" r="12" fill="#1a1a1f"/><circle cx="80" cy="210" r="12" fill="#1a1a1f"/><circle cx="200" cy="210" r="12" fill="#1a1a1f"/>
+        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">みんな一緒に動く → <tspan font-weight="700" fill="#2a9d5c">OK</tspan></text>
+        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">矛盾 (ねじれ)</text>
+        <line x1="420" y1="80" x2="360" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="360" y1="210" x2="480" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="480" y1="210" x2="420" y2="80" stroke="#d24b4b" stroke-width="3" stroke-dasharray="7 5"/>
+        <text x="378" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="415" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="462" y="148" font-size="22" font-weight="700" fill="#d24b4b">−</text>
+        <circle cx="420" cy="80" r="12" fill="#1a1a1f"/><circle cx="360" cy="210" r="12" fill="#1a1a1f"/><circle cx="480" cy="210" r="12" fill="#1a1a1f"/>
+        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">友達の友達が<tspan font-weight="700" fill="#d24b4b">敵</tspan> → ねじれ</text>
+      </svg>
+    </div>
+    <p class="lead center">この "ねじれた三角" が多い = 市場が <strong class="orange">ねじれてる</strong>
+    <span class="muted">(数学では「符号付きサイクル」。要は"矛盾の数")</span></p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">6</div><div class="act">道具まとめ</div></div>
+    <h2>この2つは"別物"を見ている</h2>
+    <div class="two-col" style="margin-top:16px;">
+      <div class="center"><p class="big green" style="margin:0;">穴の量</p><p>つながりの<strong>"量"</strong><br>バラバラ度</p></div>
+      <div class="center"><p class="big orange" style="margin:0;">矛盾の数</p><p>つながりの<strong>"符号(向き)"</strong><br>ねじれ具合</p></div>
+    </div>
+    <p class="lead center" style="margin-top:20px;">片方は"量"、片方は"向き"。<strong>市場を見る2つの独立した目</strong>になる。</p>
+  </section>
+
+  <!-- ============ 第3幕: 発見 ============ -->
+  <div class="divider-act">第3幕　発見</div>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">7</div><div class="act">発見①</div></div>
+    <h2>2つの目は連動しない <span class="tag sure">● 確実</span></h2>
+    <p class="lead">「穴の量」と「矛盾の数」は、<strong>別々に動く</strong> (相関が弱い)。</p>
+    <ul>
+      <li>10通りの条件で調べても、ずっと弱いまま</li>
+      <li>= 片方を知っても、もう片方は分からない</li>
+      <li><strong>2種類の独立した情報</strong>を市場から取り出せた</li>
+    </ul>
+    <div class="center"><img src="figs/slide_scatter.png" alt="散布図" style="margin:6px auto; max-height:330px; max-width:90%; border-radius:8px;"></div>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">8</div><div class="act">発見②</div></div>
+    <h2>暴落の"震源"は意外な銘柄 <span class="tag sure">● 確実</span></h2>
+    <p class="lead center">地図が崩れる時、震源は<strong>ニュースの主役 (米国株) じゃない</strong>。一番一貫した震源は<strong>天然ガス</strong>。</p>
+    <div class="center"><img src="figs/slide_source.png" alt="震源" style="margin:6px auto; max-height:360px; max-width:82%; border-radius:8px;"></div>
+    <p class="muted center">天然ガスは4暴落すべてで震源。銅は3回。中国などは暴落の種類で変わる (= 二層構造)。</p>
+  </section>
+
+  <!-- ============ 第4幕: バックテスト ============ -->
+  <div class="divider-act">第4幕　実際に試す（山場）</div>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">9</div><div class="act">発見③</div></div>
+    <h2>「矛盾の日」に避けると暴落が浅くなる <span class="tag sure">● 確実</span></h2>
+    <p class="lead center">「矛盾が突出した日に株を売って現金にする」を試した <span class="muted">(下図は直近5年、20年でも同じ傾向)</span>。</p>
+    <div class="center"><img src="figs/slide_equity.png" alt="資産曲線" style="margin:6px auto; max-height:400px; max-width:86%; border-radius:8px;"></div>
+    <p class="lead center"><span class="muted">✗ 儲けは増えない (ただ持つ方が上)</span> &nbsp; <span class="green">✓ でも暴落で沈みにくい</span> = <strong>"守り"の道具</strong></p>
+  </section>
+
+  <section class="step" style="border-color:#cfe0ff; background:#f7faff;">
+    <div class="step-head"><div class="step-num">10</div><div class="act">自分で疑う ← 一番大事</div></div>
+    <h2>「それ、ただの偶然では?」を自分で潰した</h2>
+    <p class="lead">都合のいい結果を疑って、<strong>自分でツッコミを入れて検証した</strong>:</p>
+    <ul>
+      <li>「ただ運がいいだけ?」→ <strong>でたらめに避けた1000パターン</strong>と比較 → 勝った</li>
+      <li>「ただ現金多いだけ?」→ 同じ現金量でも<strong>避けるタイミングが効いてた</strong></li>
+      <li>「恐怖指数(VIX)で十分?」→ <strong>VIXより良い</strong>タイミングを掴んでた</li>
+    </ul>
+    <p class="lead center green" style="margin-top:16px;">→ 偶然じゃない。<strong>未来データ(知らない期間)でも"守り"は再現した</strong></p>
+  </section>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">11</div><div class="act">正直な限界</div></div>
+    <h2>でも「予知」ではない <span class="tag weak">◐ 正直に</span></h2>
+    <p class="lead">検証したら、都合の悪い事実も出た。隠さず言う:</p>
+    <ul>
+      <li>暴落を<strong>前もって予言してるわけじゃない</strong></li>
+      <li>暴落が<strong>始まってから反応</strong>してる (ただし恐怖指数より<strong>速い</strong>)</li>
+      <li>コロナ級の<strong>突発暴落の入口は捉えられない</strong></li>
+    </ul>
+    <p class="lead center" style="margin-top:16px;">正確には「予知」ではなく<strong>「VIXより速い初動検知」</strong>。
+    <span class="muted">誇張せず、できること/できないことを線引きする。</span></p>
+  </section>
+
+  <!-- ============ 第5幕: 実物・締め ============ -->
+  <div class="divider-act">第5幕　実物とまとめ</div>
+
+  <section class="step">
+    <div class="step-head"><div class="step-num">12</div><div class="act">実物</div></div>
+    <h2>論文止まりじゃない。毎日動いてる</h2>
+    <div class="two-col" style="margin-top:14px;">
+      <div>
+        <ul class="lead">
+          <li>サーバーで<strong>毎朝7時に自動計算</strong></li>
+          <li>判定 → <strong>デモ口座で自動売買</strong> (仮想資金・実弾なし)</li>
+          <li>結果を<strong>ホームページに自動更新</strong></li>
+        </ul>
+        <p class="muted">今日も動いてる → 発表当日は <a href="./app.html"><strong>実装デモタブ</strong></a> をライブで開く</p>
+      </div>
+      <div><img src="figs/slide_live.png" alt="liveステータス" style="width:100%; border-radius:6px; border:1px solid #e0e3e8;"></div>
+    </div>
+  </section>
+
+  <section class="step" style="background:#f7f8fa;">
+    <div class="step-head"><div class="step-num">13</div><div class="act">まとめ</div></div>
+    <h2>2つの目で市場を見た</h2>
+    <div class="two-col" style="margin-top:14px;">
+      <div>
+        <h3 class="green">確実にできたこと</h3>
+        <ul>
+          <li>2つの独立した目 (穴・矛盾)</li>
+          <li>暴落の震源は意外な銘柄 (天然ガス)</li>
+          <li>暴落を浅くする"守り" (偶然でない)</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="orange">正直な限界 / 今後</h3>
+        <ul>
+          <li>「予知」ではなく「速い反応」</li>
+          <li>突発暴落の入口は未対応</li>
+          <li>圏論での理論づけは今後</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead center" style="margin-top:20px;">詳しくは <a href="./index.html"><strong>研究内容タブ</strong></a> へ。</p>
+  </section>
+
+</div>
+</body>
+</html>
