@@ -1691,10 +1691,15 @@
     <h4>結論: 暴落回避は e_div の手柄 (現金比率の副作用ではない)</h4>
     <p>同じ 47% の現金化率でも、<strong>ランダムなタイミングで避けると平均 MaxDD は -42%
     (20 年)</strong> なのに、<strong>e_div で避けると -20%</strong>。
-    特に <strong>20 年では 1000 通りのランダム全てに勝った</strong> (MaxDD でも Sharpe でも上位 0.1% 以内)。<br>
+    特に <strong>20 年では MaxDD で 1000 通りのランダム全てに勝った</strong> (上位 0.1% 以内)。<br>
     → 「ただ半分現金にしてるから損失が半分」ではなく、<strong>"いつ" 現金化するかを e_div が当てている</strong>。
     暴落のタイミングを掴む力は、関税ショック (2025) 限定ではなく
     2008・2015・2018・2020・2022 という性質の違う複数の暴落で機能している。</p>
+    <p style="font-size:11px; color:var(--orange);">
+      ※ <strong>重要な注記</strong>: ここの数値は全て <strong>in-sample</strong> (過去全部を見て閾値 0.8 を決めた)。
+      後述 9.5.7 の walk-forward OOS (未来データのみ) で再検証すると、
+      <strong>MaxDD の優位 (上位 1%) は生き残るが、Sharpe の優位は消えてランダムと互角になる</strong>。
+      つまり「暴落を浅くする」は本物、「効率 (Sharpe) でも圧勝」は過去最適化だった。隠さず両方示す。</p>
   </div>
 
   <h3 style="margin-top:28px;">9.5.6 <span style="color:var(--green); font-size:0.65em;">● 確実</span> 「VIX (恐怖指数) で代用できるのでは?」への決着</h3>
@@ -1718,10 +1723,146 @@
     → 「ボラが高い時に避ける」なら何でもいい、ではない。
     <strong>e_div は VIX が捉えない『符号構造の崩れ』で、より良いタイミングを掴んでいる</strong>。
     これが本指標の独自性。</p>
-    <p style="font-size:11px; color:var(--sub);">
-      ※ VIX データが 5 年分しか揃わないため本比較は 5y のみ。20y 版・walk-forward OOS 版は future work。
-      また「暴落を予知」か「暴落初動に反応して残りを回避」かの厳密な区別も今後の課題。</p>
+    <p style="font-size:11px; color:var(--orange);">
+      ※ <strong>注記</strong>: この表は 5y in-sample。<strong>20 年・walk-forward OOS 版は 9.5.7 で実施済</strong>
+      (VIX データは実は 2006 年から揃っており、当初「5 年分のみ」としたのは誤りだった)。
+      OOS では VIX は短期で MaxDD が e_div より浅くなる場面もあるが、リターンでは一貫して e_div が勝つ。
+      また「予知か反応か」の区別は 9.5.8 で正面検証した。</p>
   </div>
+
+  <h3 style="margin-top:28px;">9.5.7 <span style="color:var(--orange); font-size:0.65em;">◐ 正直版</span> 過去最適化じゃない? — walk-forward OOS でランダム/VIX と再対決</h3>
+  <p>
+    9.5.5 / 9.5.6 の優位は全て <strong>in-sample</strong> (過去全部を見て閾値 0.8 を決めた)。
+    「閾値が過去にフィットしてるだけでは?」に答えるため、<strong>train 3 年で閾値を決め → 次の 1 年でテスト</strong>を
+    1 年ずつ転がす walk-forward OOS で、<strong>未来データのみ</strong>を使って再対決した
+    (<code>scripts/backtest_oos_random_vix.py</code>、20y で 16 fold)。閾値・z-score・VIX 閾値すべて
+    train 期間のみから決定 (look-ahead 完全排除)。
+  </p>
+  <table>
+    <tr><th>20y OOS (16 fold)</th><th>in-sample (9.5.5)</th><th>OOS (未来データ)</th></tr>
+    <tr><td>ランダムが e_div の <strong>MaxDD</strong> に勝つ確率</td>
+        <td>0.0%</td><td class="good"><strong>1.0%</strong> ← 生存</td></tr>
+    <tr><td>ランダムが e_div の <strong>Sharpe</strong> に勝つ確率</td>
+        <td>0.1%</td><td class="bad"><strong>33.6%</strong> ← 消失</td></tr>
+  </table>
+  <div class="callout found">
+    <h4>結論: 「暴落回避」は本物、「Sharpe での圧勝」は過去最適化だった</h4>
+    <ul class="simple">
+      <li><strong>MaxDD (暴落の浅さ) は OOS でも上位 1%</strong>。500 通りのランダム現金化のうち
+        e_div より浅い DD を出せたのは僅か (10y 5.8% / 15y 1.8% / 20y 1.0%)。
+        "いつ" 現金化するかを e_div が当てている、は<strong>未来データでも成立</strong>。</li>
+      <li>一方 <strong>Sharpe・総リターンは OOS だとランダムとほぼ互角</strong> (33〜64% が e_div 以上)。
+        in-sample の「Sharpe も上位 0.1%」は閾値を過去に当てはめた最適化バイアスだった。</li>
+      <li><strong>VIX 比較も 20 年全期間で実施</strong>。OOS でも e_div は VIX に<strong>リターンで全期間勝ち</strong>
+        (20y: e_div +197% vs VIX +111%)、Sharpe・MaxDD でも長期では勝つ。
+        VIX は暴落"後"の後追いで底値現金化し回復を取りこぼす欠点が OOS でも残る。</li>
+    </ul>
+    <p style="font-size:11px; color:var(--sub);">
+      ※ 暴落回避の価値は「絶対リターンの最大化」ではなく「ドローダウン抑制 (守り)」にある、
+      という位置づけが OOS で裏付けられた。数値ソース: <code>data/backtest_oos_random_vix.json</code>。</p>
+  </div>
+
+<h3 style="margin-top:28px;">9.5.8 <span style="color:var(--orange); font-size:0.65em;">◐ 重要な限界</span> e_div は暴落を「予知」しているのか、「反応」しているだけなのか</h3>
+<p>
+  ここまでの結果は「e_div が高い局面は S&amp;P 500 の下落と重なる」ことを示した。だが
+  研究の核心的な穴がひとつ残る — <strong>因果の向き</strong>だ。
+</p>
+<ul class="simple">
+  <li><strong>予知 (lead)</strong>: 下落が始まる<em>前</em>に e_div が立ち上がる → 本物の前兆指標</li>
+  <li><strong>反応 (lag)</strong>: 下落と<em>同時 / 後</em>に e_div が立ち上がる → 避けても遅い「初動検知」に過ぎない</li>
+</ul>
+<p>
+  これを正面から検証した (<code>scripts/eventstudy_predict_vs_react.py</code>、
+  出力 <code>data/eventstudy_predict_vs_react.json</code>)。
+  各下落について<strong>「e_div が +0.8σ を最初に超えた日」と「下落開始日」の時間差 (ラグ)</strong> を測る。
+  ラグが負 = 予知、ラグが正 = 反応。
+</p>
+
+<div class="callout intuition">
+  <h4>look-ahead は厳密に排除している</h4>
+  <p>
+    e_div の z-score は<strong>過去のみの expanding window (最小90サンプル)</strong> で計算。
+    下落の起点は forward 20日リターン (下位10%) で定義するが、これは<strong>評価用の ex-post ラベル</strong>であり、
+    e_div の計算には一切入れていない。つまり「未来を知って e_div を作る」不正は無い。
+  </p>
+  <p style="font-size:11px; color:var(--sub);">
+    ※ 落とし穴の補足: e_div は全期間の約24%で +0.8 を超えている (常時高め)。
+    そのため「下落の前後60日で最初に +0.8 を超えた日」と素朴に取ると、無関係な過去のエピソードを拾って
+    <strong>見かけ上の『予知』を量産</strong>してしまう (実際この素朴版だと中央値 −52営業日という非現実的な値が出た)。
+    本節は「下落の近傍でアクティブな上昇エピソードの起点」だけを採る方式に修正し、この偽陽性を潰している。
+  </p>
+</div>
+
+<h4 style="margin-top:20px;">既知の大暴落6件 (市場が認識する真の起点で測定) — ここが本命</h4>
+<p>
+  最も公平なテストは、forward リターンで自動検出した起点ではなく、
+  <strong>市場が「ここが天井」と認識する実際の起点</strong>で測ること。主要6暴落の結果:
+</p>
+<table>
+  <tr><th>暴落</th><th>下落幅</th><th>起点時の e_div</th><th>ラグ (営業日)</th><th>判定</th></tr>
+  <tr><td>COVID クラッシュ (2020-02)</td><td class="bad">-33.7%</td><td>-0.34</td><td class="bad">+4</td><td class="bad">反応</td></tr>
+  <tr><td>2023 地銀危機 SVB</td><td>-3.4%</td><td>-1.60</td><td class="bad">+19</td><td class="bad">反応</td></tr>
+  <tr><td>2024-08 円キャリー巻き戻し</td><td>-8.5%</td><td>-0.75</td><td class="bad">+17</td><td class="bad">反応</td></tr>
+  <tr><td>2025-04 相互関税 (Liberation Day)</td><td class="bad">-18.9%</td><td>+0.39</td><td class="bad">+8</td><td class="bad">反応</td></tr>
+  <tr><td>2022 利上げ下落 (年初)</td><td class="bad">-18.0%</td><td>+2.12</td><td class="good">-5</td><td class="good">予知?</td></tr>
+  <tr><td>2022 夏〜秋 弱気相場</td><td>-16.9%</td><td>+1.41</td><td class="good">-3</td><td class="good">予知?</td></tr>
+</table>
+<p style="font-size:12px; color:var(--sub);">
+  中央値ラグ <strong>+6 営業日</strong>、平均 +6.7。反応4件 / 予知2件。
+</p>
+
+<div class="callout found">
+  <h4>結論: 主要暴落では e_div は「予知」ではなく「反応 (初動検知)」が優勢</h4>
+  <p>
+    真の起点で測ると、4件 (反応) 対 2件 (予知) で<strong>反応型が多数</strong>。とくに —
+  </p>
+  <ul class="simple">
+    <li><strong>最大の暴落 COVID (-33.7%) で e_div は天井時 -0.34 (静か)</strong>。下落が始まって4営業日<em>後</em>に立ち上がった。
+      研究にとって最も都合の悪い事実だが、隠さず示す。</li>
+    <li>SVB・円キャリー・関税の3件も、天井時の e_div は負 or 中立で、立ち上がりは下落開始の8〜19営業日<em>後</em>。
+      これらは<strong>突発的・外因性ショック</strong>で、構造の歪みが事前に積み上がるタイプではない。</li>
+    <li>「予知」に見える2022年の2件は、e_div が起点時点で<strong>すでに +2.1 / +1.4 と高かった</strong>。
+      これは「暴落の直前に新しく立ち上がった」のではなく、<strong>前から高止まりしていた地合いにたまたま下落が重なった</strong>と読むのが正直。
+      固有の先行シグナルとは言い切れない。</li>
+  </ul>
+</div>
+
+<h4 style="margin-top:20px;">自動検出した40下落イベント全体でも「予知優勢」とは言えない</h4>
+<p>
+  5y + 20y(OOS) で自動検出した下落を、真の局所ピークを起点に測り、既知6暴落と合算した全40件:
+</p>
+<table>
+  <tr><th>測定方法</th><th>件数 (cross有)</th><th>中央値ラグ</th><th>予知 / 同時 / 反応</th><th>判定</th></tr>
+  <tr><td><strong>公平版</strong> (真のピーク起点 + 既知暴落)</td><td>40 (31)</td><td>-1 営業日</td><td>13 / 8 / 10</td><td><strong>混在 (mixed)</strong></td></tr>
+  <tr><td>楽観版 (forward-return 起点 = 下落途中)</td><td>29 (22)</td><td>-4 営業日</td><td>14 / 5 / 3</td><td>予知寄り</td></tr>
+</table>
+<p style="font-size:12px; color:var(--sub);">
+  「楽観版」が予知寄りに見えるのは<strong>定義の罠</strong>。forward-return で決めた起点は下落の<em>途中</em>を指すため
+  (実測で局所ピークから平均8〜9営業日後)、e_div が立ち上がる時間的余裕がそのぶん生まれ、人工的に lead が膨らむ。
+  これを補正した公平版では中央値ラグはほぼ0 (−1営業日)、予知13 : 反応10 でほぼ拮抗 = <strong>混在</strong>。
+</p>
+
+<div class="callout intuition">
+  <h4>正直なまとめ — リスク管理上の含意</h4>
+  <ul class="simple">
+    <li><strong>「e_div は暴落を予知する前兆指標」とは言えない。</strong>
+      真の起点で測ると、突発的な大暴落 (COVID・SVB・関税ショック) では<strong>下落が始まってから反応</strong>している。
+      「予知」と書けば誇大広告になる。</li>
+    <li>ただし<strong>反応でも価値はある</strong>。e_div の立ち上がりは下落開始の数営業日後 (中央値 +6) で、
+      多くの暴落は底まで数週間かかる。<strong>初動を検知して残りの下落を回避する「早期警報」としては機能</strong>しうる
+      — これは 9.5.6 で VIX に圧勝した事実 (VIX は『暴落後』にしか上がらず後追いになる) とも整合する。
+      e_div の反応は VIX より<strong>速い初動検知</strong>であって、未来の予言ではない。</li>
+    <li>2022年型の「すでに高止まり→下落」パターンは、<strong>地合いが悪い局面での持続的な警戒シグナル</strong>として活きる。
+      ただし常時24%が閾値超えなので、<strong>単独では空振り (false positive) も多い</strong>。
+      他指標との併用が前提。</li>
+  </ul>
+  <p style="font-size:11px; color:var(--sub);">
+    結論を一言で: <strong>「予知ではなく、反応の中でも速い初動検知」</strong>。混在だが、突発ショックでは明確に反応側。
+    リスク管理ツールとしては「避けられる暴落もあるが、最大級の突発暴落 (COVID 型) の入り口は捉えられない」と
+    弱点まで含めて理解して使うべき。<br>
+    数値ソース: <code>data/eventstudy_predict_vs_react.json</code>。
+  </p>
+</div>
 
   <div class="callout intuition">
     <h4>注意: ここで言えないこと</h4>

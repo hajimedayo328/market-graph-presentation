@@ -1,0 +1,112 @@
+<!--
+============================================================
+Pages 文案: e_div は「予知」か「反応」か
+  index.html の Section 9.5.6 (VIX 比較) の直後、または
+  Section 11 (限界と今後) の手前に貼る想定。
+  既存の 9.5.6 末尾に「予知か反応かの区別は今後の課題」とある未解決論点を
+  本節が直接埋める。build_index.py / index.html は本ファイルでは編集しない。
+  data/eventstudy_predict_vs_react.json が数値ソース。
+============================================================
+-->
+
+<h3 style="margin-top:28px;">9.5.7 <span style="color:var(--orange); font-size:0.65em;">◐ 重要な限界</span> e_div は暴落を「予知」しているのか、「反応」しているだけなのか</h3>
+<p>
+  ここまでの結果は「e_div が高い局面は S&amp;P 500 の下落と重なる」ことを示した。だが
+  研究の核心的な穴がひとつ残る — <strong>因果の向き</strong>だ。
+</p>
+<ul class="simple">
+  <li><strong>予知 (lead)</strong>: 下落が始まる<em>前</em>に e_div が立ち上がる → 本物の前兆指標</li>
+  <li><strong>反応 (lag)</strong>: 下落と<em>同時 / 後</em>に e_div が立ち上がる → 避けても遅い「初動検知」に過ぎない</li>
+</ul>
+<p>
+  これを正面から検証した (<code>scripts/eventstudy_predict_vs_react.py</code>、
+  出力 <code>data/eventstudy_predict_vs_react.json</code>)。
+  各下落について<strong>「e_div が +0.8σ を最初に超えた日」と「下落開始日」の時間差 (ラグ)</strong> を測る。
+  ラグが負 = 予知、ラグが正 = 反応。
+</p>
+
+<div class="callout intuition">
+  <h4>look-ahead は厳密に排除している</h4>
+  <p>
+    e_div の z-score は<strong>過去のみの expanding window (最小90サンプル)</strong> で計算。
+    下落の起点は forward 20日リターン (下位10%) で定義するが、これは<strong>評価用の ex-post ラベル</strong>であり、
+    e_div の計算には一切入れていない。つまり「未来を知って e_div を作る」不正は無い。
+  </p>
+  <p style="font-size:11px; color:var(--sub);">
+    ※ 落とし穴の補足: e_div は全期間の約24%で +0.8 を超えている (常時高め)。
+    そのため「下落の前後60日で最初に +0.8 を超えた日」と素朴に取ると、無関係な過去のエピソードを拾って
+    <strong>見かけ上の『予知』を量産</strong>してしまう (実際この素朴版だと中央値 −52営業日という非現実的な値が出た)。
+    本節は「下落の近傍でアクティブな上昇エピソードの起点」だけを採る方式に修正し、この偽陽性を潰している。
+  </p>
+</div>
+
+<h4 style="margin-top:20px;">既知の大暴落6件 (市場が認識する真の起点で測定) — ここが本命</h4>
+<p>
+  最も公平なテストは、forward リターンで自動検出した起点ではなく、
+  <strong>市場が「ここが天井」と認識する実際の起点</strong>で測ること。主要6暴落の結果:
+</p>
+<table>
+  <tr><th>暴落</th><th>下落幅</th><th>起点時の e_div</th><th>ラグ (営業日)</th><th>判定</th></tr>
+  <tr><td>COVID クラッシュ (2020-02)</td><td class="bad">-33.7%</td><td>-0.34</td><td class="bad">+4</td><td class="bad">反応</td></tr>
+  <tr><td>2023 地銀危機 SVB</td><td>-3.4%</td><td>-1.60</td><td class="bad">+19</td><td class="bad">反応</td></tr>
+  <tr><td>2024-08 円キャリー巻き戻し</td><td>-8.5%</td><td>-0.75</td><td class="bad">+17</td><td class="bad">反応</td></tr>
+  <tr><td>2025-04 相互関税 (Liberation Day)</td><td class="bad">-18.9%</td><td>+0.39</td><td class="bad">+8</td><td class="bad">反応</td></tr>
+  <tr><td>2022 利上げ下落 (年初)</td><td class="bad">-18.0%</td><td>+2.12</td><td class="good">-5</td><td class="good">予知?</td></tr>
+  <tr><td>2022 夏〜秋 弱気相場</td><td>-16.9%</td><td>+1.41</td><td class="good">-3</td><td class="good">予知?</td></tr>
+</table>
+<p style="font-size:12px; color:var(--sub);">
+  中央値ラグ <strong>+6 営業日</strong>、平均 +6.7。反応4件 / 予知2件。
+</p>
+
+<div class="callout found">
+  <h4>結論: 主要暴落では e_div は「予知」ではなく「反応 (初動検知)」が優勢</h4>
+  <p>
+    真の起点で測ると、4件 (反応) 対 2件 (予知) で<strong>反応型が多数</strong>。とくに —
+  </p>
+  <ul class="simple">
+    <li><strong>最大の暴落 COVID (-33.7%) で e_div は天井時 -0.34 (静か)</strong>。下落が始まって4営業日<em>後</em>に立ち上がった。
+      研究にとって最も都合の悪い事実だが、隠さず示す。</li>
+    <li>SVB・円キャリー・関税の3件も、天井時の e_div は負 or 中立で、立ち上がりは下落開始の8〜19営業日<em>後</em>。
+      これらは<strong>突発的・外因性ショック</strong>で、構造の歪みが事前に積み上がるタイプではない。</li>
+    <li>「予知」に見える2022年の2件は、e_div が起点時点で<strong>すでに +2.1 / +1.4 と高かった</strong>。
+      これは「暴落の直前に新しく立ち上がった」のではなく、<strong>前から高止まりしていた地合いにたまたま下落が重なった</strong>と読むのが正直。
+      固有の先行シグナルとは言い切れない。</li>
+  </ul>
+</div>
+
+<h4 style="margin-top:20px;">自動検出した40下落イベント全体でも「予知優勢」とは言えない</h4>
+<p>
+  5y + 20y(OOS) で自動検出した下落を、真の局所ピークを起点に測り、既知6暴落と合算した全40件:
+</p>
+<table>
+  <tr><th>測定方法</th><th>件数 (cross有)</th><th>中央値ラグ</th><th>予知 / 同時 / 反応</th><th>判定</th></tr>
+  <tr><td><strong>公平版</strong> (真のピーク起点 + 既知暴落)</td><td>40 (31)</td><td>-1 営業日</td><td>13 / 8 / 10</td><td><strong>混在 (mixed)</strong></td></tr>
+  <tr><td>楽観版 (forward-return 起点 = 下落途中)</td><td>29 (22)</td><td>-4 営業日</td><td>14 / 5 / 3</td><td>予知寄り</td></tr>
+</table>
+<p style="font-size:12px; color:var(--sub);">
+  「楽観版」が予知寄りに見えるのは<strong>定義の罠</strong>。forward-return で決めた起点は下落の<em>途中</em>を指すため
+  (実測で局所ピークから平均8〜9営業日後)、e_div が立ち上がる時間的余裕がそのぶん生まれ、人工的に lead が膨らむ。
+  これを補正した公平版では中央値ラグはほぼ0 (−1営業日)、予知13 : 反応10 でほぼ拮抗 = <strong>混在</strong>。
+</p>
+
+<div class="callout intuition">
+  <h4>正直なまとめ — リスク管理上の含意</h4>
+  <ul class="simple">
+    <li><strong>「e_div は暴落を予知する前兆指標」とは言えない。</strong>
+      真の起点で測ると、突発的な大暴落 (COVID・SVB・関税ショック) では<strong>下落が始まってから反応</strong>している。
+      「予知」と書けば誇大広告になる。</li>
+    <li>ただし<strong>反応でも価値はある</strong>。e_div の立ち上がりは下落開始の数営業日後 (中央値 +6) で、
+      多くの暴落は底まで数週間かかる。<strong>初動を検知して残りの下落を回避する「早期警報」としては機能</strong>しうる
+      — これは 9.5.6 で VIX に圧勝した事実 (VIX は『暴落後』にしか上がらず後追いになる) とも整合する。
+      e_div の反応は VIX より<strong>速い初動検知</strong>であって、未来の予言ではない。</li>
+    <li>2022年型の「すでに高止まり→下落」パターンは、<strong>地合いが悪い局面での持続的な警戒シグナル</strong>として活きる。
+      ただし常時24%が閾値超えなので、<strong>単独では空振り (false positive) も多い</strong>。
+      他指標との併用が前提。</li>
+  </ul>
+  <p style="font-size:11px; color:var(--sub);">
+    結論を一言で: <strong>「予知ではなく、反応の中でも速い初動検知」</strong>。混在だが、突発ショックでは明確に反応側。
+    リスク管理ツールとしては「避けられる暴落もあるが、最大級の突発暴落 (COVID 型) の入り口は捉えられない」と
+    弱点まで含めて理解して使うべき。<br>
+    数値ソース: <code>data/eventstudy_predict_vs_react.json</code>。
+  </p>
+</div>

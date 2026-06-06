@@ -499,10 +499,15 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None,
     <h4>結論: 暴落回避は e_div の手柄 (現金比率の副作用ではない)</h4>
     <p>同じ 47% の現金化率でも、<strong>ランダムなタイミングで避けると平均 MaxDD は -42%
     (20 年)</strong> なのに、<strong>e_div で避けると -20%</strong>。
-    特に <strong>20 年では 1000 通りのランダム全てに勝った</strong> (MaxDD でも Sharpe でも上位 0.1% 以内)。<br>
+    特に <strong>20 年では MaxDD で 1000 通りのランダム全てに勝った</strong> (上位 0.1% 以内)。<br>
     → 「ただ半分現金にしてるから損失が半分」ではなく、<strong>"いつ" 現金化するかを e_div が当てている</strong>。
     暴落のタイミングを掴む力は、関税ショック (2025) 限定ではなく
     2008・2015・2018・2020・2022 という性質の違う複数の暴落で機能している。</p>
+    <p style="font-size:11px; color:var(--orange);">
+      ※ <strong>重要な注記</strong>: ここの数値は全て <strong>in-sample</strong> (過去全部を見て閾値 0.8 を決めた)。
+      後述 9.5.7 の walk-forward OOS (未来データのみ) で再検証すると、
+      <strong>MaxDD の優位 (上位 1%) は生き残るが、Sharpe の優位は消えてランダムと互角になる</strong>。
+      つまり「暴落を浅くする」は本物、「効率 (Sharpe) でも圧勝」は過去最適化だった。隠さず両方示す。</p>
   </div>
 
   <h3 style="margin-top:28px;">9.5.6 <span style="color:var(--green); font-size:0.65em;">● 確実</span> 「VIX (恐怖指数) で代用できるのでは?」への決着</h3>
@@ -526,10 +531,46 @@ def build_section_95_html(bt_multi: dict | None, wf_oos: dict | None,
     → 「ボラが高い時に避ける」なら何でもいい、ではない。
     <strong>e_div は VIX が捉えない『符号構造の崩れ』で、より良いタイミングを掴んでいる</strong>。
     これが本指標の独自性。</p>
-    <p style="font-size:11px; color:var(--sub);">
-      ※ VIX データが 5 年分しか揃わないため本比較は 5y のみ。20y 版・walk-forward OOS 版は future work。
-      また「暴落を予知」か「暴落初動に反応して残りを回避」かの厳密な区別も今後の課題。</p>
+    <p style="font-size:11px; color:var(--orange);">
+      ※ <strong>注記</strong>: この表は 5y in-sample。<strong>20 年・walk-forward OOS 版は 9.5.7 で実施済</strong>
+      (VIX データは実は 2006 年から揃っており、当初「5 年分のみ」としたのは誤りだった)。
+      OOS では VIX は短期で MaxDD が e_div より浅くなる場面もあるが、リターンでは一貫して e_div が勝つ。
+      また「予知か反応か」の区別は 9.5.8 で正面検証した。</p>
   </div>
+
+  <h3 style="margin-top:28px;">9.5.7 <span style="color:var(--orange); font-size:0.65em;">◐ 正直版</span> 過去最適化じゃない? — walk-forward OOS でランダム/VIX と再対決</h3>
+  <p>
+    9.5.5 / 9.5.6 の優位は全て <strong>in-sample</strong> (過去全部を見て閾値 0.8 を決めた)。
+    「閾値が過去にフィットしてるだけでは?」に答えるため、<strong>train 3 年で閾値を決め → 次の 1 年でテスト</strong>を
+    1 年ずつ転がす walk-forward OOS で、<strong>未来データのみ</strong>を使って再対決した
+    (<code>scripts/backtest_oos_random_vix.py</code>、20y で 16 fold)。閾値・z-score・VIX 閾値すべて
+    train 期間のみから決定 (look-ahead 完全排除)。
+  </p>
+  <table>
+    <tr><th>20y OOS (16 fold)</th><th>in-sample (9.5.5)</th><th>OOS (未来データ)</th></tr>
+    <tr><td>ランダムが e_div の <strong>MaxDD</strong> に勝つ確率</td>
+        <td>0.0%</td><td class="good"><strong>1.0%</strong> ← 生存</td></tr>
+    <tr><td>ランダムが e_div の <strong>Sharpe</strong> に勝つ確率</td>
+        <td>0.1%</td><td class="bad"><strong>33.6%</strong> ← 消失</td></tr>
+  </table>
+  <div class="callout found">
+    <h4>結論: 「暴落回避」は本物、「Sharpe での圧勝」は過去最適化だった</h4>
+    <ul class="simple">
+      <li><strong>MaxDD (暴落の浅さ) は OOS でも上位 1%</strong>。500 通りのランダム現金化のうち
+        e_div より浅い DD を出せたのは僅か (10y 5.8% / 15y 1.8% / 20y 1.0%)。
+        "いつ" 現金化するかを e_div が当てている、は<strong>未来データでも成立</strong>。</li>
+      <li>一方 <strong>Sharpe・総リターンは OOS だとランダムとほぼ互角</strong> (33〜64% が e_div 以上)。
+        in-sample の「Sharpe も上位 0.1%」は閾値を過去に当てはめた最適化バイアスだった。</li>
+      <li><strong>VIX 比較も 20 年全期間で実施</strong>。OOS でも e_div は VIX に<strong>リターンで全期間勝ち</strong>
+        (20y: e_div +197% vs VIX +111%)、Sharpe・MaxDD でも長期では勝つ。
+        VIX は暴落"後"の後追いで底値現金化し回復を取りこぼす欠点が OOS でも残る。</li>
+    </ul>
+    <p style="font-size:11px; color:var(--sub);">
+      ※ 暴落回避の価値は「絶対リターンの最大化」ではなく「ドローダウン抑制 (守り)」にある、
+      という位置づけが OOS で裏付けられた。数値ソース: <code>data/backtest_oos_random_vix.json</code>。</p>
+  </div>
+
+__PREDICT_REACT__
 
   <div class="callout intuition">
     <h4>注意: ここで言えないこと</h4>
@@ -3305,9 +3346,20 @@ window.addEventListener('resize', () => {
 
     sec105_html = build_section_105_html(oos8y)
     sec95_html = build_section_95_html(bt_multi, wf_oos, bt_target)
+
+    # 予知 vs 反応セクション (文案ファイルから読み込み、HTML コメント除去 + 9.5.7→9.5.8 番号変更)
+    import re as _re
+    _pr_path = ROOT / "docs" / "section_predict_vs_react.html"
+    predict_react_html = ""
+    if _pr_path.exists():
+        _pr = _re.sub(r"<!--.*?-->", "", _pr_path.read_text(encoding="utf-8"),
+                      count=1, flags=_re.DOTALL)
+        predict_react_html = _pr.replace("9.5.7", "9.5.8").strip()
+
     html = (template
             .replace("__SEC95__", sec95_html)
             .replace("__SEC105__", sec105_html)
+            .replace("__PREDICT_REACT__", predict_react_html)
             .replace("__HEATMAP__", DATA["heatmap_b64"])
             .replace("__SYMPATTERN_FIG__", pattern_fig_b64)
             .replace("__BACKTEST_SUMMARY__", backtest_summary_fig_b64)

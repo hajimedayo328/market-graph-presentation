@@ -1,0 +1,672 @@
+{
+ "description": "Walk-forward OOS: e_div vs random vs VIX (look-ahead厳密)",
+ "n_random": 500,
+ "seed": 20260606,
+ "config": "train=3y test=1y percentile=80",
+ "results": {
+  "5y": {
+   "params": {
+    "train_years": 3,
+    "test_years": 1,
+    "percentile": 80,
+    "n_random": 500,
+    "transaction_cost": 0.0005,
+    "hysteresis_days": 5,
+    "execution": "next-day open",
+    "zscore": "expanding (look-ahead排除)",
+    "vix_threshold_source": "train period only (look-ahead排除)"
+   },
+   "n_folds": 1,
+   "n_folds_with_vix": 1,
+   "oos_span": "2024-07-10〜2025-07-11",
+   "oos_n_days": 252,
+   "ediv": {
+    "total_return": -0.001,
+    "cagr": -0.001,
+    "sharpe": -0.0119,
+    "max_drawdown": -0.0932
+   },
+   "buy_hold": {
+    "total_return": 0.1224,
+    "sharpe": 0.6164,
+    "max_drawdown": -0.189
+   },
+   "random": {
+    "total_return_mean": 0.0508,
+    "total_return_best": 0.3085,
+    "sharpe_mean": 0.5423,
+    "sharpe_best": 3.5566,
+    "maxdd_mean": -0.11,
+    "maxdd_best": -0.027
+   },
+   "p_random_beats_ediv_maxdd": 0.448,
+   "p_random_beats_ediv_sharpe": 0.704,
+   "p_random_beats_ediv_return": 0.704,
+   "ediv_maxdd_percentile": 0.552,
+   "ediv_sharpe_percentile": 0.296,
+   "vix_comparison": {
+    "n_folds_with_vix": 1,
+    "vix_span_start": "2024-07-10",
+    "vix_span_end": "2025-07-11",
+    "vix": {
+     "total_return": -0.0857,
+     "cagr": -0.0857,
+     "sharpe": -1.7361,
+     "max_drawdown": -0.1003
+    },
+    "ediv_same_span": {
+     "total_return": -0.001,
+     "cagr": -0.001,
+     "sharpe": -0.0119,
+     "max_drawdown": -0.0932
+    },
+    "ediv_beats_vix_sharpe": true,
+    "ediv_beats_vix_maxdd": true,
+    "ediv_beats_vix_return": true,
+    "bh_total_return_same_span": 0.1224
+   },
+   "folds": [
+    {
+     "fold_id": 0,
+     "train_period": "2021-07-07〜2024-07-09",
+     "test_period": "2024-07-10〜2025-07-11",
+     "threshold": 0.8074,
+     "cash_rate": 0.667,
+     "n_blocks": 9,
+     "ediv_OOS_return": -0.001,
+     "bh_return": 0.1224,
+     "vix_used": true,
+     "vix_OOS_return": -0.0857
+    }
+   ]
+  },
+  "10y": {
+   "params": {
+    "train_years": 3,
+    "test_years": 1,
+    "percentile": 80,
+    "n_random": 500,
+    "transaction_cost": 0.0005,
+    "hysteresis_days": 5,
+    "execution": "next-day open",
+    "zscore": "expanding (look-ahead排除)",
+    "vix_threshold_source": "train period only (look-ahead排除)"
+   },
+   "n_folds": 6,
+   "n_folds_with_vix": 6,
+   "oos_span": "2019-06-21〜2025-06-26",
+   "oos_n_days": 1512,
+   "ediv": {
+    "total_return": 0.3159,
+    "cagr": 0.0468,
+    "sharpe": 0.3989,
+    "max_drawdown": -0.1704
+   },
+   "buy_hold": {
+    "total_return": 1.0788,
+    "sharpe": 0.6184,
+    "max_drawdown": -0.3392
+   },
+   "random": {
+    "total_return_mean": 0.4779,
+    "total_return_best": 1.9234,
+    "sharpe_mean": 0.4368,
+    "sharpe_best": 1.326,
+    "maxdd_mean": -0.2549,
+    "maxdd_best": -0.1367
+   },
+   "p_random_beats_ediv_maxdd": 0.058,
+   "p_random_beats_ediv_sharpe": 0.536,
+   "p_random_beats_ediv_return": 0.644,
+   "ediv_maxdd_percentile": 0.942,
+   "ediv_sharpe_percentile": 0.464,
+   "vix_comparison": {
+    "n_folds_with_vix": 6,
+    "vix_span_start": "2019-06-21",
+    "vix_span_end": "2025-06-26",
+    "vix": {
+     "total_return": 0.1639,
+     "cagr": 0.0256,
+     "sharpe": 0.4373,
+     "max_drawdown": -0.1028
+    },
+    "ediv_same_span": {
+     "total_return": 0.3159,
+     "cagr": 0.0468,
+     "sharpe": 0.3989,
+     "max_drawdown": -0.1704
+    },
+    "ediv_beats_vix_sharpe": false,
+    "ediv_beats_vix_maxdd": false,
+    "ediv_beats_vix_return": true,
+    "bh_total_return_same_span": 1.0788
+   },
+   "folds": [
+    {
+     "fold_id": 0,
+     "train_period": "2016-06-20〜2019-06-20",
+     "test_period": "2019-06-21〜2020-06-19",
+     "threshold": 0.6936,
+     "cash_rate": 0.5,
+     "n_blocks": 13,
+     "ediv_OOS_return": -0.0284,
+     "bh_return": 0.0486,
+     "vix_used": true,
+     "vix_OOS_return": 0.0044
+    },
+    {
+     "fold_id": 1,
+     "train_period": "2017-06-20〜2020-06-19",
+     "test_period": "2020-06-22〜2021-06-21",
+     "threshold": 0.9448,
+     "cash_rate": 0.548,
+     "n_blocks": 13,
+     "ediv_OOS_return": 0.0557,
+     "bh_return": 0.3638,
+     "vix_used": true,
+     "vix_OOS_return": 0.006
+    },
+    {
+     "fold_id": 2,
+     "train_period": "2018-06-20〜2021-06-21",
+     "test_period": "2021-06-22〜2022-06-21",
+     "threshold": 1.0824,
+     "cash_rate": 0.48,
+     "n_blocks": 12,
+     "ediv_OOS_return": 0.0133,
+     "bh_return": -0.1089,
+     "vix_used": true,
+     "vix_OOS_return": 0.0097
+    },
+    {
+     "fold_id": 3,
+     "train_period": "2019-06-21〜2022-06-21",
+     "test_period": "2022-06-22〜2023-06-22",
+     "threshold": 1.0748,
+     "cash_rate": 0.615,
+     "n_blocks": 12,
+     "ediv_OOS_return": 0.0871,
+     "bh_return": 0.1639,
+     "vix_used": true,
+     "vix_OOS_return": -0.0172
+    },
+    {
+     "fold_id": 4,
+     "train_period": "2020-06-22〜2023-06-22",
+     "test_period": "2023-06-23〜2024-06-24",
+     "threshold": 1.2768,
+     "cash_rate": 0.123,
+     "n_blocks": 5,
+     "ediv_OOS_return": 0.1806,
+     "bh_return": 0.2433,
+     "vix_used": true,
+     "vix_OOS_return": 0.2433
+    },
+    {
+     "fold_id": 5,
+     "train_period": "2021-06-22〜2024-06-24",
+     "test_period": "2024-06-25〜2025-06-26",
+     "threshold": 1.0151,
+     "cash_rate": 0.587,
+     "n_blocks": 9,
+     "ediv_OOS_return": -0.0137,
+     "bh_return": 0.1272,
+     "vix_used": true,
+     "vix_OOS_return": -0.0664
+    }
+   ]
+  },
+  "15y": {
+   "params": {
+    "train_years": 3,
+    "test_years": 1,
+    "percentile": 80,
+    "n_random": 500,
+    "transaction_cost": 0.0005,
+    "hysteresis_days": 5,
+    "execution": "next-day open",
+    "zscore": "expanding (look-ahead排除)",
+    "vix_threshold_source": "train period only (look-ahead排除)"
+   },
+   "n_folds": 11,
+   "n_folds_with_vix": 11,
+   "oos_span": "2014-07-08〜2025-07-15",
+   "oos_n_days": 2772,
+   "ediv": {
+    "total_return": 0.7578,
+    "cagr": 0.0526,
+    "sharpe": 0.4944,
+    "max_drawdown": -0.1612
+   },
+   "buy_hold": {
+    "total_return": 2.1572,
+    "sharpe": 0.6146,
+    "max_drawdown": -0.3392
+   },
+   "random": {
+    "total_return_mean": 0.838,
+    "total_return_best": 2.9968,
+    "sharpe_mean": 0.4196,
+    "sharpe_best": 1.1656,
+    "maxdd_mean": -0.2819,
+    "maxdd_best": -0.1154
+   },
+   "p_random_beats_ediv_maxdd": 0.018,
+   "p_random_beats_ediv_sharpe": 0.332,
+   "p_random_beats_ediv_return": 0.51,
+   "ediv_maxdd_percentile": 0.982,
+   "ediv_sharpe_percentile": 0.668,
+   "vix_comparison": {
+    "n_folds_with_vix": 11,
+    "vix_span_start": "2014-07-08",
+    "vix_span_end": "2025-07-15",
+    "vix": {
+     "total_return": 0.2875,
+     "cagr": 0.0232,
+     "sharpe": 0.3969,
+     "max_drawdown": -0.1481
+    },
+    "ediv_same_span": {
+     "total_return": 0.7578,
+     "cagr": 0.0526,
+     "sharpe": 0.4944,
+     "max_drawdown": -0.1612
+    },
+    "ediv_beats_vix_sharpe": true,
+    "ediv_beats_vix_maxdd": false,
+    "ediv_beats_vix_return": true,
+    "bh_total_return_same_span": 2.1572
+   },
+   "folds": [
+    {
+     "fold_id": 0,
+     "train_period": "2011-07-05〜2014-07-07",
+     "test_period": "2014-07-08〜2015-07-07",
+     "threshold": 1.0028,
+     "cash_rate": 0.579,
+     "n_blocks": 14,
+     "ediv_OOS_return": -0.0772,
+     "bh_return": 0.0524,
+     "vix_used": true,
+     "vix_OOS_return": -0.0935
+    },
+    {
+     "fold_id": 1,
+     "train_period": "2012-07-03〜2015-07-07",
+     "test_period": "2015-07-08〜2016-07-06",
+     "threshold": 0.762,
+     "cash_rate": 0.611,
+     "n_blocks": 10,
+     "ediv_OOS_return": 0.0907,
+     "bh_return": 0.0088,
+     "vix_used": true,
+     "vix_OOS_return": -0.0488
+    },
+    {
+     "fold_id": 2,
+     "train_period": "2013-07-08〜2016-07-06",
+     "test_period": "2016-07-07〜2017-07-06",
+     "threshold": 1.0617,
+     "cash_rate": 0.425,
+     "n_blocks": 10,
+     "ediv_OOS_return": 0.0804,
+     "bh_return": 0.1476,
+     "vix_used": true,
+     "vix_OOS_return": 0.0779
+    },
+    {
+     "fold_id": 3,
+     "train_period": "2014-07-08〜2017-07-06",
+     "test_period": "2017-07-07〜2018-07-06",
+     "threshold": 1.2254,
+     "cash_rate": 0.286,
+     "n_blocks": 9,
+     "ediv_OOS_return": 0.0889,
+     "bh_return": 0.1453,
+     "vix_used": true,
+     "vix_OOS_return": 0.156
+    },
+    {
+     "fold_id": 4,
+     "train_period": "2015-07-08〜2018-07-06",
+     "test_period": "2018-07-09〜2019-07-09",
+     "threshold": 1.0924,
+     "cash_rate": 0.524,
+     "n_blocks": 11,
+     "ediv_OOS_return": 0.0985,
+     "bh_return": 0.0796,
+     "vix_used": true,
+     "vix_OOS_return": 0.003
+    },
+    {
+     "fold_id": 5,
+     "train_period": "2016-07-07〜2019-07-09",
+     "test_period": "2019-07-10〜2020-07-08",
+     "threshold": 1.019,
+     "cash_rate": 0.377,
+     "n_blocks": 10,
+     "ediv_OOS_return": -0.0175,
+     "bh_return": 0.0639,
+     "vix_used": true,
+     "vix_OOS_return": 0.0321
+    },
+    {
+     "fold_id": 6,
+     "train_period": "2017-07-07〜2020-07-08",
+     "test_period": "2020-07-09〜2021-07-08",
+     "threshold": 0.9297,
+     "cash_rate": 0.607,
+     "n_blocks": 9,
+     "ediv_OOS_return": 0.0638,
+     "bh_return": 0.3631,
+     "vix_used": true,
+     "vix_OOS_return": -0.0061
+    },
+    {
+     "fold_id": 7,
+     "train_period": "2018-07-09〜2021-07-08",
+     "test_period": "2021-07-09〜2022-07-08",
+     "threshold": 1.1247,
+     "cash_rate": 0.472,
+     "n_blocks": 12,
+     "ediv_OOS_return": 0.0134,
+     "bh_return": -0.0975,
+     "vix_used": true,
+     "vix_OOS_return": -0.0111
+    },
+    {
+     "fold_id": 8,
+     "train_period": "2019-07-10〜2022-07-08",
+     "test_period": "2022-07-11〜2023-07-11",
+     "threshold": 1.156,
+     "cash_rate": 0.56,
+     "n_blocks": 12,
+     "ediv_OOS_return": 0.051,
+     "bh_return": 0.1385,
+     "vix_used": true,
+     "vix_OOS_return": 0.0268
+    },
+    {
+     "fold_id": 9,
+     "train_period": "2020-07-09〜2023-07-11",
+     "test_period": "2023-07-12〜2024-07-11",
+     "threshold": 1.3066,
+     "cash_rate": 0.107,
+     "n_blocks": 4,
+     "ediv_OOS_return": 0.2353,
+     "bh_return": 0.258,
+     "vix_used": true,
+     "vix_OOS_return": 0.258
+    },
+    {
+     "fold_id": 10,
+     "train_period": "2021-07-09〜2024-07-11",
+     "test_period": "2024-07-12〜2025-07-15",
+     "threshold": 0.9989,
+     "cash_rate": 0.655,
+     "n_blocks": 9,
+     "ediv_OOS_return": -0.0172,
+     "bh_return": 0.118,
+     "vix_used": true,
+     "vix_OOS_return": -0.0883
+    }
+   ]
+  },
+  "20y": {
+   "params": {
+    "train_years": 3,
+    "test_years": 1,
+    "percentile": 80,
+    "n_random": 500,
+    "transaction_cost": 0.0005,
+    "hysteresis_days": 5,
+    "execution": "next-day open",
+    "zscore": "expanding (look-ahead排除)",
+    "vix_threshold_source": "train period only (look-ahead排除)"
+   },
+   "n_folds": 16,
+   "n_folds_with_vix": 16,
+   "oos_span": "2009-07-06〜2025-07-15",
+   "oos_n_days": 4032,
+   "ediv": {
+    "total_return": 1.9726,
+    "cagr": 0.0705,
+    "sharpe": 0.6265,
+    "max_drawdown": -0.1612
+   },
+   "buy_hold": {
+    "total_return": 5.9652,
+    "sharpe": 0.7388,
+    "max_drawdown": -0.3392
+   },
+   "random": {
+    "total_return_mean": 2.1927,
+    "total_return_best": 8.1901,
+    "sharpe_mean": 0.5599,
+    "sharpe_best": 1.2218,
+    "maxdd_mean": -0.2872,
+    "maxdd_best": -0.143
+   },
+   "p_random_beats_ediv_maxdd": 0.01,
+   "p_random_beats_ediv_sharpe": 0.336,
+   "p_random_beats_ediv_return": 0.562,
+   "ediv_maxdd_percentile": 0.99,
+   "ediv_sharpe_percentile": 0.664,
+   "vix_comparison": {
+    "n_folds_with_vix": 16,
+    "vix_span_start": "2009-07-06",
+    "vix_span_end": "2025-07-15",
+    "vix": {
+     "total_return": 1.1116,
+     "cagr": 0.0478,
+     "sharpe": 0.5537,
+     "max_drawdown": -0.2038
+    },
+    "ediv_same_span": {
+     "total_return": 1.9726,
+     "cagr": 0.0705,
+     "sharpe": 0.6265,
+     "max_drawdown": -0.1612
+    },
+    "ediv_beats_vix_sharpe": true,
+    "ediv_beats_vix_maxdd": true,
+    "ediv_beats_vix_return": true,
+    "bh_total_return_same_span": 5.9652
+   },
+   "folds": [
+    {
+     "fold_id": 0,
+     "train_period": "2006-07-03〜2009-07-02",
+     "test_period": "2009-07-06〜2010-07-02",
+     "threshold": 0.8648,
+     "cash_rate": 0.143,
+     "n_blocks": 6,
+     "ediv_OOS_return": 0.1384,
+     "bh_return": 0.1407,
+     "vix_used": true,
+     "vix_OOS_return": 0.1071
+    },
+    {
+     "fold_id": 1,
+     "train_period": "2007-07-05〜2010-07-02",
+     "test_period": "2010-07-06〜2011-07-01",
+     "threshold": 0.8096,
+     "cash_rate": 0.389,
+     "n_blocks": 7,
+     "ediv_OOS_return": 0.1359,
+     "bh_return": 0.3101,
+     "vix_used": true,
+     "vix_OOS_return": 0.1592
+    },
+    {
+     "fold_id": 2,
+     "train_period": "2008-07-03〜2011-07-01",
+     "test_period": "2011-07-05〜2012-07-02",
+     "threshold": 0.7288,
+     "cash_rate": 0.556,
+     "n_blocks": 12,
+     "ediv_OOS_return": 0.0052,
+     "bh_return": 0.0193,
+     "vix_used": true,
+     "vix_OOS_return": -0.0155
+    },
+    {
+     "fold_id": 3,
+     "train_period": "2009-07-06〜2012-07-02",
+     "test_period": "2012-07-03〜2013-07-05",
+     "threshold": 0.6348,
+     "cash_rate": 0.417,
+     "n_blocks": 10,
+     "ediv_OOS_return": 0.0951,
+     "bh_return": 0.1951,
+     "vix_used": true,
+     "vix_OOS_return": 0.1453
+    },
+    {
+     "fold_id": 4,
+     "train_period": "2010-07-06〜2013-07-05",
+     "test_period": "2013-07-08〜2014-07-07",
+     "threshold": 0.8409,
+     "cash_rate": 0.238,
+     "n_blocks": 7,
+     "ediv_OOS_return": 0.1514,
+     "bh_return": 0.2119,
+     "vix_used": true,
+     "vix_OOS_return": 0.2119
+    },
+    {
+     "fold_id": 5,
+     "train_period": "2011-07-05〜2014-07-07",
+     "test_period": "2014-07-08〜2015-07-07",
+     "threshold": 0.6348,
+     "cash_rate": 0.54,
+     "n_blocks": 12,
+     "ediv_OOS_return": -0.0901,
+     "bh_return": 0.0524,
+     "vix_used": true,
+     "vix_OOS_return": -0.0755
+    },
+    {
+     "fold_id": 6,
+     "train_period": "2012-07-03〜2015-07-07",
+     "test_period": "2015-07-08〜2016-07-06",
+     "threshold": 0.5593,
+     "cash_rate": 0.627,
+     "n_blocks": 9,
+     "ediv_OOS_return": 0.1145,
+     "bh_return": 0.0088,
+     "vix_used": true,
+     "vix_OOS_return": -0.0481
+    },
+    {
+     "fold_id": 7,
+     "train_period": "2013-07-08〜2016-07-06",
+     "test_period": "2016-07-07〜2017-07-06",
+     "threshold": 0.7813,
+     "cash_rate": 0.472,
+     "n_blocks": 11,
+     "ediv_OOS_return": 0.0803,
+     "bh_return": 0.1476,
+     "vix_used": true,
+     "vix_OOS_return": 0.024
+    },
+    {
+     "fold_id": 8,
+     "train_period": "2014-07-08〜2017-07-06",
+     "test_period": "2017-07-07〜2018-07-06",
+     "threshold": 1.0403,
+     "cash_rate": 0.329,
+     "n_blocks": 11,
+     "ediv_OOS_return": 0.0709,
+     "bh_return": 0.1453,
+     "vix_used": true,
+     "vix_OOS_return": 0.1149
+    },
+    {
+     "fold_id": 9,
+     "train_period": "2015-07-08〜2018-07-06",
+     "test_period": "2018-07-09〜2019-07-09",
+     "threshold": 0.9891,
+     "cash_rate": 0.548,
+     "n_blocks": 11,
+     "ediv_OOS_return": 0.1438,
+     "bh_return": 0.0796,
+     "vix_used": true,
+     "vix_OOS_return": 0.0049
+    },
+    {
+     "fold_id": 10,
+     "train_period": "2016-07-07〜2019-07-09",
+     "test_period": "2019-07-10〜2020-07-08",
+     "threshold": 0.941,
+     "cash_rate": 0.377,
+     "n_blocks": 10,
+     "ediv_OOS_return": -0.0175,
+     "bh_return": 0.0639,
+     "vix_used": true,
+     "vix_OOS_return": 0.0321
+    },
+    {
+     "fold_id": 11,
+     "train_period": "2017-07-07〜2020-07-08",
+     "test_period": "2020-07-09〜2021-07-08",
+     "threshold": 0.8325,
+     "cash_rate": 0.607,
+     "n_blocks": 9,
+     "ediv_OOS_return": 0.0638,
+     "bh_return": 0.3631,
+     "vix_used": true,
+     "vix_OOS_return": -0.0061
+    },
+    {
+     "fold_id": 12,
+     "train_period": "2018-07-09〜2021-07-08",
+     "test_period": "2021-07-09〜2022-07-08",
+     "threshold": 1.0543,
+     "cash_rate": 0.48,
+     "n_blocks": 12,
+     "ediv_OOS_return": 0.0095,
+     "bh_return": -0.0975,
+     "vix_used": true,
+     "vix_OOS_return": -0.0128
+    },
+    {
+     "fold_id": 13,
+     "train_period": "2019-07-10〜2022-07-08",
+     "test_period": "2022-07-11〜2023-07-11",
+     "threshold": 1.0624,
+     "cash_rate": 0.563,
+     "n_blocks": 12,
+     "ediv_OOS_return": 0.0551,
+     "bh_return": 0.1385,
+     "vix_used": true,
+     "vix_OOS_return": 0.0268
+    },
+    {
+     "fold_id": 14,
+     "train_period": "2020-07-09〜2023-07-11",
+     "test_period": "2023-07-12〜2024-07-11",
+     "threshold": 1.2052,
+     "cash_rate": 0.107,
+     "n_blocks": 4,
+     "ediv_OOS_return": 0.2353,
+     "bh_return": 0.258,
+     "vix_used": true,
+     "vix_OOS_return": 0.258
+    },
+    {
+     "fold_id": 15,
+     "train_period": "2021-07-09〜2024-07-11",
+     "test_period": "2024-07-12〜2025-07-15",
+     "threshold": 0.889,
+     "cash_rate": 0.655,
+     "n_blocks": 9,
+     "ediv_OOS_return": -0.0172,
+     "bh_return": 0.118,
+     "vix_used": true,
+     "vix_OOS_return": -0.0883
+    }
+   ]
+  }
+ }
+}
