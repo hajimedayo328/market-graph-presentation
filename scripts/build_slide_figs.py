@@ -141,8 +141,45 @@ def fig_source():
     print(f"slide_source.png  (NGAS={count['NGAS']}, COPPER={count['COPPER']}, CHINA50={count['CHINA50']})")
 
 
+def fig_network():
+    """道具導入: 40銘柄を点、似た動きを線で結ぶ (実データの相関ネットワーク)."""
+    import networkx as nx
+    ohlc = pd.read_parquet(DATA / "ohlc_40.parquet")
+    rets = ohlc.pct_change().dropna(how="all")
+    win = rets.tail(30).dropna(axis=1, how="any")
+    corr = win.corr()
+    syms = list(corr.columns)
+
+    G = nx.Graph()
+    G.add_nodes_from(syms)
+    TH = 0.4
+    for i, a in enumerate(syms):
+        for b in syms[i+1:]:
+            c = corr.loc[a, b]
+            if abs(c) >= TH:
+                G.add_edge(a, b, weight=c, sign=1 if c > 0 else -1)
+
+    fig, ax = plt.subplots(figsize=(7.4, 5.6), dpi=150)
+    pos = nx.spring_layout(G, seed=42, k=0.55)
+    pos_edges = [(u, v) for u, v, d in G.edges(data=True) if d["sign"] > 0]
+    neg_edges = [(u, v) for u, v, d in G.edges(data=True) if d["sign"] < 0]
+    nx.draw_networkx_edges(G, pos, edgelist=pos_edges, edge_color="#9fc0f5", width=1.4, ax=ax)
+    nx.draw_networkx_edges(G, pos, edgelist=neg_edges, edge_color="#f0b3b3", width=1.4,
+                           style="dashed", ax=ax)
+    nx.draw_networkx_nodes(G, pos, node_color=INK, node_size=260, ax=ax)
+    nx.draw_networkx_labels(G, pos, font_size=7, font_color="white", ax=ax)
+    ax.set_title("40 銘柄を点、似た動きを線で結ぶ (市場の地図)",
+                 fontsize=14, color=INK, weight="bold", pad=10)
+    ax.axis("off")
+    fig.tight_layout()
+    fig.savefig(FIGS / "slide_network.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print(f"slide_network.png  (nodes={G.number_of_nodes()}, edges={G.number_of_edges()})")
+
+
 if __name__ == "__main__":
     fig_scatter()
     fig_equity()
     fig_source()
+    fig_network()
     print("Done.")

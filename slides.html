@@ -84,7 +84,28 @@
   <p class="big">でも値段だけ見てても、暴落は急に来る。</p>
   <p class="lead" style="margin-top:20px;">この研究は、値段じゃなく<strong>市場の"形"</strong>を見た。<br>
   銘柄同士のつながりが作る"形"が崩れる瞬間を捉えられないか?</p>
-  <div class="placeholder">[図] 値段チャート (普通の見方) → 崩れる相関ネットワーク (この研究の見方) の対比</div>
+  <div class="center">
+    <svg viewBox="0 0 620 200" style="display:block; margin:10px auto; width:100%; max-width:620px;">
+      <!-- 左: 普通の見方 (値段チャート) -->
+      <text x="130" y="20" text-anchor="middle" font-size="15" fill="#8a8d93">普通の見方：値段</text>
+      <polyline points="30,150 60,120 90,135 120,90 150,110 180,60 210,80 240,40"
+                fill="none" stroke="#8a8d93" stroke-width="2.5"/>
+      <!-- 矢印 -->
+      <text x="310" y="105" text-anchor="middle" font-size="34" fill="#2f6df6">→</text>
+      <!-- 右: この研究 (ネットワーク) -->
+      <text x="480" y="20" text-anchor="middle" font-size="15" fill="#2f6df6" font-weight="600">この研究：形</text>
+      <g stroke="#9fc0f5" stroke-width="1.6">
+        <line x1="420" y1="60" x2="500" y2="50"/><line x1="500" y1="50" x2="560" y2="90"/>
+        <line x1="560" y1="90" x2="490" y2="140"/><line x1="490" y1="140" x2="420" y2="120"/>
+        <line x1="420" y1="120" x2="420" y2="60"/><line x1="420" y1="60" x2="560" y2="90"/>
+      </g>
+      <line x1="490" y1="140" x2="500" y2="50" stroke="#f0b3b3" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <g fill="#1a1a1f">
+        <circle cx="420" cy="60" r="8"/><circle cx="500" cy="50" r="8"/><circle cx="560" cy="90" r="8"/>
+        <circle cx="490" cy="140" r="8"/><circle cx="420" cy="120" r="8"/>
+      </g>
+    </svg>
+  </div>
   <div class="pagenum">2 / 14</div>
 </section>
 
@@ -105,17 +126,10 @@
 <section>
   <div class="act">第2幕 — 道具</div>
   <h2>まず、市場を"地図"にする</h2>
-  <div class="two-col">
-    <div>
-      <ul class="lead">
-        <li>40銘柄を<strong>● 点</strong>にする</li>
-        <li>似た動きをするペアを<strong>— 線</strong>で結ぶ</li>
-        <li>これで市場が1枚の<strong>ネットワーク (地図)</strong> になる</li>
-      </ul>
-      <p class="muted" style="margin-top:16px;">この地図が毎日少しずつ形を変える。<br>その"形"を2つの目で測る。</p>
-    </div>
-    <div class="placeholder">[図] 40銘柄の相関ネットワーク (点と線)<br>Pages のネットワーク図を流用</div>
-  </div>
+  <p class="lead center">40銘柄を <strong>● 点</strong>、似た動きをするペアを <strong>— 線</strong> で結ぶ。
+  市場が1枚の<strong>地図</strong>になる。</p>
+  <div class="center"><img src="figs/slide_network.png" alt="相関ネットワーク" style="max-height:400px; max-width:74%; border-radius:8px;"></div>
+  <p class="muted center" style="margin-top:4px;">この地図が毎日少しずつ形を変える。その"形"を次の2つの目で測る。</p>
   <div class="pagenum">4 / 14</div>
 </section>
 
@@ -321,9 +335,9 @@
         <li>判定 → <strong>デモ口座で自動売買</strong> (仮想資金・実弾なし)</li>
         <li>結果を<strong>ホームページに自動更新</strong></li>
       </ul>
-      <p class="muted">今日も動いてる → ライブで見せる</p>
+      <p class="muted">今日も動いてる → <strong>当日ライブで app.html を開く</strong></p>
     </div>
-    <div class="placeholder">[図] Pages の live ステータス画面のスクショ<br>(当日ライブで開いてもいい)</div>
+    <div><img src="figs/slide_live.png" alt="liveステータス" style="width:100%; border-radius:6px; border:1px solid #e0e3e8;"></div>
   </div>
   <div class="pagenum">13 / 14</div>
 </section>
