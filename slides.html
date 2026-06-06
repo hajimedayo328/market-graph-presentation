@@ -129,7 +129,57 @@
         <li>これを数学では<strong>ホモロジー</strong>と呼ぶ (難しくない、ただの"穴の量")</li>
       </ul>
     </div>
-    <div class="placeholder">[図] ドーナツの穴の例え → ネットワークの輪っか<br>(噛み砕き図・新規作成)</div>
+    <svg viewBox="0 0 560 320" style="width:100%; max-width:560px;">
+      <!-- ===== 左: 密に埋まった網 → 穴が小さい ===== -->
+      <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">しっかり繋がってる</text>
+      <!-- 六角形の頂点 -->
+      <!-- 中心 (140,150) -->
+      <!-- 辺: 外周 + 中心へのスポーク (三角形で密に埋める) -->
+      <g stroke="#9aa0a8" stroke-width="2">
+        <line x1="140" y1="75" x2="205" y2="112"/>
+        <line x1="205" y1="112" x2="205" y2="188"/>
+        <line x1="205" y1="188" x2="140" y2="225"/>
+        <line x1="140" y1="225" x2="75" y2="188"/>
+        <line x1="75" y1="188" x2="75" y2="112"/>
+        <line x1="75" y1="112" x2="140" y2="75"/>
+        <!-- スポーク (中心と結ぶ → 三角で埋まる) -->
+        <line x1="140" y1="150" x2="140" y2="75" stroke="#c3c8cf"/>
+        <line x1="140" y1="150" x2="205" y2="112" stroke="#c3c8cf"/>
+        <line x1="140" y1="150" x2="205" y2="188" stroke="#c3c8cf"/>
+        <line x1="140" y1="150" x2="140" y2="225" stroke="#c3c8cf"/>
+        <line x1="140" y1="150" x2="75" y2="188" stroke="#c3c8cf"/>
+        <line x1="140" y1="150" x2="75" y2="112" stroke="#c3c8cf"/>
+      </g>
+      <g fill="#1a1a1f">
+        <circle cx="140" cy="75" r="9"/><circle cx="205" cy="112" r="9"/>
+        <circle cx="205" cy="188" r="9"/><circle cx="140" cy="225" r="9"/>
+        <circle cx="75" cy="188" r="9"/><circle cx="75" cy="112" r="9"/>
+        <circle cx="140" cy="150" r="9"/>
+      </g>
+      <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2a9d5c">小さい</tspan> → 安定</text>
+
+      <!-- ===== 右: スカスカの大きな輪 → 大きい穴 ===== -->
+      <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">バラバラ (大きな輪)</text>
+      <!-- 穴を塗りで強調 -->
+      <polygon points="420,75 485,112 485,188 420,225 355,188 355,112"
+               fill="#fbe4e4" stroke="none"/>
+      <g stroke="#9aa0a8" stroke-width="2">
+        <line x1="420" y1="75" x2="485" y2="112"/>
+        <line x1="485" y1="112" x2="485" y2="188"/>
+        <line x1="485" y1="188" x2="420" y2="225"/>
+        <line x1="420" y1="225" x2="355" y2="188"/>
+        <line x1="355" y1="188" x2="355" y2="112"/>
+        <line x1="355" y1="112" x2="420" y2="75"/>
+      </g>
+      <text x="420" y="156" text-anchor="middle" font-size="15" font-weight="700" fill="#d24b4b">穴</text>
+      <g fill="#1a1a1f">
+        <circle cx="420" cy="75" r="9"/><circle cx="485" cy="112" r="9"/>
+        <circle cx="485" cy="188" r="9"/><circle cx="420" cy="225" r="9"/>
+        <circle cx="355" cy="188" r="9"/><circle cx="355" cy="112" r="9"/>
+      </g>
+      <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#d24b4b">大きい</tspan> → 不安定</text>
+    </svg>
+    <p class="muted" style="font-size:0.7em; margin-top:4px;">真ん中で繋がってると穴は埋まる。輪だけだと大きな穴が空く。この穴の大きさを測る。</p>
   </div>
   <p class="muted center">キーワード: <strong class="green">穴の量 = 市場のバラバラ度</strong></p>
   <div class="pagenum">5 / 14</div>
@@ -148,7 +198,37 @@
         <li>この<strong>矛盾した三角の数</strong>を数える</li>
       </ul>
     </div>
-    <div class="placeholder">[図] +/− の三角。つじつまの合う三角 vs 合わない三角<br>(噛み砕き図・新規作成)</div>
+    <svg viewBox="0 0 560 320" style="width:100%; max-width:560px;">
+      <!-- ===== 左: つじつまが合う三角 ===== -->
+      <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">つじつまが合う</text>
+      <!-- 辺 (全部 + = 一緒に動く = 緑) -->
+      <line x1="140" y1="80" x2="80" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+      <line x1="80" y1="210" x2="200" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+      <line x1="200" y1="210" x2="140" y2="80" stroke="#2a9d5c" stroke-width="3"/>
+      <!-- 符号ラベル -->
+      <text x="98" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+      <text x="135" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+      <text x="182" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+      <!-- 点 -->
+      <circle cx="140" cy="80" r="12" fill="#1a1a1f"/>
+      <circle cx="80" cy="210" r="12" fill="#1a1a1f"/>
+      <circle cx="200" cy="210" r="12" fill="#1a1a1f"/>
+      <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">みんな一緒に動く → <tspan font-weight="700" fill="#2a9d5c">OK</tspan></text>
+
+      <!-- ===== 右: 矛盾する三角 ===== -->
+      <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">矛盾 (ねじれ)</text>
+      <line x1="420" y1="80" x2="360" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+      <line x1="360" y1="210" x2="480" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+      <line x1="480" y1="210" x2="420" y2="80" stroke="#d24b4b" stroke-width="3" stroke-dasharray="7 5"/>
+      <text x="378" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+      <text x="415" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+      <text x="462" y="148" font-size="22" font-weight="700" fill="#d24b4b">−</text>
+      <circle cx="420" cy="80" r="12" fill="#1a1a1f"/>
+      <circle cx="360" cy="210" r="12" fill="#1a1a1f"/>
+      <circle cx="480" cy="210" r="12" fill="#1a1a1f"/>
+      <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">友達の友達が<tspan font-weight="700" fill="#d24b4b">敵</tspan> → ねじれ</text>
+    </svg>
+    <p class="muted" style="font-size:0.7em; margin-top:4px;">+ = 一緒に動く / − = 逆に動く。この"ねじれ三角"を数える。</p>
   </div>
   <p class="muted center">キーワード: <strong class="orange">矛盾の数 = 市場のねじれ具合</strong></p>
   <div class="pagenum">6 / 14</div>
