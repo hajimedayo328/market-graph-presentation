@@ -155,7 +155,6 @@ pytest -v
   title        = {Market Graph Research: Topological Analysis of Financial Networks
                   with Categorical and Sign-based Invariants},
   year         = {2026},
-  institution  = {Tokyo City University},
   howpublished = {\url{https://github.com/hajimedayo328/market-graph-presentation}},
   note         = {GitHub Pages: \url{https://hajimedayo328.github.io/market-graph-presentation/}}
 }
