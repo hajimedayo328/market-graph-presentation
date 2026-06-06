@@ -1,0 +1,28 @@
+{
+ "period": "20y",
+ "n_random": 1000,
+ "cash_rate": 0.469,
+ "n_blocks": 191,
+ "block_len": 12,
+ "ediv": {
+  "max_drawdown": -0.2036,
+  "sharpe": 0.757,
+  "total_return": 4.66
+ },
+ "random_maxdd": {
+  "mean": -0.4199,
+  "best": -0.2051,
+  "worst": -0.65
+ },
+ "random_sharpe": {
+  "mean": 0.267,
+  "best": 0.757
+ },
+ "random_return": {
+  "mean": 1.2485
+ },
+ "ediv_maxdd_percentile": 1.0,
+ "ediv_sharpe_percentile": 0.999,
+ "p_random_beats_ediv_maxdd": 0.0,
+ "p_random_beats_ediv_sharpe": 0.001
+}
