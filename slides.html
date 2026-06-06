@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>市場の「形」で暴落を見る — 研究発表</title>
+
+<!-- reveal.js (CDN) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" id="theme">
+
+<style>
+  /* ===== C: ミニマル白 (Apple 風) パレット ===== */
+  :root {
+    --paper:  #ffffff;
+    --ink:    #1a1a1f;
+    --subtle: #f2f3f5;
+    --accent: #2f6df6;   /* Apple blue */
+    --muted:  #8a8d93;
+    --green:  #2a9d5c;
+    --orange: #e08a2b;
+    --red:    #d24b4b;
+  }
+  .reveal {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    color: var(--ink);
+    font-weight: 300;
+  }
+  .reveal .slides section { text-align: left; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--ink); font-weight: 600; letter-spacing: -0.01em; }
+  .reveal h1 { font-size: 2.0em; line-height: 1.25; }
+  .reveal h2 { font-size: 1.5em; line-height: 1.3; margin-bottom: 0.4em; }
+  .reveal h3 { font-size: 1.1em; color: var(--muted); font-weight: 400; }
+  .reveal strong { color: var(--accent); font-weight: 600; }
+  .reveal .big { font-size: 1.3em; line-height: 1.5; }
+  .reveal .lead { font-size: 1.15em; color: var(--ink); }
+  .reveal .muted { color: var(--muted); font-size: 0.8em; }
+  .reveal .center { text-align: center; }
+  .reveal .green { color: var(--green); }
+  .reveal .orange { color: var(--orange); }
+  .reveal .red { color: var(--red); }
+  .reveal ul { line-height: 1.7; }
+  .reveal .placeholder {
+    border: 2px dashed #cfd3da; border-radius: 10px;
+    padding: 30px; text-align: center; color: var(--muted);
+    background: var(--subtle); margin: 18px 0; font-size: 0.85em;
+  }
+  .reveal .tag {
+    display: inline-block; font-size: 0.5em; padding: 3px 10px; border-radius: 20px;
+    vertical-align: middle; margin-left: 8px; font-weight: 500;
+  }
+  .reveal .tag.sure  { background: #e3f6ea; color: var(--green); }
+  .reveal .tag.weak  { background: #fdf0dd; color: var(--orange); }
+  .reveal .pagenum { position: absolute; bottom: 12px; right: 18px; font-size: 0.5em; color: var(--muted); }
+  .reveal section .act { font-size: 0.6em; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .reveal .two-col { display: flex; gap: 30px; align-items: center; }
+  .reveal .two-col > div { flex: 1; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============ 第1幕: つかみ・問い ============ -->
+
+<!-- 1: タイトル -->
+<section data-background-color="#ffffff">
+  <div class="center" style="padding-top:30px;">
+    <h1>市場の「形」で<br>暴落は見えるか</h1>
+    <p class="lead" style="margin-top:30px;">— 銘柄のつながりを"地図"にして、2つの目で市場を見る —</p>
+    <p class="muted" style="margin-top:50px;">あなたの名前 ／ 所属研究室 ／ 2026</p>
+  </div>
+  <div class="pagenum">1 / 14</div>
+</section>
+
+<!-- 2: つかみ -->
+<section>
+  <div class="act">第1幕 — つかみ</div>
+  <h2>普通、市場は「値段」で見る</h2>
+  <p class="big">でも値段だけ見てても、暴落は急に来る。</p>
+  <p class="lead" style="margin-top:20px;">この研究は、値段じゃなく<strong>市場の"形"</strong>を見た。<br>
+  銘柄同士のつながりが作る"形"が崩れる瞬間を捉えられないか?</p>
+  <div class="placeholder">[図] 値段チャート (普通の見方) → 崩れる相関ネットワーク (この研究の見方) の対比</div>
+  <div class="pagenum">2 / 14</div>
+</section>
+
+<!-- 3: 問い -->
+<section>
+  <div class="act">第1幕 — 問い</div>
+  <h2>研究の問い</h2>
+  <p class="big center" style="margin:40px 0;">「銘柄同士のつながりを"地図"にしたら、<br>
+  暴落の前兆や正体が見えるんじゃないか?」</p>
+  <p class="lead">株・為替・金・原油…<strong>40個の銘柄</strong>がどう連動してるかを毎日"地図"にして、<br>
+  その地図の<strong>形の変化</strong>を追いかけた。</p>
+  <div class="pagenum">3 / 14</div>
+</section>
+
+<!-- ============ 第2幕: 道具 (一番厚く) ============ -->
+
+<!-- 4: 地図にする -->
+<section>
+  <div class="act">第2幕 — 道具</div>
+  <h2>まず、市場を"地図"にする</h2>
+  <div class="two-col">
+    <div>
+      <ul class="lead">
+        <li>40銘柄を<strong>● 点</strong>にする</li>
+        <li>似た動きをするペアを<strong>— 線</strong>で結ぶ</li>
+        <li>これで市場が1枚の<strong>ネットワーク (地図)</strong> になる</li>
+      </ul>
+      <p class="muted" style="margin-top:16px;">この地図が毎日少しずつ形を変える。<br>その"形"を2つの目で測る。</p>
+    </div>
+    <div class="placeholder">[図] 40銘柄の相関ネットワーク (点と線)<br>Pages のネットワーク図を流用</div>
+  </div>
+  <div class="pagenum">4 / 14</div>
+</section>
+
+<!-- 5: 道具① 穴の量 -->
+<section>
+  <div class="act">第2幕 — 道具①</div>
+  <h2>道具① 「穴の量」</h2>
+  <div class="two-col">
+    <div>
+      <p class="lead">地図の中にできる<strong>"輪っか (穴)"</strong>の大きさを測る。</p>
+      <ul>
+        <li>線が輪を作ると、真ん中に"穴"があく</li>
+        <li>穴が<strong>大きい・多い</strong>= つながりがバラバラで不安定</li>
+        <li>これを数学では<strong>ホモロジー</strong>と呼ぶ (難しくない、ただの"穴の量")</li>
+      </ul>
+    </div>
+    <div class="placeholder">[図] ドーナツの穴の例え → ネットワークの輪っか<br>(噛み砕き図・新規作成)</div>
+  </div>
+  <p class="muted center">キーワード: <strong class="green">穴の量 = 市場のバラバラ度</strong></p>
+  <div class="pagenum">5 / 14</div>
+</section>
+
+<!-- 6: 道具② 矛盾の数 -->
+<section>
+  <div class="act">第2幕 — 道具②</div>
+  <h2>道具② 「矛盾の数」</h2>
+  <div class="two-col">
+    <div>
+      <p class="lead">"つじつまの合わない三角"を数える。</p>
+      <ul>
+        <li>線には<strong>+ (一緒に動く)</strong> と <strong>− (逆に動く)</strong> がある</li>
+        <li>「友達の友達が敵」みたいな三角は<strong>つじつまが合わない</strong></li>
+        <li>この<strong>矛盾した三角の数</strong>を数える</li>
+      </ul>
+    </div>
+    <div class="placeholder">[図] +/− の三角。つじつまの合う三角 vs 合わない三角<br>(噛み砕き図・新規作成)</div>
+  </div>
+  <p class="muted center">キーワード: <strong class="orange">矛盾の数 = 市場のねじれ具合</strong></p>
+  <div class="pagenum">6 / 14</div>
+</section>
+
+<!-- 7: 2つは別物 -->
+<section>
+  <div class="act">第2幕 — まとめ</div>
+  <h2>この2つは"別物"を見ている</h2>
+  <div class="two-col">
+    <div class="center">
+      <p class="big green">穴の量</p>
+      <p>つながりの<strong>"量"</strong><br>バラバラ度</p>
+    </div>
+    <div class="center">
+      <p class="big orange">矛盾の数</p>
+      <p>つながりの<strong>"符号(向き)"</strong><br>ねじれ具合</p>
+    </div>
+  </div>
+  <p class="lead center" style="margin-top:30px;">片方は"量"、片方は"向き"。<br><strong>市場を見る2つの独立した目</strong>になる。</p>
+  <div class="pagenum">7 / 14</div>
+</section>
+
+<!-- ============ 第3幕: 発見・構造 ============ -->
+
+<!-- 8: 発見① 独立 -->
+<section>
+  <div class="act">第3幕 — 発見</div>
+  <h2>発見① 2つの目は連動しない <span class="tag sure">● 確実</span></h2>
+  <p class="lead">「穴の量」と「矛盾の数」は、<strong>別々に動く</strong> (相関が弱い)。</p>
+  <ul>
+    <li>10通りの条件で調べても、ずっと弱いまま</li>
+    <li>= 片方を知っても、もう片方は分からない</li>
+    <li><strong>2種類の独立した情報</strong>を市場から取り出せた</li>
+  </ul>
+  <div class="placeholder">[図] 穴の量 vs 矛盾の数 の散布図 (バラけてる = 無相関)</div>
+  <div class="pagenum">8 / 14</div>
+</section>
+
+<!-- 9: 発見② 震源 -->
+<section>
+  <div class="act">第3幕 — 発見</div>
+  <h2>発見② 暴落の"震源"は意外な銘柄 <span class="tag sure">● 確実</span></h2>
+  <p class="lead">地図が崩れる時、<strong>震源 (主役) はニュースの花形じゃない</strong>。</p>
+  <div class="two-col">
+    <div>
+      <ul>
+        <li>米国株 (ニュースの主役) ではなく…</li>
+        <li>震源は <strong>天然ガス・銅・中国</strong></li>
+        <li>性質の違う4つの暴落で<strong>共通して</strong>この3つが震源だった</li>
+      </ul>
+    </div>
+    <div class="placeholder">[図] 震源マップ。共通コア (NGAS/COPPER/CHINA50) を強調</div>
+  </div>
+  <div class="pagenum">9 / 14</div>
+</section>
+
+<!-- ============ 第4幕: バックテスト (山場) ============ -->
+
+<!-- 10: バックテスト結果 -->
+<section>
+  <div class="act">第4幕 — 実際に試す</div>
+  <h2>発見③ 「矛盾の日」に避けると暴落が浅くなる <span class="tag sure">● 確実</span></h2>
+  <p class="lead">「矛盾が突出した日に株を売って現金にする」を<strong>過去20年で試した</strong>。</p>
+  <div class="two-col">
+    <div>
+      <ul>
+        <li class="green">✓ 暴落で<strong>沈む深さが浅くなった</strong></li>
+        <li class="muted">✗ でも儲けは増えない (ただ持つ方が儲かる)</li>
+        <li>= お金を増やす道具じゃなく<strong>"守り"の道具</strong></li>
+      </ul>
+    </div>
+    <div class="placeholder">[図] 資産曲線 2本。「ただ持つ」vs「戦略」<br>暴落時に戦略の方が浅い、を強調 (数字なし)</div>
+  </div>
+  <div class="pagenum">10 / 14</div>
+</section>
+
+<!-- 11: 自分で殴る (頂点) -->
+<section>
+  <div class="act">第4幕 — 自分で疑う</div>
+  <h2>「それ、ただの偶然では?」を自分で潰した</h2>
+  <p class="lead">都合のいい結果を疑って、<strong>自分でツッコミを入れて検証した</strong>:</p>
+  <ul>
+    <li>「ただ運がいいだけ?」→ <strong>でたらめに避けた1000パターン</strong>と比較 → 勝った</li>
+    <li>「ただ現金多いだけ?」→ 同じ現金量でも<strong>避けるタイミングが効いてた</strong></li>
+    <li>「恐怖指数(VIX)で十分?」→ <strong>VIXより良い</strong>タイミングを掴んでた</li>
+  </ul>
+  <p class="lead center green" style="margin-top:20px;">→ 偶然じゃない。<strong>未来データ(知らない期間)でも"守り"は再現した</strong></p>
+  <div class="pagenum">11 / 14</div>
+</section>
+
+<!-- 12: 正直な限界 -->
+<section>
+  <div class="act">第4幕 — 正直な限界</div>
+  <h2>でも「予知」ではない <span class="tag weak">◐ 正直に</span></h2>
+  <p class="lead">検証したら、都合の悪い事実も出た。隠さず言う:</p>
+  <ul>
+    <li>暴落を<strong>前もって予言してるわけじゃない</strong></li>
+    <li>暴落が<strong>始まってから反応</strong>してる (ただし恐怖指数より<strong>速い</strong>)</li>
+    <li>コロナ級の<strong>突発暴落の入口は捉えられない</strong></li>
+  </ul>
+  <p class="lead center" style="margin-top:20px;">正確には「予知」ではなく<strong>「VIXより速い初動検知」</strong>。<br><span class="muted">誇張せず、できること/できないことを線引きする。</span></p>
+  <div class="pagenum">12 / 14</div>
+</section>
+
+<!-- ============ 第5幕: 実物・締め ============ -->
+
+<!-- 13: 毎日動いてる -->
+<section>
+  <div class="act">第5幕 — 実物</div>
+  <h2>論文止まりじゃない。毎日動いてる</h2>
+  <div class="two-col">
+    <div>
+      <ul class="lead">
+        <li>サーバーで<strong>毎朝7時に自動計算</strong></li>
+        <li>判定 → <strong>デモ口座で自動売買</strong> (仮想資金・実弾なし)</li>
+        <li>結果を<strong>ホームページに自動更新</strong></li>
+      </ul>
+      <p class="muted">今日も動いてる → ライブで見せる</p>
+    </div>
+    <div class="placeholder">[図] Pages の live ステータス画面のスクショ<br>(当日ライブで開いてもいい)</div>
+  </div>
+  <div class="pagenum">13 / 14</div>
+</section>
+
+<!-- 14: まとめ -->
+<section data-background-color="#f7f8fa">
+  <div class="act">まとめ</div>
+  <h2>2つの目で市場を見た</h2>
+  <div class="two-col">
+    <div>
+      <h3 style="color:var(--green);">確実にできたこと</h3>
+      <ul>
+        <li>2つの独立した目 (穴・矛盾)</li>
+        <li>暴落の震源は意外な銘柄</li>
+        <li>暴落を浅くする"守り"</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--orange);">正直な限界 / 今後</h3>
+      <ul>
+        <li>「予知」ではなく「速い反応」</li>
+        <li>突発暴落の入口は未対応</li>
+        <li>圏論での理論づけは今後</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead center" style="margin-top:24px;">詳しくは研究ページ → <strong>hajimedayo328.github.io/market-graph-presentation</strong></p>
+  <div class="pagenum">14 / 14</div>
+</section>
+
+</div>
+</div>
+
+<!-- reveal.js 本体 -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    width: 1100,
+    height: 700,
+    margin: 0.08,
+  });
+</script>
+</body>
+</html>
