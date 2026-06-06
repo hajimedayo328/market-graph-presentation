@@ -35,10 +35,9 @@ jobs:
           python scripts/update_data.py 5
         timeout-minutes: 10
 
-      - name: Run backtest
-        run: |
-          python scripts/backtest.py
-        timeout-minutes: 10
+      # NOTE: backtest.py (旧 look-ahead 込み版) は app.html で未使用かつ
+      # 空データ時に NaTType でクラッシュするため週次からは除外。
+      # バックテスト結果は過去分析なので毎週再計算不要 (既存 JSON を build が参照)。
 
       - name: Build index.html (research presentation)
         run: |
