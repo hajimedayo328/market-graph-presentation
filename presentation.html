@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>発表 — 市場の「形」で暴落を見る</title>
+<title>発表 — 銘柄ネットワークの形から市場の構造変化を見る</title>
 <style>
   :root {
     --paper:#ffffff; --ink:#1a1a1f; --sub:#5a5e66; --subtle:#f2f3f5;
@@ -16,7 +16,6 @@
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
     font-weight:300; -webkit-font-smoothing:antialiased;
   }
-  /* ===== top nav (index/app と統一) ===== */
   .topnav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.92);
     backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
   .topnav-inner { max-width:920px; margin:0 auto; padding:10px 20px; display:flex; gap:8px; align-items:center; }
@@ -26,23 +25,22 @@
   .topnav-tab.active { background:var(--accent); color:#fff; }
   .topnav-spacer { flex:1; }
   .topnav-gh { font-size:12px; color:var(--muted); text-decoration:none; }
-  /* ===== layout ===== */
   .wrap { max-width:920px; margin:0 auto; padding:0 20px 80px; }
-  .hero { text-align:center; padding:70px 20px 40px; }
-  .hero h1 { font-size:42px; font-weight:600; letter-spacing:-0.02em; line-height:1.25; margin:0 0 18px; }
-  .hero .sub { font-size:18px; color:var(--sub); }
-  .hero .by { margin-top:26px; color:var(--muted); font-size:14px; }
+  .hero { text-align:center; padding:64px 20px 36px; }
+  .hero h1 { font-size:36px; font-weight:600; letter-spacing:-0.02em; line-height:1.3; margin:0 0 18px; }
+  .hero .sub { font-size:17px; color:var(--sub); }
+  .hero .by { margin-top:24px; color:var(--muted); font-size:14px; }
   .step { background:#fff; border:1px solid var(--line); border-radius:16px;
     padding:34px 40px; margin:22px 0; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
   .step-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
   .step-num { flex:none; width:34px; height:34px; border-radius:50%; background:var(--accent);
     color:#fff; font-size:15px; font-weight:600; display:flex; align-items:center; justify-content:center; }
   .act { font-size:11px; color:var(--accent); letter-spacing:0.12em; text-transform:uppercase; font-weight:500; }
-  h2 { font-size:26px; font-weight:600; letter-spacing:-0.01em; line-height:1.3; margin:0; }
+  h2 { font-size:25px; font-weight:600; letter-spacing:-0.01em; line-height:1.3; margin:0; }
   h3 { font-size:17px; font-weight:600; margin:0 0 8px; }
   strong { color:var(--accent); font-weight:600; }
   .lead { font-size:17px; color:var(--ink); }
-  .big { font-size:20px; line-height:1.5; }
+  .big { font-size:19px; line-height:1.5; }
   .muted { color:var(--muted); font-size:14px; }
   .center { text-align:center; }
   .green{color:var(--green);} .orange{color:var(--orange);} .red{color:var(--red);}
@@ -59,7 +57,7 @@
   .divider-act { text-align:center; margin:40px 0 8px; color:var(--muted);
     font-size:13px; letter-spacing:0.15em; }
   .divider-act::before, .divider-act::after { content:"—"; margin:0 10px; color:#d0d3d8; }
-  @media (max-width:640px){ .step{padding:24px 22px;} .hero h1{font-size:32px;} h2{font-size:22px;} }
+  @media (max-width:640px){ .step{padding:24px 22px;} .hero h1{font-size:28px;} h2{font-size:21px;} }
 </style>
 </head>
 <body>
@@ -76,28 +74,26 @@
 
 <div class="wrap">
 
-  <!-- ヒーロー -->
   <div class="hero">
-    <h1>市場の「形」で<br>暴落は見えるか</h1>
-    <p class="sub">— 銘柄のつながりを"地図"にして、2つの目で市場を見る —</p>
-    <p class="by"><span class="muted">この発表は上から順にスクロールしながら説明します。所要 10〜15 分。</span></p>
+    <h1>銘柄ネットワークの"形"から<br>市場の構造変化を見る</h1>
+    <p class="sub">40銘柄の相関を毎日ネットワーク化し、2つの位相的な指標で構造の変化を追う</p>
+    <p class="by"><span class="muted">上から順に説明します。所要 10〜15 分。</span></p>
   </div>
 
-  <!-- ============ 第1幕: つかみ・問い ============ -->
-  <div class="divider-act">第1幕　つかみと問い</div>
+  <!-- ============ 背景と問い ============ -->
+  <div class="divider-act">背景と問い</div>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">1</div><div class="act">つかみ</div></div>
-    <h2>普通、市場は「値段」で見る</h2>
-    <p class="big" style="margin-top:14px;">でも値段だけ見てても、暴落は急に来る。</p>
-    <p class="lead">この研究は、値段じゃなく<strong>市場の"形"</strong>を見た。
-    銘柄同士のつながりが作る"形"が崩れる瞬間を捉えられないか?</p>
+    <div class="step-head"><div class="step-num">1</div><div class="act">背景</div></div>
+    <h2>価格ではなく「つながりの構造」を見る</h2>
+    <p class="lead" style="margin-top:14px;">市場の分析は普通、価格や出来高を使う。この研究では、
+    銘柄同士が<strong>どう連動するか</strong>という"つながりの構造"と、その変化を見る。</p>
     <div class="center">
       <svg viewBox="0 0 620 200" style="margin:10px auto; width:100%; max-width:620px;">
-        <text x="130" y="20" text-anchor="middle" font-size="15" fill="#8a8d93">普通の見方：値段</text>
+        <text x="130" y="20" text-anchor="middle" font-size="15" fill="#8a8d93">よくある分析：価格</text>
         <polyline points="30,150 60,120 90,135 120,90 150,110 180,60 210,80 240,40" fill="none" stroke="#8a8d93" stroke-width="2.5"/>
         <text x="310" y="105" text-anchor="middle" font-size="34" fill="#2f6df6">→</text>
-        <text x="480" y="20" text-anchor="middle" font-size="15" fill="#2f6df6" font-weight="600">この研究：形</text>
+        <text x="480" y="20" text-anchor="middle" font-size="15" fill="#2f6df6" font-weight="600">本研究：構造（つながり）</text>
         <g stroke="#9fc0f5" stroke-width="1.6">
           <line x1="420" y1="60" x2="500" y2="50"/><line x1="500" y1="50" x2="560" y2="90"/>
           <line x1="560" y1="90" x2="490" y2="140"/><line x1="490" y1="140" x2="420" y2="120"/>
@@ -115,29 +111,30 @@
   <section class="step">
     <div class="step-head"><div class="step-num">2</div><div class="act">問い</div></div>
     <h2>研究の問い</h2>
-    <p class="big center" style="margin:24px 0;">「銘柄同士のつながりを"地図"にしたら、<br>暴落の前兆や正体が見えるんじゃないか?」</p>
-    <p class="lead center">株・為替・金・原油…<strong>40個の銘柄</strong>がどう連動してるかを毎日"地図"にして、
-    その地図の<strong>形の変化</strong>を追いかけた。</p>
+    <p class="big center" style="margin:24px 0;">銘柄同士のつながりをネットワークにしたとき、<br>
+    その"形"の変化から市場の構造変化を捉えられるか。</p>
+    <p class="lead center">株・為替・金・原油など<strong>40銘柄</strong>の連動を毎日ネットワーク化し、
+    その<strong>形の変化</strong>を時系列で追った。</p>
   </section>
 
-  <!-- ============ 第2幕: 道具 ============ -->
-  <div class="divider-act">第2幕　2つの道具（ここが核心）</div>
+  <!-- ============ 2つの指標 ============ -->
+  <div class="divider-act">2つの指標</div>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">3</div><div class="act">道具の前提</div></div>
-    <h2>まず、市場を"地図"にする</h2>
-    <p class="lead center">40銘柄を <strong>● 点</strong>、似た動きをするペアを <strong>— 線</strong> で結ぶ。市場が1枚の<strong>地図</strong>になる。</p>
+    <div class="step-head"><div class="step-num">3</div><div class="act">前提</div></div>
+    <h2>市場をネットワークにする</h2>
+    <p class="lead center">40銘柄を <strong>点</strong>、相関の高いペアを <strong>線</strong> で結び、1枚のネットワークにする。</p>
     <div class="center"><img src="figs/slide_network.png" alt="相関ネットワーク" style="margin:10px auto; max-height:380px; max-width:78%; border-radius:8px;"></div>
-    <p class="muted center">この地図が毎日少しずつ形を変える。その"形"を次の2つの目で測る。</p>
+    <p class="muted center">このネットワークの形が日々変化する。その形を次の2つの指標で測る。</p>
   </section>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">4</div><div class="act">道具①</div></div>
-    <h2>道具① 「穴の量」</h2>
-    <p class="lead center">市場の地図にできる <strong>"穴 (輪っか)"</strong> の大きさを測る。</p>
+    <div class="step-head"><div class="step-num">4</div><div class="act">指標①</div></div>
+    <h2>指標① 穴の量（持続ホモロジー）</h2>
+    <p class="lead center">ネットワークにできる <strong>"輪（穴）"</strong> の大きさを測る指標。</p>
     <div class="center">
       <svg viewBox="0 0 560 320" style="margin:6px auto; width:100%; max-width:660px;">
-        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">しっかり繋がってる</text>
+        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">密につながっている</text>
         <g stroke="#9aa0a8" stroke-width="2">
           <line x1="140" y1="75" x2="205" y2="112"/><line x1="205" y1="112" x2="205" y2="188"/>
           <line x1="205" y1="188" x2="140" y2="225"/><line x1="140" y1="225" x2="75" y2="188"/>
@@ -150,8 +147,8 @@
           <circle cx="140" cy="75" r="9"/><circle cx="205" cy="112" r="9"/><circle cx="205" cy="188" r="9"/>
           <circle cx="140" cy="225" r="9"/><circle cx="75" cy="188" r="9"/><circle cx="75" cy="112" r="9"/><circle cx="140" cy="150" r="9"/>
         </g>
-        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2a9d5c">小さい</tspan> → 安定</text>
-        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">バラバラ (大きな輪)</text>
+        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2a9d5c">小さい</tspan></text>
+        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">つながりが疎</text>
         <polygon points="420,75 485,112 485,188 420,225 355,188 355,112" fill="#fbe4e4" stroke="none"/>
         <g stroke="#9aa0a8" stroke-width="2">
           <line x1="420" y1="75" x2="485" y2="112"/><line x1="485" y1="112" x2="485" y2="188"/>
@@ -163,20 +160,21 @@
           <circle cx="420" cy="75" r="9"/><circle cx="485" cy="112" r="9"/><circle cx="485" cy="188" r="9"/>
           <circle cx="420" cy="225" r="9"/><circle cx="355" cy="188" r="9"/><circle cx="355" cy="112" r="9"/>
         </g>
-        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#d24b4b">大きい</tspan> → 不安定</text>
+        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#d24b4b">大きい</tspan></text>
       </svg>
     </div>
-    <p class="lead center">穴が大きい = つながりがバラバラ = <strong class="green">不安定</strong>
-    <span class="muted">(数学では「ホモロジー」。難しくない、ただの"穴の量")</span></p>
+    <p class="lead center">穴が大きいほど、つながりが疎で不安定。
+    <span class="muted">これを数学では「持続ホモロジー（H₁）」と呼ぶ。</span></p>
   </section>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">5</div><div class="act">道具②</div></div>
-    <h2>道具② 「矛盾の数」</h2>
-    <p class="lead center">線の <strong>+ (一緒に動く) / − (逆に動く)</strong> で、"つじつまの合わない三角" を数える。</p>
+    <div class="step-head"><div class="step-num">5</div><div class="act">指標②</div></div>
+    <h2>指標② 矛盾の数（符号付きサイクル）</h2>
+    <p class="lead center">線の <strong>+（同方向に動く）/ −（逆方向に動く）</strong> を見て、
+    符号のつじつまが合わない三角形を数える。</p>
     <div class="center">
       <svg viewBox="0 0 560 320" style="margin:6px auto; width:100%; max-width:660px;">
-        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">つじつまが合う</text>
+        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">符号が整合</text>
         <line x1="140" y1="80" x2="80" y2="210" stroke="#2a9d5c" stroke-width="3"/>
         <line x1="80" y1="210" x2="200" y2="210" stroke="#2a9d5c" stroke-width="3"/>
         <line x1="200" y1="210" x2="140" y2="80" stroke="#2a9d5c" stroke-width="3"/>
@@ -184,8 +182,8 @@
         <text x="135" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
         <text x="182" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
         <circle cx="140" cy="80" r="12" fill="#1a1a1f"/><circle cx="80" cy="210" r="12" fill="#1a1a1f"/><circle cx="200" cy="210" r="12" fill="#1a1a1f"/>
-        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">みんな一緒に動く → <tspan font-weight="700" fill="#2a9d5c">OK</tspan></text>
-        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">矛盾 (ねじれ)</text>
+        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">3つが同方向 → <tspan font-weight="700" fill="#2a9d5c">整合</tspan></text>
+        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">符号が矛盾</text>
         <line x1="420" y1="80" x2="360" y2="210" stroke="#2a9d5c" stroke-width="3"/>
         <line x1="360" y1="210" x2="480" y2="210" stroke="#2a9d5c" stroke-width="3"/>
         <line x1="480" y1="210" x2="420" y2="80" stroke="#d24b4b" stroke-width="3" stroke-dasharray="7 5"/>
@@ -193,123 +191,123 @@
         <text x="415" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
         <text x="462" y="148" font-size="22" font-weight="700" fill="#d24b4b">−</text>
         <circle cx="420" cy="80" r="12" fill="#1a1a1f"/><circle cx="360" cy="210" r="12" fill="#1a1a1f"/><circle cx="480" cy="210" r="12" fill="#1a1a1f"/>
-        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">友達の友達が<tspan font-weight="700" fill="#d24b4b">敵</tspan> → ねじれ</text>
+        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">2つは同方向だが1つだけ逆 → <tspan font-weight="700" fill="#d24b4b">矛盾</tspan></text>
       </svg>
     </div>
-    <p class="lead center">この "ねじれた三角" が多い = 市場が <strong class="orange">ねじれてる</strong>
-    <span class="muted">(数学では「符号付きサイクル」。要は"矛盾の数")</span></p>
+    <p class="lead center">矛盾した三角形が多いほど、符号構造がねじれている。
+    <span class="muted">「友達の友達は友達のはずが敵」というバランス理論の考え方。</span></p>
   </section>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">6</div><div class="act">道具まとめ</div></div>
-    <h2>この2つは"別物"を見ている</h2>
+    <div class="step-head"><div class="step-num">6</div><div class="act">2指標の関係</div></div>
+    <h2>2つの指標は異なる情報を捉える</h2>
     <div class="two-col" style="margin-top:16px;">
-      <div class="center"><p class="big green" style="margin:0;">穴の量</p><p>つながりの<strong>"量"</strong><br>バラバラ度</p></div>
-      <div class="center"><p class="big orange" style="margin:0;">矛盾の数</p><p>つながりの<strong>"符号(向き)"</strong><br>ねじれ具合</p></div>
+      <div class="center"><p class="big green" style="margin:0;">穴の量</p><p>つながりの<strong>強さ・量</strong>を見る</p></div>
+      <div class="center"><p class="big orange" style="margin:0;">矛盾の数</p><p>つながりの<strong>符号・向き</strong>を見る</p></div>
     </div>
-    <p class="lead center" style="margin-top:20px;">片方は"量"、片方は"向き"。<strong>市場を見る2つの独立した目</strong>になる。</p>
+    <p class="lead center" style="margin-top:20px;">片方は「量」、もう片方は「符号」。同じネットワークから<strong>異なる2つの情報</strong>を取り出す。</p>
   </section>
 
-  <!-- ============ 第3幕: 発見 ============ -->
-  <div class="divider-act">第3幕　発見</div>
+  <!-- ============ 結果 ============ -->
+  <div class="divider-act">結果</div>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">7</div><div class="act">発見①</div></div>
-    <h2>2つの目は連動しない <span class="tag sure">● 確実</span></h2>
-    <p class="lead">「穴の量」と「矛盾の数」は、<strong>別々に動く</strong> (相関が弱い)。</p>
+    <div class="step-head"><div class="step-num">7</div><div class="act">結果①</div></div>
+    <h2>2つの指標は相関しない <span class="tag sure">● 確実</span></h2>
+    <p class="lead">「穴の量」と「矛盾の数」は<strong>ほぼ無相関</strong>だった。</p>
     <ul>
-      <li>10通りの条件で調べても、ずっと弱いまま</li>
-      <li>= 片方を知っても、もう片方は分からない</li>
-      <li><strong>2種類の独立した情報</strong>を市場から取り出せた</li>
+      <li>10通りの条件（銘柄数・期間など）で調べても相関は弱いまま</li>
+      <li>= 片方の値からもう片方は予測できない</li>
+      <li>独立した2種類の情報として扱える</li>
     </ul>
     <div class="center"><img src="figs/slide_scatter.png" alt="散布図" style="margin:6px auto; max-height:330px; max-width:90%; border-radius:8px;"></div>
   </section>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">8</div><div class="act">発見②</div></div>
-    <h2>暴落の"震源"は意外な銘柄 <span class="tag sure">● 確実</span></h2>
-    <p class="lead center">地図が崩れる時、震源は<strong>ニュースの主役 (米国株) じゃない</strong>。一番一貫した震源は<strong>天然ガス</strong>。</p>
+    <div class="step-head"><div class="step-num">8</div><div class="act">結果②</div></div>
+    <h2>構造変化の主因は天然ガス <span class="tag sure">● 確実</span></h2>
+    <p class="lead center">構造が崩れるとき、寄与が最も一貫している銘柄は<strong>米国株ではなく天然ガス</strong>だった。</p>
     <div class="center"><img src="figs/slide_source.png" alt="震源" style="margin:6px auto; max-height:360px; max-width:82%; border-radius:8px;"></div>
-    <p class="muted center">天然ガスは4暴落すべてで震源。銅は3回。中国などは暴落の種類で変わる (= 二層構造)。</p>
+    <p class="muted center">天然ガスは4つの暴落すべてで上位、銅は3回。中国株などは暴落の種類で入れ替わる（二層構造）。</p>
   </section>
 
-  <!-- ============ 第4幕: バックテスト ============ -->
-  <div class="divider-act">第4幕　実際に試す（山場）</div>
+  <!-- ============ バックテストと検証 ============ -->
+  <div class="divider-act">バックテストと検証</div>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">9</div><div class="act">発見③</div></div>
-    <h2>「矛盾の日」に避けると暴落が浅くなる <span class="tag sure">● 確実</span></h2>
-    <p class="lead center">「矛盾が突出した日に株を売って現金にする」を試した <span class="muted">(下図は直近5年、20年でも同じ傾向)</span>。</p>
+    <div class="step-head"><div class="step-num">9</div><div class="act">結果③</div></div>
+    <h2>矛盾が高い日に株を避けると最大下落が小さくなる <span class="tag sure">● 確実</span></h2>
+    <p class="lead center">「矛盾指標が突出した日に株を売って現金にする」戦略を検証した <span class="muted">（下図は直近5年、20年でも同傾向）</span>。</p>
     <div class="center"><img src="figs/slide_equity.png" alt="資産曲線" style="margin:6px auto; max-height:400px; max-width:86%; border-radius:8px;"></div>
-    <p class="lead center"><span class="muted">✗ 儲けは増えない (ただ持つ方が上)</span> &nbsp; <span class="green">✓ でも暴落で沈みにくい</span> = <strong>"守り"の道具</strong></p>
+    <p class="lead center"><span class="muted">リターンは増えない（保有のみの方が上）</span> &nbsp;／&nbsp; <span class="green">最大下落は小さくなる</span>。リスク低減の補助指標として機能する。</p>
   </section>
 
   <section class="step" style="border-color:#cfe0ff; background:#f7faff;">
-    <div class="step-head"><div class="step-num">10</div><div class="act">自分で疑う ← 一番大事</div></div>
-    <h2>「それ、ただの偶然では?」を自分で潰した</h2>
-    <p class="lead">都合のいい結果を疑って、<strong>自分でツッコミを入れて検証した</strong>:</p>
+    <div class="step-head"><div class="step-num">10</div><div class="act">妥当性の検証</div></div>
+    <h2>結果が偶然でないかを確認した</h2>
+    <p class="lead">下落回避の効果が本物か、3つの対抗仮説と比較した:</p>
     <ul>
-      <li>「ただ運がいいだけ?」→ <strong>でたらめに避けた1000パターン</strong>と比較 → 勝った</li>
-      <li>「ただ現金多いだけ?」→ 同じ現金量でも<strong>避けるタイミングが効いてた</strong></li>
-      <li>「恐怖指数(VIX)で十分?」→ <strong>VIXより良い</strong>タイミングを掴んでた</li>
+      <li>「ランダムに避けても同じでは」→ 同じ頻度の<strong>ランダム1000通り</strong>と比較。上回った</li>
+      <li>「単に現金比率が高いだけでは」→ 現金比率を揃えても<strong>避けるタイミングが寄与</strong>していた</li>
+      <li>「恐怖指数(VIX)で代替できるのでは」→ <strong>VIXより良い</strong>タイミングだった</li>
     </ul>
-    <p class="lead center green" style="margin-top:16px;">→ 偶然じゃない。<strong>未来データ(知らない期間)でも"守り"は再現した</strong></p>
+    <p class="lead center" style="margin-top:16px;">いずれも上回り、<strong>未来データ（学習に使っていない期間）でも下落低減は再現</strong>した。</p>
   </section>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">11</div><div class="act">正直な限界</div></div>
-    <h2>でも「予知」ではない <span class="tag weak">◐ 正直に</span></h2>
-    <p class="lead">検証したら、都合の悪い事実も出た。隠さず言う:</p>
+    <div class="step-head"><div class="step-num">11</div><div class="act">限界</div></div>
+    <h2>予知ではなく初動の検知 <span class="tag weak">◐ 限界</span></h2>
+    <p class="lead">都合の悪い結果も含めて記す:</p>
     <ul>
-      <li>暴落を<strong>前もって予言してるわけじゃない</strong></li>
-      <li>暴落が<strong>始まってから反応</strong>してる (ただし恐怖指数より<strong>速い</strong>)</li>
-      <li>コロナ級の<strong>突発暴落の入口は捉えられない</strong></li>
+      <li>暴落を<strong>事前に予知しているわけではない</strong></li>
+      <li>下落が<strong>始まってから反応</strong>している（ただし VIX より早い）</li>
+      <li>COVID のような<strong>急激な暴落の入口は捉えられない</strong></li>
     </ul>
-    <p class="lead center" style="margin-top:16px;">正確には「予知」ではなく<strong>「VIXより速い初動検知」</strong>。
-    <span class="muted">誇張せず、できること/できないことを線引きする。</span></p>
+    <p class="lead center" style="margin-top:16px;">位置づけは「予知」ではなく<strong>「VIXより速い初動検知」</strong>。
+    <span class="muted">できること・できないことを区別して扱う。</span></p>
   </section>
 
-  <!-- ============ 第5幕: 実物・締め ============ -->
-  <div class="divider-act">第5幕　実物とまとめ</div>
+  <!-- ============ 運用とまとめ ============ -->
+  <div class="divider-act">運用とまとめ</div>
 
   <section class="step">
-    <div class="step-head"><div class="step-num">12</div><div class="act">実物</div></div>
-    <h2>論文止まりじゃない。毎日動いてる</h2>
+    <div class="step-head"><div class="step-num">12</div><div class="act">自動運用</div></div>
+    <h2>計算からデモ取引まで自動化している</h2>
     <div class="two-col" style="margin-top:14px;">
       <div>
         <ul class="lead">
-          <li>サーバーで<strong>毎朝7時に自動計算</strong></li>
-          <li>判定 → <strong>デモ口座で自動売買</strong> (仮想資金・実弾なし)</li>
-          <li>結果を<strong>ホームページに自動更新</strong></li>
+          <li>サーバーで<strong>毎朝7時に指標を自動計算</strong></li>
+          <li>判定に応じて<strong>デモ口座で売買</strong>（仮想資金・実取引なし）</li>
+          <li>結果を<strong>Webページに自動更新</strong></li>
         </ul>
-        <p class="muted">今日も動いてる → 発表当日は <a href="./app.html"><strong>実装デモタブ</strong></a> をライブで開く</p>
+        <p class="muted">当日は <a href="./app.html"><strong>実装デモタブ</strong></a> で最新状態を表示する。</p>
       </div>
-      <div><img src="figs/slide_live.png" alt="liveステータス" style="width:100%; border-radius:6px; border:1px solid #e0e3e8;"></div>
+      <div><img src="figs/slide_live.png" alt="運用ステータス" style="width:100%; border-radius:6px; border:1px solid #e0e3e8;"></div>
     </div>
   </section>
 
   <section class="step" style="background:#f7f8fa;">
     <div class="step-head"><div class="step-num">13</div><div class="act">まとめ</div></div>
-    <h2>2つの目で市場を見た</h2>
+    <h2>まとめ</h2>
     <div class="two-col" style="margin-top:14px;">
       <div>
-        <h3 class="green">確実にできたこと</h3>
+        <h3 class="green">確認できたこと</h3>
         <ul>
-          <li>2つの独立した目 (穴・矛盾)</li>
-          <li>暴落の震源は意外な銘柄 (天然ガス)</li>
-          <li>暴落を浅くする"守り" (偶然でない)</li>
+          <li>2つの指標は独立（穴の量・矛盾の数）</li>
+          <li>構造変化の主因は天然ガス</li>
+          <li>矛盾指標で最大下落を低減（偶然ではない）</li>
         </ul>
       </div>
       <div>
-        <h3 class="orange">正直な限界 / 今後</h3>
+        <h3 class="orange">限界・今後</h3>
         <ul>
-          <li>「予知」ではなく「速い反応」</li>
-          <li>突発暴落の入口は未対応</li>
-          <li>圏論での理論づけは今後</li>
+          <li>予知ではなく初動検知</li>
+          <li>急激な暴落の入口は未対応</li>
+          <li>圏論による理論的整理は今後</li>
         </ul>
       </div>
     </div>
-    <p class="lead center" style="margin-top:20px;">詳しくは <a href="./index.html"><strong>研究内容タブ</strong></a> へ。</p>
+    <p class="lead center" style="margin-top:20px;">詳細は <a href="./index.html"><strong>研究内容タブ</strong></a> に記載。</p>
   </section>
 
 </div>
