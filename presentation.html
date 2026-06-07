@@ -201,7 +201,36 @@
   <section class="step">
     <div class="step-head"><div class="step-num">6</div><div class="act">2指標の関係</div></div>
     <h2>2つの指標は異なる情報を捉える</h2>
-    <div class="two-col" style="margin-top:16px;">
+    <div class="center">
+      <svg viewBox="0 0 540 270" style="margin:10px auto; width:100%; max-width:520px;">
+        <text x="270" y="20" text-anchor="middle" font-size="14" fill="#5a5e66">1つの相関ネットワーク</text>
+        <g stroke="#9fc0f5" stroke-width="1.6">
+          <line x1="230" y1="42" x2="310" y2="42"/><line x1="310" y1="42" x2="332" y2="82"/>
+          <line x1="332" y1="82" x2="270" y2="104"/><line x1="270" y1="104" x2="208" y2="82"/>
+          <line x1="208" y1="82" x2="230" y2="42"/><line x1="230" y1="42" x2="332" y2="82"/>
+        </g>
+        <g fill="#1a1a1f">
+          <circle cx="230" cy="42" r="7"/><circle cx="310" cy="42" r="7"/><circle cx="332" cy="82" r="7"/>
+          <circle cx="270" cy="104" r="7"/><circle cx="208" cy="82" r="7"/>
+        </g>
+        <!-- 分岐矢印 -->
+        <path d="M250 118 L150 158" stroke="#c3c8cf" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+        <path d="M290 118 L390 158" stroke="#c3c8cf" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+        <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#c3c8cf"/></marker></defs>
+        <!-- 左: 穴の量 (輪) -->
+        <polygon points="100,178 140,178 155,206 130,234 90,234 75,206" fill="#eaf6ef" stroke="#2a9d5c" stroke-width="2"/>
+        <text x="115" y="210" text-anchor="middle" font-size="12" fill="#2a9d5c">穴</text>
+        <text x="115" y="258" text-anchor="middle" font-size="15" font-weight="600" fill="#2a9d5c">穴の量</text>
+        <!-- 右: 矛盾の数 (三角) -->
+        <line x1="398" y1="232" x2="440" y2="232" stroke="#2a9d5c" stroke-width="2.5"/>
+        <line x1="398" y1="232" x2="419" y2="184" stroke="#2a9d5c" stroke-width="2.5"/>
+        <line x1="419" y1="184" x2="440" y2="232" stroke="#e08a2b" stroke-width="2.5" stroke-dasharray="5 4"/>
+        <g fill="#1a1a1f"><circle cx="398" cy="232" r="5"/><circle cx="440" cy="232" r="5"/><circle cx="419" cy="184" r="5"/></g>
+        <text x="419" y="258" text-anchor="middle" font-size="15" font-weight="600" fill="#e08a2b">矛盾の数</text>
+      </svg>
+    </div>
+    <div class="two-col" style="margin-top:8px;">
       <div class="center"><p class="big green" style="margin:0;">穴の量</p><p>つながりの<strong>強さ・量</strong>を見る</p></div>
       <div class="center"><p class="big orange" style="margin:0;">矛盾の数</p><p>つながりの<strong>符号・向き</strong>を見る</p></div>
     </div>
@@ -251,7 +280,21 @@
       <li>「単に現金比率が高いだけでは」→ 現金比率を揃えても<strong>避けるタイミングが寄与</strong>していた</li>
       <li>「恐怖指数(VIX)で代替できるのでは」→ <strong>VIXより良い</strong>タイミングだった</li>
     </ul>
-    <p class="lead center" style="margin-top:16px;">いずれも上回り、<strong>未来データ（学習に使っていない期間）でも下落低減は再現</strong>した。</p>
+    <div class="center">
+      <svg viewBox="0 0 560 150" style="margin:14px auto; width:100%; max-width:560px;">
+        <text x="280" y="18" text-anchor="middle" font-size="14" fill="#5a5e66">20年間の最大下落（短いほど浅い＝良い）</text>
+        <!-- e_div -->
+        <text x="175" y="56" text-anchor="end" font-size="14" fill="#1a1a1f">e_div で避ける</text>
+        <rect x="185" y="42" width="98" height="22" rx="3" fill="#2f6df6"/>
+        <text x="293" y="58" font-size="14" font-weight="600" fill="#2f6df6">−20%</text>
+        <!-- ランダム -->
+        <text x="175" y="100" text-anchor="end" font-size="14" fill="#1a1a1f">ランダムに避ける</text>
+        <rect x="185" y="86" width="202" height="22" rx="3" fill="#c3c8cf"/>
+        <text x="397" y="102" font-size="14" font-weight="600" fill="#8a8d93">−42%</text>
+        <text x="280" y="138" text-anchor="middle" font-size="12.5" fill="#8a8d93">同じ頻度で避けても、e_div のタイミングだと下落は約半分</text>
+      </svg>
+    </div>
+    <p class="lead center" style="margin-top:8px;">いずれも上回り、<strong>未来データ（学習に使っていない期間）でも下落低減は再現</strong>した。</p>
   </section>
 
   <section class="step">
@@ -263,7 +306,27 @@
       <li>下落が<strong>始まってから反応</strong>している（ただし VIX より早い）</li>
       <li>COVID のような<strong>急激な暴落の入口は捉えられない</strong></li>
     </ul>
-    <p class="lead center" style="margin-top:16px;">位置づけは「予知」ではなく<strong>「VIXより速い初動検知」</strong>。
+    <div class="center">
+      <svg viewBox="0 0 600 170" style="margin:14px auto; width:100%; max-width:600px;">
+        <!-- 時間軸 -->
+        <line x1="40" y1="110" x2="570" y2="110" stroke="#cfd3da" stroke-width="2"/>
+        <polygon points="570,110 562,105 562,115" fill="#cfd3da"/>
+        <text x="560" y="135" text-anchor="end" font-size="12" fill="#8a8d93">時間 →</text>
+        <!-- 暴落開始 -->
+        <line x1="200" y1="55" x2="200" y2="125" stroke="#d24b4b" stroke-width="2.5"/>
+        <text x="200" y="46" text-anchor="middle" font-size="13" font-weight="600" fill="#d24b4b">暴落 開始</text>
+        <!-- e_div 反応 -->
+        <circle cx="300" cy="110" r="8" fill="#2f6df6"/>
+        <text x="300" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#2f6df6">e_div 反応</text>
+        <text x="300" y="150" text-anchor="middle" font-size="11" fill="#8a8d93">数日後</text>
+        <!-- VIX 反応 -->
+        <circle cx="450" cy="110" r="8" fill="#8a8d93"/>
+        <text x="450" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#8a8d93">VIX 反応</text>
+        <text x="450" y="150" text-anchor="middle" font-size="11" fill="#8a8d93">さらに後</text>
+      </svg>
+    </div>
+    <p class="lead center" style="margin-top:4px;">e_div は暴落開始<strong>より後</strong>に反応する（＝予知ではない）が、
+    <strong class="green">VIXよりは早い初動検知</strong>。
     <span class="muted">できること・できないことを区別して扱う。</span></p>
   </section>
 
