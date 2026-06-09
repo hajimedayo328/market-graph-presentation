@@ -89,12 +89,29 @@ def export_db_to_json() -> dict:
     n_trades = len(trades_rows)
 
     conn.close()
+
+    # 資産残高の推移 (mt5_equity_history.py が生成、無ければ省略)
+    equity = None
+    try:
+        eq_path = ROOT / "equity_history.json"
+        if eq_path.exists():
+            eq = json.loads(eq_path.read_text(encoding="utf-8"))
+            equity = {
+                "currency": eq.get("currency"),
+                "current_balance": eq.get("current_balance"),
+                "current_equity": eq.get("current_equity"),
+                "history": eq.get("history", []),
+            }
+    except Exception:
+        equity = None
+
     return {
         "generated_at": datetime.now().isoformat(),
         "latest": latest,
         "gamma_daily_recent": gamma_rows,
         "classification_changes": changes_rows,
         "trades": trades_rows,
+        "equity": equity,
         "summary": {
             "n_days": len(gamma_rows),
             "n_changes": len(changes_rows),
@@ -153,6 +170,14 @@ def main():
     log("=" * 60)
     log("VPS publish job started")
     env = load_env()
+    # 資産残高の推移を更新 (MT5 から再構築。失敗しても publish は続行)
+    try:
+        import subprocess
+        r = subprocess.run([sys.executable, str(HERE / "mt5_equity_history.py")],
+                           timeout=120, capture_output=True, text=True)
+        log(f"equity_history update: rc={r.returncode}")
+    except Exception as e:
+        log(f"equity_history update skipped: {e}")
     data = export_db_to_json()
     if not data:
         log("No data to publish")
