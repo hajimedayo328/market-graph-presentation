@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-09T07:00:38.389465",
+ "generated_at": "2026-06-09T20:24:40.458053",
  "latest": {
   "date": "2026-06-09",
   "L1_H1": 1.059702,
@@ -302,6 +302,21 @@
    "note": "trigger_e_div=+1.118"
   }
  ],
+ "equity": {
+  "currency": "USD",
+  "current_balance": 99999.94,
+  "current_equity": 99999.94,
+  "history": [
+   {
+    "date": "2026-05-24",
+    "balance": 100000.0
+   },
+   {
+    "date": "2026-05-26",
+    "balance": 99999.94
+   }
+  ]
+ },
  "summary": {
   "n_days": 15,
   "n_changes": 6,
