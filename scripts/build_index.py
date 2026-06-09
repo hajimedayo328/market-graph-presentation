@@ -2674,6 +2674,44 @@ __SEC105__
         VIX 自動スパイク (Section 6) は事前検出の方向で部分的に対応済み。</li>
   </ol>
 
+  <h3 style="margin-top:24px;">11.2.1 <span style="color:var(--orange); font-size:0.7em;">◐ 正直な開示</span> window 幅への依存性 — 「都合の良い window を選んでいないか」</h3>
+  <p>
+    「ショック前に L¹ が上昇する」という補助分析は、観測 window 幅 (pre 期間の日数) に
+    どこまで依存するかを検証した (<code>data/event_window_robustness.json</code>)。
+    結論を先に: <strong>採用している window=30 は「最も p 値が強い設定」ではない</strong>。
+  </p>
+  <table>
+    <tr><th>window</th><th>手動 12 イベント Δ (p値)</th><th>trade+geo 5 件 Δ (p値)</th></tr>
+    <tr><td><strong>20</strong></td>
+        <td class="good">+0.173 &nbsp;(p=6.7e-11) ★最強</td>
+        <td class="good">+0.225 &nbsp;(p=9.4e-10)</td></tr>
+    <tr><td><strong>30 (採用)</strong></td>
+        <td>+0.053 &nbsp;(p=1.8e-3)</td>
+        <td>+0.150 &nbsp;(p=1.6e-6)</td></tr>
+    <tr><td><strong>40</strong></td>
+        <td class="bad">−0.013 &nbsp;(p=0.79) ✗符号反転・消失</td>
+        <td>+0.052 &nbsp;(p=9.8e-3)</td></tr>
+    <tr><td><strong>60</strong></td>
+        <td>+0.032 &nbsp;(p=1.7e-2)</td>
+        <td>+0.053 &nbsp;(p=1.2e-2)</td></tr>
+  </table>
+  <div class="callout intuition">
+    <h4>この表が示すこと (隠さず出す)</h4>
+    <ul class="simple">
+      <li><strong>p-hacking ではない</strong>: 最強は window=20 (p=6.7e-11) だが、採用は window=30。
+        「都合の良い最強設定」を選んでいたら 20 を選ぶはず。window=30 は
+        <strong>月次効果を捕まえる標準的長さ</strong>として事前採用したもの (Section 2 参照)。</li>
+      <li><strong>ただし window 依存の脆さはある</strong>: 手動 12 イベント版は <strong>window=40 で符号反転し消失</strong> (p=0.79)。
+        この発見は window 幅にギリギリ依存する = <strong>頑健ではない</strong>。</li>
+      <li><strong>頑健なのは trade+geo サブグループ</strong>: 貿易・地政学イベント 5 件に限ると、
+        <strong>全 window (20/30/40/60) で有意</strong>。こちらは window に依存しない。</li>
+    </ul>
+    <p style="font-size:11px; color:var(--sub);">
+      → 「ショック前の L¹ 上昇」を主張するなら、全イベントではなく
+      <strong>trade+geo サブグループに限定</strong>すべき。全イベント版は◐止まり。
+      この window 表を出すこと自体が「最強を選んでいない」証拠になる。</p>
+  </div>
+
   <h3>11.3 今後の方向</h3>
   <p style="font-size:12px; color:var(--sub); margin-bottom:8px;">
     主要な future work はほぼ全て実装・検証済み (Section 11.1 参照: α 20y / tz-aware / DAG mediation 全て完了)。残るは以下のみ。
