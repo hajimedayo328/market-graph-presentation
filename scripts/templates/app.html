@@ -252,7 +252,8 @@
         </div>
       </div>
       <div>
-        <h3 style="font-size:13px; margin-bottom:6px;">最新トレード履歴 (Vantage デモ)</h3>
+        <h3 style="font-size:13px; margin-bottom:6px;">最新トレード履歴 (Vantage デモ)
+          <span id="live_balance" style="font-size:11px; font-weight:normal; color:var(--sub); margin-left:8px;"></span></h3>
         <table style="width:100%; font-size:11px; border-collapse:collapse;" id="live_trades_table">
           <thead><tr style="border-bottom:1px solid var(--line);">
             <th style="text-align:left; padding:4px;">日時</th>
@@ -264,15 +265,6 @@
           <tbody><tr><td colspan="5" style="padding:6px; color:var(--sub);">—</td></tr></tbody>
         </table>
       </div>
-    </div>
-
-    <!-- 資産推移 (デモ口座 equity) -->
-    <div id="live_equity_wrap" style="margin-top:14px; display:none;">
-      <h3 style="font-size:13px; margin-bottom:6px;">資産推移 (デモ口座 $100k スタート)
-        <span id="live_equity_now" style="font-size:11px; font-weight:normal; color:var(--sub);"></span></h3>
-      <div id="live_equity_chart" style="height:200px;"></div>
-      <p style="font-size:10px; color:var(--sub); margin-top:2px;">
-        ※ 運用開始 2026-05 〜。判定変化時のみ売買するため値動きは緩やか。約定が増えると推移が育つ。</p>
     </div>
 
     <!-- 次回更新まで -->
@@ -1347,6 +1339,18 @@ function renderLiveStatus(d) {
     `<span title="${r.date}: ${r.classification} (e_div=${r.e_div.toFixed(2)})" style="display:inline-block; width:8px; height:18px; background:${colorMap[r.classification]||'#999'}; margin-right:1px;"></span>`
   ).join('');
   // trades table
+  // 口座残高 (equity は vps_publish が MT5 から毎日取得。無い日は非表示のまま)
+  if (d.equity && d.equity.current_balance != null) {
+    const bal = d.equity.current_balance;
+    const init = (d.equity.history && d.equity.history.length) ? d.equity.history[0].balance : 100000;
+    const diff = bal - init;
+    const sign = diff >= 0 ? '+' : '−';
+    const col = diff >= 0 ? '#1b7e3e' : '#c0392b';
+    document.getElementById('live_balance').innerHTML =
+      `口座残高: <strong>$${bal.toLocaleString('en-US', {minimumFractionDigits: 2})}</strong>` +
+      ` <span style="color:${col};">(${sign}$${Math.abs(diff).toFixed(2)})</span>` +
+      ` <span style="color:var(--sub);">/ 開始 $${init.toLocaleString('en-US')}</span>`;
+  }
   const tbody = document.querySelector('#live_trades_table tbody');
   if (d.trades.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" style="padding:6px; color:var(--sub);">まだトレードなし</td></tr>';
