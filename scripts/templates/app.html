@@ -267,6 +267,15 @@
       </div>
     </div>
 
+    <!-- 残高推移 (取引で残高が動いた日 + 現在) -->
+    <div id="live_balance_wrap" style="margin-top:14px; display:none;">
+      <h3 style="font-size:13px; margin-bottom:6px;">残高の推移 (デモ口座)</h3>
+      <div id="live_balance_chart" style="height:170px; background:var(--bg); border-radius:6px;"></div>
+      <p style="font-size:10px; color:var(--sub); margin-top:2px;">
+        ※ 残高は決済時にのみ動く階段状の値 (MT5 取引履歴から再構築、毎朝 JST 07:00 更新)。
+        縦軸は開始額の ±0.2% を最小レンジとして自動拡大。</p>
+    </div>
+
     <!-- 次回更新まで -->
     <div style="margin-top:12px; padding:8px 12px; background:var(--bg); border-radius:6px; font-size:11px;">
       <strong>次回 VPS 自動実行まで:</strong> <span id="live_next_run">—</span>
@@ -1350,6 +1359,29 @@ function renderLiveStatus(d) {
       `口座残高: <strong>$${bal.toLocaleString('en-US', {minimumFractionDigits: 2})}</strong>` +
       ` <span style="color:${col};">(${sign}$${Math.abs(diff).toFixed(2)})</span>` +
       ` <span style="color:var(--sub);">/ 開始 $${init.toLocaleString('en-US')}</span>`;
+    // 残高推移ミニグラフ (決済日の階段 + 今日の値まで延長)
+    const hist = (d.equity.history || []).slice();
+    const lastDate = (d.generated_at || '').slice(0, 10);
+    if (hist.length && lastDate && hist[hist.length - 1].date < lastDate) {
+      hist.push({ date: lastDate, balance: bal });
+    }
+    if (hist.length >= 2) {
+      const hx = hist.map(h => h.date), hy = hist.map(h => h.balance);
+      const ymin = Math.min(...hy), ymax = Math.max(...hy);
+      const pad = Math.max(init * 0.002, (ymax - ymin) * 0.25);
+      document.getElementById('live_balance_wrap').style.display = 'block';
+      Plotly.newPlot('live_balance_chart', [{
+        x: hx, y: hy, mode: 'lines+markers',
+        line: { shape: 'hv', color: '#0066cc', width: 2 },
+        marker: { size: 5, color: '#0066cc' },
+        hovertemplate: '%{x}<br>$%{y:,.2f}<extra></extra>'
+      }], {
+        margin: { l: 64, r: 12, t: 8, b: 26 },
+        yaxis: { range: [ymin - pad, ymax + pad], tickformat: ',.0f', tickprefix: '$' },
+        font: { size: 10 }, showlegend: false,
+        paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)'
+      }, { responsive: true, displaylogo: false });
+    }
   }
   const tbody = document.querySelector('#live_trades_table tbody');
   if (d.trades.length === 0) {
