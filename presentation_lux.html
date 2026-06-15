@@ -6,109 +6,115 @@
 <title>発表 — 銘柄ネットワークの形から市場の構造変化を見る</title>
 <style>
   :root{
-    --paper:#ffffff; --bg:#f6f7f9; --ink:#15161b; --sub:#565a62; --muted:#9398a0;
-    --accent:#2f6df6; --accent-soft:#eaf1ff;
+    --paper:#ffffff; --ink:#16171c; --sub:#525660; --muted:#90959e;
+    --accent:#2f6df6; --accent-soft:#eef3ff;
     --green:#2a9d5c; --orange:#e08a2b; --red:#d24b4b;
-    --line:#e8eaee;
+    --line:#e9ebef; --line-2:#f2f4f7;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    margin:0; background:var(--bg); color:var(--ink); line-height:1.7;
+    margin:0; background:var(--paper); color:var(--ink); line-height:1.78;
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
     font-weight:300; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
   }
 
   /* topnav */
-  .topnav{position:sticky;top:0;z-index:50;background:rgba(246,247,249,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
-  .topnav-inner{max-width:1000px;margin:0 auto;padding:11px 24px;display:flex;gap:8px;align-items:center;}
+  .topnav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .topnav-inner{max-width:880px;margin:0 auto;padding:11px 24px;display:flex;gap:8px;align-items:center;}
   .topnav-tab{padding:7px 15px;font-size:13px;color:var(--sub);text-decoration:none;border-radius:9px;transition:.15s;}
   .topnav-tab:hover{background:var(--accent-soft);color:var(--accent);}
   .topnav-tab.active{background:var(--accent);color:#fff;}
   .topnav-spacer{flex:1;}
   .topnav-gh{font-size:12px;color:var(--muted);text-decoration:none;}
   .topnav-gh:hover{color:var(--accent);}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 24px 96px;}
+
+  /* layout: prose column + wider figure bleed */
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px 110px;}
+  .bleed{width:820px;max-width:calc(100vw - 40px);position:relative;left:50%;transform:translateX(-50%);}
 
   /* hero */
-  .hero{text-align:center;padding:74px 16px 26px;}
-  .hero .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
-  .hero h1{font-size:42px;font-weight:600;letter-spacing:-.025em;line-height:1.28;margin:0 0 18px;}
-  .hero .sub{font-size:18px;color:var(--sub);max-width:660px;margin:0 auto;}
+  .hero{text-align:center;padding:74px 8px 18px;}
+  .hero .eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:20px;}
+  .hero h1{font-size:42px;font-weight:600;letter-spacing:-.028em;line-height:1.26;margin:0 0 20px;}
+  .hero .sub{font-size:18px;color:var(--sub);max-width:620px;margin:0 auto;}
   .hero .meta{margin-top:22px;color:var(--muted);font-size:13.5px;}
 
-  /* fact strip */
-  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:34px 0 0;}
-  .fact{background:var(--paper);padding:22px 16px;text-align:center;}
-  .fact .n{font-size:28px;font-weight:600;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;}
-  .fact .l{font-size:12.5px;color:var(--sub);margin-top:7px;line-height:1.5;}
+  /* open stat strip (no box, hairline dividers) */
+  .facts{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:40px 0 8px;}
+  .fact{flex:1;text-align:center;padding:22px 8px;border-left:1px solid var(--line);}
+  .fact:first-child{border-left:none;}
+  .fact .n{font-size:29px;font-weight:600;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .fact .l{font-size:12px;color:var(--sub);margin-top:7px;line-height:1.5;}
 
-  /* key results */
-  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0 4px;}
-  .kpi{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 22px;position:relative;overflow:hidden;}
-  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);}
-  .kpi.g::before{background:var(--green);}
-  .kpi .k{font-size:11.5px;color:var(--muted);letter-spacing:.06em;margin-bottom:9px;text-transform:uppercase;font-weight:600;}
-  .kpi .v{font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.4;font-variant-numeric:tabular-nums;}
-  .kpi .v small{display:block;font-size:13px;font-weight:400;color:var(--sub);margin-top:8px;letter-spacing:0;line-height:1.55;}
+  /* section label */
+  .sec-label{text-align:center;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 6px;}
 
-  /* spine flow */
-  .track{position:relative;margin-top:8px;}
-  .track::before{content:"";position:absolute;left:25px;top:18px;bottom:34px;width:2px;background:var(--line);}
-  .row{position:relative;display:grid;grid-template-columns:52px 1fr;column-gap:24px;align-items:start;}
-  .rail{display:flex;justify-content:center;}
+  /* overview figure */
+  .overview{margin:48px 0 16px;}
+  .overview .cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px;}
 
-  .chap{margin:46px 0 8px;}
-  .chap .node{width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;box-shadow:0 3px 10px rgba(47,109,246,.28);}
-  .chap .h{padding-top:6px;}
-  .chap .h .t{font-size:23px;font-weight:600;letter-spacing:-.01em;}
-  .chap .h .d{font-size:14px;color:var(--muted);margin-top:3px;}
+  /* key findings (open, no box) */
+  .finds{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin:40px 0 10px;padding:26px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .find .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:middle;}
+  .find .k{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;font-weight:600;}
+  .find .v{font-size:18px;font-weight:600;letter-spacing:-.01em;line-height:1.4;margin-top:8px;font-variant-numeric:tabular-nums;}
+  .find .s{font-size:13px;font-weight:400;color:var(--sub);margin-top:7px;line-height:1.55;}
 
-  .step .rail{padding-top:30px;}
-  .step .dot{width:15px;height:15px;border-radius:50%;background:var(--paper);border:3px solid var(--accent);}
-  .step .panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 32px;margin:14px 0 20px;box-shadow:0 1px 3px rgba(20,22,30,.05);}
-  .panel.accent{background:linear-gradient(180deg,#f7faff,#f3f7ff);border-color:#d4e3ff;}
-  .panel.soft{background:#f8f9fb;}
+  /* chapter anchor (no box) */
+  .chapter{margin:78px 0 26px;padding-top:26px;border-top:1px solid var(--line);display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;}
+  .chapter .no{font-size:42px;font-weight:700;color:#dee2ea;letter-spacing:-.03em;line-height:.9;font-variant-numeric:tabular-nums;}
+  .chapter .ti{font-size:25px;font-weight:600;letter-spacing:-.015em;}
+  .chapter .de{font-size:13.5px;color:var(--muted);width:100%;padding-left:60px;margin-top:-6px;}
 
-  .act{font-size:11px;color:var(--accent);letter-spacing:.13em;text-transform:uppercase;font-weight:600;}
-  h2{font-size:23px;font-weight:600;letter-spacing:-.01em;line-height:1.34;margin:7px 0 0;}
+  /* flowing block (no box) */
+  .block{margin:34px 0 44px;}
+  .act{font-size:11px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;font-weight:600;}
+  h2{font-size:23px;font-weight:600;letter-spacing:-.012em;line-height:1.36;margin:7px 0 2px;}
   h3{font-size:16px;font-weight:600;margin:0 0 8px;}
-  p{margin:14px 0;}
+  p{margin:15px 0;}
   strong{color:var(--accent);font-weight:600;}
   .lead{font-size:16.5px;color:var(--ink);}
-  .big{font-size:19px;line-height:1.5;}
+  .big{font-size:19px;line-height:1.55;}
   .muted{color:var(--muted);font-size:13.5px;}
   .center{text-align:center;}
   .green{color:var(--green);} .orange{color:var(--orange);} .red{color:var(--red);}
   strong.green{color:var(--green);} strong.orange{color:var(--orange);} strong.red{color:var(--red);}
-  ul{line-height:1.75;padding-left:20px;margin:14px 0;}
-  li{margin-bottom:6px;}
+  ul{line-height:1.8;padding-left:20px;margin:15px 0;}
+  li{margin-bottom:7px;}
   img{display:block;}
   a{color:var(--accent);}
 
+  /* confidence chip + legend */
   .tag{display:inline-block;font-size:12px;padding:3px 11px;border-radius:20px;vertical-align:middle;margin-left:8px;font-weight:600;}
   .tag.sure{background:#e3f6ea;color:var(--green);}
   .tag.weak{background:#fdf0dd;color:var(--orange);}
+  .legend{display:flex;justify-content:center;gap:24px;font-size:12.5px;color:var(--sub);margin:14px 0 0;}
+  .legend b{font-weight:600;}
 
-  .figure{margin:20px 0 4px;background:linear-gradient(180deg,#fbfcfd,#f6f9fb);border:1px solid var(--line);border-radius:14px;padding:18px;}
-  .figure img{margin:0 auto;border-radius:8px;max-width:100%;}
-  .figure .cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:13px;}
+  /* svg figure (unframed, inline) */
+  .svgwrap{margin:22px 0 6px;}
+  .svgcap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:6px;}
 
-  .two-col{display:flex;flex-wrap:wrap;gap:30px;align-items:center;}
+  /* image figure (light frame for screenshots) */
+  .fig{margin:24px 0 8px;}
+  .fig img{margin:0 auto;border-radius:10px;border:1px solid var(--line);max-width:100%;}
+  .fig .cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:12px;}
+
+  .two-col{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start;}
   .two-col>div{flex:1 1 280px;min-width:0;}
 
   @media(max-width:760px){
-    .facts{grid-template-columns:repeat(2,1fr);}
-    .kpis{grid-template-columns:1fr;}
+    .bleed{width:100%;max-width:100%;left:auto;transform:none;position:static;}
+    .finds{grid-template-columns:1fr;gap:24px;}
     .hero{padding-top:52px;}
     .hero h1{font-size:30px;}
     .hero .sub{font-size:16px;}
     h2{font-size:20px;}
-    .track::before{left:17px;}
-    .row{grid-template-columns:36px 1fr;column-gap:14px;}
-    .chap .node{width:36px;height:36px;font-size:13px;}
-    .step .rail{padding-top:28px;}
-    .step .panel{padding:22px 20px;}
+    .chapter .no{font-size:34px;}
+    .chapter .ti{font-size:21px;}
+    .chapter .de{padding-left:0;}
+    .fact .n{font-size:23px;}
   }
 </style>
 </head>
@@ -134,7 +140,7 @@
     <p class="meta">上から順に説明します。所要 10〜15 分。</p>
   </div>
 
-  <!-- 一目でわかる：前提ファクト -->
+  <!-- 前提ファクト（開いたストリップ） -->
   <div class="facts">
     <div class="fact"><div class="n">40</div><div class="l">銘柄を毎日<br>ネットワーク化</div></div>
     <div class="fact"><div class="n">2</div><div class="l">独立した<br>位相指標</div></div>
@@ -142,373 +148,406 @@
     <div class="fact"><div class="n">毎朝7時</div><div class="l">自動計算→<br>デモ運用</div></div>
   </div>
 
-  <!-- 一目でわかる：主要な結果 -->
-  <div class="kpis">
-    <div class="kpi g">
-      <div class="k">結果① 確実</div>
-      <div class="v">2指標はほぼ無相関<small>「穴の量」と「矛盾の数」は独立した情報</small></div>
+  <!-- ============ 全体像（新規ダイアグラム） ============ -->
+  <div class="overview bleed">
+    <p class="sec-label">研究の流れ</p>
+    <svg viewBox="0 0 900 150" style="width:100%;height:auto;">
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="3" refY="4.5" orient="auto">
+          <path d="M0,0 L6,4.5 L0,9 Z" fill="#c3c8cf"/></marker>
+      </defs>
+      <!-- connectors -->
+      <g stroke="#c3c8cf" stroke-width="2" fill="none">
+        <line x1="168" y1="74" x2="190" y2="74" marker-end="url(#ar)"/>
+        <line x1="348" y1="74" x2="370" y2="74" marker-end="url(#ar)"/>
+        <line x1="528" y1="74" x2="550" y2="74" marker-end="url(#ar)"/>
+        <line x1="708" y1="74" x2="730" y2="74" marker-end="url(#ar)"/>
+      </g>
+      <!-- stage 1 : 価格 -->
+      <g>
+        <rect x="18" y="28" width="150" height="92" rx="14" fill="#f7f9fc" stroke="#e7eaef"/>
+        <polyline points="58,58 72,50 86,55 100,44 128,50" fill="none" stroke="#2f6df6" stroke-width="2.4"/>
+        <text x="93" y="92" text-anchor="middle" font-size="13.5" font-weight="600" fill="#16171c">40銘柄の価格</text>
+      </g>
+      <!-- stage 2 : 相関ネットワーク -->
+      <g>
+        <rect x="198" y="28" width="150" height="92" rx="14" fill="#f7f9fc" stroke="#e7eaef"/>
+        <g stroke="#9fc0f5" stroke-width="1.6"><line x1="255" y1="52" x2="290" y2="48"/><line x1="290" y1="48" x2="278" y2="68"/><line x1="278" y1="68" x2="255" y2="52"/></g>
+        <g fill="#16171c"><circle cx="255" cy="52" r="4.5"/><circle cx="290" cy="48" r="4.5"/><circle cx="278" cy="68" r="4.5"/></g>
+        <text x="273" y="92" text-anchor="middle" font-size="13.5" font-weight="600" fill="#16171c">相関ネットワーク</text>
+      </g>
+      <!-- stage 3 : 2指標 -->
+      <g>
+        <rect x="378" y="28" width="150" height="92" rx="14" fill="#f7f9fc" stroke="#e7eaef"/>
+        <polygon points="438,44 450,51 450,63 438,70 426,63 426,51" fill="none" stroke="#2a9d5c" stroke-width="2"/>
+        <path d="M462,68 L478,68 L470,46 Z" fill="none" stroke="#e08a2b" stroke-width="2"/>
+        <text x="453" y="92" text-anchor="middle" font-size="13.5" font-weight="600" fill="#16171c">2つの位相指標</text>
+        <text x="453" y="108" text-anchor="middle" font-size="10.5" fill="#90959e">穴の量／矛盾の数</text>
+      </g>
+      <!-- stage 4 : 検知 -->
+      <g>
+        <rect x="558" y="28" width="150" height="92" rx="14" fill="#f7f9fc" stroke="#e7eaef"/>
+        <polyline points="600,64 616,64 624,46 632,80 640,64 656,64" fill="none" stroke="#d24b4b" stroke-width="2.4"/>
+        <text x="633" y="98" text-anchor="middle" font-size="13.5" font-weight="600" fill="#16171c">構造変化を検知</text>
+      </g>
+      <!-- stage 5 : 運用 -->
+      <g>
+        <rect x="738" y="28" width="150" height="92" rx="14" fill="#f7f9fc" stroke="#e7eaef"/>
+        <rect x="795" y="46" width="36" height="24" rx="3" fill="none" stroke="#2f6df6" stroke-width="2"/>
+        <line x1="805" y1="74" x2="821" y2="74" stroke="#2f6df6" stroke-width="2"/>
+        <text x="813" y="98" text-anchor="middle" font-size="13.5" font-weight="600" fill="#16171c">デモ運用</text>
+      </g>
+    </svg>
+    <p class="cap">価格 → 相関でネットワーク化 → 2指標で形を測る → 構造変化を検知 → デモ口座で自動運用。この流れを毎日まわす。</p>
+  </div>
+
+  <!-- ============ 主要な結果（開いた3列） ============ -->
+  <div class="finds">
+    <div class="find">
+      <div class="k"><span class="dot"></span>結果① 確実</div>
+      <div class="v">2指標はほぼ無相関</div>
+      <div class="s">「穴の量」と「矛盾の数」は独立した情報</div>
     </div>
-    <div class="kpi">
-      <div class="k">結果② 確実</div>
-      <div class="v">構造変化の主因は天然ガス<small>4つの暴落すべてで寄与が上位</small></div>
+    <div class="find">
+      <div class="k"><span class="dot"></span>結果② 確実</div>
+      <div class="v">主因は天然ガス</div>
+      <div class="s">4つの暴落すべてで寄与が上位</div>
     </div>
-    <div class="kpi g">
-      <div class="k">結果③ 確実</div>
-      <div class="v">最大下落 −20% ↔ −42%<small>矛盾指標で避けると下落は約半分（vs ランダム）</small></div>
+    <div class="find">
+      <div class="k"><span class="dot"></span>結果③ 確実</div>
+      <div class="v">最大下落 −20% ↔ −42%</div>
+      <div class="s">矛盾指標で避けると下落は約半分（vs ランダム）</div>
+    </div>
+  </div>
+  <div class="legend"><span><b class="green">●</b> 確実 … 検証済み</span><span><b class="orange">◐</b> 限界 … 条件つき・今後</span></div>
+
+  <!-- ===== 章 01 ===== -->
+  <div class="chapter">
+    <div class="no">01</div><div class="ti">背景と問い</div>
+    <div class="de">何を、なぜ見るのか</div>
+  </div>
+
+  <div class="block">
+    <div class="act">背景</div>
+    <h2>価格ではなく「つながりの構造」を見る</h2>
+    <p class="lead">市場の分析は普通、価格や出来高を使う。この研究では、銘柄同士が<strong>どう連動するか</strong>という"つながりの構造"と、その変化を見る。</p>
+    <div class="svgwrap bleed center">
+      <svg viewBox="0 0 620 200" style="width:100%; max-width:620px;">
+        <text x="130" y="20" text-anchor="middle" font-size="15" fill="#8a8d93">よくある分析：価格</text>
+        <polyline points="30,150 60,120 90,135 120,90 150,110 180,60 210,80 240,40" fill="none" stroke="#8a8d93" stroke-width="2.5"/>
+        <text x="310" y="105" text-anchor="middle" font-size="34" fill="#2f6df6">→</text>
+        <text x="480" y="20" text-anchor="middle" font-size="15" fill="#2f6df6" font-weight="600">本研究：構造（つながり）</text>
+        <g stroke="#9fc0f5" stroke-width="1.6">
+          <line x1="420" y1="60" x2="500" y2="50"/><line x1="500" y1="50" x2="560" y2="90"/>
+          <line x1="560" y1="90" x2="490" y2="140"/><line x1="490" y1="140" x2="420" y2="120"/>
+          <line x1="420" y1="120" x2="420" y2="60"/><line x1="420" y1="60" x2="560" y2="90"/>
+        </g>
+        <line x1="490" y1="140" x2="500" y2="50" stroke="#f0b3b3" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <g fill="#1a1a1f">
+          <circle cx="420" cy="60" r="8"/><circle cx="500" cy="50" r="8"/><circle cx="560" cy="90" r="8"/>
+          <circle cx="490" cy="140" r="8"/><circle cx="420" cy="120" r="8"/>
+        </g>
+      </svg>
     </div>
   </div>
 
-  <!-- ============ FLOW (spine) ============ -->
-  <div class="track">
+  <div class="block">
+    <div class="act">問い</div>
+    <h2>研究の問い</h2>
+    <p class="big center" style="margin:22px 0;">銘柄同士のつながりをネットワークにしたとき、<br>その"形"の変化から市場の構造変化を捉えられるか。</p>
+    <p class="lead center">株・為替・金・原油など<strong>40銘柄</strong>の連動を毎日ネットワーク化し、その<strong>形の変化</strong>を時系列で追った。</p>
+  </div>
 
-    <!-- ===== 章 01 ===== -->
-    <div class="row chap">
-      <div class="rail"><div class="node">01</div></div>
-      <div class="h"><div class="t">背景と問い</div><div class="d">何を、なぜ見るのか</div></div>
+  <!-- ===== 章 02 ===== -->
+  <div class="chapter">
+    <div class="no">02</div><div class="ti">2つの指標</div>
+    <div class="de">ネットワークの形を測る2つのものさし</div>
+  </div>
+
+  <div class="block">
+    <div class="act">前提</div>
+    <h2>市場をネットワークにする</h2>
+    <p class="lead center">40銘柄を <strong>点</strong>、相関の高いペアを <strong>線</strong> で結び、1枚のネットワークにする。</p>
+    <div class="fig">
+      <img src="figs/slide_network.png" alt="相関ネットワーク" style="max-height:380px; max-width:78%;">
+      <div class="cap">図1：40銘柄の相関ネットワーク（点＝銘柄、線＝相関の高いペア）</div>
     </div>
+    <p class="muted center">このネットワークの形が日々変化する。その形を次の2つの指標で測る。</p>
+  </div>
 
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">背景</div>
-        <h2>価格ではなく「つながりの構造」を見る</h2>
-        <p class="lead">市場の分析は普通、価格や出来高を使う。この研究では、銘柄同士が<strong>どう連動するか</strong>という"つながりの構造"と、その変化を見る。</p>
-        <div class="center">
-          <svg viewBox="0 0 620 200" style="margin:6px auto; width:100%; max-width:620px;">
-            <text x="130" y="20" text-anchor="middle" font-size="15" fill="#8a8d93">よくある分析：価格</text>
-            <polyline points="30,150 60,120 90,135 120,90 150,110 180,60 210,80 240,40" fill="none" stroke="#8a8d93" stroke-width="2.5"/>
-            <text x="310" y="105" text-anchor="middle" font-size="34" fill="#2f6df6">→</text>
-            <text x="480" y="20" text-anchor="middle" font-size="15" fill="#2f6df6" font-weight="600">本研究：構造（つながり）</text>
-            <g stroke="#9fc0f5" stroke-width="1.6">
-              <line x1="420" y1="60" x2="500" y2="50"/><line x1="500" y1="50" x2="560" y2="90"/>
-              <line x1="560" y1="90" x2="490" y2="140"/><line x1="490" y1="140" x2="420" y2="120"/>
-              <line x1="420" y1="120" x2="420" y2="60"/><line x1="420" y1="60" x2="560" y2="90"/>
-            </g>
-            <line x1="490" y1="140" x2="500" y2="50" stroke="#f0b3b3" stroke-width="1.6" stroke-dasharray="6 4"/>
-            <g fill="#1a1a1f">
-              <circle cx="420" cy="60" r="8"/><circle cx="500" cy="50" r="8"/><circle cx="560" cy="90" r="8"/>
-              <circle cx="490" cy="140" r="8"/><circle cx="420" cy="120" r="8"/>
-            </g>
-          </svg>
-        </div>
-      </div>
+  <div class="block">
+    <div class="act">指標①</div>
+    <h2>指標① 穴の量（持続ホモロジー）</h2>
+    <p class="lead center">ネットワークにできる <strong>"輪（穴）"</strong> の大きさを測る指標。</p>
+    <div class="svgwrap bleed center">
+      <svg viewBox="0 0 560 320" style="width:100%; max-width:640px;">
+        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">密につながっている</text>
+        <g stroke="#9aa0a8" stroke-width="2">
+          <line x1="140" y1="75" x2="205" y2="112"/><line x1="205" y1="112" x2="205" y2="188"/>
+          <line x1="205" y1="188" x2="140" y2="225"/><line x1="140" y1="225" x2="75" y2="188"/>
+          <line x1="75" y1="188" x2="75" y2="112"/><line x1="75" y1="112" x2="140" y2="75"/>
+          <line x1="140" y1="150" x2="140" y2="75" stroke="#c3c8cf"/><line x1="140" y1="150" x2="205" y2="112" stroke="#c3c8cf"/>
+          <line x1="140" y1="150" x2="205" y2="188" stroke="#c3c8cf"/><line x1="140" y1="150" x2="140" y2="225" stroke="#c3c8cf"/>
+          <line x1="140" y1="150" x2="75" y2="188" stroke="#c3c8cf"/><line x1="140" y1="150" x2="75" y2="112" stroke="#c3c8cf"/>
+        </g>
+        <g fill="#1a1a1f">
+          <circle cx="140" cy="75" r="9"/><circle cx="205" cy="112" r="9"/><circle cx="205" cy="188" r="9"/>
+          <circle cx="140" cy="225" r="9"/><circle cx="75" cy="188" r="9"/><circle cx="75" cy="112" r="9"/><circle cx="140" cy="150" r="9"/>
+        </g>
+        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2a9d5c">小さい</tspan></text>
+        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">つながりが疎</text>
+        <polygon points="420,75 485,112 485,188 420,225 355,188 355,112" fill="#fbe4e4" stroke="none"/>
+        <g stroke="#9aa0a8" stroke-width="2">
+          <line x1="420" y1="75" x2="485" y2="112"/><line x1="485" y1="112" x2="485" y2="188"/>
+          <line x1="485" y1="188" x2="420" y2="225"/><line x1="420" y1="225" x2="355" y2="188"/>
+          <line x1="355" y1="188" x2="355" y2="112"/><line x1="355" y1="112" x2="420" y2="75"/>
+        </g>
+        <text x="420" y="156" text-anchor="middle" font-size="15" font-weight="700" fill="#d24b4b">穴</text>
+        <g fill="#1a1a1f">
+          <circle cx="420" cy="75" r="9"/><circle cx="485" cy="112" r="9"/><circle cx="485" cy="188" r="9"/>
+          <circle cx="420" cy="225" r="9"/><circle cx="355" cy="188" r="9"/><circle cx="355" cy="112" r="9"/>
+        </g>
+        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#d24b4b">大きい</tspan></text>
+      </svg>
     </div>
+    <p class="lead center">穴が大きいほど、つながりが疎で不安定。<span class="muted">これを数学では「持続ホモロジー（H₁）」と呼ぶ。</span></p>
+  </div>
 
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">問い</div>
-        <h2>研究の問い</h2>
-        <p class="big center" style="margin:22px 0;">銘柄同士のつながりをネットワークにしたとき、<br>その"形"の変化から市場の構造変化を捉えられるか。</p>
-        <p class="lead center">株・為替・金・原油など<strong>40銘柄</strong>の連動を毎日ネットワーク化し、その<strong>形の変化</strong>を時系列で追った。</p>
-      </div>
+  <div class="block">
+    <div class="act">指標②</div>
+    <h2>指標② 矛盾の数（符号付きサイクル）</h2>
+    <p class="lead center">線の <strong>+（同方向に動く）/ −（逆方向に動く）</strong> を見て、符号のつじつまが合わない三角形を数える。</p>
+    <div class="svgwrap bleed center">
+      <svg viewBox="0 0 560 320" style="width:100%; max-width:640px;">
+        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">符号が整合</text>
+        <line x1="140" y1="80" x2="80" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="80" y1="210" x2="200" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="200" y1="210" x2="140" y2="80" stroke="#2a9d5c" stroke-width="3"/>
+        <text x="98" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="135" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="182" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <circle cx="140" cy="80" r="12" fill="#1a1a1f"/><circle cx="80" cy="210" r="12" fill="#1a1a1f"/><circle cx="200" cy="210" r="12" fill="#1a1a1f"/>
+        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">3つが同方向 → <tspan font-weight="700" fill="#2a9d5c">整合</tspan></text>
+        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">符号が矛盾</text>
+        <line x1="420" y1="80" x2="360" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="360" y1="210" x2="480" y2="210" stroke="#2a9d5c" stroke-width="3"/>
+        <line x1="480" y1="210" x2="420" y2="80" stroke="#d24b4b" stroke-width="3" stroke-dasharray="7 5"/>
+        <text x="378" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="415" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
+        <text x="462" y="148" font-size="22" font-weight="700" fill="#d24b4b">−</text>
+        <circle cx="420" cy="80" r="12" fill="#1a1a1f"/><circle cx="360" cy="210" r="12" fill="#1a1a1f"/><circle cx="480" cy="210" r="12" fill="#1a1a1f"/>
+        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">2つは同方向だが1つだけ逆 → <tspan font-weight="700" fill="#d24b4b">矛盾</tspan></text>
+      </svg>
     </div>
+    <p class="lead center">矛盾した三角形が多いほど、符号構造がねじれている。<span class="muted">「友達の友達は友達のはずが敵」というバランス理論の考え方。</span></p>
+  </div>
 
-    <!-- ===== 章 02 ===== -->
-    <div class="row chap">
-      <div class="rail"><div class="node">02</div></div>
-      <div class="h"><div class="t">2つの指標</div><div class="d">ネットワークの形を測る2つのものさし</div></div>
+  <div class="block">
+    <div class="act">2指標の関係</div>
+    <h2>2つの指標は異なる情報を捉える</h2>
+    <div class="svgwrap bleed center">
+      <svg viewBox="0 0 540 270" style="width:100%; max-width:500px;">
+        <text x="270" y="20" text-anchor="middle" font-size="14" fill="#5a5e66">1つの相関ネットワーク</text>
+        <g stroke="#9fc0f5" stroke-width="1.6">
+          <line x1="230" y1="42" x2="310" y2="42"/><line x1="310" y1="42" x2="332" y2="82"/>
+          <line x1="332" y1="82" x2="270" y2="104"/><line x1="270" y1="104" x2="208" y2="82"/>
+          <line x1="208" y1="82" x2="230" y2="42"/><line x1="230" y1="42" x2="332" y2="82"/>
+        </g>
+        <g fill="#1a1a1f">
+          <circle cx="230" cy="42" r="7"/><circle cx="310" cy="42" r="7"/><circle cx="332" cy="82" r="7"/>
+          <circle cx="270" cy="104" r="7"/><circle cx="208" cy="82" r="7"/>
+        </g>
+        <path d="M250 118 L150 158" stroke="#c3c8cf" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+        <path d="M290 118 L390 158" stroke="#c3c8cf" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+        <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#c3c8cf"/></marker></defs>
+        <polygon points="100,178 140,178 155,206 130,234 90,234 75,206" fill="#eaf6ef" stroke="#2a9d5c" stroke-width="2"/>
+        <text x="115" y="210" text-anchor="middle" font-size="12" fill="#2a9d5c">穴</text>
+        <text x="115" y="258" text-anchor="middle" font-size="15" font-weight="600" fill="#2a9d5c">穴の量</text>
+        <line x1="398" y1="232" x2="440" y2="232" stroke="#2a9d5c" stroke-width="2.5"/>
+        <line x1="398" y1="232" x2="419" y2="184" stroke="#2a9d5c" stroke-width="2.5"/>
+        <line x1="419" y1="184" x2="440" y2="232" stroke="#e08a2b" stroke-width="2.5" stroke-dasharray="5 4"/>
+        <g fill="#1a1a1f"><circle cx="398" cy="232" r="5"/><circle cx="440" cy="232" r="5"/><circle cx="419" cy="184" r="5"/></g>
+        <text x="419" y="258" text-anchor="middle" font-size="15" font-weight="600" fill="#e08a2b">矛盾の数</text>
+      </svg>
     </div>
-
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">前提</div>
-        <h2>市場をネットワークにする</h2>
-        <p class="lead center">40銘柄を <strong>点</strong>、相関の高いペアを <strong>線</strong> で結び、1枚のネットワークにする。</p>
-        <div class="figure">
-          <img src="figs/slide_network.png" alt="相関ネットワーク" style="max-height:380px; max-width:78%;">
-          <div class="cap">図1：40銘柄の相関ネットワーク（点＝銘柄、線＝相関の高いペア）</div>
-        </div>
-        <p class="muted center">このネットワークの形が日々変化する。その形を次の2つの指標で測る。</p>
-      </div>
+    <div class="two-col" style="margin-top:8px;">
+      <div class="center"><p class="big green" style="margin:0;">穴の量</p><p>つながりの<strong>強さ・量</strong>を見る</p></div>
+      <div class="center"><p class="big orange" style="margin:0;">矛盾の数</p><p>つながりの<strong>符号・向き</strong>を見る</p></div>
     </div>
+    <p class="lead center" style="margin-top:16px;">片方は「量」、もう片方は「符号」。同じネットワークから<strong>異なる2つの情報</strong>を取り出す。</p>
+  </div>
 
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">指標①</div>
-        <h2>指標① 穴の量（持続ホモロジー）</h2>
-        <p class="lead center">ネットワークにできる <strong>"輪（穴）"</strong> の大きさを測る指標。</p>
-        <div class="center">
-          <svg viewBox="0 0 560 320" style="margin:6px auto; width:100%; max-width:660px;">
-            <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">密につながっている</text>
-            <g stroke="#9aa0a8" stroke-width="2">
-              <line x1="140" y1="75" x2="205" y2="112"/><line x1="205" y1="112" x2="205" y2="188"/>
-              <line x1="205" y1="188" x2="140" y2="225"/><line x1="140" y1="225" x2="75" y2="188"/>
-              <line x1="75" y1="188" x2="75" y2="112"/><line x1="75" y1="112" x2="140" y2="75"/>
-              <line x1="140" y1="150" x2="140" y2="75" stroke="#c3c8cf"/><line x1="140" y1="150" x2="205" y2="112" stroke="#c3c8cf"/>
-              <line x1="140" y1="150" x2="205" y2="188" stroke="#c3c8cf"/><line x1="140" y1="150" x2="140" y2="225" stroke="#c3c8cf"/>
-              <line x1="140" y1="150" x2="75" y2="188" stroke="#c3c8cf"/><line x1="140" y1="150" x2="75" y2="112" stroke="#c3c8cf"/>
-            </g>
-            <g fill="#1a1a1f">
-              <circle cx="140" cy="75" r="9"/><circle cx="205" cy="112" r="9"/><circle cx="205" cy="188" r="9"/>
-              <circle cx="140" cy="225" r="9"/><circle cx="75" cy="188" r="9"/><circle cx="75" cy="112" r="9"/><circle cx="140" cy="150" r="9"/>
-            </g>
-            <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2a9d5c">小さい</tspan></text>
-            <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">つながりが疎</text>
-            <polygon points="420,75 485,112 485,188 420,225 355,188 355,112" fill="#fbe4e4" stroke="none"/>
-            <g stroke="#9aa0a8" stroke-width="2">
-              <line x1="420" y1="75" x2="485" y2="112"/><line x1="485" y1="112" x2="485" y2="188"/>
-              <line x1="485" y1="188" x2="420" y2="225"/><line x1="420" y1="225" x2="355" y2="188"/>
-              <line x1="355" y1="188" x2="355" y2="112"/><line x1="355" y1="112" x2="420" y2="75"/>
-            </g>
-            <text x="420" y="156" text-anchor="middle" font-size="15" font-weight="700" fill="#d24b4b">穴</text>
-            <g fill="#1a1a1f">
-              <circle cx="420" cy="75" r="9"/><circle cx="485" cy="112" r="9"/><circle cx="485" cy="188" r="9"/>
-              <circle cx="420" cy="225" r="9"/><circle cx="355" cy="188" r="9"/><circle cx="355" cy="112" r="9"/>
-            </g>
-            <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#d24b4b">大きい</tspan></text>
-          </svg>
-        </div>
-        <p class="lead center">穴が大きいほど、つながりが疎で不安定。<span class="muted">これを数学では「持続ホモロジー（H₁）」と呼ぶ。</span></p>
-      </div>
+  <!-- ===== 章 03 ===== -->
+  <div class="chapter">
+    <div class="no">03</div><div class="ti">結果</div>
+    <div class="de">データから見えた2つの事実</div>
+  </div>
+
+  <div class="block">
+    <div class="act">結果①</div>
+    <h2>2つの指標は相関しない <span class="tag sure">● 確実</span></h2>
+    <p class="lead">「穴の量」と「矛盾の数」は<strong>ほぼ無相関</strong>だった。</p>
+    <ul>
+      <li>10通りの条件（銘柄数・期間など）で調べても相関は弱いまま</li>
+      <li>= 片方の値からもう片方は予測できない</li>
+      <li>独立した2種類の情報として扱える</li>
+    </ul>
+    <div class="fig">
+      <img src="figs/slide_scatter.png" alt="散布図" style="max-height:330px; max-width:90%;">
+      <div class="cap">図2：穴の量と矛盾の数の散布図（ほぼ無相関）</div>
     </div>
+  </div>
 
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">指標②</div>
-        <h2>指標② 矛盾の数（符号付きサイクル）</h2>
-        <p class="lead center">線の <strong>+（同方向に動く）/ −（逆方向に動く）</strong> を見て、符号のつじつまが合わない三角形を数える。</p>
-        <div class="center">
-          <svg viewBox="0 0 560 320" style="margin:6px auto; width:100%; max-width:660px;">
-            <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">符号が整合</text>
-            <line x1="140" y1="80" x2="80" y2="210" stroke="#2a9d5c" stroke-width="3"/>
-            <line x1="80" y1="210" x2="200" y2="210" stroke="#2a9d5c" stroke-width="3"/>
-            <line x1="200" y1="210" x2="140" y2="80" stroke="#2a9d5c" stroke-width="3"/>
-            <text x="98" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
-            <text x="135" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
-            <text x="182" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
-            <circle cx="140" cy="80" r="12" fill="#1a1a1f"/><circle cx="80" cy="210" r="12" fill="#1a1a1f"/><circle cx="200" cy="210" r="12" fill="#1a1a1f"/>
-            <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">3つが同方向 → <tspan font-weight="700" fill="#2a9d5c">整合</tspan></text>
-            <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">符号が矛盾</text>
-            <line x1="420" y1="80" x2="360" y2="210" stroke="#2a9d5c" stroke-width="3"/>
-            <line x1="360" y1="210" x2="480" y2="210" stroke="#2a9d5c" stroke-width="3"/>
-            <line x1="480" y1="210" x2="420" y2="80" stroke="#d24b4b" stroke-width="3" stroke-dasharray="7 5"/>
-            <text x="378" y="148" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
-            <text x="415" y="232" font-size="20" font-weight="700" fill="#2a9d5c">+</text>
-            <text x="462" y="148" font-size="22" font-weight="700" fill="#d24b4b">−</text>
-            <circle cx="420" cy="80" r="12" fill="#1a1a1f"/><circle cx="360" cy="210" r="12" fill="#1a1a1f"/><circle cx="480" cy="210" r="12" fill="#1a1a1f"/>
-            <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">2つは同方向だが1つだけ逆 → <tspan font-weight="700" fill="#d24b4b">矛盾</tspan></text>
-          </svg>
-        </div>
-        <p class="lead center">矛盾した三角形が多いほど、符号構造がねじれている。<span class="muted">「友達の友達は友達のはずが敵」というバランス理論の考え方。</span></p>
-      </div>
+  <div class="block">
+    <div class="act">結果②</div>
+    <h2>構造変化の主因は天然ガス <span class="tag sure">● 確実</span></h2>
+    <p class="lead center">構造が崩れるとき、寄与が最も一貫している銘柄は<strong>米国株ではなく天然ガス</strong>だった。</p>
+    <!-- 二層構造の図（新規） -->
+    <div class="svgwrap bleed center">
+      <svg viewBox="0 0 560 196" style="width:100%; max-width:540px;">
+        <text x="24" y="34" font-size="13" font-weight="600" fill="#2f6df6">芯（毎回 上位）</text>
+        <rect x="150" y="18" width="118" height="34" rx="17" fill="#2f6df6"/>
+        <text x="209" y="40" text-anchor="middle" font-size="14" font-weight="600" fill="#fff">天然ガス</text>
+        <rect x="282" y="18" width="92" height="34" rx="17" fill="#e8f2ea" stroke="#2a9d5c"/>
+        <text x="328" y="40" text-anchor="middle" font-size="14" font-weight="600" fill="#2a9d5c">銅</text>
+        <text x="386" y="40" font-size="11.5" fill="#90959e">4つの暴落すべて／ほぼ毎回</text>
+        <line x1="24" y1="86" x2="536" y2="86" stroke="#eceef1" stroke-width="1"/>
+        <text x="24" y="124" font-size="13" font-weight="600" fill="#90959e">交代（暴落の種類で入れ替わる）</text>
+        <rect x="150" y="138" width="96" height="32" rx="16" fill="#f0f2f5" stroke="#dfe3ea"/>
+        <text x="198" y="159" text-anchor="middle" font-size="13" fill="#525660">中国株</text>
+        <rect x="258" y="138" width="74" height="32" rx="16" fill="#f0f2f5" stroke="#dfe3ea"/>
+        <text x="295" y="159" text-anchor="middle" font-size="13" fill="#525660">米国株</text>
+        <rect x="344" y="138" width="92" height="32" rx="16" fill="#f0f2f5" stroke="#dfe3ea"/>
+        <text x="390" y="159" text-anchor="middle" font-size="13" fill="#525660">為替・他</text>
+      </svg>
+      <div class="svgcap">二層構造：天然ガスは常に芯、外側の銘柄は暴落のたびに入れ替わる</div>
     </div>
-
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">2指標の関係</div>
-        <h2>2つの指標は異なる情報を捉える</h2>
-        <div class="center">
-          <svg viewBox="0 0 540 270" style="margin:8px auto; width:100%; max-width:520px;">
-            <text x="270" y="20" text-anchor="middle" font-size="14" fill="#5a5e66">1つの相関ネットワーク</text>
-            <g stroke="#9fc0f5" stroke-width="1.6">
-              <line x1="230" y1="42" x2="310" y2="42"/><line x1="310" y1="42" x2="332" y2="82"/>
-              <line x1="332" y1="82" x2="270" y2="104"/><line x1="270" y1="104" x2="208" y2="82"/>
-              <line x1="208" y1="82" x2="230" y2="42"/><line x1="230" y1="42" x2="332" y2="82"/>
-            </g>
-            <g fill="#1a1a1f">
-              <circle cx="230" cy="42" r="7"/><circle cx="310" cy="42" r="7"/><circle cx="332" cy="82" r="7"/>
-              <circle cx="270" cy="104" r="7"/><circle cx="208" cy="82" r="7"/>
-            </g>
-            <path d="M250 118 L150 158" stroke="#c3c8cf" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-            <path d="M290 118 L390 158" stroke="#c3c8cf" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-            <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-              <path d="M0,0 L6,3 L0,6 Z" fill="#c3c8cf"/></marker></defs>
-            <polygon points="100,178 140,178 155,206 130,234 90,234 75,206" fill="#eaf6ef" stroke="#2a9d5c" stroke-width="2"/>
-            <text x="115" y="210" text-anchor="middle" font-size="12" fill="#2a9d5c">穴</text>
-            <text x="115" y="258" text-anchor="middle" font-size="15" font-weight="600" fill="#2a9d5c">穴の量</text>
-            <line x1="398" y1="232" x2="440" y2="232" stroke="#2a9d5c" stroke-width="2.5"/>
-            <line x1="398" y1="232" x2="419" y2="184" stroke="#2a9d5c" stroke-width="2.5"/>
-            <line x1="419" y1="184" x2="440" y2="232" stroke="#e08a2b" stroke-width="2.5" stroke-dasharray="5 4"/>
-            <g fill="#1a1a1f"><circle cx="398" cy="232" r="5"/><circle cx="440" cy="232" r="5"/><circle cx="419" cy="184" r="5"/></g>
-            <text x="419" y="258" text-anchor="middle" font-size="15" font-weight="600" fill="#e08a2b">矛盾の数</text>
-          </svg>
-        </div>
-        <div class="two-col" style="margin-top:8px;">
-          <div class="center"><p class="big green" style="margin:0;">穴の量</p><p>つながりの<strong>強さ・量</strong>を見る</p></div>
-          <div class="center"><p class="big orange" style="margin:0;">矛盾の数</p><p>つながりの<strong>符号・向き</strong>を見る</p></div>
-        </div>
-        <p class="lead center" style="margin-top:18px;">片方は「量」、もう片方は「符号」。同じネットワークから<strong>異なる2つの情報</strong>を取り出す。</p>
-      </div>
+    <div class="fig">
+      <img src="figs/slide_source.png" alt="震源" style="max-height:360px; max-width:82%;">
+      <div class="cap">図3：構造変化への銘柄別寄与（天然ガスが一貫して上位）</div>
     </div>
+    <p class="muted center">天然ガスは4つの暴落すべてで上位、銅は3回。中国株などは暴落の種類で入れ替わる（二層構造）。</p>
+  </div>
 
-    <!-- ===== 章 03 ===== -->
-    <div class="row chap">
-      <div class="rail"><div class="node">03</div></div>
-      <div class="h"><div class="t">結果</div><div class="d">データから見えた2つの事実</div></div>
+  <!-- ===== 章 04 ===== -->
+  <div class="chapter">
+    <div class="no">04</div><div class="ti">バックテストと検証</div>
+    <div class="de">効果は本物か、限界はどこか</div>
+  </div>
+
+  <div class="block">
+    <div class="act">結果③</div>
+    <h2>矛盾が高い日に株を避けると最大下落が小さくなる <span class="tag sure">● 確実</span></h2>
+    <p class="lead center">「矛盾指標が突出した日に株を売って現金にする」戦略を検証した <span class="muted">（下図は直近5年、20年でも同傾向）</span>。</p>
+    <div class="fig">
+      <img src="figs/slide_equity.png" alt="資産曲線" style="max-height:400px; max-width:86%;">
+      <div class="cap">図4：矛盾指標で株を回避する戦略の資産曲線</div>
     </div>
+    <p class="lead center"><span class="muted">リターンは増えない（保有のみの方が上）</span> &nbsp;／&nbsp; <span class="green">最大下落は小さくなる</span>。リスク低減の補助指標として機能する。</p>
+  </div>
 
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">結果①</div>
-        <h2>2つの指標は相関しない <span class="tag sure">● 確実</span></h2>
-        <p class="lead">「穴の量」と「矛盾の数」は<strong>ほぼ無相関</strong>だった。</p>
-        <ul>
-          <li>10通りの条件（銘柄数・期間など）で調べても相関は弱いまま</li>
-          <li>= 片方の値からもう片方は予測できない</li>
-          <li>独立した2種類の情報として扱える</li>
+  <div class="block">
+    <div class="act">妥当性の検証</div>
+    <h2>結果が偶然でないかを確認した</h2>
+    <p class="lead">下落回避の効果が本物か、3つの対抗仮説と比較した:</p>
+    <ul>
+      <li>「ランダムに避けても同じでは」→ 同じ頻度の<strong>ランダム1000通り</strong>と比較。上回った</li>
+      <li>「単に現金比率が高いだけでは」→ 現金比率を揃えても<strong>避けるタイミングが寄与</strong>していた</li>
+      <li>「恐怖指数(VIX)で代替できるのでは」→ <strong>VIXより良い</strong>タイミングだった</li>
+    </ul>
+    <div class="svgwrap bleed center">
+      <svg viewBox="0 0 560 150" style="width:100%; max-width:560px;">
+        <text x="280" y="18" text-anchor="middle" font-size="14" fill="#5a5e66">20年間の最大下落（短いほど浅い＝良い）</text>
+        <text x="175" y="56" text-anchor="end" font-size="14" fill="#1a1a1f">e_div で避ける</text>
+        <rect x="185" y="42" width="98" height="22" rx="3" fill="#2f6df6"/>
+        <text x="293" y="58" font-size="14" font-weight="600" fill="#2f6df6">−20%</text>
+        <text x="175" y="100" text-anchor="end" font-size="14" fill="#1a1a1f">ランダムに避ける</text>
+        <rect x="185" y="86" width="202" height="22" rx="3" fill="#c3c8cf"/>
+        <text x="397" y="102" font-size="14" font-weight="600" fill="#8a8d93">−42%</text>
+        <text x="280" y="138" text-anchor="middle" font-size="12.5" fill="#8a8d93">同じ頻度で避けても、e_div のタイミングだと下落は約半分</text>
+      </svg>
+    </div>
+    <p class="lead center" style="margin-top:8px;">いずれも上回り、<strong>未来データ（学習に使っていない期間）でも下落低減は再現</strong>した。</p>
+  </div>
+
+  <div class="block">
+    <div class="act">限界</div>
+    <h2>予知ではなく初動の検知 <span class="tag weak">◐ 限界</span></h2>
+    <p class="lead">都合の悪い結果も含めて記す:</p>
+    <ul>
+      <li>暴落を<strong>事前に予知しているわけではない</strong></li>
+      <li>下落が<strong>始まってから反応</strong>している（ただし VIX より早い）</li>
+      <li>COVID のような<strong>急激な暴落の入口は捉えられない</strong></li>
+    </ul>
+    <div class="svgwrap bleed center">
+      <svg viewBox="0 0 600 170" style="width:100%; max-width:600px;">
+        <line x1="40" y1="110" x2="570" y2="110" stroke="#cfd3da" stroke-width="2"/>
+        <polygon points="570,110 562,105 562,115" fill="#cfd3da"/>
+        <text x="560" y="135" text-anchor="end" font-size="12" fill="#8a8d93">時間 →</text>
+        <line x1="200" y1="55" x2="200" y2="125" stroke="#d24b4b" stroke-width="2.5"/>
+        <text x="200" y="46" text-anchor="middle" font-size="13" font-weight="600" fill="#d24b4b">暴落 開始</text>
+        <circle cx="300" cy="110" r="8" fill="#2f6df6"/>
+        <text x="300" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#2f6df6">e_div 反応</text>
+        <text x="300" y="150" text-anchor="middle" font-size="11" fill="#8a8d93">数日後</text>
+        <circle cx="450" cy="110" r="8" fill="#8a8d93"/>
+        <text x="450" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#8a8d93">VIX 反応</text>
+        <text x="450" y="150" text-anchor="middle" font-size="11" fill="#8a8d93">さらに後</text>
+      </svg>
+    </div>
+    <p class="lead center" style="margin-top:4px;">e_div は暴落開始<strong>より後</strong>に反応する（＝予知ではない）が、<strong class="green">VIXよりは早い初動検知</strong>。<span class="muted">できること・できないことを区別して扱う。</span></p>
+  </div>
+
+  <!-- ===== 章 05 ===== -->
+  <div class="chapter">
+    <div class="no">05</div><div class="ti">運用とまとめ</div>
+    <div class="de">自動化の現状と要点</div>
+  </div>
+
+  <div class="block">
+    <div class="act">自動運用</div>
+    <h2>計算からデモ取引まで自動化している</h2>
+    <div class="two-col" style="margin-top:14px;">
+      <div>
+        <ul class="lead">
+          <li>サーバーで<strong>毎朝7時に指標を自動計算</strong></li>
+          <li>判定に応じて<strong>デモ口座で売買</strong>（仮想資金・実取引なし）</li>
+          <li>結果を<strong>Webページに自動更新</strong></li>
         </ul>
-        <div class="figure">
-          <img src="figs/slide_scatter.png" alt="散布図" style="max-height:330px; max-width:90%;">
-          <div class="cap">図2：穴の量と矛盾の数の散布図（ほぼ無相関）</div>
+        <p class="muted">当日は <a href="./app.html"><strong>実装デモタブ</strong></a> で最新状態を表示する。</p>
+      </div>
+      <div>
+        <div class="fig" style="margin:0;">
+          <img src="figs/slide_live.png" alt="運用ステータス" style="width:100%;">
+          <div class="cap">図5：毎朝自動更新される運用ステータス</div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">結果②</div>
-        <h2>構造変化の主因は天然ガス <span class="tag sure">● 確実</span></h2>
-        <p class="lead center">構造が崩れるとき、寄与が最も一貫している銘柄は<strong>米国株ではなく天然ガス</strong>だった。</p>
-        <div class="figure">
-          <img src="figs/slide_source.png" alt="震源" style="max-height:360px; max-width:82%;">
-          <div class="cap">図3：構造変化への銘柄別寄与（天然ガスが一貫して上位）</div>
-        </div>
-        <p class="muted center">天然ガスは4つの暴落すべてで上位、銅は3回。中国株などは暴落の種類で入れ替わる（二層構造）。</p>
-      </div>
-    </div>
-
-    <!-- ===== 章 04 ===== -->
-    <div class="row chap">
-      <div class="rail"><div class="node">04</div></div>
-      <div class="h"><div class="t">バックテストと検証</div><div class="d">効果は本物か、限界はどこか</div></div>
-    </div>
-
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">結果③</div>
-        <h2>矛盾が高い日に株を避けると最大下落が小さくなる <span class="tag sure">● 確実</span></h2>
-        <p class="lead center">「矛盾指標が突出した日に株を売って現金にする」戦略を検証した <span class="muted">（下図は直近5年、20年でも同傾向）</span>。</p>
-        <div class="figure">
-          <img src="figs/slide_equity.png" alt="資産曲線" style="max-height:400px; max-width:86%;">
-          <div class="cap">図4：矛盾指標で株を回避する戦略の資産曲線</div>
-        </div>
-        <p class="lead center"><span class="muted">リターンは増えない（保有のみの方が上）</span> &nbsp;／&nbsp; <span class="green">最大下落は小さくなる</span>。リスク低減の補助指標として機能する。</p>
-      </div>
-    </div>
-
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel accent">
-        <div class="act">妥当性の検証</div>
-        <h2>結果が偶然でないかを確認した</h2>
-        <p class="lead">下落回避の効果が本物か、3つの対抗仮説と比較した:</p>
+  <div class="block">
+    <div class="act">まとめ</div>
+    <h2>まとめ</h2>
+    <div class="two-col" style="margin-top:14px;">
+      <div>
+        <h3 class="green">確認できたこと</h3>
         <ul>
-          <li>「ランダムに避けても同じでは」→ 同じ頻度の<strong>ランダム1000通り</strong>と比較。上回った</li>
-          <li>「単に現金比率が高いだけでは」→ 現金比率を揃えても<strong>避けるタイミングが寄与</strong>していた</li>
-          <li>「恐怖指数(VIX)で代替できるのでは」→ <strong>VIXより良い</strong>タイミングだった</li>
+          <li>2つの指標は独立（穴の量・矛盾の数）</li>
+          <li>構造変化の主因は天然ガス</li>
+          <li>矛盾指標で最大下落を低減（偶然ではない）</li>
         </ul>
-        <div class="center">
-          <svg viewBox="0 0 560 150" style="margin:14px auto; width:100%; max-width:560px;">
-            <text x="280" y="18" text-anchor="middle" font-size="14" fill="#5a5e66">20年間の最大下落（短いほど浅い＝良い）</text>
-            <text x="175" y="56" text-anchor="end" font-size="14" fill="#1a1a1f">e_div で避ける</text>
-            <rect x="185" y="42" width="98" height="22" rx="3" fill="#2f6df6"/>
-            <text x="293" y="58" font-size="14" font-weight="600" fill="#2f6df6">−20%</text>
-            <text x="175" y="100" text-anchor="end" font-size="14" fill="#1a1a1f">ランダムに避ける</text>
-            <rect x="185" y="86" width="202" height="22" rx="3" fill="#c3c8cf"/>
-            <text x="397" y="102" font-size="14" font-weight="600" fill="#8a8d93">−42%</text>
-            <text x="280" y="138" text-anchor="middle" font-size="12.5" fill="#8a8d93">同じ頻度で避けても、e_div のタイミングだと下落は約半分</text>
-          </svg>
-        </div>
-        <p class="lead center" style="margin-top:8px;">いずれも上回り、<strong>未来データ（学習に使っていない期間）でも下落低減は再現</strong>した。</p>
       </div>
-    </div>
-
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">限界</div>
-        <h2>予知ではなく初動の検知 <span class="tag weak">◐ 限界</span></h2>
-        <p class="lead">都合の悪い結果も含めて記す:</p>
+      <div>
+        <h3 class="orange">限界・今後</h3>
         <ul>
-          <li>暴落を<strong>事前に予知しているわけではない</strong></li>
-          <li>下落が<strong>始まってから反応</strong>している（ただし VIX より早い）</li>
-          <li>COVID のような<strong>急激な暴落の入口は捉えられない</strong></li>
+          <li>予知ではなく初動検知</li>
+          <li>急激な暴落の入口は未対応</li>
+          <li>圏論による理論的整理は今後</li>
         </ul>
-        <div class="center">
-          <svg viewBox="0 0 600 170" style="margin:14px auto; width:100%; max-width:600px;">
-            <line x1="40" y1="110" x2="570" y2="110" stroke="#cfd3da" stroke-width="2"/>
-            <polygon points="570,110 562,105 562,115" fill="#cfd3da"/>
-            <text x="560" y="135" text-anchor="end" font-size="12" fill="#8a8d93">時間 →</text>
-            <line x1="200" y1="55" x2="200" y2="125" stroke="#d24b4b" stroke-width="2.5"/>
-            <text x="200" y="46" text-anchor="middle" font-size="13" font-weight="600" fill="#d24b4b">暴落 開始</text>
-            <circle cx="300" cy="110" r="8" fill="#2f6df6"/>
-            <text x="300" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#2f6df6">e_div 反応</text>
-            <text x="300" y="150" text-anchor="middle" font-size="11" fill="#8a8d93">数日後</text>
-            <circle cx="450" cy="110" r="8" fill="#8a8d93"/>
-            <text x="450" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#8a8d93">VIX 反応</text>
-            <text x="450" y="150" text-anchor="middle" font-size="11" fill="#8a8d93">さらに後</text>
-          </svg>
-        </div>
-        <p class="lead center" style="margin-top:4px;">e_div は暴落開始<strong>より後</strong>に反応する（＝予知ではない）が、<strong class="green">VIXよりは早い初動検知</strong>。<span class="muted">できること・できないことを区別して扱う。</span></p>
       </div>
     </div>
-
-    <!-- ===== 章 05 ===== -->
-    <div class="row chap">
-      <div class="rail"><div class="node">05</div></div>
-      <div class="h"><div class="t">運用とまとめ</div><div class="d">自動化の現状と要点</div></div>
-    </div>
-
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel">
-        <div class="act">自動運用</div>
-        <h2>計算からデモ取引まで自動化している</h2>
-        <div class="two-col" style="margin-top:14px;">
-          <div>
-            <ul class="lead">
-              <li>サーバーで<strong>毎朝7時に指標を自動計算</strong></li>
-              <li>判定に応じて<strong>デモ口座で売買</strong>（仮想資金・実取引なし）</li>
-              <li>結果を<strong>Webページに自動更新</strong></li>
-            </ul>
-            <p class="muted">当日は <a href="./app.html"><strong>実装デモタブ</strong></a> で最新状態を表示する。</p>
-          </div>
-          <div>
-            <div class="figure" style="margin:0;">
-              <img src="figs/slide_live.png" alt="運用ステータス" style="width:100%;">
-              <div class="cap">図5：毎朝自動更新される運用ステータス</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row step">
-      <div class="rail"><div class="dot"></div></div>
-      <div class="panel soft">
-        <div class="act">まとめ</div>
-        <h2>まとめ</h2>
-        <div class="two-col" style="margin-top:14px;">
-          <div>
-            <h3 class="green">確認できたこと</h3>
-            <ul>
-              <li>2つの指標は独立（穴の量・矛盾の数）</li>
-              <li>構造変化の主因は天然ガス</li>
-              <li>矛盾指標で最大下落を低減（偶然ではない）</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="orange">限界・今後</h3>
-            <ul>
-              <li>予知ではなく初動検知</li>
-              <li>急激な暴落の入口は未対応</li>
-              <li>圏論による理論的整理は今後</li>
-            </ul>
-          </div>
-        </div>
-        <p class="lead center" style="margin-top:20px;">詳細は <a href="./index.html"><strong>研究内容タブ</strong></a> に記載。</p>
-      </div>
-    </div>
-
-  </div><!-- /track -->
+    <p class="lead center" style="margin-top:24px;">詳細は <a href="./index.html"><strong>研究内容タブ</strong></a> に記載。</p>
+  </div>
 
 </div>
 </body>
