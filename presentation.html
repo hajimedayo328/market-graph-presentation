@@ -267,11 +267,11 @@
 
   <div class="block">
     <div class="act">指標①</div>
-    <h2>指標① 穴の量 ― つながりの「強さ」</h2>
-    <p class="lead center">ネットワークにできる <strong>"輪（穴）"</strong> の大きさを測る。穴が大きいほど、つながりが疎で不安定。</p>
+    <h2>指標① 穴の量（持続ホモロジー）</h2>
+    <p class="lead center">ネットワークにできる <strong>"輪（穴）"</strong> の量を測る。密につながると穴は閉じ、疎だと穴が開く——つながり方の「形」を1つの量で捉える指標。</p>
     <div class="svgwrap bleed center">
       <svg viewBox="0 0 560 320" style="width:100%; max-width:640px;">
-        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#2a9d5c">密につながっている</text>
+        <text x="140" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#16171c">密につながる</text>
         <g stroke="#9aa0a8" stroke-width="2">
           <line x1="140" y1="75" x2="205" y2="112"/><line x1="205" y1="112" x2="205" y2="188"/>
           <line x1="205" y1="188" x2="140" y2="225"/><line x1="140" y1="225" x2="75" y2="188"/>
@@ -284,20 +284,20 @@
           <circle cx="140" cy="75" r="9"/><circle cx="205" cy="112" r="9"/><circle cx="205" cy="188" r="9"/>
           <circle cx="140" cy="225" r="9"/><circle cx="75" cy="188" r="9"/><circle cx="75" cy="112" r="9"/><circle cx="140" cy="150" r="9"/>
         </g>
-        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2a9d5c">小さい</tspan></text>
-        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#d24b4b">つながりが疎</text>
-        <polygon points="420,75 485,112 485,188 420,225 355,188 355,112" fill="#fbe4e4" stroke="none"/>
+        <text x="140" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#16171c">小さい</tspan></text>
+        <text x="420" y="28" text-anchor="middle" font-size="17" font-weight="600" fill="#16171c">つながりが疎</text>
+        <polygon points="420,75 485,112 485,188 420,225 355,188 355,112" fill="#eef3ff" stroke="none"/>
         <g stroke="#9aa0a8" stroke-width="2">
           <line x1="420" y1="75" x2="485" y2="112"/><line x1="485" y1="112" x2="485" y2="188"/>
           <line x1="485" y1="188" x2="420" y2="225"/><line x1="420" y1="225" x2="355" y2="188"/>
           <line x1="355" y1="188" x2="355" y2="112"/><line x1="355" y1="112" x2="420" y2="75"/>
         </g>
-        <text x="420" y="156" text-anchor="middle" font-size="15" font-weight="700" fill="#d24b4b">穴</text>
+        <text x="420" y="156" text-anchor="middle" font-size="15" font-weight="700" fill="#2f6df6">穴</text>
         <g fill="#1a1a1f">
           <circle cx="420" cy="75" r="9"/><circle cx="485" cy="112" r="9"/><circle cx="485" cy="188" r="9"/>
           <circle cx="420" cy="225" r="9"/><circle cx="355" cy="188" r="9"/><circle cx="355" cy="112" r="9"/>
         </g>
-        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#d24b4b">大きい</tspan></text>
+        <text x="420" y="290" text-anchor="middle" font-size="15" fill="#1a1a1f">穴が<tspan font-weight="700" fill="#2f6df6">大きい</tspan></text>
       </svg>
     </div>
     <p class="muted center">数学では「持続ホモロジー（H₁）」と呼ぶ。</p>
@@ -305,7 +305,7 @@
 
   <div class="block">
     <div class="act">指標②</div>
-    <h2>指標② 矛盾の数 ― つながりの「符号」</h2>
+    <h2>指標② 矛盾の数（符号付きサイクル）</h2>
     <p class="lead center">線の <strong>+（同方向）/ −（逆方向）</strong> を見て、符号のつじつまが合わない三角形を数える。多いほど構造がねじれている。</p>
     <div class="svgwrap bleed center">
       <svg viewBox="0 0 560 320" style="width:100%; max-width:640px;">
@@ -366,13 +366,13 @@
         <li>他の市場・他の期間でも同じ結果が出るか（一般化）</li>
         <li>2つの指標の関係をより厳密に</li>
       </ul>
-      <h3 style="margin-top:18px;">理論として — タイトルの「圏論」を中身で裏づける</h3>
-      <p class="lead">そのために学ぶ数学:</p>
+      <h3 style="margin-top:18px;">理論として — 中身を支える数学を深める</h3>
+      <p class="lead">この研究で実際に効くのは<strong>代数トポロジー</strong>。そこを軸に学ぶ:</p>
       <ul class="lead">
-        <li><strong>代数トポロジー</strong>（ホモロジー / コホモロジー）</li>
-        <li><strong>持続ホモロジーの圏論的定式化</strong>（persistence module ＝ 関手）</li>
-        <li><strong>層理論（sheaf）と sheaf cohomology</strong> — 符号の整合性を扱う枠</li>
-        <li>土台：<strong>圏論の基礎・線形代数・群論</strong></li>
+        <li><strong>代数トポロジー</strong>（ホモロジー / コホモロジー）— 「穴」も「矛盾」もこの中身</li>
+        <li><strong>持続ホモロジー</strong>の理論（filtration・persistence・安定性）</li>
+        <li><strong>符号付きグラフ・スペクトルグラフ理論</strong>（signed Laplacian・balance↔コホモロジー）</li>
+        <li>土台：<strong>線形代数・群論</strong>／（発展）層・圏論は上をまとめる高次の言語</li>
       </ul>
     </div>
   </div>
