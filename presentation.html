@@ -360,12 +360,29 @@
   <div class="block">
     <div class="recap">
       <h3>結果のあらまし</h3>
-      <ul class="lead">
-        <li><strong>2つの指標は独立</strong>していた（片方からもう片方は予測できない）</li>
-        <li>構造変化の<strong>主因は天然ガス</strong>（米国株ではない）</li>
-        <li><strong>矛盾が高い日に株を避ける</strong>と、最大下落が約半分になった</li>
-      </ul>
-      <p class="lead" style="margin-bottom:0;"><span class="tag weak">◐ 限界</span> 暴落を<strong>予知</strong>するのではなく、始まった直後の<strong>初動を捉える</strong>段階（ただし恐怖指数VIXよりは早い）。</p>
+
+      <div style="margin:18px 0 8px; padding:18px 4px; border-top:1px solid var(--line);">
+        <p style="margin:0 0 6px;"><span style="font-size:11px;color:var(--accent);letter-spacing:.1em;font-weight:600;">結果①</span></p>
+        <p class="lead" style="margin:0 0 10px;"><strong>2つの指標は独立</strong>していた（片方からもう片方は予測できない）。</p>
+        <div style="text-align:center;"><img src="figs/slide_scatter.png" alt="独立性 散布図" style="max-height:180px;max-width:78%;border-radius:8px;"></div>
+        <p class="muted" style="text-align:center;margin:8px 0 0;">穴と矛盾の散布図（点がバラバラ＝相関弱い）</p>
+      </div>
+
+      <div style="margin:18px 0 8px; padding:18px 4px; border-top:1px solid var(--line);">
+        <p style="margin:0 0 6px;"><span style="font-size:11px;color:var(--accent);letter-spacing:.1em;font-weight:600;">結果②</span></p>
+        <p class="lead" style="margin:0 0 10px;">構造変化の<strong>主因は天然ガス</strong>（米国株ではない）。</p>
+        <div style="text-align:center;"><img src="figs/slide_source.png" alt="銘柄寄与" style="max-height:200px;max-width:80%;border-radius:8px;"></div>
+        <p class="muted" style="text-align:center;margin:8px 0 0;">4つの暴落での銘柄別寄与（天然ガスが常に上位）</p>
+      </div>
+
+      <div style="margin:18px 0 8px; padding:18px 4px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+        <p style="margin:0 0 6px;"><span style="font-size:11px;color:var(--accent);letter-spacing:.1em;font-weight:600;">結果③</span></p>
+        <p class="lead" style="margin:0 0 10px;"><strong>矛盾が高い日に株を避ける</strong>と、最大下落が約半分になった。</p>
+        <div style="text-align:center;"><img src="figs/slide_equity.png" alt="資産曲線" style="max-height:220px;max-width:84%;border-radius:8px;"></div>
+        <p class="muted" style="text-align:center;margin:8px 0 0;">回避戦略の資産曲線（最大下落 −20% vs ランダムの −42%）</p>
+      </div>
+
+      <p class="lead" style="margin-top:18px;margin-bottom:0;"><span class="tag weak">◐ 限界</span> 暴落を<strong>予知</strong>するのではなく、始まった直後の<strong>初動を捉える</strong>段階（ただし恐怖指数VIXよりは早い）。</p>
       <h3 style="margin-top:22px;">新規性について</h3>
       <p class="lead" style="margin-bottom:0;">手法（持続ホモロジー・構造バランス）は確立した既存手法で、市場応用にも先行研究がある。新しい手法ではなく、<strong>既存手法の統合・自分のデータでの実証・厳密な検証</strong>がこの研究の中身。</p>
       <p class="more">検証の詳細（偶然でないかの確認・バックテスト・限界）は <a href="./index.html"><strong>研究内容タブ</strong></a>、毎朝動いている実物は <a href="./app.html"><strong>実装デモタブ</strong></a> に。</p>
