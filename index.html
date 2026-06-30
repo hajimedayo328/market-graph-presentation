@@ -368,7 +368,7 @@
     Gidea 2017 (S&P top 50) や Ferreira 2021 (S&P 構成銘柄) は単一資産クラスなので、
     本研究は<strong>クロスアセット網羅型</strong>として独立。
     銘柄数の頑健性は実証済 (40 → 30 銘柄ランダム削除 30 回中 29 回で e_div の符号が保持、
-    <code>scripts/robustness_subsample.py</code> 参照)。</p>
+    <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/robustness_subsample.py"><code>scripts/robustness_subsample.py</code></a> 参照)。</p>
   </div>
 </section>
 
@@ -397,7 +397,7 @@
   </span></p>
   <p style="font-size:12px; color:var(--sub);">
     <strong>「window=30 日の根拠は？」</strong>:
-    実証で window=20/30/60/90 を比較 (<code>scripts/robustness_window.py</code>)。
+    実証で window=20/30/60/90 を比較 (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/robustness_window.py"><code>scripts/robustness_window.py</code></a>)。
     Δσ_e_div は 20→+0.59、30→+2.75、60→+3.43、90→+3.84 と<strong>単調増加</strong>。
     30 はむしろ控えめな選択で、cherry-pick ではない (20 のみ短すぎて n_unb の反応が捉えきれない)。
     本研究で 30 を採用したのは月次効果を捕まえる標準的長さ + リアルタイム性 (60 / 90 だと反応遅延)
@@ -762,7 +762,7 @@
   <h3>設定を変えても独立か — 頑健性チェック</h3>
   <p>「window=30・threshold=0.3 だから偶然 0.16 になっただけでは?」に答えるため、
   window・threshold・市場を変えて L¹ と不整合サイクル数の相関 r を再計算した
-  (5y × 40 銘柄、持続ホモロジーも再実行。<code>scripts/independence_robustness.py</code>)。</p>
+  (5y × 40 銘柄、持続ホモロジーも再実行。<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/independence_robustness.py"><code>scripts/independence_robustness.py</code></a>)。</p>
   <table>
     <tr><th>変える軸</th><th>設定</th><th>相関 r</th></tr>
     <tr><td rowspan="4">window<br>(閾値 0.3 固定)</td><td>20 日</td><td>+0.23</td></tr>
@@ -851,7 +851,7 @@
     5y 範囲 (2021-07 以降) の 11 件単独では有意水準には届かない。</p>
     <p>L¹ は<strong>絶対値</strong>しか見ないので符号反転に気づかないが、
     不整合サイクル数は符号構造の整合性をチェックするので気づく。</p>
-    <p class="small">検証: <code>scripts/eventstudy_flip_rate_verify.py</code> →
+    <p class="small">検証: <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/eventstudy_flip_rate_verify.py"><code>scripts/eventstudy_flip_rate_verify.py</code></a> →
     <code>data/eventstudy_flip_rate_verify.json</code></p>
   </div>
 
@@ -886,7 +886,7 @@
   <p style="font-size:12px; color:var(--sub);">
     <strong>「無限に作れる指標から良いの選んだだけでは？」への補足</strong>:
     L¹ 系 (L¹/L²/L∞/nH¹/meanP/entropy) と n_unb 系 (total/長さ 3/4/5+) と balance_rate で計 11 指標、
-    全ペア差分 55 通りで event study を試した (<code>scripts/robustness_ediv_pair_scan.py</code>)。
+    全ペア差分 55 通りで event study を試した (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/robustness_ediv_pair_scan.py"><code>scripts/robustness_ediv_pair_scan.py</code></a>)。
     結果: e_div は trade_policy / market_structure で<strong>上位 22-36%</strong>に入る一方、war では中央値以下。
     全 shock で都合よく上位ではないので data dredging とは言えず、
     e_div は「<strong>L¹ vs n_unb という独立な 2 関手の対比</strong>」というクラスの代表例。
@@ -927,7 +927,7 @@
     <strong>「Liberation Day 5 件は autocorrelation で実質 n=1 では？」への補足</strong>:
     その通り、5 件は 2 週間に集中した因果連鎖。これを <strong>1 つの cluster event</strong> として
     permutation (5000 perm) し直すと <strong>Δσ = +3.20, p = 0.037</strong> で有意性は維持
-    (<code>scripts/robustness_cluster_permutation.py</code>)。
+    (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/robustness_cluster_permutation.py"><code>scripts/robustness_cluster_permutation.py</code></a>)。
     むしろ cluster framing の方が個別日 (4/2 vs 4/9 で符号逆) のノイズを除去できて誠実な記述。
     主要発見は autocorrelation を厳密に扱っても堅い。
   </p>
@@ -1254,7 +1254,7 @@
   震源が本当に cross-asset なら、性質の違う他ショックでも同じ銘柄が源泉のはず。
   4 つの独立ショックで LOO を回し直した (z-score は <strong>expanding window</strong> で look-ahead 排除。
   このため Liberation Day baseline は +0.70σ と控えめに出る — 手法差)。
-  再現: <code>scripts/loo_multi_shock.py</code>、<code>data/loo_multi_shock.json</code>。</p>
+  再現: <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/loo_multi_shock.py"><code>scripts/loo_multi_shock.py</code></a>、<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/data/loo_multi_shock.json"><code>data/loo_multi_shock.json</code></a>。</p>
   <table>
     <tr><th>ショック</th><th>baseline Δe_div</th><th>源泉 TOP3 (抜くと弱くなる)</th></tr>
     <tr><td>2025-04 Liberation Day (関税)</td><td>+0.70</td><td>COPPER / EUB10Y / NGAS</td></tr>
@@ -1674,7 +1674,7 @@
     e_div が暴落を当ててるからじゃなく、ただ株を半分しか持ってないからでは?」</strong><br>
     これに答えるため、<strong>e_div を無視して、同じ現金化率・同じ取引回数でランダムに現金化した戦略を
     1000 通り</strong>シミュレーションし、e_div がその分布のどこに位置するかを見た
-    (<code>scripts/backtest_random_benchmark.py</code>)。
+    (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/backtest_random_benchmark.py"><code>scripts/backtest_random_benchmark.py</code></a>)。
   </p>
   <table>
     <tr><th>期間</th><th>e_div の MaxDD</th><th>ランダム平均 MaxDD</th>
@@ -1707,7 +1707,7 @@
   <p>
     次の疑問: <strong>「結局ボラが高い時に避けてるだけなら、恐怖指数 VIX で同じことができるのでは?」</strong><br>
     e_div と<strong>同じ現金化率になるよう VIX の閾値を調整</strong>して、「VIX が高い日に避ける」戦略と
-    正面比較した (5y、<code>scripts/backtest_vix_compare.py</code>)。
+    正面比較した (5y、<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/backtest_vix_compare.py"><code>scripts/backtest_vix_compare.py</code></a>)。
   </p>
   <table>
     <tr><th>戦略 (同じ ~48% 現金化)</th><th>Sharpe</th><th>MaxDD</th><th>リターン</th></tr>
@@ -1736,7 +1736,7 @@
     9.5.5 / 9.5.6 の優位は全て <strong>in-sample</strong> (過去全部を見て閾値 0.8 を決めた)。
     「閾値が過去にフィットしてるだけでは?」に答えるため、<strong>train 3 年で閾値を決め → 次の 1 年でテスト</strong>を
     1 年ずつ転がす walk-forward OOS で、<strong>未来データのみ</strong>を使って再対決した
-    (<code>scripts/backtest_oos_random_vix.py</code>、20y で 16 fold)。閾値・z-score・VIX 閾値すべて
+    (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/backtest_oos_random_vix.py"><code>scripts/backtest_oos_random_vix.py</code></a>、20y で 16 fold)。閾値・z-score・VIX 閾値すべて
     train 期間のみから決定 (look-ahead 完全排除)。
   </p>
   <table>
@@ -1773,7 +1773,7 @@
   <li><strong>反応 (lag)</strong>: 下落と<em>同時 / 後</em>に e_div が立ち上がる → 避けても遅い「初動検知」に過ぎない</li>
 </ul>
 <p>
-  これを正面から検証した (<code>scripts/eventstudy_predict_vs_react.py</code>、
+  これを正面から検証した (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/eventstudy_predict_vs_react.py"><code>scripts/eventstudy_predict_vs_react.py</code></a>、
   出力 <code>data/eventstudy_predict_vs_react.json</code>)。
   各下落について<strong>「e_div が +0.8σ を最初に超えた日」と「下落開始日」の時間差 (ラグ)</strong> を測る。
   ラグが負 = 予知、ラグが正 = 反応。
@@ -2002,7 +2002,7 @@
   </table>
   <p>追加 event (5 年外): 2018-03/07 米中第 1 弾関税, 2018-02 Volmageddon, 2019-08 米中再エスカレ,
   2020-01 Phase One, 2020-03 COVID クラッシュ, 2022-02 ウクライナ, 2022-09 UK 年金危機 等。
-  実装: <code>scripts/eventstudy_8y_oos.py</code>, <code>data/events_8y.json</code>,
+  実装: <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/eventstudy_8y_oos.py"><code>scripts/eventstudy_8y_oos.py</code></a>, <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/data/events_8y.json"><code>data/events_8y.json</code></a>,
   <code>data/eventstudy_8y_results.json</code>。</p>
 
   <h3>10.5.2 8 年 OOS の主要結果 (post_only mode, 5y と直接比較可能)</h3>
@@ -2085,7 +2085,7 @@
 <section id="s11">
   <div class="section-num">SECTION 11</div>
   <h2>限界と今後</h2>
-  <p class="lede">研究の正直な制約を全部出す。すべて実証検証済 (<code>scripts/audit_*.py</code> / <code>robustness_*.py</code>)。</p>
+  <p class="lede">研究の正直な制約を全部出す。すべて実証検証済 (<a href="https://github.com/hajimedayo328/market-graph-presentation/tree/main/scripts"><code>scripts/audit_*.py</code> / <code>robustness_*.py</code></a>)。</p>
 
   <h3>11.1 検証済みの制約 (主要発見への影響: 小)</h3>
   <table>
@@ -2095,7 +2095,7 @@
         <td>29/30 で e_div 符号保持、影響小</td></tr>
     <tr><td><strong>銘柄構成バリエーション総当たり</strong></td>
         <td>LOO (40 通り) + asset class 7 グループ除外 + 段階縮小 (35→10)</td>
-        <td>20-30 銘柄で頑健。4 ショック LOO で全共通の普遍核は NGAS のみ (4/4)、COPPER/CHINA50 が準ずる (各 3/4)、周辺はイベント依存の二層構造 (<code>scripts/loo_multi_shock.py</code>)</td></tr>
+        <td>20-30 銘柄で頑健。4 ショック LOO で全共通の普遍核は NGAS のみ (4/4)、COPPER/CHINA50 が準ずる (各 3/4)、周辺はイベント依存の二層構造 (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/loo_multi_shock.py"><code>scripts/loo_multi_shock.py</code></a>)</td></tr>
     <tr><td><strong>e_div の cherry-pick 疑惑</strong></td>
         <td>11 指標 55 ペアスイープ</td>
         <td>trade/structure 上位 22-36%、war 中央値以下、Bonferroni 通過</td></tr>
@@ -2183,8 +2183,8 @@
     <li><strong>20y OOS 初期 (2006-2017) の universe 時変</strong>: TSLA/META/BTC/ETH の IPO 前は欠落。
         この期間の結果は universe が時間と共に変化する residual bias を持つ。
         主要発見 (2017-11 以降) には影響なし。</li>
-    <li><strong>z-score look-ahead 完全排除済み</strong>: バックテスト (<code>backtest.py</code>,
-        <code>backtest_v2.py</code>, <code>backtest_walkforward*.py</code>) の z-score は全て
+    <li><strong>z-score look-ahead 完全排除済み</strong>: バックテスト (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/backtest.py"><code>backtest.py</code></a>,
+        <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/backtest_v2.py"><code>backtest_v2.py</code></a>, <a href="https://github.com/hajimedayo328/market-graph-presentation/tree/main/scripts"><code>backtest_walkforward*.py</code></a>) の z-score は全て
         <strong>過去のみの expanding window (min_periods=30)</strong> で計算するように修正済み
         (旧版の全期間 mean/std による weak look-ahead を完全に排除)。
         修正前後の比較: S1 short Sharpe +1.16→+0.88, MaxDD -11.2%→-17.3% と数値は低下するが、
@@ -2198,7 +2198,7 @@
         個別 yfinance 取得が必要で重いため future work として残す。</li>
     <li><strong>因果性の検証範囲</strong>: 2 方向 Granger 因果性検定で
         <code>trade_policy → e_div</code> の方向は p=0.022 (lag=5) で有意・逆は非有意 (p=0.254) を確認
-        (<code>scripts/causal_granger.py</code> / <code>data/causal_granger_results.json</code>)。
+        (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/causal_granger.py"><code>scripts/causal_granger.py</code></a> / <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/data/causal_granger_results.json"><code>data/causal_granger_results.json</code></a>)。
         ただし Granger は「予測可能性ベース」の因果であり、隠れた共通要因 (例: 市場ストレス全般) を完全排除しない点は残課題。
         より厳密な手法 (DAG / structural IV / counterfactual) は future work。
         なお <code>market_structure</code> は p=0.67 で有意性なし
