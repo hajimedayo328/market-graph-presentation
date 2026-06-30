@@ -133,7 +133,7 @@
   <div class="hero">
     <div class="eyebrow">相関ネットワークの位相解析</div>
     <h1>銘柄ネットワークの"形"から<br>市場の構造変化を見る</h1>
-    <p class="sub">40銘柄の相関を毎日ネットワーク化し、2つの位相的な指標で構造の変化を追う</p>
+    <p class="sub">価格を見ずに、市場の異変は捉えられるか。<br><span style="font-size:.9em;color:var(--muted);">銘柄どうしの"つながりの形"の変化から構造変化を捉える試み。</span></p>
     <p class="byline">学部3年 ・ 赤塩</p>
   </div>
 
@@ -191,26 +191,6 @@
     </svg>
     <p class="cap">価格 → 相関でネットワーク化 → 2指標で形を測る → 構造変化を検知 → デモ口座で自動運用。この流れを毎日まわす。</p>
   </div>
-
-  <!-- ============ 主要な結果（あらまし） ============ -->
-  <div class="finds">
-    <div class="find">
-      <div class="k"><span class="dot"></span>結果① 確実</div>
-      <div class="v">2指標はほぼ無相関</div>
-      <div class="s">「穴の量」と「矛盾の数」は独立した情報</div>
-    </div>
-    <div class="find">
-      <div class="k"><span class="dot"></span>結果② 確実</div>
-      <div class="v">主因は天然ガス</div>
-      <div class="s">4つの暴落すべてで寄与が上位</div>
-    </div>
-    <div class="find">
-      <div class="k"><span class="dot"></span>結果③ 確実</div>
-      <div class="v">最大下落 −20% ↔ −42%</div>
-      <div class="s">矛盾指標で避けると下落は約半分（vs ランダム）</div>
-    </div>
-  </div>
-  <div class="legend"><span><b class="green">●</b> 確実 … 検証済み</span><span><b class="orange">◐</b> 限界 … 条件つき・今後</span></div>
 
   <!-- ===== 章 01 ===== -->
   <div class="chapter">
@@ -361,6 +341,25 @@
     <div class="recap">
       <h3>結果のあらまし</h3>
 
+      <div class="finds" style="margin:14px 0 6px; padding:18px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:transparent;">
+        <div class="find">
+          <div class="k"><span class="dot"></span>結果① 確実</div>
+          <div class="v">2指標はほぼ無相関</div>
+          <div class="s">「穴の持続」と「矛盾の数」は独立した情報</div>
+        </div>
+        <div class="find">
+          <div class="k"><span class="dot"></span>結果② 確実</div>
+          <div class="v">主因は天然ガス</div>
+          <div class="s">4つの暴落すべてで寄与が上位</div>
+        </div>
+        <div class="find">
+          <div class="k"><span class="dot"></span>結果③ 確実</div>
+          <div class="v">最大下落 −20% ↔ −42%</div>
+          <div class="s">矛盾指標で避けると下落は約半分（vs ランダム）</div>
+        </div>
+      </div>
+      <div class="legend" style="margin-bottom:14px;"><span><b class="green">●</b> 確実 … 検証済み</span><span><b class="orange">◐</b> 限界 … 条件つき・今後</span></div>
+
       <div style="margin:18px 0 8px; padding:18px 4px; border-top:1px solid var(--line);">
         <p style="margin:0 0 6px;"><span style="font-size:11px;color:var(--accent);letter-spacing:.1em;font-weight:600;">結果①</span></p>
         <p class="lead" style="margin:0 0 10px;"><strong>2つの指標は独立</strong>していた（片方からもう片方は予測できない）。</p>
@@ -411,6 +410,7 @@
         <li><strong>符号付きグラフ・スペクトルグラフ理論</strong>（signed Laplacian・balance↔コホモロジー）— 「矛盾」の代数side</li>
         <li>（発展）<strong>層・圏論</strong> — 上をまとめる高次の言語（前提ではなく後から少しずつ）</li>
       </ul>
+      <p class="lead" style="margin-top:22px;text-align:center;color:var(--ink);"><strong>価格ではなく"つながりの形"</strong>——この見方を1つ残せたのが、この研究です。</p>
     </div>
   </div>
 
