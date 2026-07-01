@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Poster A0 — 銘柄ネットワークの"形"から市場の構造変化を見る</title>
+<style>
+  /* ============ 印刷用 A0 縦 ============ */
+  @page { size: 841mm 1189mm; margin: 0; }
+  :root{
+    --paper:#ffffff; --ink:#0f1116; --sub:#3a3f47; --muted:#6b7280;
+    --accent:#1f5fe0; --accent-soft:#e6efff;
+    --green:#1f7a44; --orange:#c76b17; --red:#b5322e;
+    --line:#d9dde3; --line-2:#eef0f4; --block:#f8fafc;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0;
+    width:841mm; height:1189mm;
+    background:#fff; color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    font-weight:400; -webkit-font-smoothing:antialiased;
+  }
+
+  /* 全体グリッド: タイトル + 3行 + フッタ */
+  .poster{
+    display:grid;
+    grid-template-rows: 132mm 270mm 270mm 270mm 190mm;
+    height:1189mm; padding:20mm 22mm;
+    gap:6mm;
+  }
+
+  /* ============ タイトル ============ */
+  .title-bar{
+    background:linear-gradient(180deg,#fbfcfe,#f2f6fc);
+    border:1.5px solid var(--line); border-radius:6mm;
+    padding:8mm 12mm; display:flex; align-items:center; justify-content:space-between;
+  }
+  .title-l{flex:1; min-width:0;}
+  .eyebrow{
+    font-size:11pt; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin-bottom:5mm;
+  }
+  .title-jp{font-size:44pt; font-weight:700; letter-spacing:-0.01em; line-height:1.15; margin:0 0 3mm 0;}
+  .title-en{font-size:19pt; font-weight:500; color:var(--sub); line-height:1.2; margin:0 0 5mm 0;}
+  .byline{font-size:17pt; color:var(--ink); font-weight:500;}
+  .byline small{font-size:13pt; color:var(--muted); font-weight:400; margin-left:6mm;}
+  .title-r{
+    text-align:right; padding-left:10mm; border-left:1px solid var(--line);
+    margin-left:10mm; min-width:90mm;
+  }
+  .title-r .facts{display:grid; grid-template-columns:repeat(2,1fr); gap:3mm 8mm;}
+  .title-r .n{font-size:22pt; font-weight:700; letter-spacing:-0.02em; line-height:1;}
+  .title-r .l{font-size:9pt; color:var(--sub); margin-top:1mm; line-height:1.25;}
+
+  /* ============ 3×3グリッド ============ */
+  .row3{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:6mm;
+  }
+  .block{
+    background:#fff; border:1.5px solid var(--line); border-radius:5mm;
+    padding:8mm 8mm 6mm; position:relative; overflow:hidden;
+  }
+  .block.accent{background:linear-gradient(180deg,#f7fbff,#eef4fd); border-color:#c7d7f0;}
+  .block.soft{background:var(--block);}
+  .block-num{
+    position:absolute; top:4mm; right:6mm;
+    font-size:9pt; font-weight:700; letter-spacing:.15em;
+    color:var(--accent); text-transform:uppercase;
+  }
+  h2{
+    font-size:22pt; font-weight:700; letter-spacing:-0.01em;
+    margin:0 0 5mm 0; line-height:1.25;
+  }
+  h2 small{font-size:12pt; color:var(--muted); font-weight:400; margin-left:3mm;}
+  p{font-size:12pt; line-height:1.55; margin:0 0 3mm 0; color:var(--ink);}
+  p.small{font-size:11pt;}
+  p.lead{font-size:13pt; font-weight:500;}
+  strong{color:var(--accent);}
+  ul{padding-left:5mm; margin:0 0 3mm 0;}
+  li{font-size:12pt; line-height:1.55; margin-bottom:2mm;}
+  .muted{color:var(--muted);}
+  .green{color:var(--green);} .orange{color:var(--orange);} .red{color:var(--red);}
+  strong.green{color:var(--green);} strong.orange{color:var(--orange);}
+  svg{display:block; margin:0 auto;}
+  img{display:block; margin:0 auto; max-width:100%;}
+  .cap{font-size:9.5pt; color:var(--muted); text-align:center; margin-top:2mm;}
+
+  /* 結果値の強調 */
+  .metric{font-size:34pt; font-weight:700; color:var(--accent); letter-spacing:-0.02em; line-height:1;}
+  .metric small{font-size:12pt; color:var(--sub); font-weight:500; margin-left:2mm;}
+
+  /* テーブル (独立性スキャン) */
+  table{width:100%; border-collapse:collapse; font-size:10pt; margin-top:2mm;}
+  th, td{padding:1.4mm 2mm; text-align:right; border-bottom:1px solid var(--line-2);}
+  th:first-child, td:first-child{text-align:left;}
+  th{font-weight:600; font-size:9.5pt; color:var(--sub); border-bottom:1.2px solid var(--line);}
+  td.ok{color:var(--green); font-weight:600;}
+
+  /* ============ フッタ ============ */
+  .footer{
+    display:grid; grid-template-columns:1fr 1fr 100mm;
+    gap:6mm;
+  }
+  .fbox{
+    background:#fff; border:1.5px solid var(--line); border-radius:5mm;
+    padding:7mm 8mm;
+  }
+  .fbox h3{font-size:14pt; font-weight:700; margin:0 0 3mm 0;}
+  .fbox p, .fbox li{font-size:10.5pt; line-height:1.5;}
+  .qrbox{
+    background:#fff; border:1.5px solid var(--line); border-radius:5mm;
+    padding:5mm; display:flex; align-items:center; justify-content:center; flex-direction:column;
+    text-align:center;
+  }
+  .qr{width:60mm; height:60mm; background:repeating-linear-gradient(45deg,#111 0 3mm,#fff 3mm 4mm); border:1px solid #333;}
+  .qr-label{font-size:10pt; font-weight:600; margin-top:3mm; color:var(--ink);}
+  .qr-url{font-size:8.5pt; color:var(--sub); margin-top:1mm; word-break:break-all; max-width:80mm;}
+
+  /* 汎用: グリッド分割 */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:5mm;}
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- ============ タイトルバー ============ -->
+  <div class="title-bar">
+    <div class="title-l">
+      <div class="eyebrow">Topological analysis of correlation networks</div>
+      <h1 class="title-jp">銘柄ネットワークの&ldquo;形&rdquo;から<br>市場の構造変化を見る</h1>
+      <div class="title-en">
+        Detecting market regime shifts via two independent topological invariants<br>
+        of the multi-asset correlation network
+      </div>
+      <div class="byline">学部3年　赤塩<small>／ 指導：（要確認）</small></div>
+    </div>
+    <div class="title-r">
+      <div class="facts">
+        <div><div class="n">40</div><div class="l">銘柄 / 5クラス</div></div>
+        <div><div class="n">20年</div><div class="l">OOS 検証</div></div>
+        <div><div class="n">2</div><div class="l">独立位相指標</div></div>
+        <div><div class="n">|r|&lt;0.5</div><div class="l">10設定で頑健</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 段1: 動機 / 手法 / 独立性 ============ -->
+  <div class="row3">
+
+    <!-- (1) 動機 -->
+    <div class="block">
+      <div class="block-num">① Motivation</div>
+      <h2>動機と問題設定 <small>Why look at &ldquo;shape&rdquo;?</small></h2>
+      <p class="lead">価格ではなく、銘柄どうしの<strong>連動の構造</strong>を見ることで、市場の構造変化を捉えられるか。</p>
+      <svg viewBox="0 0 560 190" style="width:100%; max-width:100%; height:auto;">
+        <text x="120" y="20" text-anchor="middle" font-size="15" fill="#6b7280">従来: 価格を見る</text>
+        <polyline points="30,140 60,120 90,130 120,95 150,110 180,70 210,85 240,50" fill="none" stroke="#6b7280" stroke-width="3"/>
+        <text x="290" y="105" text-anchor="middle" font-size="34" fill="#1f5fe0">→</text>
+        <text x="460" y="20" text-anchor="middle" font-size="15" fill="#1f5fe0" font-weight="600">本研究: 構造を見る</text>
+        <g stroke="#8faee0" stroke-width="2">
+          <line x1="400" y1="65" x2="490" y2="55"/><line x1="490" y1="55" x2="540" y2="95"/>
+          <line x1="540" y1="95" x2="470" y2="140"/><line x1="470" y1="140" x2="400" y2="120"/>
+          <line x1="400" y1="120" x2="400" y2="65"/><line x1="400" y1="65" x2="540" y2="95"/>
+        </g>
+        <line x1="470" y1="140" x2="490" y2="55" stroke="#e0a0a0" stroke-width="2" stroke-dasharray="6 4"/>
+        <g fill="#0f1116">
+          <circle cx="400" cy="65" r="8"/><circle cx="490" cy="55" r="8"/><circle cx="540" cy="95" r="8"/>
+          <circle cx="470" cy="140" r="8"/><circle cx="400" cy="120" r="8"/>
+        </g>
+      </svg>
+      <p class="small muted" style="margin-top:3mm;">40銘柄（株指数・個別株・為替・商品・債券・暗号・特殊）の相関ネットワークを毎日構築し、その形の変化を追う。</p>
+    </div>
+
+    <!-- (2) 手法概観 -->
+    <div class="block">
+      <div class="block-num">② Method</div>
+      <h2>2つの位相不変量 <small>Two topological indicators</small></h2>
+      <p class="lead">同じ相関ネットワークから、<strong>数学的に別種の2つの位相不変量</strong>を同時に抽出する。</p>
+      <ul>
+        <li><strong>穴の持続</strong>（H₁ persistence, L¹）— Vietoris–Rips filtration による持続ホモロジー</li>
+        <li><strong>矛盾の数</strong>（signed structural balance）— 符号付きサイクルの frustration 相当</li>
+      </ul>
+      <svg viewBox="0 0 560 130" style="width:100%; margin-top:3mm;">
+        <rect x="20" y="30" width="130" height="70" rx="8" fill="#f2f6fc" stroke="#c7d7f0"/>
+        <text x="85" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#0f1116">相関ネット</text>
+        <path d="M155,65 L200,65" stroke="#6b7280" stroke-width="2" marker-end="url(#a1)"/>
+        <defs><marker id="a1" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto"><path d="M0,0 L8,5 L0,10 Z" fill="#6b7280"/></marker></defs>
+        <rect x="205" y="10" width="150" height="50" rx="6" fill="#e6efff" stroke="#1f5fe0"/>
+        <text x="280" y="40" text-anchor="middle" font-size="13" fill="#1f5fe0" font-weight="600">穴の持続 (H₁)</text>
+        <rect x="205" y="70" width="150" height="50" rx="6" fill="#fff2e6" stroke="#c76b17"/>
+        <text x="280" y="100" text-anchor="middle" font-size="13" fill="#c76b17" font-weight="600">矛盾の数</text>
+        <path d="M360,35 L410,55" stroke="#6b7280" stroke-width="2" marker-end="url(#a1)"/>
+        <path d="M360,95 L410,75" stroke="#6b7280" stroke-width="2" marker-end="url(#a1)"/>
+        <rect x="415" y="35" width="120" height="60" rx="8" fill="#1f5fe0" opacity="0.92"/>
+        <text x="475" y="60" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">e_div</text>
+        <text x="475" y="80" text-anchor="middle" font-size="10.5" fill="#e6efff">= z(unb) − z(H₁)</text>
+      </svg>
+      <p class="small muted" style="text-align:center;margin-top:2mm;">→ 組み合わせ指標 e_div により、両者のズレを危険サインとして検出</p>
+    </div>
+
+    <!-- (3) 独立性 -->
+    <div class="block accent">
+      <div class="block-num">③ Key claim</div>
+      <h2>2指標は独立 <small>Independence — robust across 10 settings</small></h2>
+      <p class="lead">窓・閾値・市場を振っても <strong>|r| &lt; 0.5</strong>（9/10 で &lt; 0.3）。</p>
+      <table>
+        <tr><th>設定軸</th><th>スキャン範囲</th><th>|r|</th></tr>
+        <tr><td>Window</td><td>20 / 30 / 40 / 60 日</td><td class="ok">≤ 0.23</td></tr>
+        <tr><td>Threshold</td><td>0.2 / 0.3 / 0.4</td><td class="ok">≤ 0.22</td></tr>
+        <tr><td>Market</td><td>USA / EM / CN</td><td>0.16 / 0.17 / 0.41</td></tr>
+        <tr><th colspan="2" style="text-align:left;">全10設定</th><th>max <span class="ok">|r|=0.41</span></th></tr>
+      </table>
+      <p class="small" style="margin-top:4mm;">
+        <span class="metric">10<small>/10</small></span>
+        <span style="margin-left:4mm;">設定で <strong>独立性が保持</strong>（|r|&lt;0.5）</span>
+      </p>
+      <p class="small muted" style="margin-top:3mm;">Spearman 相関、Pearson両方で確認。銘柄数15/25/39でも独立性は保たれる（|r|&lt;0.15）。</p>
+    </div>
+
+  </div>
+
+  <!-- ============ 段2: 各指標の中身 ============ -->
+  <div class="row3">
+
+    <!-- (4) 指標① 穴の持続 -->
+    <div class="block">
+      <div class="block-num">④ Indicator 1</div>
+      <h2>指標① 穴の持続 <small>Persistent H₁</small></h2>
+      <p>相関ネットワークにできる &ldquo;輪（穴）&rdquo; を測る。<strong>基準を変えても残る穴が本物</strong>、すぐ消える穴がノイズ。</p>
+      <svg viewBox="0 0 560 200" style="width:100%; margin-top:2mm;">
+        <text x="140" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#1f5fe0">本物の穴</text>
+        <polygon points="140,50 195,80 195,140 140,170 85,140 85,80" fill="#e6efff" stroke="#8faee0" stroke-width="2"/>
+        <g fill="#0f1116">
+          <circle cx="140" cy="50" r="7"/><circle cx="195" cy="80" r="7"/><circle cx="195" cy="140" r="7"/>
+          <circle cx="140" cy="170" r="7"/><circle cx="85" cy="140" r="7"/><circle cx="85" cy="80" r="7"/>
+        </g>
+        <text x="140" y="195" text-anchor="middle" font-size="12" fill="#0f1116">しっかり空いてる（残る）</text>
+        <text x="420" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#6b7280">ノイズの穴</text>
+        <polygon points="420,50 475,80 475,140 420,170 365,140 365,80" fill="none" stroke="#8faee0" stroke-width="2"/>
+        <g stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4 3">
+          <line x1="420" y1="50" x2="420" y2="170"/>
+          <line x1="365" y1="80" x2="475" y2="140"/>
+        </g>
+        <g fill="#0f1116">
+          <circle cx="420" cy="50" r="7"/><circle cx="475" cy="80" r="7"/><circle cx="475" cy="140" r="7"/>
+          <circle cx="420" cy="170" r="7"/><circle cx="365" cy="140" r="7"/><circle cx="365" cy="80" r="7"/>
+        </g>
+        <text x="420" y="195" text-anchor="middle" font-size="12" fill="#6b7280">すぐ埋まる（消える）</text>
+      </svg>
+      <p class="small muted" style="text-align:center;margin-top:2mm;">Vietoris–Rips filtration、d = √(2(1−r))</p>
+    </div>
+
+    <!-- (5) 指標② 矛盾の数 -->
+    <div class="block">
+      <div class="block-num">⑤ Indicator 2</div>
+      <h2>指標② 矛盾の数 <small>Signed cycles</small></h2>
+      <p>各辺に相関の符号（±）を載せて、輪を一周した積が<strong>負になる三角形</strong>を数える。数が多いほど符号構造がねじれている。</p>
+      <svg viewBox="0 0 560 160" style="width:100%; margin-top:2mm;">
+        <text x="140" y="18" text-anchor="middle" font-size="14" font-weight="600" fill="#1f7a44">符号が整合</text>
+        <line x1="140" y1="40" x2="90" y2="120" stroke="#1f7a44" stroke-width="3"/>
+        <line x1="90" y1="120" x2="190" y2="120" stroke="#1f7a44" stroke-width="3"/>
+        <line x1="190" y1="120" x2="140" y2="40" stroke="#1f7a44" stroke-width="3"/>
+        <text x="110" y="82" font-size="18" font-weight="700" fill="#1f7a44">+</text>
+        <text x="135" y="140" font-size="18" font-weight="700" fill="#1f7a44">+</text>
+        <text x="170" y="82" font-size="18" font-weight="700" fill="#1f7a44">+</text>
+        <circle cx="140" cy="40" r="9" fill="#0f1116"/><circle cx="90" cy="120" r="9" fill="#0f1116"/><circle cx="190" cy="120" r="9" fill="#0f1116"/>
+        <text x="140" y="155" text-anchor="middle" font-size="12" fill="#0f1116">積 (+)(+)(+) = <tspan font-weight="700" fill="#1f7a44">+</tspan></text>
+        <text x="420" y="18" text-anchor="middle" font-size="14" font-weight="600" fill="#b5322e">符号が矛盾</text>
+        <line x1="420" y1="40" x2="370" y2="120" stroke="#1f7a44" stroke-width="3"/>
+        <line x1="370" y1="120" x2="470" y2="120" stroke="#1f7a44" stroke-width="3"/>
+        <line x1="470" y1="120" x2="420" y2="40" stroke="#b5322e" stroke-width="3" stroke-dasharray="6 4"/>
+        <text x="390" y="82" font-size="18" font-weight="700" fill="#1f7a44">+</text>
+        <text x="415" y="140" font-size="18" font-weight="700" fill="#1f7a44">+</text>
+        <text x="453" y="82" font-size="20" font-weight="700" fill="#b5322e">−</text>
+        <circle cx="420" cy="40" r="9" fill="#0f1116"/><circle cx="370" cy="120" r="9" fill="#0f1116"/><circle cx="470" cy="120" r="9" fill="#0f1116"/>
+        <text x="420" y="155" text-anchor="middle" font-size="12" fill="#0f1116">積 (+)(+)(−) = <tspan font-weight="700" fill="#b5322e">−</tspan></text>
+      </svg>
+      <p class="small muted" style="text-align:center;margin-top:2mm;">Heider balance / ℤ₂-cohomology 相当（構造バランス理論）</p>
+    </div>
+
+    <!-- (6) e_div -->
+    <div class="block accent">
+      <div class="block-num">⑥ Composite</div>
+      <h2>組み合わせ指標 e_div <small>= z(unb) − z(H₁)</small></h2>
+      <p class="lead">独立な2指標を<strong>過去のみのz-scoreで標準化して差を取る</strong>。矛盾だけが突出した日 = 危険サイン。</p>
+      <svg viewBox="0 0 560 190" style="width:100%; margin-top:2mm;">
+        <text x="90" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#1f5fe0">矛盾 z(unb)</text>
+        <rect x="60" y="30" width="60" height="120" rx="4" fill="#e6efff" stroke="#1f5fe0" stroke-width="2"/>
+        <rect x="60" y="55" width="60" height="95" fill="#1f5fe0" opacity="0.75"/>
+        <text x="180" y="100" text-anchor="middle" font-size="34" font-weight="300" fill="#6b7280">−</text>
+        <text x="280" y="22" text-anchor="middle" font-size="12" font-weight="600" fill="#6b7280">穴 z(H₁)</text>
+        <rect x="250" y="30" width="60" height="120" rx="4" fill="#eef0f4" stroke="#6b7280" stroke-width="2"/>
+        <rect x="250" y="90" width="60" height="60" fill="#6b7280" opacity="0.5"/>
+        <text x="370" y="100" text-anchor="middle" font-size="28" font-weight="300" fill="#6b7280">=</text>
+        <text x="470" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#0f1116">e_div</text>
+        <rect x="440" y="30" width="60" height="120" rx="4" fill="#fff" stroke="#0f1116" stroke-width="2"/>
+        <rect x="440" y="55" width="60" height="35" fill="#0f1116" opacity="0.85"/>
+        <text x="280" y="180" text-anchor="middle" font-size="11" fill="#6b7280">同じスケールに揃えて、矛盾の &ldquo;突出度&rdquo; を取り出す</text>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- ============ 段3: 結果 ============ -->
+  <div class="row3">
+
+    <!-- (7) 結果① 独立 -->
+    <div class="block">
+      <div class="block-num">⑦ Finding 1</div>
+      <h2>結果① 2指標は無相関 <small>Independence</small></h2>
+      <p class="small">穴と矛盾は<strong>ほぼ無相関</strong>。片方から他方は予測できない。</p>
+      <img src="figs/slide_scatter.png" alt="散布図" style="max-height:120mm; max-width:100%;">
+      <p class="cap">日次時系列上の散布図（横=穴の持続、縦=矛盾の数）</p>
+    </div>
+
+    <!-- (8) 結果② 天然ガス震源 -->
+    <div class="block">
+      <div class="block-num">⑧ Finding 2</div>
+      <h2>結果② 主因は天然ガス <small>NGAS is the universal core</small></h2>
+      <p class="small">4つの独立ショックすべてで <strong>NGAS が寄与上位</strong>。株ではない。</p>
+      <img src="figs/slide_source.png" alt="銘柄寄与" style="max-height:130mm; max-width:100%;">
+      <p class="cap">LOOによる銘柄別寄与（4ショック横断）</p>
+    </div>
+
+    <!-- (9) 結果③ 下落回避 -->
+    <div class="block accent">
+      <div class="block-num">⑨ Finding 3</div>
+      <h2>結果③ 最大下落 −20% <small>vs random −42%</small></h2>
+      <p class="small">e_div が突出した日に株を避ける戦略の資産曲線。<strong>walk-forward OOS で MaxDD 上位1%</strong>を保持。</p>
+      <img src="figs/slide_equity.png" alt="資産曲線" style="max-height:110mm; max-width:100%;">
+      <p class="cap">3年学習/1年テストの walk-forward OOS（16 fold）</p>
+    </div>
+
+  </div>
+
+  <!-- ============ フッタ: 検証 / 結論 / QR ============ -->
+  <div class="footer">
+
+    <div class="fbox">
+      <h3>検証設計 <small style="color:var(--muted);font-weight:400;">Rigor</small></h3>
+      <ul>
+        <li><strong>p-hack 反証</strong>: 11指標ペアの差分を全スキャン、e_div が優位</li>
+        <li><strong>walk-forward OOS</strong>: 3年学習/1年テスト、20年で16 fold</li>
+        <li><strong>Granger 因果</strong>: 政策ショック → e_div, p=0.022 (lag=5)</li>
+        <li><strong>cluster permutation</strong>: 時間的に固まったイベントの自己相関補正</li>
+        <li><strong>z-score expanding window</strong>: look-ahead を厳密排除</li>
+      </ul>
+    </div>
+
+    <div class="fbox soft">
+      <h3>結論と今後 <small style="color:var(--muted);font-weight:400;">Conclusion &amp; Future</small></h3>
+      <p><strong>結論</strong>: 相関ネットワークに<strong>2つの独立な位相不変量</strong>を実装し、5資産クラス横断・20年 OOS で頑健な下落回避を実証した。</p>
+      <p style="margin-top:2mm;"><strong>限界</strong>: 暴落の予知ではなく初動検知（VIXより早い）。矛盾指数は基底依存。</p>
+      <p style="margin-top:2mm;"><strong>今後</strong>: 他市場での再現。代数トポロジー・cellular sheaf による理論的統一。</p>
+    </div>
+
+    <div class="qrbox">
+      <div class="qr"></div>
+      <div class="qr-label">GitHub / 全コード公開</div>
+      <div class="qr-url">github.com/hajimedayo328/<br>market-graph-presentation</div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
