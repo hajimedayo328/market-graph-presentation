@@ -1,0 +1,253 @@
+% !TEX program = xelatex
+% ============================================================
+%  A0 縦ポスター — JSIAM 2026年度年会
+%  銘柄ネットワークの"形"から市場の構造変化を見る
+%  ビルド: xelatex + latexmk (GitHub Actions)
+% ============================================================
+\documentclass[25pt, a0paper, portrait,
+               margin=15mm, innermargin=12mm,
+               blockverticalspace=8mm, colspace=10mm, subcolspace=6mm]{tikzposter}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{qrcode}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK JP}
+\setCJKsansfont{Noto Sans CJK JP}
+
+\usetheme{Simple}
+% ------- カラー ------
+\definecolor{c-ink}{HTML}{0F1116}
+\definecolor{c-sub}{HTML}{3A3F47}
+\definecolor{c-muted}{HTML}{6B7280}
+\definecolor{c-accent}{HTML}{1F5FE0}
+\definecolor{c-accent-soft}{HTML}{E6EFFF}
+\definecolor{c-green}{HTML}{1F7A44}
+\definecolor{c-orange}{HTML}{C76B17}
+\definecolor{c-red}{HTML}{B5322E}
+\definecolor{c-line}{HTML}{D9DDE3}
+\definecolor{c-paper}{HTML}{FFFFFF}
+\definecolor{c-paper2}{HTML}{F8FAFC}
+
+\colorlet{backgroundcolor}{c-paper}
+\colorlet{framecolor}{c-line}
+\colorlet{titlefgcolor}{c-ink}
+\colorlet{titlebgcolor}{c-paper}
+\colorlet{blocktitlebgcolor}{c-paper}
+\colorlet{blocktitlefgcolor}{c-ink}
+\colorlet{blockbodybgcolor}{c-paper}
+\colorlet{blockbodyfgcolor}{c-ink}
+\colorlet{notebgcolor}{c-accent-soft}
+\colorlet{notefgcolor}{c-ink}
+
+% スタイル微調整
+\useblockstyle[titlewidthscale=0.95, bodywidthscale=1.0, titleoffsetx=0mm,
+               titleoffsety=0mm, bodyoffsetx=0mm, bodyoffsety=0mm,
+               bodyverticalshift=2mm, roundedcorners=8, linewidth=1.2mm,
+               titleinnersep=6mm, bodyinnersep=6mm]{Default}
+\usetitlestyle{Empty}
+\usebackgroundstyle{Plain}
+
+% ============ タイトル ============
+\title{\vspace{-8mm}\textbf{銘柄ネットワークの``形''から市場の構造変化を見る}}
+\author{学部3年　赤塩\enskip{\normalsize 指導：（要確認）}}
+\institute{}
+\titlegraphic{}
+
+\newcommand{\ediv}{e_{\mathrm{div}}}
+\newcommand{\nunb}{n_{\mathrm{unb}}}
+
+\begin{document}
+
+% ---------- カスタム・タイトルブロック ----------
+\node[anchor=north, inner sep=0mm]
+     at ([yshift=-10mm]current page.north) {
+  \begin{minipage}[t]{0.94\linewidth}
+    \begin{tikzpicture}
+      \node[fill=c-paper2, draw=c-line, line width=1.2mm, rounded corners=8mm,
+            inner sep=10mm, minimum width=\linewidth-2mm] (T) {
+        \begin{minipage}{0.66\linewidth}
+          {\color{c-accent}\bfseries\fontsize{18}{22}\selectfont
+            TOPOLOGICAL ANALYSIS OF CORRELATION NETWORKS}\\[3mm]
+          {\bfseries\fontsize{74}{82}\selectfont
+            銘柄ネットワークの``形''から\\市場の構造変化を見る}\\[4mm]
+          {\color{c-sub}\fontsize{28}{34}\selectfont
+            Detecting market regime shifts via two independent\\
+            topological invariants of the multi-asset correlation network}\\[8mm]
+          {\bfseries\fontsize{30}{34}\selectfont 学部3年　赤塩}\quad
+          {\color{c-muted}\fontsize{22}{26}\selectfont 指導：（要確認）}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.28\linewidth}
+          \centering
+          \renewcommand{\arraystretch}{1.3}
+          {\fontsize{20}{24}\selectfont
+          \begin{tabular}{r@{\quad}l}
+            {\bfseries\Large 40} & 銘柄／5クラス\\
+            {\bfseries\Large 20年} & OOS 検証\\
+            {\bfseries\Large 2} & 独立位相指標\\
+            {\bfseries\Large $|r|{<}0.5$} & 10設定で頑健\\
+          \end{tabular}}
+        \end{minipage}
+      };
+    \end{tikzpicture}
+  \end{minipage}
+};
+
+% ---------- 3×3 グリッド (columns) ----------
+\begin{columns}
+
+% ======= 左列 =======
+\column{0.333}
+
+\block{① 動機と問題設定}{
+  \fontsize{22}{28}\selectfont
+  価格ではなく、銘柄どうしの \textbf{\color{c-accent} 連動の構造} を見ることで、
+  市場の構造変化を捉えられるか。\\[3mm]
+  {\color{c-muted}\fontsize{18}{22}\selectfont
+  40銘柄（株指数・個別株・為替・商品・債券・暗号・特殊）の相関ネットワークを
+  毎日構築し、その形の変化を追う。}
+}
+
+\block{④ 指標① 穴の持続 \textnormal{\small\color{c-muted}Persistent $H_1$}}{
+  \fontsize{22}{28}\selectfont
+  相関ネットワークにできる ``輪（穴）'' を測る。
+  \textbf{\color{c-accent} 基準を変えても残る穴が本物}、すぐ消える穴はノイズ。\\[3mm]
+  {\color{c-muted}\fontsize{18}{22}\selectfont
+  Vietoris--Rips filtration, $d_{ij}=\sqrt{2(1-r_{ij})}$}
+}
+
+\block{⑦ 結果① 2指標は無相関 \textnormal{\small\color{c-muted}Independence}}{
+  \fontsize{22}{28}\selectfont
+  穴と矛盾は \textbf{ほぼ無相関}。片方から他方は予測できない。\\[3mm]
+  \centering
+  \includegraphics[width=0.95\linewidth]{../../figs/slide_scatter.png}\\
+  {\color{c-muted}\fontsize{16}{20}\selectfont
+  横=穴の持続、縦=矛盾の数（日次時系列）}
+}
+
+% ======= 中央列 =======
+\column{0.333}
+
+\block{② 手法：2つの位相不変量}{
+  \fontsize{22}{28}\selectfont
+  同じ相関ネットワークから \textbf{\color{c-accent} 数学的に別種の2つの位相不変量} を同時に抽出。
+  \\[3mm]
+  \begin{itemize}
+    \setlength{\itemsep}{2mm}
+    \item \textbf{穴の持続} — Persistent homology $H_1$（$L^1$ ノルム）
+    \item \textbf{矛盾の数} — Signed structural balance（frustration）
+  \end{itemize}
+  \vspace{3mm}
+  \[
+    \ediv \;=\; z(\nunb) \;-\; z(L^1)
+  \]
+  {\color{c-muted}\fontsize{18}{22}\selectfont
+  組み合わせ指標 $\ediv$ で両者のズレを危険サインとして検出。}
+}
+
+\block{⑤ 指標② 矛盾の数 \textnormal{\small\color{c-muted}Signed cycles}}{
+  \fontsize{22}{28}\selectfont
+  各辺に相関の符号（$\pm$）を載せ、輪を一周した積が
+  \textbf{\color{c-accent} 負になる三角形} を数える。多いほど符号構造がねじれる。\\[3mm]
+  {\color{c-muted}\fontsize{18}{22}\selectfont
+  Heider balance / $\mathbb{Z}_2$-cohomology 相当（構造バランス理論）}
+}
+
+\block{⑧ 結果② 主因は天然ガス \textnormal{\small\color{c-muted}NGAS as core}}{
+  \fontsize{22}{28}\selectfont
+  4つの独立ショックすべてで \textbf{\color{c-accent} NGAS が寄与上位}。米国株ではない。\\[3mm]
+  \centering
+  \includegraphics[width=0.95\linewidth]{../../figs/slide_source.png}\\
+  {\color{c-muted}\fontsize{16}{20}\selectfont
+  LOOによる銘柄別寄与（4ショック横断）}
+}
+
+% ======= 右列 =======
+\column{0.333}
+
+\block{③ 独立性の実証 \textnormal{\small\color{c-muted}\bf ⚑ Key claim}}{
+  \fontsize{22}{28}\selectfont
+  窓・閾値・市場を振っても \textbf{\color{c-accent} $|r| < 0.5$}（9/10で $<0.3$）。
+  \\[3mm]
+  \centering
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{lll}
+    \toprule
+    {\bfseries 設定軸} & {\bfseries 範囲} & {\bfseries $|r|$}\\
+    \midrule
+    Window     & 20/30/40/60日        & \color{c-green}\bf $\leq$0.23\\
+    Threshold  & 0.2/0.3/0.4          & \color{c-green}\bf $\leq$0.22\\
+    Market     & USA/EM/CN            & 0.16/0.17/0.41\\
+    \midrule
+    \multicolumn{2}{l}{全10設定}      & max $\bf|r|{=}0.41$\\
+    \bottomrule
+  \end{tabular}
+  \\[4mm]
+  {\color{c-muted}\fontsize{18}{22}\selectfont
+  Spearman / Pearson とも同一傾向。銘柄数15/25/39でも $|r|{<}0.15$。}
+}
+
+\block{⑥ 組み合わせ指標 $\ediv$}{
+  \fontsize{22}{28}\selectfont
+  独立な2指標を \textbf{\color{c-accent} 過去のみの z-score で標準化して差を取る}。
+  \\[3mm]
+  \[
+    \ediv \;=\; \underbrace{z(\nunb)}_{\text{矛盾}} \;-\; \underbrace{z(L^1)}_{\text{穴}}
+  \]
+  \vspace{-2mm}\\
+  {\color{c-muted}\fontsize{18}{22}\selectfont
+  矛盾だけが突出した日 $\Rightarrow$ 危険サイン。expanding window でlook-ahead を厳密排除。}
+}
+
+\block{⑨ 結果③ 最大下落 $-$20\% \textnormal{\small\color{c-muted}vs random $-$42\%}}{
+  \fontsize{22}{28}\selectfont
+  $\ediv$ 突出日に株を避ける戦略の資産曲線。
+  \textbf{\color{c-accent} walk-forward OOS で MaxDD 上位1\%} を保持。\\[3mm]
+  \centering
+  \includegraphics[width=0.95\linewidth]{../../figs/slide_equity.png}\\
+  {\color{c-muted}\fontsize{16}{20}\selectfont
+  3年学習/1年テストの walk-forward OOS（16 fold）}
+}
+
+\end{columns}
+
+% ---------- フッタ ----------
+\block[roundedcorners=8, linewidth=1.2mm]{}{
+  \begin{minipage}[t]{0.36\linewidth}
+    {\bfseries\fontsize{28}{34}\selectfont 検証設計 \color{c-muted}\normalfont\fontsize{20}{24}\selectfont Rigor}\\[3mm]
+    \fontsize{18}{22}\selectfont
+    \begin{itemize}\setlength{\itemsep}{1.5mm}
+      \item \textbf{p-hack 反証}: 11指標ペアの差分を全スキャン、$\ediv$ が優位
+      \item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold
+      \item \textbf{Granger 因果}: 政策ショック $\to \ediv$, $p{=}0.022$ (lag=5)
+      \item \textbf{cluster permutation}: 時間的に固まったイベントの自己相関補正
+      \item \textbf{z-score expanding window}: look-ahead 排除
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.36\linewidth}
+    {\bfseries\fontsize{28}{34}\selectfont 結論と今後 \color{c-muted}\normalfont\fontsize{20}{24}\selectfont Conclusion \& Future}\\[3mm]
+    \fontsize{18}{22}\selectfont
+    \textbf{結論}: 相関ネットワークに \textbf{\color{c-accent}2つの独立な位相不変量} を実装し、
+    5資産クラス横断・20年 OOS で頑健な下落回避を実証した。\\[2mm]
+    \textbf{限界}: 暴落の予知ではなく初動検知（VIXより早い）。矛盾指数は基底依存。\\[2mm]
+    \textbf{今後}: 他市場での再現。代数トポロジー・cellular sheaf による理論的統一。
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.22\linewidth}
+    \centering
+    {\bfseries\fontsize{22}{26}\selectfont GitHub / 全コード公開}\\[3mm]
+    \qrcode[height=80mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[3mm]
+    {\color{c-sub}\fontsize{14}{18}\selectfont
+    github.com/hajimedayo328/\\market-graph-presentation}
+  \end{minipage}
+}
+
+\end{document}
