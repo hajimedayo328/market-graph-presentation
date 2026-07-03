@@ -1,292 +1,270 @@
 % !TEX program = xelatex
-% ============================================================
-%  A0 縦ポスター — JSIAM 2026年度年会
-%  銘柄ネットワークの"形"から市場の構造変化を見る
-%  ビルド: xelatex + latexmk (GitHub Actions)
-% ============================================================
+% A0 縦ポスター — JSIAM 2026 (シンプル動作版)
 \documentclass[25pt, a0paper, portrait,
-               margin=15mm, innermargin=10mm,
-               blockverticalspace=6mm, colspace=8mm, subcolspace=6mm]{tikzposter}
+               margin=15mm, innermargin=8mm,
+               blockverticalspace=6mm, colspace=8mm]{tikzposter}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{amsmath, amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{array}
 \usepackage{xcolor}
-\usepackage{tikz}
 \usepackage{qrcode}
 \usepackage{xeCJK}
 \setCJKmainfont{Noto Serif CJK JP}
 \setCJKsansfont{Noto Sans CJK JP}
 
-% ------- カラー ------
-\definecolor{c-ink}{HTML}{0F1116}
-\definecolor{c-sub}{HTML}{3A3F47}
-\definecolor{c-muted}{HTML}{6B7280}
-\definecolor{c-accent}{HTML}{1F5FE0}
-\definecolor{c-accent-soft}{HTML}{E6EFFF}
-\definecolor{c-green}{HTML}{1F7A44}
-\definecolor{c-orange}{HTML}{C76B17}
-\definecolor{c-red}{HTML}{B5322E}
-\definecolor{c-line}{HTML}{D9DDE3}
-\definecolor{c-paper}{HTML}{FFFFFF}
-\definecolor{c-paper2}{HTML}{F8FAFC}
+\definecolor{accent}{HTML}{1F5FE0}
+\definecolor{softblue}{HTML}{E6EFFF}
+\definecolor{muted}{HTML}{6B7280}
 
-% ------- テーマ + カラー割当 ------
 \usetheme{Simple}
-\colorlet{backgroundcolor}{c-paper}
-\colorlet{framecolor}{c-line}
-\colorlet{titlefgcolor}{c-ink}
-\colorlet{titlebgcolor}{c-paper}
-\colorlet{blocktitlebgcolor}{c-accent-soft}
-\colorlet{blocktitlefgcolor}{c-ink}
-\colorlet{blockbodybgcolor}{c-paper}
-\colorlet{blockbodyfgcolor}{c-ink}
-\colorlet{notebgcolor}{c-accent-soft}
-\colorlet{notefgcolor}{c-ink}
-
-% ------- スタイル ------
-\usetitlestyle[titletotopverticalspace=8mm]{Filled}
-\useblockstyle[titlewidthscale=1.0, bodywidthscale=1.0,
-               roundedcorners=6, linewidth=1mm,
-               titleinnersep=5mm, bodyinnersep=6mm,
-               bodyverticalshift=1mm]{Default}
+\colorlet{backgroundcolor}{white}
+\colorlet{blocktitlebgcolor}{softblue}
+\colorlet{blocktitlefgcolor}{black}
+\colorlet{titlebgcolor}{white}
+\colorlet{titlefgcolor}{black}
 \usebackgroundstyle{Plain}
+\usetitlestyle{Filled}
 
-% ------- ショートカット数式 ------
 \newcommand{\ediv}{e_{\mathrm{div}}}
 \newcommand{\nunb}{n_{\mathrm{unb}}}
 
-% ============ タイトル情報（シンプルに）============
 \title{銘柄ネットワークの``形''から市場の構造変化を見る}
-\author{学部3年　赤塩\quad{\color{c-muted}\normalfont\normalsize 指導：（要確認）}}
-\institute{Two independent topological invariants of the multi-asset correlation network \quad{\normalfont\color{c-muted}(JSIAM 2026 年会 ポスター発表)}}
-\titlegraphic{}
+\author{学部3年　赤塩}
+\institute{Two independent topological invariants of the multi-asset correlation network}
 
 \begin{document}
-\maketitle[width=0.98\linewidth]
 
-% ---------- 前提スペック（タイトル直下のバー） ----------
-\block[roundedcorners=6, linewidth=1mm, bodyinnersep=6mm]{}{
+\maketitle
+
+% ==== 前提スペック ====
+\block{}{%
   \centering
-  \renewcommand{\arraystretch}{1.3}
-  \begin{tabular}{@{\hspace{15mm}}c@{\hspace{25mm}}c@{\hspace{25mm}}c@{\hspace{25mm}}c@{\hspace{15mm}}}
-    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}40} &
-    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}2} &
-    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}20年} &
-    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}$|r|{<}0.5$} \\
-    {\fontsize{22}{26}\selectfont 銘柄 / 5クラス} &
-    {\fontsize{22}{26}\selectfont 独立位相指標} &
-    {\fontsize{22}{26}\selectfont OOS 検証期間} &
-    {\fontsize{22}{26}\selectfont 10設定で頑健}
-  \end{tabular}
+  {\bfseries\Huge\color{accent} 40}\ 銘柄／5クラス \quad
+  {\bfseries\Huge\color{accent} 2}\ 独立位相指標 \quad
+  {\bfseries\Huge\color{accent} 20年}\ OOS 検証 \quad
+  {\bfseries\Huge\color{accent} $|r|{<}0.5$}\ 10設定で頑健
 }
 
-% ---------- 3×3 グリッド (columns) ----------
 \begin{columns}
 
-% ======= 左列 =======
+% ======== 左列 ========
 \column{0.333}
 
-\block{① 動機と問題設定}{
-  \fontsize{22}{30}\selectfont
-  市場分析の主流は\textbf{価格の予測}だが、本研究は視点を変える。
-  価格ではなく、銘柄どうしの \textbf{\color{c-accent}連動の構造} を毎日の相関ネットワークにして、
-  その\textbf{\color{c-accent}``形''の変化}から構造変化を捉える。\\[3mm]
-  40銘柄（FX・株指数・個別株・商品・債券・暗号・特殊）の日次リターン相関を
-  Vietoris--Rips filtration で連結性の階層に変換し、位相不変量として観察する。\\[3mm]
-  \textbf{既存研究との位置}: TDA×金融は Gidea--Katz (2017) 以降、
-  構造バランス×金融は Ferreira (2021)・Nature (2024) 等。
-  \textbf{\color{c-accent}両者を同じネットワークで同時に扱う先行研究は未見}。
+\block{① 動機と問題設定}{%
+市場分析の主流は\textbf{価格の予測}だが、本研究は視点を変える。
+価格ではなく銘柄どうしの\textbf{\color{accent}連動の構造}を毎日の相関ネットワークにして、
+その\textbf{``形''の変化}から構造変化を捉える。
+
+\vspace{4mm}
+40銘柄（FX・株指数・個別株・商品・債券・暗号・特殊）の日次相関から
+Vietoris--Rips filtration で位相不変量を抽出。
+
+\vspace{4mm}
+\textbf{既存研究との位置}: TDA×金融 (Gidea--Katz 2017)、
+構造バランス×金融 (Ferreira 2021) など個別には既存。
+\textbf{\color{accent}両者を同じネットで同時に扱う先行研究は未見}。
 }
 
-\block{④ 指標① 穴の持続 \textnormal{\small\color{c-muted}Persistent $H_1$}}{
-  \fontsize{22}{30}\selectfont
-  相関ネットワークにできる ``輪（穴）'' を測る。
-  \textbf{基準を変えても残る穴が本物、すぐ消える穴はノイズ}。\\[2mm]
-  \[
-    L^1 \;=\; \sum_{k} (d_k - b_k), \quad
-    (b_k, d_k) \in \mathrm{Dgm}\bigl(H_1(\mathrm{VR}_\epsilon)\bigr)
-  \]
-  \begin{itemize}
-    \setlength{\itemsep}{1mm}
-    \item 距離 $d_{ij} = \sqrt{2(1 - r_{ij})}$ (Mantegna)
-    \item $\epsilon$ を上げる filtration で $H_1$ サイクルの生死を追う
-    \item $L^1$ ノルムを日次スカラー指標として使用
-  \end{itemize}
-  \vspace{2mm}
-  {\color{c-muted}\fontsize{18}{22}\selectfont
-  $\Rightarrow$ 危機時に $L^1$ が上昇（Gidea 2017 と整合）。}
+\block{④ 指標① 穴の持続}{%
+相関ネットに ``輪（穴）'' ができる。
+\textbf{基準を変えても残る穴が本物}、すぐ消える穴はノイズ。
+
+\vspace{2mm}
+\[
+L^1 = \sum_{k} (d_k - b_k),\ (b_k,d_k) \in \mathrm{Dgm}(H_1)
+\]
+
+\begin{itemize}
+\item 距離 $d_{ij}=\sqrt{2(1-r_{ij})}$ (Mantegna)
+\item Vietoris--Rips で $\epsilon$ を上げる filtration
+\item $H_1$ サイクルの生死を追い、$L^1$ を日次スカラー化
+\end{itemize}
+
+\vspace{2mm}
+{\color{muted}\small $\Rightarrow$ 危機時に $L^1$ 上昇（Gidea 2017 と整合）}
 }
 
-\block{⑦ 結果① 2指標は無相関 \textnormal{\small\color{c-muted}Independence}}{
-  \fontsize{22}{30}\selectfont
-  日次1{,}235点の時系列で穴と矛盾はほぼ無相関 ($r{=}0.16$)。\\[2mm]
-  \centering
-  \includegraphics[width=0.95\linewidth]{../../figs/slide_scatter.png}\\
-  {\color{c-muted}\fontsize{16}{20}\selectfont
-  横軸=穴 $L^1$、縦軸=矛盾 $\nunb$（日次窓幅30）}\\[2mm]
-  \raggedright
-  \textbf{結論}: 同じネットから抽出したのに独立 $\Rightarrow$
-  \textbf{\color{c-accent}別の情報を持つ2チャンネル} として扱える。
+\block{⑦ 結果① 2指標は無相関}{%
+日次 1{,}235 点で穴 $L^1$ と矛盾 $\nunb$ はほぼ無相関 ($r=0.16$)。
+
+\vspace{2mm}
+\centering
+\includegraphics[width=0.95\linewidth]{../../figs/slide_scatter.png}
+
+\vspace{2mm}
+{\color{muted}\small 横=穴、縦=矛盾、日次窓幅30}
+
+\vspace{2mm}
+\raggedright
+\textbf{結論}: 同じネットから抽出したのに独立
+$\Rightarrow$ \textbf{\color{accent}別の情報を持つ2チャンネル}。
 }
 
-% ======= 中央列 =======
+% ======== 中央列 ========
 \column{0.333}
 
-\block{② 手法：2つの位相不変量を同時実装}{
-  \fontsize{22}{30}\selectfont
-  同じ相関ネットワーク $G_t$ から、
-  \textbf{\color{c-accent}数学的に別種の2つの位相不変量} を同時に抽出する。
-  \\[2mm]
-  \begin{itemize}
-    \setlength{\itemsep}{2mm}
-    \item[$\bullet$] \textbf{穴の持続} — Persistent homology $H_1$ の $L^1$ ノルム
-                    \hfill \textnormal{\small(magnitude)}
-    \item[$\bullet$] \textbf{矛盾の数} — 符号付きサイクル（frustration）
-                    \hfill \textnormal{\small(sign)}
-  \end{itemize}
-  \vspace{2mm}
-  独立性を確認した上で、標準化差分で組み合わせる:
-  \[
-    \boxed{\;\ediv \;=\; z\!\bigl(\nunb\bigr) \;-\; z\!\bigl(L^1\bigr)\;}
-  \]
-  \vspace{-2mm}
-  \begin{center}
-  {\color{c-muted}\fontsize{18}{22}\selectfont
-  $z(\cdot)$: expanding-window z-score（look-ahead を厳密排除）}
-  \end{center}
+\block{② 手法：2つの位相不変量を同時実装}{%
+同じ相関ネット $G_t$ から\textbf{\color{accent}数学的に別種の2つの位相不変量}を同時抽出。
+
+\vspace{2mm}
+\begin{itemize}
+\item \textbf{穴の持続} — Persistent $H_1$ の $L^1$ ノルム \emph{(magnitude)}
+\item \textbf{矛盾の数} — 符号付きサイクル frustration \emph{(sign)}
+\end{itemize}
+
+\vspace{2mm}
+独立性を確認した上で標準化差分で組み合わせる:
+\[
+\boxed{\ediv \;=\; z(\nunb) - z(L^1)}
+\]
+
+\begin{center}
+{\color{muted}\small $z(\cdot)$: expanding-window z-score (look-ahead 排除)}
+\end{center}
 }
 
-\block{⑤ 指標② 矛盾の数 \textnormal{\small\color{c-muted}Signed cycles}}{
-  \fontsize{22}{30}\selectfont
-  相関ネットワークの各辺に符号 $\sigma_{ij}=\mathrm{sign}(r_{ij}) \in \{\pm 1\}$ を載せ、
-  \textbf{独立サイクル $C$ を一周した積} で整合／矛盾を判定:
-  \[
-    \prod_{(i,j)\in C} \sigma_{ij} \;=\; +1 \;(\text{balanced}), \;\; -1 \;(\text{unbalanced})
-  \]
-  \[
-    \nunb \;=\; \bigl|\{C \in \mathcal{B} : \textstyle\prod \sigma = -1\}\bigr|
-  \]
-  \vspace{-1mm}
-  {\color{c-muted}\fontsize{18}{22}\selectfont
-  Heider (1946) balance / $\mathbb{Z}_2$-cohomology $H^1(G;\mathbb{Z}_2)$ 相当。
-  基底 $\mathcal{B}$ 依存性はあるが balanced/not は基底不変。}
+\block{⑤ 指標② 矛盾の数}{%
+各辺に符号 $\sigma_{ij}=\mathrm{sign}(r_{ij}) \in \{\pm1\}$ を載せ、
+独立サイクル $C$ を一周した積で整合／矛盾を判定:
+
+\vspace{-2mm}
+\[
+\prod_{(i,j)\in C}\!\!\sigma_{ij} = +1\ (\mathrm{balanced}),\ -1\ (\mathrm{unbalanced})
+\]
+\[
+\nunb = |\{C\in\mathcal{B} : \textstyle\prod\sigma = -1\}|
+\]
+
+\vspace{2mm}
+{\color{muted}\small
+Heider (1946) balance / $\mathbb{Z}_2$ 係数コホモロジー $H^1(G;\mathbb{Z}_2)$ 相当。
+基底 $\mathcal{B}$ 依存性はあるが balanced/not は基底不変。}
 }
 
-\block{⑧ 結果② 主因は天然ガス \textnormal{\small\color{c-muted}NGAS as universal core}}{
-  \fontsize{22}{30}\selectfont
-  4つの独立ショック（Liberation Day 2025、円キャリー 2024、
-  COVID 2020、China 2015）で銘柄をLOOで抜くと、
-  \textbf{\color{c-accent}NGAS のみ 4/4 で寄与上位}、
-  次いで COPPER 3/4。米国株は 2/4 以下。\\[2mm]
-  \centering
-  \includegraphics[width=0.95\linewidth]{../../figs/slide_source.png}\\
-  {\color{c-muted}\fontsize{16}{20}\selectfont
-  LOO による銘柄別寄与（4ショック横断）}
+\block{⑧ 結果② 主因は天然ガス}{%
+4つの独立ショック（Liberation Day 2025・円キャリー 2024・COVID 2020・China 2015）で
+銘柄をLOOで抜くと、\textbf{\color{accent}NGAS が 4/4 で寄与上位}、COPPER 3/4。
+米国株は 2/4 以下。
+
+\vspace{2mm}
+\centering
+\includegraphics[width=0.95\linewidth]{../../figs/slide_source.png}
+
+\vspace{1mm}
+{\color{muted}\small LOO による銘柄別寄与（4ショック横断）}
 }
 
-% ======= 右列 =======
+% ======== 右列 ========
 \column{0.333}
 
-\block{③ 独立性の実証 \textnormal{\small\color{c-muted}\bf ⚑ Key robust claim}}{
-  \fontsize{22}{28}\selectfont
-  窓・閾値・市場を振っても $|r| < 0.5$（9/10 で $<0.3$）。
-  \\[3mm]
-  \centering
-  \renewcommand{\arraystretch}{1.35}
-  \begin{tabular}{lll}
-    \toprule
-    {\bfseries 設定軸} & {\bfseries 範囲} & {\bfseries $|r|$}\\
-    \midrule
-    Window     & 20/30/40/60日        & \color{c-green}\bfseries $\leq 0.23$\\
-    Threshold  & 0.2/0.3/0.4          & \color{c-green}\bfseries $\leq 0.22$\\
-    Market     & USA / EM / CN        & 0.16 / 0.17 / 0.41\\
-    \midrule
-    \multicolumn{2}{l}{{\bfseries 全10設定}} & max $\bf|r|{=}0.41$\\
-    \multicolumn{2}{l}{Spearman 再計算}      & 0.10\\
-    \multicolumn{2}{l}{銘柄数 15/25/39}      & $|r|{<}0.15$\\
-    \bottomrule
-  \end{tabular}
-  \\[4mm]
-  \raggedright
-  \textbf{p-hack 反証}: 11指標のペア差分を全55通りスキャン。
-  $\ediv$ が最も安定した independence を示す。
+\block{③ 独立性の実証（頑健性）}{%
+窓・閾値・市場を振っても $|r|<0.5$、9/10 で $<0.3$。
+
+\vspace{2mm}
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lll}
+\toprule
+{\bfseries 設定軸} & {\bfseries 範囲} & {\bfseries $|r|$}\\
+\midrule
+Window & 20/30/40/60日 & $\leq 0.23$\\
+Threshold & 0.2/0.3/0.4 & $\leq 0.22$\\
+Market & USA/EM/CN & 0.16/0.17/0.41\\
+\midrule
+\multicolumn{2}{l}{全10設定} & max $|r|{=}0.41$\\
+\multicolumn{2}{l}{Spearman 再計算} & 0.10\\
+\multicolumn{2}{l}{銘柄数15/25/39} & $|r|{<}0.15$\\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+\raggedright
+\textbf{p-hack 反証}: 11指標のペア差分を55通りスキャン。
+$\ediv$ が最も安定した独立性。
 }
 
-\block{⑥ 組み合わせ指標 $\ediv$ の使い方}{
-  \fontsize{22}{30}\selectfont
-  独立な2チャンネルを同じスケールに揃えて差分:
-  \[
-    \ediv(t) \;=\; z_t(\nunb) - z_t(L^1)
-  \]
-  \textbf{矛盾だけが突出した日} $\Rightarrow$ 危険サイン。
-  バックテストでは閾値 $\ediv \geq 0.8$ で株を売って現金化。\\[2mm]
-  \textbf{因果方向の実証}:
-  \begin{itemize}
-    \setlength{\itemsep}{1mm}
-    \item Granger 因果: 政策ショック $\to \ediv$, $p{=}0.022$ (lag=5)
-    \item cluster permutation で自己相関補正
-    \item walk-forward: 3年学習/1年テスト、$16$ fold
-  \end{itemize}
+\block{⑥ 組み合わせ指標 $\ediv$ の使い方}{%
+独立な2チャンネルを同じスケールに揃えて差分:
+\[
+\ediv(t) = z_t(\nunb) - z_t(L^1)
+\]
+
+\textbf{矛盾だけが突出した日}$\Rightarrow$危険サイン。
+閾値 $\ediv\geq 0.8$ で株を売って現金化。
+
+\vspace{2mm}
+\textbf{因果方向の実証}:
+\begin{itemize}
+\item Granger 因果: 政策ショック $\to\ediv$, $p=0.022$ (lag=5)
+\item cluster permutation で自己相関補正
+\item walk-forward: 3年学習/1年テスト、16 fold
+\end{itemize}
 }
 
-\block{⑨ 結果③ 下落を浅くする回避戦略}{
-  \fontsize{22}{30}\selectfont
-  \textbf{予測モデルではなく回避戦略}。$\ediv$ 突出日に株を売って現金化 $\Rightarrow$
-  \textbf{最大下落が $-$25\% $\to$ $-$17\%} に浅くなる（$\$800$ 分の下落回避）。
-  \\[2mm]
-  \centering
-  \includegraphics[width=0.98\linewidth]{../../figs/slide_equity_absolute.png}\\
-  {\color{c-muted}\fontsize{16}{20}\selectfont
-  \$10{,}000 を5年運用した実際の推移（S\&P 500）}\\[2mm]
-  \raggedright
-  \textbf{リターン差 $-\$1{,}754$、MaxDD 差 $+\$800$}
-  $\Rightarrow$ \textbf{\color{c-accent}リスク低減の補助指標} として位置づけ。
+\block{⑨ 結果③ 下落を浅くする回避戦略}{%
+\textbf{予測モデルではなく回避戦略}。
+$\ediv$ 突出日に株を売って現金化 $\Rightarrow$
+\textbf{最大下落が $-25\%\to -17\%$} に浅くなる。
+
+\vspace{2mm}
+\centering
+\includegraphics[width=0.98\linewidth]{../../figs/slide_equity_absolute.png}
+
+\vspace{1mm}
+{\color{muted}\small \$10{,}000 を5年運用した実際の推移 (S\&P 500)}
+
+\vspace{2mm}
+\raggedright
+\textbf{リターン差 $-\$1{,}754$、MaxDD 差 $+\$800$}
+$\Rightarrow$ \textbf{\color{accent}リスク低減の補助指標} として位置づけ。
 }
 
 \end{columns}
 
-% ---------- フッタ: 検証設計 / 結論 / QR ----------
-\block[roundedcorners=8, linewidth=1mm, bodyinnersep=8mm]{}{
-  \fontsize{20}{26}\selectfont
-  \begin{minipage}[t]{0.37\linewidth}
-    {\bfseries\fontsize{32}{38}\selectfont
-      検証設計}\; {\color{c-muted}\normalfont\fontsize{22}{26}\selectfont Rigor}\\[3mm]
-    \begin{itemize}\setlength{\itemsep}{1.5mm}
-      \item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold
-      \item \textbf{Random 1000本ベンチ}: ランダム現金化に対し MaxDD 上位1\%
-      \item \textbf{VIX ベンチ}: 同じ現金化率でVIXより下落回避が浅い
-      \item \textbf{Granger 因果}: 政策ショック $\to \ediv$, $p{=}0.022$
-      \item \textbf{p-hack 反証}: 11指標ペア差分の全スキャン
-      \item \textbf{cluster permutation}: 時間集中イベントの自己相関補正
-      \item \textbf{expanding z-score}: look-ahead を厳密排除
-    \end{itemize}
-  \end{minipage}%
-  \hfill
-  \begin{minipage}[t]{0.37\linewidth}
-    {\bfseries\fontsize{32}{38}\selectfont
-      結論と今後}\; {\color{c-muted}\normalfont\fontsize{22}{26}\selectfont Conclusion \& Future}\\[3mm]
-    \textbf{結論}: 相関ネットワークに\textbf{\color{c-accent}2つの独立な位相不変量}を実装し、
-    5資産クラス横断・20年 OOS で頑健な下落回避を実証した。
-    穴と矛盾は同じネットから抽出したのに独立で、
-    組み合わせた $\ediv$ が MaxDD を確実に浅くする。\\[2mm]
-    \textbf{限界}: 暴落の予知ではなく初動検知（VIXより早い）。
-    矛盾指数はサイクル基底に依存（frustration index は NP困難）。\\[2mm]
-    \textbf{今後}: 他市場での再現テスト。
-    代数トポロジー・cellular sheaf ($H^1(G;\mathbb{Z}_2)$) による理論的統一。
-  \end{minipage}%
-  \hfill
-  \begin{minipage}[t]{0.22\linewidth}
-    \centering
-    {\bfseries\fontsize{26}{30}\selectfont GitHub}\\
-    {\color{c-muted}\fontsize{18}{22}\selectfont 全コード・データ公開}\\[3mm]
-    \qrcode[height=75mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[3mm]
-    {\color{c-sub}\fontsize{13}{17}\selectfont
-    github.com/hajimedayo328/\\market-graph-presentation}
-  \end{minipage}
+% ==== フッタ ====
+\block{}{%
+\begin{minipage}[t]{0.35\linewidth}
+\textbf{\LARGE 検証設計}\ {\color{muted}\normalsize Rigor}
+
+\begin{itemize}
+\item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold
+\item \textbf{Random 1000本ベンチ}: MaxDD 上位1\%
+\item \textbf{VIX ベンチ}: 同じ現金化率で下落回避が浅い
+\item \textbf{Granger 因果}: 政策ショック $\to\ediv$, $p=0.022$
+\item \textbf{p-hack 反証}: 11指標ペア差分の全スキャン
+\item \textbf{cluster permutation}: 時間集中イベントの補正
+\item \textbf{expanding z-score}: look-ahead 排除
+\end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.4\linewidth}
+\textbf{\LARGE 結論と今後}\ {\color{muted}\normalsize Conclusion \& Future}
+
+\textbf{結論}: 相関ネットに\textbf{\color{accent}2つの独立な位相不変量}を実装し、
+5資産クラス横断・20年 OOS で頑健な下落回避を実証した。
+同じネットから抽出したのに独立、組み合わせた $\ediv$ が MaxDD を浅くする。
+
+\vspace{2mm}
+\textbf{限界}: 暴落の予知ではなく初動検知（VIXより早い）。
+矛盾指数はサイクル基底に依存（frustration index はNP困難）。
+
+\vspace{2mm}
+\textbf{今後}: 他市場での再現。代数トポロジー・cellular sheaf ($H^1(G;\mathbb{Z}_2)$) による理論的統一。
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.2\linewidth}
+\centering
+\textbf{\LARGE GitHub}
+
+{\color{muted}\small 全コード・データ公開}
+
+\vspace{4mm}
+\qrcode[height=70mm]{https://github.com/hajimedayo328/market-graph-presentation}
+
+\vspace{2mm}
+{\color{muted}\scriptsize github.com/hajimedayo328/\\market-graph-presentation}
+\end{minipage}
 }
 
 \end{document}
