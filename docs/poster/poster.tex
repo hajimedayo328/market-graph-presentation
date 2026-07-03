@@ -71,21 +71,24 @@
 \maketitle[width=0.98\linewidth]
 
 % ---------- 前提スペック（タイトル直下のバー） ----------
-\block[bodyoffsety=-15mm, roundedcorners=8, linewidth=1mm,
-       bodyinnersep=6mm]{}{
-  \centering
-  \renewcommand{\arraystretch}{1.1}
-  \fontsize{22}{28}\selectfont
-  \begin{tabular}{@{}c@{\hspace{18mm}}c@{\hspace{18mm}}c@{\hspace{18mm}}c@{}}
-    {\bfseries\fontsize{40}{44}\selectfont\color{c-accent} 40} &
-    {\bfseries\fontsize{40}{44}\selectfont\color{c-accent} 2} &
-    {\bfseries\fontsize{40}{44}\selectfont\color{c-accent} 20年} &
-    {\bfseries\fontsize{40}{44}\selectfont\color{c-accent} $|r|{<}0.5$}\\
-    銘柄 / 5クラス &
-    独立位相指標 &
-    OOS 検証期間 &
-    10設定で頑健\\
-  \end{tabular}
+\block[roundedcorners=6, linewidth=1mm, bodyinnersep=6mm]{}{
+  \centering\fontsize{22}{28}\selectfont
+  \begin{minipage}{0.22\linewidth}\centering
+    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}40}\\[1mm]
+    銘柄 / 5クラス
+  \end{minipage}\hfill
+  \begin{minipage}{0.22\linewidth}\centering
+    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}2}\\[1mm]
+    独立位相指標
+  \end{minipage}\hfill
+  \begin{minipage}{0.22\linewidth}\centering
+    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}20年}\\[1mm]
+    OOS 検証期間
+  \end{minipage}\hfill
+  \begin{minipage}{0.22\linewidth}\centering
+    {\bfseries\fontsize{44}{48}\selectfont\color{c-accent}$|r|{<}0.5$}\\[1mm]
+    10設定で頑健
+  \end{minipage}
 }
 
 % ---------- 3×3 グリッド (columns) ----------
