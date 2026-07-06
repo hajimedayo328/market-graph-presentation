@@ -1,5 +1,5 @@
 % !TEX program = xelatex
-% A0 縦ポスター — JSIAM 2026 (シンプル動作版)
+% A0 縦ポスター — JSIAM 2026 (誠実性監査版)
 \documentclass[25pt, a0paper, portrait,
                margin=15mm, innermargin=8mm,
                blockverticalspace=6mm, colspace=8mm]{tikzposter}
@@ -16,6 +16,7 @@
 \definecolor{accent}{HTML}{1F5FE0}
 \definecolor{softblue}{HTML}{E6EFFF}
 \definecolor{muted}{HTML}{6B7280}
+\definecolor{warn}{HTML}{B5322E}
 
 \usetheme{Simple}
 \colorlet{backgroundcolor}{white}
@@ -28,10 +29,11 @@
 
 \newcommand{\ediv}{e_{\mathrm{div}}}
 \newcommand{\nunb}{n_{\mathrm{unb}}}
+\newcommand{\bnum}[1]{{\color{accent}\textbf{#1.}}\ }
 
 \title{銘柄ネットワークの``形''から市場の構造変化を見る}
 \author{赤塩 甫\quad{\small 東京都市大学 メディア情報学部 情報システム学科 3年}}
-\institute{Two independent topological invariants of the multi-asset correlation network}
+\institute{Two topological invariants of the multi-asset correlation network --- nearly independent short-term, coupled in crises}
 
 \begin{document}
 
@@ -40,33 +42,37 @@
 % ==== 前提スペック ====
 \block{}{%
   \centering
-  {\bfseries\Huge\color{accent} 40}\ 銘柄／マルチアセット \quad
-  {\bfseries\Huge\color{accent} 2}\ 独立位相指標 \quad
+  {\bfseries\Huge\color{accent} 40}\ 銘柄／5資産クラス \quad
+  {\bfseries\Huge\color{accent} 2}\ 位相指標（穴・矛盾） \quad
   {\bfseries\Huge\color{accent} 20年}\ OOS 検証 \quad
-  {\bfseries\Huge\color{accent} $|r|{<}0.5$}\ 10設定で頑健
+  {\bfseries\Huge\color{accent} 16}\ fold walk-forward
 }
 
 \begin{columns}
 
-% ======== 左列 ========
+% ======== 左列（上段1・中段4・下段7）========
 \column{0.333}
 
-\block{1.\ 動機と問題設定}{%
-市場分析の主流は\textbf{価格の予測}だが、本研究は視点を変える。
-価格ではなく銘柄どうしの\textbf{\color{accent}連動の構造}を毎日の相関ネットワークにして、
+\block{\bnum{1}動機と問題設定}{%
+市場分析の主流は\textbf{価格の予測}。本研究は視点を変え、
+銘柄どうしの\textbf{\color{accent}連動の構造}を毎日の相関ネットワークにして、
 その\textbf{``形''の変化}から構造変化を捉える。
 
-\vspace{4mm}
-40銘柄（FX・株指数・個別株・商品・債券・暗号・特殊）の日次相関から
-Vietoris--Rips filtration で位相不変量を抽出。
+\vspace{2mm}
+\centering
+\includegraphics[width=0.97\linewidth]{../../figs/slide_network.png}
 
-\vspace{4mm}
+\vspace{1mm}
+{\color{muted}\small 青=正相関・赤破線=負相関。40銘柄(FX/株/商品/債券/暗号)の日次相関ネット。}
+
+\vspace{2mm}
+\raggedright
 \textbf{既存研究との位置}: TDA×金融 (Gidea--Katz 2017)、
-構造バランス×金融 (Ferreira 2021) など個別には既存。
+構造バランス×金融 (Ferreira 2021) は個別には既存。
 \textbf{\color{accent}両者を同じネットで同時に扱う先行研究は未見}。
 }
 
-\block{4.\ 指標1「穴の持続」}{%
+\block{\bnum{4}指標1「穴の持続」}{%
 相関ネットに ``輪（穴）'' ができる。
 \textbf{基準を変えても残る穴が本物}、すぐ消える穴はノイズ。
 
@@ -85,26 +91,26 @@ L^1 = \sum_{k} (d_k - b_k),\ (b_k,d_k) \in \mathrm{Dgm}(H_1)
 {\color{muted}\small $\Rightarrow$ 危機時に $L^1$ 上昇（Gidea 2017 と整合）}
 }
 
-\block{7.\ 結果1：2指標は無相関}{%
-日次 1{,}235 点で穴 $L^1$ と矛盾 $\nunb$ はほぼ無相関 ($r=0.16$)。
+\block{\bnum{7}結果1：短期はほぼ無相関}{%
+直近5年 1{,}235 点では穴 $L^1$ と矛盾 $\nunb$ はほぼ無相関 ($r=0.15$)。
 
 \vspace{2mm}
 \centering
 \includegraphics[width=0.95\linewidth]{../../figs/slide_scatter.png}
 
 \vspace{2mm}
-{\color{muted}\small 横=穴、縦=矛盾、日次窓幅30}
+{\color{muted}\small 横=穴、縦=矛盾、日次窓幅30（5年）}
 
 \vspace{2mm}
 \raggedright
-\textbf{結論}: 同じネットから抽出したのに独立
-$\Rightarrow$ \textbf{\color{accent}別の情報を持つ2チャンネル}。
+\textbf{ただし短期限定}: 期間を伸ばすと相関は上がる（右列3参照）。
+5年では独立でも、20年では連動する。
 }
 
-% ======== 中央列 ========
+% ======== 中央列（上段2・中段5・下段8）========
 \column{0.333}
 
-\block{2.\ 手法：2つの位相不変量}{%
+\block{\bnum{2}手法：2つの位相不変量}{%
 同じ相関ネット $G_t$ から\textbf{\color{accent}数学的に別種の2つの位相不変量}を同時抽出。
 
 \vspace{2mm}
@@ -114,7 +120,7 @@ $\Rightarrow$ \textbf{\color{accent}別の情報を持つ2チャンネル}。
 \end{itemize}
 
 \vspace{2mm}
-独立性を確認した上で標準化差分で組み合わせる:
+標準化差分で組み合わせる:
 \[
 \boxed{\ediv \;=\; z(\nunb) - z(L^1)}
 \]
@@ -124,7 +130,7 @@ $\Rightarrow$ \textbf{\color{accent}別の情報を持つ2チャンネル}。
 \end{center}
 }
 
-\block{5.\ 指標2「矛盾の数」}{%
+\block{\bnum{5}指標2「矛盾の数」}{%
 各辺に符号 $\sigma_{ij}=\mathrm{sign}(r_{ij}) \in \{\pm1\}$ を載せ、
 独立サイクル $C$ を一周した積で整合／矛盾を判定:
 
@@ -142,7 +148,7 @@ Heider (1946) balance / $\mathbb{Z}_2$ 係数コホモロジー $H^1(G;\mathbb{Z
 基底 $\mathcal{B}$ 依存性はあるが balanced/not は基底不変。}
 }
 
-\block{8.\ 結果2：主因は天然ガス}{%
+\block{\bnum{8}結果2：主因は天然ガス}{%
 4つの独立ショック（米相互関税 2025・円キャリー巻き戻し 2024・
 ハマス/イスラエル衝突 2023・ウクライナ侵攻 2022）で
 銘柄を leave-one-out で抜くと、
@@ -157,42 +163,46 @@ COPPER・CHINA50 が 3/4（円キャリーで脱落）、米国株は 1/4 以下
 {\color{muted}\small LOO による銘柄別寄与（4ショック横断）。周辺銘柄はイベントごとに入れ替わる二層構造。}
 }
 
-% ======== 右列 ========
+% ======== 右列（上段3・中段6・下段9）========
 \column{0.333}
 
-\block{3.\ 独立性の実証と限界}{%
-窓・閾値・市場を振っても $|r|<0.5$、9/10 の設定で $<0.3$。
+\block{\bnum{3}独立性 — 短期は成立、長期で崩れる}{%
+2指標の Pearson 相関を\textbf{データ期間別}に計算し直すと:
 
 \vspace{2mm}
 \centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lll}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lcl}
 \toprule
-{\bfseries 設定軸} & {\bfseries 範囲} & {\bfseries $|r|$}\\
+{\bfseries 期間} & {\bfseries $r$} & {\bfseries 判定}\\
 \midrule
-Window & 20/30/40/60日 & $\leq 0.23$\\
-Threshold & 0.2/0.3/0.4 & $\leq 0.22$\\
-Market & USA/EM/CN & 0.16/0.17/0.41\\
-\midrule
-\multicolumn{2}{l}{全10設定} & max $|r|{=}0.41$\\
+5年  & 0.15 & ほぼ独立\\
+10年 & 0.19 & ほぼ独立\\
+15年 & 0.26 & 弱い相関\\
+20年 & \textbf{0.40} & {\color{warn}\textbf{独立でない}}\\
 \bottomrule
 \end{tabular}
 
 \vspace{3mm}
 \raggedright
-\textbf{正直な開示}: 期間を伸ばすと相関は漸増する
-（5年 0.16 $\to$ 10年 0.19 $\to$ 15年 0.26、中国市場 0.41）。
-全設定で $|r|<0.5$ だが、``独立'' は\textbf{厳密ではなく近似的}。
+\textbf{正直な開示}: 期間を伸ばすほど相関は単調上昇。
+\textbf{20年で $r=0.40$}（共変動16\%）は独立とは言えない。
+\textbf{理由}—長期は危機（2008/2020等）を多く含み、
+危機時は穴 $L^1$ も矛盾 $\nunb$ も同時に跳ねて連動するため。
+
+\vspace{2mm}
+{\color{muted}\small 5年内では窓(20/30/40/60)・閾値(0.2/0.3/0.4)・市場(USA/EM/CN)を
+変えても $|r|\leq 0.23$ で設定非依存。「独立」は\textbf{平常時・短期の近似}。}
 }
 
-\block{6.\ 組み合わせ指標 $\ediv$}{%
+\block{\bnum{6}組み合わせ指標 $\ediv$}{%
 独立な2チャンネルを同じスケールに揃えて差分:
 \[
 \ediv(t) = z_t(\nunb) - z_t(L^1)
 \]
 
 \textbf{矛盾だけが突出した日}$\Rightarrow$危険サイン。
-閾値 $\ediv\geq 0.8$ で株を売って現金化。
+$\ediv$ が上位20\%の日に株を売って現金化。
 
 \vspace{2mm}
 \textbf{因果方向の実証}:
@@ -206,25 +216,26 @@ Market & USA/EM/CN & 0.16/0.17/0.41\\
 {\color{muted}\small 注意: $\ediv$ は $L^1$ の低下でも上昇する（純粋な矛盾シグナルではなく2指標の乖離）。}
 }
 
-\block{9.\ 結果3：回避戦略の効果}{%
+\block{\bnum{9}結果3：回避戦略の効果}{%
 \textbf{予測モデルではなく回避戦略}。
-$\ediv$ 突出日に株を売って現金化 $\Rightarrow$
-\textbf{最大下落が $-25\%\to -17\%$}（5年 in-sample、コスト込み）。
+$\ediv$ 突出日に株を売って現金化。
 
 \vspace{2mm}
 \centering
 \includegraphics[width=0.98\linewidth]{../../figs/slide_equity_absolute.png}
 
 \vspace{1mm}
-{\color{muted}\small \$10{,}000 を5年運用したバックテスト上の資産推移 (S\&P 500)。リターンでは \$1{,}754 負ける。}
+{\color{muted}\small \$10{,}000を5年運用したバックテスト(取引コスト込, S\&P500)}
 
 \vspace{2mm}
 \raggedright
-\textbf{20年 walk-forward OOS (16 fold)}: MaxDD $-16\%$ vs B\&H $-34\%$、
-同頻度ランダム現金化 500 本に対し\textbf{\color{accent}上位 1\%}。\\
-\textbf{正直な開示}: \textbf{Sharpe の優位は OOS で消える}
-（$\ediv$ 0.63 $<$ B\&H 0.74）。生き残るのは\textbf{下落の浅さのみ}
-$\Rightarrow$ リスク低減の補助指標として位置づけ。
+\textbf{20年 walk-forward OOS(16 fold)}: MaxDD $-16\%$ vs B\&H $-34\%$、
+ランダム現金化500本の\textbf{\color{accent}上位1\%}。
+
+\vspace{1mm}
+\textbf{{\color{warn}正直な開示}}:
+(1) \textbf{5年OOS(1 fold)では優位が消失}（ランダムと同等）。頑健さは20年集計で初めて出る。
+(2) \textbf{Sharpeの優位はOOSで消える}（$\ediv$ 0.63 $<$ B\&H 0.74）。生き残るのは下落の浅さのみ。
 }
 
 \end{columns}
@@ -237,10 +248,10 @@ $\Rightarrow$ リスク低減の補助指標として位置づけ。
 
 \begin{itemize}
 \item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold（look-ahead 排除）
-\item \textbf{ランダム現金化 1000 本}: MaxDD $-20\%$ vs 平均 $-42\%$（in-sample 上位 0.1\%、OOS でも上位 1\%）
-\item \textbf{VIX ベンチ}: OOS 16 fold で全指標 $\ediv$ 優位（VIX は暴落後の後追い）
+\item \textbf{ランダム現金化 500本}: 20年集計で MaxDD上位1\%。ただし\textbf{5年OOS単体は上位45\%（平凡）}
+\item \textbf{VIX ベンチ}: 20年集計では $\ediv$ 優位。ただし\textbf{10・15年ではVIXにMaxDDで劣る}（期間依存）
 \item \textbf{Granger 因果}: 政策ショック $\to\ediv$ は $p=0.022$、逆方向は不成立
-\item \textbf{p-hack 反証}: 55 ペア差分の全スキャン。$\ediv$ は政策/構造で上位 22--36\%、戦争では中央値以下 ＝ 都合よく全部上位ではない
+\item \textbf{p-hack 反証}: 55 ペア差分の全スキャン。$\ediv$ は政策/構造で上位22--36\%、戦争では中央値以下 ＝ 都合よく全部上位ではない
 \item \textbf{cluster permutation}: 時間集中イベントの自己相関補正
 \end{itemize}
 \end{minipage}
@@ -248,15 +259,16 @@ $\Rightarrow$ リスク低減の補助指標として位置づけ。
 \begin{minipage}[t]{0.4\linewidth}
 \textbf{\large 結論と限界}\ {\color{muted}\footnotesize Conclusion \& Limitations}
 
-\textbf{結論}: 同じ相関ネットから\textbf{\color{accent}ほぼ独立な2つの位相不変量}を同時に抽出できる。
-組み合わせ指標 $\ediv$ は 20年 OOS で\textbf{下落の浅さ（MaxDD）に限り}頑健な優位を保つ。
+\textbf{結論}: 同じ相関ネットから抽出した2つの位相不変量（穴・矛盾）は
+\textbf{\color{accent}短期(5年)ではほぼ独立}。組み合わせ指標 $\ediv$ は
+20年 OOS で\textbf{下落の浅さ（MaxDD）に限り}頑健な優位を保つ。
 
 \vspace{1mm}
 \textbf{限界（すべて実証済みの開示）}:
 \begin{itemize}
-\item 暴落の\textbf{予知ではなく初動検知}（COVID 型の急落の入口は捉えられない）
-\item Sharpe・リターンの優位は OOS で消える（B\&H 以下）
-\item 独立性は近似的（期間依存で $r$ は 0.16$\to$0.26 に漸増）
+\item \textbf{独立性は期間依存}。20年フルでは $r=0.40$ に上がり独立でなくなる（危機時に連動）
+\item 暴落の\textbf{予知ではなく初動検知}（COVID型の急落入口は捉えられない）
+\item Sharpe・リターンの優位はOOSで消える（B\&H以下）。5年OOSでは下落回避の優位も消失
 \item 矛盾数はサイクル基底に依存（厳密な frustration index は NP 困難）
 \end{itemize}
 
