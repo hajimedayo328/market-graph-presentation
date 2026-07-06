@@ -51,7 +51,7 @@
 % ======== 左列 ========
 \column{0.333}
 
-\block{① 動機と問題設定}{%
+\block{1.\ 動機と問題設定}{%
 市場分析の主流は\textbf{価格の予測}だが、本研究は視点を変える。
 価格ではなく銘柄どうしの\textbf{\color{accent}連動の構造}を毎日の相関ネットワークにして、
 その\textbf{``形''の変化}から構造変化を捉える。
@@ -66,7 +66,7 @@ Vietoris--Rips filtration で位相不変量を抽出。
 \textbf{\color{accent}両者を同じネットで同時に扱う先行研究は未見}。
 }
 
-\block{④ 指標① 穴の持続}{%
+\block{4.\ 指標1「穴の持続」}{%
 相関ネットに ``輪（穴）'' ができる。
 \textbf{基準を変えても残る穴が本物}、すぐ消える穴はノイズ。
 
@@ -85,7 +85,7 @@ L^1 = \sum_{k} (d_k - b_k),\ (b_k,d_k) \in \mathrm{Dgm}(H_1)
 {\color{muted}\small $\Rightarrow$ 危機時に $L^1$ 上昇（Gidea 2017 と整合）}
 }
 
-\block{⑦ 結果① 2指標は無相関}{%
+\block{7.\ 結果1：2指標は無相関}{%
 日次 1{,}235 点で穴 $L^1$ と矛盾 $\nunb$ はほぼ無相関 ($r=0.16$)。
 
 \vspace{2mm}
@@ -104,7 +104,7 @@ $\Rightarrow$ \textbf{\color{accent}別の情報を持つ2チャンネル}。
 % ======== 中央列 ========
 \column{0.333}
 
-\block{② 手法：2つの位相不変量を同時実装}{%
+\block{2.\ 手法：2つの位相不変量}{%
 同じ相関ネット $G_t$ から\textbf{\color{accent}数学的に別種の2つの位相不変量}を同時抽出。
 
 \vspace{2mm}
@@ -124,7 +124,7 @@ $\Rightarrow$ \textbf{\color{accent}別の情報を持つ2チャンネル}。
 \end{center}
 }
 
-\block{⑤ 指標② 矛盾の数}{%
+\block{5.\ 指標2「矛盾の数」}{%
 各辺に符号 $\sigma_{ij}=\mathrm{sign}(r_{ij}) \in \{\pm1\}$ を載せ、
 独立サイクル $C$ を一周した積で整合／矛盾を判定:
 
@@ -142,7 +142,7 @@ Heider (1946) balance / $\mathbb{Z}_2$ 係数コホモロジー $H^1(G;\mathbb{Z
 基底 $\mathcal{B}$ 依存性はあるが balanced/not は基底不変。}
 }
 
-\block{⑧ 結果② 主因は天然ガス}{%
+\block{8.\ 結果2：主因は天然ガス}{%
 4つの独立ショック（米相互関税 2025・円キャリー巻き戻し 2024・
 ハマス/イスラエル衝突 2023・ウクライナ侵攻 2022）で
 銘柄を leave-one-out で抜くと、
@@ -160,7 +160,7 @@ COPPER・CHINA50 が 3/4（円キャリーで脱落）、米国株は 1/4 以下
 % ======== 右列 ========
 \column{0.333}
 
-\block{③ 独立性の実証（頑健性と限界）}{%
+\block{3.\ 独立性の実証と限界}{%
 窓・閾値・市場を振っても $|r|<0.5$、9/10 の設定で $<0.3$。
 
 \vspace{2mm}
@@ -185,7 +185,7 @@ Market & USA/EM/CN & 0.16/0.17/0.41\\
 全設定で $|r|<0.5$ だが、``独立'' は\textbf{厳密ではなく近似的}。
 }
 
-\block{⑥ 組み合わせ指標 $\ediv$ の使い方}{%
+\block{6.\ 組み合わせ指標 $\ediv$}{%
 独立な2チャンネルを同じスケールに揃えて差分:
 \[
 \ediv(t) = z_t(\nunb) - z_t(L^1)
@@ -206,7 +206,7 @@ Market & USA/EM/CN & 0.16/0.17/0.41\\
 {\color{muted}\small 注意: $\ediv$ は $L^1$ の低下でも上昇する（純粋な矛盾シグナルではなく2指標の乖離）。}
 }
 
-\block{⑨ 結果③ 下落を浅くする回避戦略}{%
+\block{9.\ 結果3：下落を浅くする回避戦略}{%
 \textbf{予測モデルではなく回避戦略}。
 $\ediv$ 突出日に株を売って現金化 $\Rightarrow$
 \textbf{最大下落が $-25\%\to -17\%$}（5年 in-sample、コスト込み）。
@@ -231,54 +231,45 @@ $\Rightarrow$ リスク低減の補助指標として位置づけ。
 
 % ==== フッタ ====
 \block{}{%
-\begin{minipage}[t]{0.35\linewidth}
-\textbf{\LARGE 検証設計}\ {\color{muted}\normalsize Rigor}
+\small
+\begin{minipage}[t]{0.36\linewidth}
+\textbf{\large 検証設計}\ {\color{muted}\footnotesize Rigor}
 
 \begin{itemize}
-\item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold。
-      閾値・z-score とも学習期間のみから決定
-\item \textbf{ランダム現金化ベンチ}: 同頻度 1000 本（in-sample 20年）で
-      MaxDD $-20\%$ vs ランダム平均 $-42\%$（上位 0.1\%）。OOS でも上位 1\%
-\item \textbf{VIX ベンチ}: OOS 16 fold でリターン・Sharpe・MaxDD とも $\ediv$ 優位
-      （VIX は暴落後の後追いになる）
+\item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold（look-ahead 排除）
+\item \textbf{ランダム現金化 1000 本}: MaxDD $-20\%$ vs 平均 $-42\%$（in-sample 上位 0.1\%、OOS でも上位 1\%）
+\item \textbf{VIX ベンチ}: OOS 16 fold で全指標 $\ediv$ 優位（VIX は暴落後の後追い）
 \item \textbf{Granger 因果}: 政策ショック $\to\ediv$ は $p=0.022$、逆方向は不成立
-\item \textbf{p-hack 反証}: 11指標から作れる 55 ペア差分を全スキャン。
-      $\ediv$ は貿易政策/構造ショックで上位 22--36\%、戦争では中央値以下
-      $\Rightarrow$ 全ショックで都合よく上位ではない＝選び取りではない
+\item \textbf{p-hack 反証}: 55 ペア差分の全スキャン。$\ediv$ は政策/構造で上位 22--36\%、戦争では中央値以下 ＝ 都合よく全部上位ではない
 \item \textbf{cluster permutation}: 時間集中イベントの自己相関補正
 \end{itemize}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.4\linewidth}
-\textbf{\LARGE 結論と限界}\ {\color{muted}\normalsize Conclusion \& Limitations}
+\textbf{\large 結論と限界}\ {\color{muted}\footnotesize Conclusion \& Limitations}
 
-\textbf{結論}: 同じ相関ネットから\textbf{\color{accent}ほぼ独立な2つの位相不変量}
-（穴の持続・矛盾の数）を同時に抽出できる。組み合わせ指標 $\ediv$ は
-20年 OOS で\textbf{下落の浅さ（MaxDD）に限り}頑健な優位を保つ。
+\textbf{結論}: 同じ相関ネットから\textbf{\color{accent}ほぼ独立な2つの位相不変量}を同時に抽出できる。
+組み合わせ指標 $\ediv$ は 20年 OOS で\textbf{下落の浅さ（MaxDD）に限り}頑健な優位を保つ。
 
-\vspace{2mm}
+\vspace{1mm}
 \textbf{限界（すべて実証済みの開示）}:
 \begin{itemize}
 \item 暴落の\textbf{予知ではなく初動検知}（COVID 型の急落の入口は捉えられない）
 \item Sharpe・リターンの優位は OOS で消える（B\&H 以下）
 \item 独立性は近似的（期間依存で $r$ は 0.16$\to$0.26 に漸増）
-\item 矛盾数はサイクル基底に依存（balanced か否かは基底不変、
-      厳密な frustration index は NP 困難）
+\item 矛盾数はサイクル基底に依存（厳密な frustration index は NP 困難）
 \end{itemize}
 
 \vspace{1mm}
-\textbf{今後}: 他市場での再現。代数トポロジー・cellular sheaf
-($H^1(G;\mathbb{Z}_2)$) による2指標の理論的統一。
+\textbf{今後}: 他市場での再現。代数トポロジー・cellular sheaf による2指標の理論的統一。
 \end{minipage}
 \hfill
-\begin{minipage}[t]{0.2\linewidth}
+\begin{minipage}[t]{0.18\linewidth}
 \centering
-\textbf{\LARGE GitHub}
+\textbf{\large GitHub}\ {\color{muted}\footnotesize 全コード公開}
 
-{\color{muted}\small 全コード・データ公開}
-
-\vspace{4mm}
-\qrcode[height=70mm]{https://github.com/hajimedayo328/market-graph-presentation}
+\vspace{3mm}
+\qrcode[height=58mm]{https://github.com/hajimedayo328/market-graph-presentation}
 
 \vspace{2mm}
 {\color{muted}\scriptsize github.com/hajimedayo328/\\market-graph-presentation}
