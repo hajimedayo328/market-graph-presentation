@@ -143,23 +143,25 @@ Heider (1946) balance / $\mathbb{Z}_2$ 係数コホモロジー $H^1(G;\mathbb{Z
 }
 
 \block{⑧ 結果② 主因は天然ガス}{%
-4つの独立ショック（Liberation Day 2025・円キャリー 2024・COVID 2020・China 2015）で
-銘柄をLOOで抜くと、\textbf{\color{accent}NGAS が 4/4 で寄与上位}、COPPER 3/4。
-米国株は 2/4 以下。
+4つの独立ショック（米相互関税 2025・円キャリー巻き戻し 2024・
+ハマス/イスラエル衝突 2023・ウクライナ侵攻 2022）で
+銘柄を leave-one-out で抜くと、
+\textbf{\color{accent}NGAS のみ 4/4 で寄与上位}。
+COPPER・CHINA50 が 3/4（円キャリーで脱落）、米国株は 1/4 以下。
 
 \vspace{2mm}
 \centering
 \includegraphics[width=0.95\linewidth]{../../figs/slide_source.png}
 
 \vspace{1mm}
-{\color{muted}\small LOO による銘柄別寄与（4ショック横断）}
+{\color{muted}\small LOO による銘柄別寄与（4ショック横断）。周辺銘柄はイベントごとに入れ替わる二層構造。}
 }
 
 % ======== 右列 ========
 \column{0.333}
 
-\block{③ 独立性の実証（頑健性）}{%
-窓・閾値・市場を振っても $|r|<0.5$、9/10 で $<0.3$。
+\block{③ 独立性の実証（頑健性と限界）}{%
+窓・閾値・市場を振っても $|r|<0.5$、9/10 の設定で $<0.3$。
 
 \vspace{2mm}
 \centering
@@ -173,15 +175,14 @@ Threshold & 0.2/0.3/0.4 & $\leq 0.22$\\
 Market & USA/EM/CN & 0.16/0.17/0.41\\
 \midrule
 \multicolumn{2}{l}{全10設定} & max $|r|{=}0.41$\\
-\multicolumn{2}{l}{Spearman 再計算} & 0.10\\
-\multicolumn{2}{l}{銘柄数15/25/39} & $|r|{<}0.15$\\
 \bottomrule
 \end{tabular}
 
 \vspace{3mm}
 \raggedright
-\textbf{p-hack 反証}: 11指標のペア差分を55通りスキャン。
-$\ediv$ が最も安定した独立性。
+\textbf{正直な開示}: 期間を伸ばすと相関は漸増する
+（5年 0.16 $\to$ 10年 0.19 $\to$ 15年 0.26、中国市場 0.41）。
+全設定で $|r|<0.5$ だが、``独立'' は\textbf{厳密ではなく近似的}。
 }
 
 \block{⑥ 組み合わせ指標 $\ediv$ の使い方}{%
@@ -196,28 +197,34 @@ $\ediv$ が最も安定した独立性。
 \vspace{2mm}
 \textbf{因果方向の実証}:
 \begin{itemize}
-\item Granger 因果: 政策ショック $\to\ediv$, $p=0.022$ (lag=5)
+\item Granger 因果: 政策ショック $\to\ediv$, $p=0.022$ (lag=5)。
+      逆方向は $p=0.254$ で不成立 $\Rightarrow$ 一方向性
 \item cluster permutation で自己相関補正
-\item walk-forward: 3年学習/1年テスト、16 fold
 \end{itemize}
+
+\vspace{1mm}
+{\color{muted}\small 注意: $\ediv$ は $L^1$ の低下でも上昇する（純粋な矛盾シグナルではなく2指標の乖離）。}
 }
 
 \block{⑨ 結果③ 下落を浅くする回避戦略}{%
 \textbf{予測モデルではなく回避戦略}。
 $\ediv$ 突出日に株を売って現金化 $\Rightarrow$
-\textbf{最大下落が $-25\%\to -17\%$} に浅くなる。
+\textbf{最大下落が $-25\%\to -17\%$}（5年 in-sample、コスト込み）。
 
 \vspace{2mm}
 \centering
 \includegraphics[width=0.98\linewidth]{../../figs/slide_equity_absolute.png}
 
 \vspace{1mm}
-{\color{muted}\small \$10{,}000 を5年運用したバックテスト上の資産推移 (S\&P 500)}
+{\color{muted}\small \$10{,}000 を5年運用したバックテスト上の資産推移 (S\&P 500)。リターンでは \$1{,}754 負ける。}
 
 \vspace{2mm}
 \raggedright
-\textbf{リターン差 $-\$1{,}754$、MaxDD 差 $+\$800$}
-$\Rightarrow$ \textbf{\color{accent}リスク低減の補助指標} として位置づけ。
+\textbf{20年 walk-forward OOS (16 fold)}: MaxDD $-16\%$ vs B\&H $-34\%$、
+同頻度ランダム現金化 500 本に対し\textbf{\color{accent}上位 1\%}。\\
+\textbf{正直な開示}: \textbf{Sharpe の優位は OOS で消える}
+（$\ediv$ 0.63 $<$ B\&H 0.74）。生き残るのは\textbf{下落の浅さのみ}
+$\Rightarrow$ リスク低減の補助指標として位置づけ。
 }
 
 \end{columns}
@@ -228,29 +235,40 @@ $\Rightarrow$ \textbf{\color{accent}リスク低減の補助指標} として位
 \textbf{\LARGE 検証設計}\ {\color{muted}\normalsize Rigor}
 
 \begin{itemize}
-\item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold
-\item \textbf{Random 1000本ベンチ}: MaxDD 上位1\%
-\item \textbf{VIX ベンチ}: 同じ現金化率で下落回避が浅い
-\item \textbf{Granger 因果}: 政策ショック $\to\ediv$, $p=0.022$
-\item \textbf{p-hack 反証}: 11指標ペア差分の全スキャン
-\item \textbf{cluster permutation}: 時間集中イベントの補正
-\item \textbf{expanding z-score}: look-ahead 排除
+\item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold。
+      閾値・z-score とも学習期間のみから決定
+\item \textbf{ランダム現金化ベンチ}: 同頻度 1000 本（in-sample 20年）で
+      MaxDD $-20\%$ vs ランダム平均 $-42\%$（上位 0.1\%）。OOS でも上位 1\%
+\item \textbf{VIX ベンチ}: OOS 16 fold でリターン・Sharpe・MaxDD とも $\ediv$ 優位
+      （VIX は暴落後の後追いになる）
+\item \textbf{Granger 因果}: 政策ショック $\to\ediv$ は $p=0.022$、逆方向は不成立
+\item \textbf{p-hack 反証}: 11指標から作れる 55 ペア差分を全スキャン。
+      $\ediv$ は貿易政策/構造ショックで上位 22--36\%、戦争では中央値以下
+      $\Rightarrow$ 全ショックで都合よく上位ではない＝選び取りではない
+\item \textbf{cluster permutation}: 時間集中イベントの自己相関補正
 \end{itemize}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.4\linewidth}
-\textbf{\LARGE 結論と今後}\ {\color{muted}\normalsize Conclusion \& Future}
+\textbf{\LARGE 結論と限界}\ {\color{muted}\normalsize Conclusion \& Limitations}
 
-\textbf{結論}: 相関ネットに\textbf{\color{accent}2つの独立な位相不変量}を実装し、
-5資産クラス横断・20年 OOS で頑健な下落回避を実証した。
-同じネットから抽出したのに独立、組み合わせた $\ediv$ が MaxDD を浅くする。
-
-\vspace{2mm}
-\textbf{限界}: 暴落の予知ではなく初動検知（VIXより早い）。
-矛盾指数はサイクル基底に依存（frustration index はNP困難）。
+\textbf{結論}: 同じ相関ネットから\textbf{\color{accent}ほぼ独立な2つの位相不変量}
+（穴の持続・矛盾の数）を同時に抽出できる。組み合わせ指標 $\ediv$ は
+20年 OOS で\textbf{下落の浅さ（MaxDD）に限り}頑健な優位を保つ。
 
 \vspace{2mm}
-\textbf{今後}: 他市場での再現。代数トポロジー・cellular sheaf ($H^1(G;\mathbb{Z}_2)$) による理論的統一。
+\textbf{限界（すべて実証済みの開示）}:
+\begin{itemize}
+\item 暴落の\textbf{予知ではなく初動検知}（COVID 型の急落の入口は捉えられない）
+\item Sharpe・リターンの優位は OOS で消える（B\&H 以下）
+\item 独立性は近似的（期間依存で $r$ は 0.16$\to$0.26 に漸増）
+\item 矛盾数はサイクル基底に依存（balanced か否かは基底不変、
+      厳密な frustration index は NP 困難）
+\end{itemize}
+
+\vspace{1mm}
+\textbf{今後}: 他市場での再現。代数トポロジー・cellular sheaf
+($H^1(G;\mathbb{Z}_2)$) による2指標の理論的統一。
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.2\linewidth}
