@@ -163,6 +163,34 @@ COPPER・CHINA50 が 3/4（円キャリーで脱落）、米国株は 1/4 以下
 {\color{muted}\small LOO による銘柄別寄与（4ショック横断）。周辺銘柄はイベントごとに入れ替わる二層構造。}
 }
 
+\block{なぜ差分か：単独指標では効かない}{%
+同じ閾値($0.8\sigma$)で株を避けたときの\textbf{最大下落}（20年 in-sample）:
+
+\vspace{2mm}
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lcc}
+\toprule
+{\bfseries 指標} & {\bfseries MaxDD} & {\bfseries Sharpe}\\
+\midrule
+\textbf{$\ediv$ 差分} & {\color{accent}\textbf{$-20\%$}} & {\color{accent}\textbf{0.76}}\\
+$\nunb$ 単独（矛盾） & $-45\%$ & 0.47\\
+$L^1$ 単独（穴） & $-56\%$ & 0.22\\
+Buy\&Hold & $-57\%$ & 0.48\\
+\bottomrule
+\end{tabular}
+
+\vspace{2mm}
+\raggedright
+\textbf{単独では下落を防げない}（穴 $L^1$ は $-56\%$＝BHと同じで無力）。
+差分にすると $-20\%$ に激変 $\Rightarrow$
+\textbf{\color{accent}2指標を組み合わせる意味の直接証拠}。
+
+\vspace{1mm}
+{\color{muted}\small 機序: $\ediv$ が高い日は矛盾 $z(\nunb){=}{+}1.3$ が穴 $z(L^1){=}{-}0.3$ を
+超えて突出。穴は単独では下落と無関係だが、基準線として矛盾の純粋な超過を取り出す。}
+}
+
 % ======== 右列（上段3・中段6・下段9）========
 \column{0.333}
 
