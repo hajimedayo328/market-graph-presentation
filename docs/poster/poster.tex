@@ -2,7 +2,7 @@
 % A0 縦ポスター — JSIAM 2026 (誠実性監査版)
 \documentclass[25pt, a0paper, portrait,
                margin=15mm, innermargin=8mm,
-               blockverticalspace=6mm, colspace=8mm]{tikzposter}
+               blockverticalspace=4mm, colspace=8mm]{tikzposter}
 
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx}
@@ -157,7 +157,7 @@ COPPER・CHINA50 が 3/4（円キャリーで脱落）、米国株は 1/4 以下
 
 \vspace{2mm}
 \centering
-\includegraphics[width=0.88\linewidth]{../../figs/slide_source.png}
+\includegraphics[width=0.82\linewidth]{../../figs/slide_source.png}
 
 \vspace{1mm}
 {\color{muted}\small LOO による銘柄別寄与（4ショック横断）。周辺銘柄はイベントごとに入れ替わる二層構造。}
@@ -187,8 +187,7 @@ Buy\&Hold & $-57\%$ & 0.48\\
 \textbf{\color{accent}2指標を組み合わせる意味の直接証拠}。
 
 \vspace{1mm}
-{\color{muted}\small 機序: $\ediv$ が高い日は矛盾 $z(\nunb){=}{+}1.3$ が穴 $z(L^1){=}{-}0.3$ を
-超えて突出。穴は単独では下落と無関係だが、基準線として矛盾の純粋な超過を取り出す。}
+{\color{muted}\small 機序: $\ediv$ 高い日=矛盾が穴を超え突出（$z(\nunb){\approx}{+}1.3$, $z(L^1){\approx}{-}0.3$）。穴を基準に矛盾の超過を抽出。}
 }
 
 % ======== 右列（上段3・中段6・下段9）========
@@ -276,11 +275,9 @@ $\ediv$ 突出日に株を売って現金化。
 
 \begin{itemize}
 \item \textbf{walk-forward OOS}: 3年学習/1年テスト、20年で 16 fold（look-ahead 排除）
-\item \textbf{ランダム現金化 500本}: 20年集計で MaxDD上位1\%。ただし\textbf{5年OOS単体は上位45\%（平凡）}
-\item \textbf{VIX ベンチ}: 20年集計では $\ediv$ 優位。ただし\textbf{10・15年ではVIXにMaxDDで劣る}（期間依存）
-\item \textbf{Granger 因果}: 政策ショック $\to\ediv$ は $p=0.022$、逆方向は不成立
-\item \textbf{p-hack 反証}: 55 ペア差分の全スキャン。$\ediv$ は政策/構造で上位22--36\%、戦争では中央値以下（都合よく全部上位ではない）
-\item \textbf{cluster permutation}: 時間集中イベントの自己相関補正を全検定に適用
+\item \textbf{ランダム現金化 500本}: 20年集計で MaxDD上位1\%。ただし\textbf{5年OOS単体は平凡}
+\item \textbf{VIX ベンチ}: 20年集計では $\ediv$ 優位。ただし\textbf{10・15年ではVIXに劣る}（期間依存）
+\item \textbf{p-hack 反証}: 55 ペア差分スキャンで $\ediv$ は戦争では中央値以下＝選び取りでない（Granger・cluster permutation は本文参照）
 \end{itemize}
 \end{minipage}
 \hfill
@@ -297,7 +294,7 @@ $\ediv$ 突出日に株を売って現金化。
 \item \textbf{独立性は期間依存}。20年フルでは $r=0.40$ に上がり独立でなくなる（危機時に連動）
 \item 暴落の\textbf{予知ではなく初動検知}（COVID型の急落入口は捉えられない）
 \item Sharpe・リターンの優位はOOSで消える（B\&H以下）。5年OOSでは下落回避の優位も消失
-\item 矛盾数はサイクル基底に依存（厳密な frustration index は NP 困難）
+\item 矛盾数はサイクル基底に依存（厳密な frustration index は NP 困難）。差分の機序は日次予測でなく危機期間の識別（未完全解明）
 \end{itemize}
 
 \vspace{1mm}
