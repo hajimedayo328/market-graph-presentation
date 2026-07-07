@@ -755,8 +755,10 @@
     <h4>結果</h4>
     <p>Pearson 相関 = <strong>+0.16</strong>。同じ相関行列から計算してるのに、ほぼ独立に動く。
     PCA 第 1 主成分の寄与率も 0.58 で、完全独立 (0.5) に近い。<br>
-    データ期間・市場を変えて再計算しても相関は 0.16 〜 0.41 (5y/10y/15y 米国 = 0.16/0.19/0.26、新興国 0.17、中国 0.41)、
-    PC1 寄与率も 0.58 〜 0.71 に収まる。<strong>独立性は堅固</strong>。</p>
+    データ期間を伸ばすと相関は<strong>単調に上昇</strong>する (5y/10y/15y/20y 米国 = 0.16/0.19/0.26/<strong>0.40</strong>)。
+    <strong>短期 (5 年) ではほぼ独立だが、20 年フルでは r=0.40 に達し独立とは言えなくなる</strong>。
+    理由: 長期は危機 (2008/2020 等) を多く含み、危機時は L¹ も不整合サイクル数も同時に跳ねて連動するため。
+    市場別は新興国 0.17・中国 0.41。<strong>「独立」は平常時・短期の近似</strong>であって、厳密ではない。</p>
   </div>
 
   <h3>設定を変えても独立か — 頑健性チェック</h3>
@@ -777,11 +779,52 @@
     <tr><td>中国</td><td>+0.41</td></tr>
   </table>
   <div class="callout found">
-    <h4>結論: 独立性は設定非依存</h4>
-    <p>全 10 設定で <strong>|r| &lt; 0.5</strong>、うち 9/10 は <strong>|r| &lt; 0.3</strong>
-    (範囲 0.05〜0.41、平均 0.17)。window を 20〜60 日、threshold を 0.2〜0.4、市場を米国・新興国・中国と
-    変えても 2 指標は独立に動き続ける。<strong>独立性は特定パラメータ選択の「まぐれ」ではなく、
-    設定に対して頑健な性質</strong>と確認できた。</p>
+    <h4>結論: 短期の独立性は設定非依存。ただし期間依存で長期は崩れる</h4>
+    <p>5 年内では全 10 設定で <strong>|r| &lt; 0.5</strong>、うち 9/10 は <strong>|r| &lt; 0.3</strong>
+    (範囲 0.05〜0.41、平均 0.17)。window を 20〜60 日、threshold を 0.2〜0.4、市場を変えても
+    <strong>短期の独立性は特定パラメータの「まぐれ」ではなく頑健</strong>。
+    <strong>ただしデータ期間を 20 年に伸ばすと r=0.40 まで上がり、独立とは言えなくなる</strong> (上記)。
+    独立は「短期・平常時の近似」であり、危機を多く含む長期では 2 指標は連動する。正直な限界として開示する。</p>
+  </div>
+</section>
+
+<section id="s5b">
+  <div class="section-num">SECTION 05B</div>
+  <h2><span style="color:var(--green); font-size:0.7em; vertical-align:middle;">● 追加検証</span><br>なぜ 2 指標の「差分」か — 単独では効かない</h2>
+  <p class="lede">e_div = z(n_unb) − z(L¹) という差分に本当に意味があるのか。
+  単独指標 (n_unb だけ・L¹ だけ) と<strong>公平に比較</strong>
+  (同じ閾値 0.8σ で株を避ける short 戦略、20 年 in-sample、取引コスト込み) して確かめた。</p>
+  <table>
+    <tr><th>指標</th><th>最大下落 (MaxDD)</th><th>Sharpe</th></tr>
+    <tr><td><strong>e_div 差分</strong></td><td class="good"><strong>−20%</strong></td><td class="good"><strong>0.76</strong></td></tr>
+    <tr><td>n_unb 単独 (矛盾)</td><td>−45%</td><td>0.47</td></tr>
+    <tr><td>L¹ 単独 (穴)</td><td class="bad">−56%</td><td>0.22</td></tr>
+    <tr><td>Buy &amp; Hold</td><td class="bad">−57%</td><td>0.48</td></tr>
+  </table>
+  <div class="callout found">
+    <h4>単独では下落を防げない。差分にして初めて効く</h4>
+    <p>L¹ 単独は −56% で Buy &amp; Hold (−57%) とほぼ同じ = 下落回避に<strong>無力</strong>。
+    n_unb 単独も −45% どまり。ところが差分 e_div にすると <strong>−20% に激変</strong>する。
+    これが「2 つの指標を組み合わせる意味」の直接証拠 — 単独ではダメで、差分にして初めて効く。</p>
+  </div>
+
+  <h3>機序 — なぜ差分が効くか (相対突出。ただし「時間差」ではない)</h3>
+  <p>当初は「矛盾 n_unb が穴 L¹ より<em>先に</em>動く時間差を捉えている」と仮説を立てた。
+  しかし 3 手法 (ラグ相関・危機イベントの立ち上がり時刻・Granger 因果) で厳密に検証した結果、
+  <strong>時間差仮説は棄却</strong>された — n_unb は先行せず、むしろ弱く L¹ が先行するか、ほぼ同時だった。</p>
+  <p>代わりに確認できたのは<strong>「相対突出」</strong>。e_div が高い日を調べると、
+  矛盾 <strong>z(n_unb) ≈ +1.3</strong> が突出している一方、穴 <strong>z(L¹) ≈ −0.3</strong> はむしろ低い。
+  つまり e_div は<strong>「穴を基準線にして、矛盾がそれを超えて突出した状態」</strong>を捉えている。
+  L¹ が高い日は下落確率がむしろ全体より低く (下落と無関係) 単独では無力だが、
+  それを<em>引く</em>ことで矛盾の「純粋な超過分」だけを取り出すのが、差分の効く理屈。</p>
+  <div class="callout intuition">
+    <h4>正直な限界 — 機序は完全には解けていない</h4>
+    <p>ただし「e_div 高い → 翌 20 日に下落」という<strong>日次の予測力は弱い</strong>
+    (下落確率 38% vs 全体 34%、差はわずか)。
+    バックテストで MaxDD が大きく改善するのは、日次予測ではなく
+    <strong>「危機の"期間"を識別して、その間ずっと現金でいる」経路依存効果</strong>による
+    (最大下落は連続下落の累積なので、危機期間の継続的な現金化が効く)。
+    「なぜ相対突出が下落局面と結びつくか」の完全な機序解明は今後の課題。</p>
   </div>
 </section>
 
@@ -1774,7 +1817,7 @@
 </ul>
 <p>
   これを正面から検証した (<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/eventstudy_predict_vs_react.py"><code>scripts/eventstudy_predict_vs_react.py</code></a>、
-  出力 <code>data/eventstudy_predict_vs_react.json</code>)。
+  出力 <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/data/eventstudy_predict_vs_react.json"><code>data/eventstudy_predict_vs_react.json</code></a>)。
   各下落について<strong>「e_div が +0.8σ を最初に超えた日」と「下落開始日」の時間差 (ラグ)</strong> を測る。
   ラグが負 = 予知、ラグが正 = 反応。
 </p>
