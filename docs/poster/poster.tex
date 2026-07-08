@@ -71,43 +71,43 @@
 {\color{muted}\small データ: Yahoo Finance (yfinance) から40銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値。}
 }
 
-\block{\bnum{2}手法：2つの指標を同時に測る}{%
-\textbf{相関ネットワークの作り方}:
-40銘柄の日次リターンの相関 $r$ を距離 $d=\sqrt{2(1-r)}$ に変換し、
-似た動きの銘柄を近くに配置する。\\[1mm]
-そこから\textbf{数学的に別種の2つの指標}を取り出す:
-\begin{itemize}
-\setlength{\itemsep}{1mm}
-\item \textbf{穴の持続期間} $L^1$（つながりの``形''）
-\item \textbf{矛盾の数} $\nunb$（符号の``ねじれ''）
-\end{itemize}
+\block{\bnum{2}手法：相関ネットワークを作る}{%
+40銘柄の日次リターンの相関 $r$ を距離 $d=\sqrt{2(1-r)}$ に変換し（Mantegna 1999）、
+似た動きの銘柄を近くに置く。
 
 \vspace{1mm}
-\textbf{標準化 $z$ の定義}（各指標を同じ物差しに揃える）:
+\centering
+\includegraphics[width=0.78\linewidth]{../../figs/slide_network.png}\\
+{\color{muted}\footnotesize 青=正相関・赤破線=負相関（40銘柄の相関ネットワーク）}
+
+\vspace{2mm}
+\raggedright
+このネットワークから\textbf{2つの指標}（穴の持続期間 $L^1$・矛盾の数 $\nunb$）を取り出し、
+\textbf{標準化 $z$} で同じ物差しに揃える:
 \[
 z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
+\quad(\text{過去データのみ＝先読み防止})
 \]
-\textbf{過去のデータのみ}を使う（未来を見ない＝先読み防止）。
-
-\vspace{1mm}
-\textbf{組み合わせ}:
-\[
-\boxed{\ediv = z(\nunb) - z(L^1)}
-\]
+組み合わせて $\ediv = z(\nunb) - z(L^1)$（→ 指標6）。
 }
 
 \block{\bnum{3}指標1：穴の持続期間}{%
-相関ネットワークには``輪（穴）''ができる。
-つなぐ距離のしきい値を少しずつ上げると、各穴は\textbf{生まれて、やがて消える}。
-\textbf{しきい値を変えても長く残る穴が本物}、すぐ消える穴はノイズ。
-\[
-L^1 = \sum_{k}(\text{穴}_k \text{の持続期間})
-\]
+点（銘柄）を距離が近い順に結んでいく。しきい値 $\epsilon$ を 0 から上げると、
+``輪（穴）''が\textbf{生まれ、やがて埋まって消える}（Vietoris--Rips フィルトレーション）。
 
-\vspace{2mm}
+\vspace{1mm}
 \centering
-\includegraphics[width=0.9\linewidth]{../../figs/slide_network.png}\\[1mm]
-{\color{muted}\footnotesize 青=正相関・赤破線=負相関（40銘柄の日次相関ネットワーク）}
+\includegraphics[width=\linewidth]{../../figs/slide_persistence.png}
+
+\vspace{1mm}
+\raggedright
+各穴の誕生 $b_k$・消滅 $d_k$ を\textbf{持続図} $\mathrm{Dgm}(H_1)$ に記録する。
+\textbf{\color{accent}持続期間 $d_k-b_k$ が長い穴＝本物の構造}、すぐ消える短い穴はノイズ。
+全ての穴の持続期間の総和が、その日の指標:
+\[
+L^1 = \sum_{(b_k,d_k)\,\in\,\mathrm{Dgm}(H_1)} (d_k - b_k)
+\]
+{\color{muted}\small 危機が近づくと相関構造がねじれ、大きな穴が現れて $L^1$ が上昇する（Gidea 2017）。}
 }
 
 % ================= 中列（縦に 4→5→6）=================
