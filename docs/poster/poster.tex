@@ -83,12 +83,12 @@
 \vspace{2mm}
 \raggedright
 このネットワークから\textbf{2つの指標}（穴の持続期間 $L^1$・矛盾の数 $\nunb$）を取り出し、
-\textbf{標準化 $z$} で同じ物差しに揃える:
+\textbf{標準化 $z$} で同じ物差しに揃える（$x_t$ ＝ 各指標のその日の値）:
 \[
 z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \quad(\text{過去データのみ＝先読み防止})
 \]
-{\color{muted}\small mean=過去の平均、sd=過去の標準偏差（ばらつき）。$z$ は「今日の値が過去平均から\textbf{標準偏差いくつ分}外れたか」を表す。}
+{\color{muted}\small $\mathrm{mean}(x_{\le t})$＝その日までの平均、$\mathrm{sd}(x_{\le t})$＝その日までの標準偏差（ばらつき）。$z$ は「今日の値が過去平均から\textbf{標準偏差いくつ分}外れたか」。}
 
 \vspace{1mm}
 組み合わせて $\ediv = z(\nunb) - z(L^1)$（→ 指標6）。
@@ -104,7 +104,8 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 
 \vspace{1mm}
 \raggedright
-各穴の誕生 $b_k$・消滅 $d_k$ を\textbf{持続図} $\mathrm{Dgm}(H_1)$ に記録する。
+各穴の誕生 $b_k$（生まれる $\epsilon$）・消滅 $d_k$（埋まる $\epsilon$）を
+\textbf{持続図} $\mathrm{Dgm}(H_1)$ に記録する（$H_1$ ＝ 1次元の穴＝``輪''の情報）。
 \textbf{\color{accent}持続期間 $d_k-b_k$ が長い穴＝本物の構造}、すぐ消える短い穴はノイズ。
 全ての穴の持続期間の総和が、その日の指標:
 \[
@@ -116,8 +117,8 @@ L^1 = \sum_{(b_k,d_k)\,\in\,\mathrm{Dgm}(H_1)} (d_k - b_k)
 \column{0.333}
 
 \block{\bnum{4}指標2：矛盾の数}{%
-各辺に\textbf{符号}を付ける（正相関 $=+$、負相関 $=-$）。
-輪（サイクル）を一周して符号の積を見る:
+各辺に\textbf{符号} $\mathrm{sign}(r)$ を付ける（相関 $r>0$ なら $+1$、$r<0$ なら $-1$）。
+ネットワーク上の輪（サイクル）$C$ を一周し、符号の積を見る:
 
 \vspace{1mm}
 \centering
