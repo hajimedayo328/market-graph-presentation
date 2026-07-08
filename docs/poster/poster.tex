@@ -115,22 +115,32 @@ L^1 = \sum_{(b_k,d_k)\,\in\,\mathrm{Dgm}(H_1)} (d_k - b_k)
 
 \block{\bnum{4}指標2：矛盾の数}{%
 各辺に\textbf{符号}を付ける（正相関 $=+$、負相関 $=-$）。
-ネットワーク上の輪（サイクル）を一周し、符号の積を見る:
-\[
-\prod_{\text{辺} \in C} \mathrm{sign}(r) =
-\begin{cases} +1 & \text{整合} \\ -1 & \text{矛盾} \end{cases}
-\]
-\textbf{負の辺が奇数個}のサイクルが``矛盾''（Cartwright--Harary 1956）。
-\[
-\nunb = \text{矛盾サイクルの個数}
-\]
+輪（サイクル）を一周して符号の積を見る:
 
 \vspace{1mm}
-{\color{muted}\small 例: 「A と B は同調、B と C は同調、なのに A と C は逆」——この三角形が矛盾。}
+\centering
+\includegraphics[width=\linewidth]{../../figs/slide_balance.png}
+
+\vspace{1mm}
+\raggedright
+一周して\textbf{\color{warn}符号の積が $-1$}（負の辺が奇数個）になるサイクルが``矛盾''（Cartwright--Harary 1956）。その個数が指標:
+\[
+\prod_{\text{辺}\in C}\mathrm{sign}(r) = -1 \;\Rightarrow\; \text{矛盾},
+\qquad \nunb = \text{矛盾サイクルの個数}
+\]
 }
 
 \block{\bnum{5}独立性 — 短期は成立、長期で崩れる}{%
-2指標の相関を\textbf{データ期間別}に計算し直すと:
+穴 $L^1$ と矛盾 $\nunb$ は同じネットワークから出るのに、
+短期では\textbf{ばらばらに動く}（下図、5年で相関 $0.15$）:
+
+\vspace{1mm}
+\centering
+\includegraphics[width=0.8\linewidth]{../../figs/slide_scatter.png}
+
+\vspace{1mm}
+\raggedright
+だが\textbf{データ期間を伸ばすと相関は上がる}:
 
 \vspace{2mm}
 \centering
