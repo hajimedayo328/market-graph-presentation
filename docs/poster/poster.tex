@@ -2,7 +2,7 @@
 % A0 縦ポスター — JSIAM 2026（全面改訂：縦読み・日本語統一・参考文献）
 \documentclass[25pt, a0paper, portrait,
                margin=15mm, innermargin=8mm,
-               blockverticalspace=4mm, colspace=8mm]{tikzposter}
+               blockverticalspace=3mm, colspace=8mm]{tikzposter}
 
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx}
@@ -77,7 +77,7 @@
 
 \vspace{1mm}
 \centering
-\includegraphics[width=0.78\linewidth]{../../figs/slide_network.png}\\
+\includegraphics[width=0.66\linewidth]{../../figs/slide_network.png}\\
 {\color{muted}\footnotesize 青=正相関・赤破線=負相関（40銘柄の相関ネットワーク）}
 
 \vspace{2mm}
@@ -97,7 +97,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 
 \vspace{1mm}
 \centering
-\includegraphics[width=\linewidth]{../../figs/slide_persistence.png}
+\includegraphics[width=0.92\linewidth]{../../figs/slide_persistence.png}
 
 \vspace{1mm}
 \raggedright
@@ -118,7 +118,7 @@ L^1 = \sum_{(b_k,d_k)\,\in\,\mathrm{Dgm}(H_1)} (d_k - b_k)
 
 \vspace{1mm}
 \centering
-\includegraphics[width=\linewidth]{../../figs/slide_balance.png}
+\includegraphics[width=0.88\linewidth]{../../figs/slide_balance.png}
 
 \vspace{1mm}
 \raggedright
@@ -135,7 +135,7 @@ L^1 = \sum_{(b_k,d_k)\,\in\,\mathrm{Dgm}(H_1)} (d_k - b_k)
 
 \vspace{1mm}
 \centering
-\includegraphics[width=0.8\linewidth]{../../figs/slide_scatter.png}
+\includegraphics[width=0.68\linewidth]{../../figs/slide_scatter.png}
 
 \vspace{1mm}
 \raggedright
@@ -267,9 +267,9 @@ $\ediv$ 突出日に株を避けると、\textbf{最大下落が $-25\%\to-17\%$
 
 \vspace{1mm}
 \centering
-\qrcode[height=32mm]{https://github.com/hajimedayo328/market-graph-presentation}\;
+\qrcode[height=26mm]{https://github.com/hajimedayo328/market-graph-presentation}\;
 {\color{muted}\scriptsize 全コード・データ公開\\ github.com/hajimedayo328/\\market-graph-presentation\\[1mm]
-生成AI（Claude）をデータ解析・作図・原稿作成に補助的に使用。着想・手法・解釈は著者による。}
+生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
 \end{minipage}
 }
 
