@@ -139,23 +139,30 @@ L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k)
 
 \vspace{1mm}
 \centering
-\includegraphics[width=\linewidth]{../../figs/slide_independence.png}
+\includegraphics[width=\linewidth]{../../figs/slide_scatter_raw.png}
 
 \vspace{1mm}
 \raggedright
-\begin{itemize}
-\setlength{\itemsep}{1mm}
-\item \textbf{短期（5年）}：2指標はばらばらに動き\textbf{\color{accent}独立}（別々の情報を持つ）
-\item \textbf{長期（20年）}：危機（2008・2020等）を多く含み、両指標が同時に跳ねて\textbf{\color{warn}相関が上がる}
-\end{itemize}
+\textbf{短期（5年）は点がばらける＝\color{accent}独立}（相関 0.15、別々の情報）。
+ただし\textbf{データ期間を伸ばすと相関は上がる}:
+
+\vspace{1mm}
+\centering
+\includegraphics[width=0.8\linewidth]{../../figs/slide_independence.png}
+
+\vspace{1mm}
+\raggedright
+{\small 長期（20年）は危機を多く含み、両指標が同時に跳ねて\textbf{\color{warn}相関 0.40}（もう独立とは言えない）。}
 }
 
 \block{\bt{3.4}2指標の統合：$\ediv$}{%
-2指標を同じ物差しに揃える\textbf{標準化 $z$}（$x_t$＝各指標のその日の値）:
+穴 $L^1$（0〜2）と矛盾 $\nunb$（0〜80）は\textbf{スケールが違う}。
+そのまま引くと $\nunb$ が常に勝つので、\textbf{標準化 $z$} で
+同じ土俵（過去比の相対位置）に揃えてから引く（$x_t$＝各指標のその日の値）:
 \[
 z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \]
-{\color{muted}\small mean・sd＝その日\textbf{まで}の平均・標準偏差（未来は見ない）。}
+{\color{muted}\small これで両指標とも平均0・標準偏差1になり\textbf{スケールの差が消える}。mean・sd＝その日までの値（未来は見ない）。}
 
 \vspace{1mm}
 差分をとった指標:
