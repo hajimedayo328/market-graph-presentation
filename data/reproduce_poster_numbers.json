@@ -1,0 +1,261 @@
+{
+ "params": {
+  "engine": "backtest_v2.simulate_v2 互換 (short=現金化)",
+  "transaction_cost": 0.0005,
+  "hysteresis_days": 5,
+  "zscore": "expanding(min_periods=30)",
+  "signal_threshold": 0.8,
+  "price_source": "data/ohlc_40*.parquet SP500 列 (オフライン再現)"
+ },
+ "A_variant_split": {
+  "n_days": 1235,
+  "calibration": {
+   "maxdd_max_abs_diff_pp": 0.0,
+   "rank_corr_vs_existing_csv": 1.0
+  },
+  "split": {
+   "h1_range": [
+    "2021-06-16",
+    "2023-11-27"
+   ],
+   "h2_range": [
+    "2023-11-28",
+    "2026-05-15"
+   ],
+   "rank_corr_maxdd_h1_vs_h2_spearman": -0.1248
+  },
+  "halves_table": [
+   {
+    "unb": "n_unb_total",
+    "hole": "L1",
+    "maxdd_h1": -0.1559,
+    "maxdd_h2": -0.099
+   },
+   {
+    "unb": "n_unb_total",
+    "hole": "L2",
+    "maxdd_h1": -0.1361,
+    "maxdd_h2": -0.0634
+   },
+   {
+    "unb": "n_unb_total",
+    "hole": "Linf",
+    "maxdd_h1": -0.0929,
+    "maxdd_h2": -0.1237
+   },
+   {
+    "unb": "n_unb_total",
+    "hole": "nH1",
+    "maxdd_h1": -0.2664,
+    "maxdd_h2": -0.057
+   },
+   {
+    "unb": "n_unb_total",
+    "hole": "meanP",
+    "maxdd_h1": -0.1221,
+    "maxdd_h2": -0.0829
+   },
+   {
+    "unb": "n_unb_total",
+    "hole": "entropy",
+    "maxdd_h1": -0.2137,
+    "maxdd_h2": -0.057
+   },
+   {
+    "unb": "n_unb_3",
+    "hole": "L1",
+    "maxdd_h1": -0.195,
+    "maxdd_h2": -0.0742
+   },
+   {
+    "unb": "n_unb_3",
+    "hole": "L2",
+    "maxdd_h1": -0.1947,
+    "maxdd_h2": -0.0911
+   },
+   {
+    "unb": "n_unb_3",
+    "hole": "Linf",
+    "maxdd_h1": -0.2022,
+    "maxdd_h2": -0.1303
+   },
+   {
+    "unb": "n_unb_3",
+    "hole": "nH1",
+    "maxdd_h1": -0.2181,
+    "maxdd_h2": -0.0791
+   },
+   {
+    "unb": "n_unb_3",
+    "hole": "meanP",
+    "maxdd_h1": -0.1474,
+    "maxdd_h2": -0.1384
+   },
+   {
+    "unb": "n_unb_3",
+    "hole": "entropy",
+    "maxdd_h1": -0.1675,
+    "maxdd_h2": -0.0927
+   },
+   {
+    "unb": "n_unb_4",
+    "hole": "L1",
+    "maxdd_h1": -0.2325,
+    "maxdd_h2": -0.1348
+   },
+   {
+    "unb": "n_unb_4",
+    "hole": "L2",
+    "maxdd_h1": -0.2701,
+    "maxdd_h2": -0.057
+   },
+   {
+    "unb": "n_unb_4",
+    "hole": "Linf",
+    "maxdd_h1": -0.2237,
+    "maxdd_h2": -0.0649
+   },
+   {
+    "unb": "n_unb_4",
+    "hole": "nH1",
+    "maxdd_h1": -0.226,
+    "maxdd_h2": -0.126
+   },
+   {
+    "unb": "n_unb_4",
+    "hole": "meanP",
+    "maxdd_h1": -0.3227,
+    "maxdd_h2": -0.0694
+   },
+   {
+    "unb": "n_unb_4",
+    "hole": "entropy",
+    "maxdd_h1": -0.2432,
+    "maxdd_h2": -0.1559
+   },
+   {
+    "unb": "n_unb_5plus",
+    "hole": "L1",
+    "maxdd_h1": -0.1608,
+    "maxdd_h2": -0.0893
+   },
+   {
+    "unb": "n_unb_5plus",
+    "hole": "L2",
+    "maxdd_h1": -0.1836,
+    "maxdd_h2": -0.1182
+   },
+   {
+    "unb": "n_unb_5plus",
+    "hole": "Linf",
+    "maxdd_h1": -0.0929,
+    "maxdd_h2": -0.1646
+   },
+   {
+    "unb": "n_unb_5plus",
+    "hole": "nH1",
+    "maxdd_h1": -0.2224,
+    "maxdd_h2": -0.0742
+   },
+   {
+    "unb": "n_unb_5plus",
+    "hole": "meanP",
+    "maxdd_h1": -0.1373,
+    "maxdd_h2": -0.1254
+   },
+   {
+    "unb": "n_unb_5plus",
+    "hole": "entropy",
+    "maxdd_h1": -0.1752,
+    "maxdd_h2": -0.0624
+   },
+   {
+    "unb": "weighted_unb",
+    "hole": "L1",
+    "maxdd_h1": -0.2021,
+    "maxdd_h2": -0.1315
+   },
+   {
+    "unb": "weighted_unb",
+    "hole": "L2",
+    "maxdd_h1": -0.2571,
+    "maxdd_h2": -0.1013
+   },
+   {
+    "unb": "weighted_unb",
+    "hole": "Linf",
+    "maxdd_h1": -0.1706,
+    "maxdd_h2": -0.0935
+   },
+   {
+    "unb": "weighted_unb",
+    "hole": "nH1",
+    "maxdd_h1": -0.2152,
+    "maxdd_h2": -0.1163
+   },
+   {
+    "unb": "weighted_unb",
+    "hole": "meanP",
+    "maxdd_h1": -0.2215,
+    "maxdd_h2": -0.1767
+   },
+   {
+    "unb": "weighted_unb",
+    "hole": "entropy",
+    "maxdd_h1": -0.2803,
+    "maxdd_h2": -0.1304
+   }
+  ]
+ },
+ "B_20y_single_indicators": {
+  "n_days": 5004,
+  "range": [
+   "2006-07-03",
+   "2026-05-22"
+  ],
+  "strategies": {
+   "e_div (差分)": {
+    "total_return": 4.0461,
+    "sharpe": 0.7045,
+    "max_drawdown": -0.2036,
+    "cash_pct": 0.4746
+   },
+   "n_unb だけ": {
+    "total_return": 2.026,
+    "sharpe": 0.4381,
+    "max_drawdown": -0.4481,
+    "cash_pct": 0.6011
+   },
+   "L1 だけ": {
+    "total_return": 0.9057,
+    "sharpe": 0.1964,
+    "max_drawdown": -0.5635,
+    "cash_pct": 0.495
+   },
+   "B&H": {
+    "total_return": 4.8378,
+    "sharpe": 0.4752,
+    "max_drawdown": -0.5678,
+    "cash_pct": 0.0
+   }
+  },
+  "poster_reference": {
+   "e_div (差分)": {
+    "maxdd": -20,
+    "sharpe": 0.76
+   },
+   "n_unb だけ": {
+    "maxdd": -45,
+    "sharpe": 0.47
+   },
+   "L1 だけ": {
+    "maxdd": -56,
+    "sharpe": 0.22
+   },
+   "B&H": {
+    "maxdd": -57,
+    "sharpe": 0.48
+   }
+  }
+ }
+}
