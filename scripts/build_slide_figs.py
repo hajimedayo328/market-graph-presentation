@@ -97,6 +97,76 @@ def fig_scatter_raw():
     print(f"slide_scatter_raw.png  (相関 r={r:.3f}, n={len(x)})")
 
 
+def fig_hole():
+    """3.1: 穴が現れて消える3コマ (点 → 穴 → 埋まった).
+
+    ポスター縮小に耐えるよう文字大きめ・横長 (縦を抑える) で描く。
+    """
+    from matplotlib.patches import Circle
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.6), dpi=150)
+    titles = ["① 点データ", "② 穴が現れる", "③ 穴が消える"]
+    radii = [0.0, 0.42, 0.74]
+    n = 22
+    theta = np.linspace(0, 2 * np.pi, n, endpoint=False)
+    ring = np.c_[np.cos(theta), np.sin(theta)]
+    for ax, title, br in zip(axes, titles, radii):
+        ax.set_title(title, fontsize=21, color=INK, pad=12)
+        if br > 0:
+            for (x, y) in ring:
+                ax.add_patch(Circle((x, y), br, color=ACCENT, alpha=0.12, ec="none"))
+        ax.scatter(ring[:, 0], ring[:, 1], s=30, c=INK, zorder=5)
+        if title == titles[1]:
+            ax.add_patch(Circle((0, 0), 0.55, fill=False, ec=RED, lw=3.4))
+            ax.text(0, 0, "穴", fontsize=34, color=RED, ha="center", va="center", weight="bold")
+        if title == titles[2]:
+            ax.text(0, 0, "埋まった", fontsize=19, color=MUTED, ha="center", va="center")
+        ax.set_xlim(-1.75, 1.75)
+        ax.set_ylim(-1.75, 1.75)
+        ax.set_aspect("equal")
+        ax.axis("off")
+    fig.text(0.5, 0.015, "「近い点どうしを結ぶ基準」を大きくしていく →",
+             fontsize=18, color=MUTED, ha="center")
+    fig.tight_layout(rect=[0, 0.06, 1, 1])
+    fig.savefig(FIGS / "slide_hole.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print("slide_hole.png")
+
+
+def fig_lifetime():
+    """3.1: 穴の寿命バー (本物=長い青, ノイズ=短い灰). 文字大きめ."""
+    fig, ax = plt.subplots(figsize=(11.5, 5.0), dpi=150)
+    # (start, length, is_real)
+    bars = [
+        (0.04, 0.62, True),
+        (0.10, 0.42, True),
+        (0.13, 0.06, False),
+        (0.19, 0.07, False),
+        (0.27, 0.07, False),
+        (0.33, 0.05, False),
+        (0.40, 0.05, False),
+    ]
+    y = len(bars)
+    for (s, ln, real) in bars:
+        y -= 1
+        c = ACCENT if real else "#9aa0a8"
+        h = 0.44 if real else 0.30
+        ax.barh(y, ln, left=s, height=h, color=c)
+    ax.text(0.70, len(bars) - 1, "← 本物の穴（長く残る＝市場の構造）",
+            fontsize=20, color=ACCENT, va="center", weight="bold")
+    ax.text(0.46, len(bars) - 5, "← ノイズ（すぐ消える）",
+            fontsize=18, color=MUTED, va="center")
+    ax.annotate("", xy=(1.02, -0.7), xytext=(0.0, -0.7),
+                arrowprops=dict(arrowstyle="->", color=INK, lw=2.2))
+    ax.text(0.5, -1.15, "結ぶ基準を大きくする →", fontsize=18, color=INK, ha="center")
+    ax.set_xlim(-0.02, 1.4)
+    ax.set_ylim(-1.6, len(bars))
+    ax.axis("off")
+    fig.tight_layout()
+    fig.savefig(FIGS / "slide_lifetime.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print("slide_lifetime.png")
+
+
 def fig_equity():
     """発見③: 暴落で戦略の方が浅い (ただ持つ vs 矛盾の日に避ける)."""
     d = json.load(open(DATA / "backtest_v2_results.json", encoding="utf-8"))
