@@ -1,5 +1,5 @@
 % !TEX program = xelatex
-% A0 縦ポスター — JSIAM 2026（再構成版：1-2紹介 / 3統合 / 4結果 / 今後・参考文献拡大）
+% A0 縦ポスター — JSIAM 2026（再構成v2：フォント拡大・先行研究結論・式復活・寿命グラフ）
 \documentclass[25pt, a0paper, portrait,
                margin=15mm, innermargin=8mm,
                blockverticalspace=5mm, colspace=8mm]{tikzposter}
@@ -48,19 +48,28 @@
 \block{\bt{1.}動機と問い}{%
 株価そのものを\textbf{予測}するのではなく、
 危険な局面で株を避けて\textbf{\color{accent}下落を回避}できないか。
-そのために、市場の``つながりの形''から\textbf{2つの指標}を作る。
+市場の``つながりの形''から\textbf{2つの指標}を作って調べる。
+
+\vspace{2mm}
+\textbf{先行研究の到達点}:
+\begin{itemize}
+\setlength{\itemsep}{1mm}
+\item \textbf{Mantegna (1999)}：相関を距離に変換し、市場を\textbf{ネットワーク}として捉える基礎を作った
+\item \textbf{Gidea (2017)}：ネットワークの\textbf{``形''の変化}から危機を捉えられると示した
+\item \textbf{Ferreira ら (2021)}：ネットワークの\textbf{``符号''の崩れ}を株式市場で検出した
+\end{itemize}
+だが\textbf{``形''と``符号''を同時に扱い、両者の関係を調べた研究はない}。
 
 \vspace{2mm}
 \textbf{本研究の問い}:
 \begin{itemize}
-\setlength{\itemsep}{1.5mm}
+\setlength{\itemsep}{1mm}
 \item この\textbf{2つの指標は、たがいに独立}か？
-\item その2つを\textbf{組み合わせると、下落を回避}できるか？
+\item その2つを\textbf{組み合わせると下落を回避}できるか？
 \end{itemize}
 
 \vspace{2mm}
-{\color{muted}\small
-\textbf{用語}: \textbf{日次リターン}＝1日の値動き（前日比の変化率）。
+{\color{muted}\textbf{用語}：\textbf{日次リターン}＝1日の値動き（前日比の変化率）。
 \textbf{相関}＝2銘柄の値動きの似方（$+1$＝完全に同調、$0$＝無関係、$-1$＝完全に逆）。}
 }
 
@@ -70,30 +79,34 @@
 
 \vspace{2mm}
 \centering
-\includegraphics[width=0.72\linewidth]{../../figs/slide_network.png}\\
-{\color{muted}\footnotesize 青＝正の相関・赤破線＝負の相関（40銘柄の相関ネットワーク）}
+\includegraphics[width=0.78\linewidth]{../../figs/slide_network.png}\\
+{\color{muted}\small 青＝正の相関・赤破線＝負の相関（40銘柄の相関ネットワーク）}
 
 \vspace{2mm}
 \raggedright
-このネットワークの``形''と``符号''から、次の2つの指標を取り出す（3.1・3.2）。
+このネットワークの\textbf{``形''}と\textbf{``符号''}から2つの指標を取り出す（3.1・3.2）。
 }
 
 \block{\bt{3.1}指標1：穴の持続期間}{%
-ネットワーク上の点を、近いものから順に結んでいく。
-その基準を上げると、\textbf{``輪（穴）''が現れ、やがて埋まって消える}。
+点を近いものから順に結ぶ基準を上げると、\textbf{``輪（穴）''が現れ、やがて消える}。
 
-\vspace{2mm}
+\vspace{1mm}
 \centering
 \includegraphics[width=\linewidth]{../../figs/slide_hole.png}
 
 \vspace{1mm}
+各穴の\textbf{寿命}（消える基準 $-$ 現れる基準）を測る:
+
+\vspace{1mm}
+\includegraphics[width=\linewidth]{../../figs/slide_lifetime.png}
+
+\vspace{1mm}
 \raggedright
-\begin{itemize}
-\setlength{\itemsep}{1mm}
-\item \textbf{\color{accent}長く残る穴＝本物の構造}（市場のまとまり）
-\item すぐ消える穴＝ノイズ
-\end{itemize}
-指標 $L^1$ ＝ すべての穴の\textbf{持続期間（消える基準 $-$ 現れる基準）の合計}。
+指標 $L^1$ ＝ すべての穴の寿命の合計:
+\[
+L^1 = \sum_{k}(d_k - b_k)
+\quad{\small (b_k\text{＝現れる基準},\ d_k\text{＝消える基準})}
+\]
 }
 
 % ================= 中列 =================
@@ -105,43 +118,45 @@
 
 \vspace{2mm}
 \centering
-\includegraphics[width=0.9\linewidth]{../../figs/slide_balance.png}
+\includegraphics[width=0.95\linewidth]{../../figs/slide_balance.png}
 
 \vspace{1mm}
 \raggedright
 \begin{itemize}
 \setlength{\itemsep}{1mm}
 \item かけ算が $+$：つじつまが合う（整合）
-\item かけ算が $-$：どこかで関係がねじれている（\textbf{\color{warn}矛盾}）
+\item かけ算が $-$：関係がねじれている（\textbf{\color{warn}矛盾}）
 \end{itemize}
-指標 $\nunb$ ＝ \textbf{矛盾している輪の個数}。
+負の線が奇数個の輪が矛盾。指標 $\nunb$ はその個数:
+\[
+\prod_{\text{線}\in C}\mathrm{sign}(r) = -1 \Rightarrow \text{矛盾},\quad
+\nunb = (\text{矛盾の輪の個数})
+\]
 }
 
 \block{\bt{3.3}2つは独立か}{%
-指標1（穴）と指標2（矛盾）は、同じネットワークから作るのに、
-\textbf{たがいにどれくらい連動するか}を相関で測った。
+指標1（穴）と指標2（矛盾）が、たがいにどれくらい似て動くかを相関で測った:
 
 \vspace{2mm}
 \centering
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{lcl}
 \toprule
-{\bfseries データ期間} & {\bfseries 相関} & {\bfseries }\\
+{\bfseries データ期間} & {\bfseries 相関} & \\
 \midrule
-短期（5年）  & 0.15 & \color{accent}\textbf{ほぼ独立}\\
-中期（10年） & 0.19 & ほぼ独立\\
-中期（15年） & 0.26 & 弱い連動\\
-長期（20年） & \textbf{0.40} & {\color{warn}\textbf{連動}}\\
+5年  & 0.15 & \color{accent}\textbf{ほぼ独立}\\
+10年 & 0.19 & ほぼ独立\\
+15年 & 0.26 & 弱い相関\\
+20年 & \textbf{0.40} & {\color{warn}\textbf{独立でない}}\\
 \bottomrule
 \end{tabular}
 
 \vspace{2mm}
 \raggedright
-\textbf{短期と長期で対照的}:
 \begin{itemize}
 \setlength{\itemsep}{1mm}
-\item \textbf{短期}：2指標はばらばらに動く＝\textbf{\color{accent}独立}（別々の情報）
-\item \textbf{長期}：危機（2008・2020等）を多く含み、穴も矛盾も同時に跳ねて\textbf{\color{warn}連動}
+\item \textbf{短期}：2指標はばらばらに動き\textbf{\color{accent}独立}（別々の情報を持つ）
+\item \textbf{長期}：危機（2008・2020等）を多く含み、両指標が同時に跳ねて\textbf{\color{warn}相関が上がる}
 \end{itemize}
 }
 
@@ -150,17 +165,20 @@
 \[
 z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \]
-{\color{muted}\small mean・sd＝その日\textbf{まで}の平均・標準偏差（未来は見ない）。$z$＝過去平均から標準偏差いくつ分外れたか。}
+{\color{muted}\small mean・sd＝その日\textbf{まで}の平均・標準偏差（未来は見ない）。}
 
-\vspace{2mm}
-2つを組み合わせた指標:
+\vspace{1mm}
+差分をとった指標:
 \[
 \boxed{\ediv = z(\nunb) - z(L^1)}
 \]
 \begin{itemize}
-\setlength{\itemsep}{1mm}
-\item \textbf{\color{warn}$\ediv > 0$}：矛盾が穴を上回る＝\textbf{危険サイン} → 株を避ける
-\item \textbf{$\ediv < 0$}：穴が矛盾を上回る＝平常 → 株を持つ
+\setlength{\itemsep}{1.5mm}
+\item \textbf{\color{warn}$\ediv > 0$（危険サイン）}：矛盾が穴を上回る＝
+市場の関係が\textbf{ねじれ始めている}。まとまり（正相関の群れ）が崩れ、
+今まで一緒に動いた銘柄が逆に動く。\textbf{\color{warn}秩序の崩壊の兆し} → 株を避ける
+\item \textbf{$\ediv < 0$（平常）}：穴が矛盾を上回る＝
+関係のねじれが少なく、\textbf{まとまりが保たれている} → 株を持つ
 \end{itemize}
 }
 
@@ -173,7 +191,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 
 \vspace{2mm}
 \centering
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{lcc}
 \toprule
 {\bfseries 使う指標} & {\bfseries 最大下落} & {\bfseries シャープ比}\\
@@ -201,22 +219,22 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 
 \vspace{2mm}
 \centering
-\includegraphics[width=0.9\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
-{\color{muted}\footnotesize \$10{,}000 を5年運用した模擬売買（S\&P 500、取引コスト込み）}
+\includegraphics[width=0.92\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
+{\color{muted}\small \$10{,}000 を5年運用した模擬売買（S\&P 500、取引コスト込み）}
 
 \vspace{1mm}
 \raggedright
 \begin{itemize}
 \setlength{\itemsep}{1mm}
 \item \textbf{最大下落が $-25\%\to-17\%$} に浅くなる
-\item 20年・16回の検証でも最大下落は\textbf{ランダム回避の上位1\%}
+\item 20年・16回の検証でも\textbf{ランダム回避の上位1\%}
 \item ただし\textbf{リターンは持ち続けに劣る}（下落回避に特化）
 \end{itemize}
 }
 
 \block{\bt{}今後の取り組み}{%
 \begin{itemize}
-\setlength{\itemsep}{1.5mm}
+\setlength{\itemsep}{2mm}
 \item \textbf{他市場での再現}（欧州・アジア・暗号資産）で一般性を確かめる
 \item \textbf{なぜ差分が効くのか}の理論的な解明（現状は経験的な発見）
 \item 位相と符号を統一的に扱う\textbf{数理の枠組み}（コホモロジー等）
@@ -253,7 +271,7 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \begin{minipage}[t]{0.18\linewidth}
 \centering
 \textbf{\large GitHub}\\[1mm]
-{\color{muted}\footnotesize 全コード・データ公開}\\[2mm]
+{\color{muted}\small 全コード・データ公開}\\[2mm]
 \qrcode[height=34mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[2mm]
 {\color{muted}\scriptsize 生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
 \end{minipage}
