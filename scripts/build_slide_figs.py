@@ -70,6 +70,33 @@ def fig_scatter():
     print(f"slide_scatter.png  (相関 r={r:.3f}, n={m.sum()})")
 
 
+def fig_scatter_raw():
+    """3.3 独立性: 穴 L1 と 矛盾 n_unb の生値散布図 (相関 0.15 = 独立).
+
+    ポスターに縮小配置されるため、軸ラベル/凡例/目盛りを大きめに描く。
+    """
+    df = pd.read_csv(DATA / "gamma_timeseries_w30.csv").dropna(subset=["L1_H1", "n_unb"])
+    x, y = df["L1_H1"].values, df["n_unb"].values
+    r = float(np.corrcoef(x, y)[0, 1])
+    a, b = np.polyfit(x, y, 1)
+    xs = np.linspace(x.min(), x.max(), 100)
+
+    fig, ax = plt.subplots(figsize=(7.4, 5.6), dpi=150)
+    ax.scatter(x, y, s=16, c=ACCENT, alpha=0.30, edgecolors="none", label="日次のデータ点")
+    ax.plot(xs, a * xs + b, color=RED, lw=3.4, ls="--", label=f"回帰直線（相関 r={r:.2f}）")
+    style_ax(ax)
+    ax.tick_params(labelsize=17)
+    ax.set_xlabel("穴の指標 $L^1$（0〜2くらい）", fontsize=21, color=INK)
+    ax.set_ylabel("矛盾の数 $n_{unb}$（0〜80くらい）", fontsize=21, color=INK)
+    ax.legend(loc="upper left", fontsize=18, frameon=True, framealpha=0.95, edgecolor="#cccccc")
+    ax.set_title("穴 と 矛盾 は バラけている ＝ 連動しない（独立）",
+                 fontsize=21, color=INK, weight="bold", pad=12)
+    fig.tight_layout()
+    fig.savefig(FIGS / "slide_scatter_raw.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print(f"slide_scatter_raw.png  (相関 r={r:.3f}, n={len(x)})")
+
+
 def fig_equity():
     """発見③: 暴落で戦略の方が浅い (ただ持つ vs 矛盾の日に避ける)."""
     d = json.load(open(DATA / "backtest_v2_results.json", encoding="utf-8"))
@@ -167,14 +194,13 @@ def fig_network():
     nx.draw_networkx_edges(G, pos, edgelist=neg_edges, edge_color="#f0b3b3", width=1.4,
                            style="dashed", ax=ax)
     nx.draw_networkx_nodes(G, pos, node_color=INK, node_size=260, ax=ax)
-    nx.draw_networkx_labels(G, pos, font_size=7, font_color="white", ax=ax)
     from matplotlib.lines import Line2D
     legend_elements = [
-        Line2D([0], [0], marker='o', color='w', markerfacecolor=INK, markersize=13, label='点 ＝ 銘柄'),
-        Line2D([0], [0], color='#9fc0f5', lw=3, label='実線 ＝ 正の相関'),
-        Line2D([0], [0], color='#f0b3b3', lw=3, ls='--', label='破線 ＝ 負の相関'),
+        Line2D([0], [0], marker='o', color='w', markerfacecolor=INK, markersize=15, label='点 ＝ 銘柄'),
+        Line2D([0], [0], color='#9fc0f5', lw=3.5, label='実線 ＝ 正の相関'),
+        Line2D([0], [0], color='#f0b3b3', lw=3.5, ls='--', label='破線 ＝ 負の相関'),
     ]
-    ax.legend(handles=legend_elements, loc='upper right', fontsize=14,
+    ax.legend(handles=legend_elements, loc='upper right', fontsize=18,
               frameon=True, framealpha=0.95, edgecolor='#cccccc')
     ax.axis("off")
     fig.tight_layout()
