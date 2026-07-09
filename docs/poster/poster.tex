@@ -1,8 +1,8 @@
 % !TEX program = xelatex
-% A0 縦ポスター — JSIAM 2026（全面改訂：縦読み・日本語統一・参考文献）
+% A0 縦ポスター — JSIAM 2026（再構成版：1-2紹介 / 3統合 / 4結果 / 今後・参考文献拡大）
 \documentclass[25pt, a0paper, portrait,
                margin=15mm, innermargin=8mm,
-               blockverticalspace=2mm, colspace=8mm]{tikzposter}
+               blockverticalspace=5mm, colspace=8mm]{tikzposter}
 
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx}
@@ -29,267 +29,233 @@
 
 \newcommand{\ediv}{e_{\mathrm{div}}}
 \newcommand{\nunb}{n_{\mathrm{unb}}}
-\newcommand{\bnum}[1]{{\color{accent}\textbf{#1.}}\ }
+\newcommand{\bt}[1]{{\color{accent}\textbf{#1}}\ }
 
-% tikzposter 右下ロゴを消す
 \tikzposterlatexaffectionproofoff
 
 \title{金融市場の相関ネットワークの位相解析}
-\author{赤塩 甫　東京都市大学 メディア情報学部 情報システム学科 賈研究室}
+\author{赤塩 甫\quad 東京都市大学 賈研究室\quad{\normalsize 指導：賈 伊陽}}
 \institute{}
 
 \begin{document}
-
 \maketitle
 
 \begin{columns}
 
-% ================= 左列（縦に 1→2→3）=================
+% ================= 左列 =================
 \column{0.333}
 
-\block{\bnum{1}動機と問題設定}{%
-\textbf{\color{accent}株価を「予測」するのではなく、危険な局面で株を避けて「下落を回避」できるか。}
-本研究の目的はこれである。
+\block{\bt{1.}動機と問い}{%
+株価そのものを\textbf{予測}するのではなく、
+危険な局面で株を避けて\textbf{\color{accent}下落を回避}できないか。
+そのために、市場の``つながりの形''から\textbf{2つの指標}を作る。
 
 \vspace{2mm}
-先行研究の到達点:
+\textbf{本研究の問い}:
 \begin{itemize}
-\setlength{\itemsep}{1mm}
-\item \textbf{Mantegna (1999)} — 相関を距離 $d=\sqrt{2(1-r)}$ に変換し、市場を\textbf{ネットワーク}として捉える基礎を築いた。
-\item \textbf{Gidea (2017)} — 相関ネットワークに持続ホモロジーを適用し、構造の``穴''が\textbf{危機の前に変化する}と示した（＝``穴''の金融応用）。
-\item \textbf{Ferreira ら (2021)} — 符号付き株式ネットワークで\textbf{バランスの崩れ}を検出（＝``矛盾''の金融応用）。
+\setlength{\itemsep}{1.5mm}
+\item この\textbf{2つの指標は、たがいに独立}か？
+\item その2つを\textbf{組み合わせると、下落を回避}できるか？
 \end{itemize}
 
-\vspace{1mm}
-\textbf{\color{accent}未解決}: ``穴''と``矛盾''は\textbf{個別には金融に応用}されたが、
-\textbf{両者を同じネットワークで同時に扱い、その関係（独立性）を検証した研究はない}。
-
 \vspace{2mm}
-\textbf{本研究の問い}: 40銘柄の日次相関ネットワークから2指標を同時に測り、その独立性と下落回避への有効性を検証する。
-
-\vspace{2mm}
-{\color{muted}\small データ: Yahoo Finance (yfinance) から40銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値。}
+{\color{muted}\small
+\textbf{用語}: \textbf{日次リターン}＝1日の値動き（前日比の変化率）。
+\textbf{相関}＝2銘柄の値動きの似方（$+1$＝完全に同調、$0$＝無関係、$-1$＝完全に逆）。}
 }
 
-\block{\bnum{2}手法：相関ネットワークを作る}{%
-40銘柄の日次リターンの相関 $r$ を距離 $d=\sqrt{2(1-r)}$ に変換し（Mantegna 1999）、
-似た動きの銘柄を近くに置く。
+\block{\bt{2.}相関ネットワーク}{%
+40銘柄を\textbf{点}、値動きが\textbf{類似した}銘柄どうしを\textbf{線}で結ぶ。
+相関 $r$ を距離 $d=\sqrt{2(1-r)}$ に変換し、類似した銘柄を近くに配置する。
 
-\vspace{1mm}
+\vspace{2mm}
 \centering
-\includegraphics[width=0.66\linewidth]{../../figs/slide_network.png}\\
-{\color{muted}\footnotesize 青=正相関・赤破線=負相関（40銘柄の相関ネットワーク）}
+\includegraphics[width=0.72\linewidth]{../../figs/slide_network.png}\\
+{\color{muted}\footnotesize 青＝正の相関・赤破線＝負の相関（40銘柄の相関ネットワーク）}
 
 \vspace{2mm}
 \raggedright
-このネットワークから\textbf{2つの指標}（穴の持続期間 $L^1$・矛盾の数 $\nunb$）を取り出し、
-\textbf{標準化 $z$} で同じ物差しに揃える（$x_t$ ＝ 各指標のその日の値）:
-\[
-z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
-\quad(\text{過去データのみ＝先読み防止})
-\]
-{\color{muted}\small $\mathrm{mean}(x_{\le t})$＝その日までの平均、$\mathrm{sd}(x_{\le t})$＝その日までの標準偏差（ばらつき）。$z$ は「今日の値が過去平均から\textbf{標準偏差いくつ分}外れたか」。}
-
-\vspace{1mm}
-組み合わせて $\ediv = z(\nunb) - z(L^1)$（→ 指標6）。
+このネットワークの``形''と``符号''から、次の2つの指標を取り出す（3.1・3.2）。
 }
 
-\block{\bnum{3}指標1：穴の持続期間}{%
-点（銘柄）を距離が近い順に結んでいく。しきい値 $\epsilon$ を 0 から上げると、
-``輪（穴）''が\textbf{生まれ、やがて埋まって消える}（Vietoris--Rips フィルトレーション）。
+\block{\bt{3.1}指標1：穴の持続期間}{%
+ネットワーク上の点を、近いものから順に結んでいく。
+その基準を上げると、\textbf{``輪（穴）''が現れ、やがて埋まって消える}。
 
-\vspace{1mm}
+\vspace{2mm}
 \centering
-\includegraphics[width=0.92\linewidth]{../../figs/slide_persistence.png}
+\includegraphics[width=\linewidth]{../../figs/slide_hole.png}
 
 \vspace{1mm}
 \raggedright
-各穴の誕生 $b_k$（生まれる $\epsilon$）・消滅 $d_k$（埋まる $\epsilon$）を
-\textbf{持続図} $\mathrm{Dgm}(H_1)$ に記録する（$H_1$ ＝ 1次元の穴＝``輪''の情報）。
-\textbf{\color{accent}持続期間 $d_k-b_k$ が長い穴＝本物の構造}、すぐ消える短い穴はノイズ。
-全ての穴の持続期間の総和が、その日の指標:
-\[
-L^1 = \sum_{(b_k,d_k)\,\in\,\mathrm{Dgm}(H_1)} (d_k - b_k)
-\]
+\begin{itemize}
+\setlength{\itemsep}{1mm}
+\item \textbf{\color{accent}長く残る穴＝本物の構造}（市場のまとまり）
+\item すぐ消える穴＝ノイズ
+\end{itemize}
+指標 $L^1$ ＝ すべての穴の\textbf{持続期間（消える基準 $-$ 現れる基準）の合計}。
 }
 
-% ================= 中列（縦に 4→5→6）=================
+% ================= 中列 =================
 \column{0.333}
 
-\block{\bnum{4}指標2：矛盾の数}{%
-各辺に\textbf{符号} $\mathrm{sign}(r)$ を付ける（相関 $r>0$ なら $+1$、$r<0$ なら $-1$）。
-ネットワーク上の輪（サイクル）$C$ を一周し、符号の積を見る:
-
-\vspace{1mm}
-\centering
-\includegraphics[width=0.88\linewidth]{../../figs/slide_balance.png}
-
-\vspace{1mm}
-\raggedright
-一周して\textbf{\color{warn}符号の積が $-1$}（負の辺が奇数個）になるサイクルが``矛盾''（Cartwright--Harary 1956）。その個数が指標:
-\[
-\prod_{\text{辺}\in C}\mathrm{sign}(r) = -1 \;\Rightarrow\; \text{そのサイクルは矛盾}
-\]
-\[
-\nunb = \text{矛盾サイクルの個数}
-\]
-}
-
-\block{\bnum{5}独立性 — 短期は成立、長期で崩れる}{%
-穴 $L^1$ と矛盾 $\nunb$ は同じネットワークから出るのに、
-短期では\textbf{ばらばらに動く}（下図、5年で相関 $0.15$）:
-
-\vspace{1mm}
-\centering
-\includegraphics[width=0.68\linewidth]{../../figs/slide_scatter.png}
-
-\vspace{1mm}
-\raggedright
-だが\textbf{データ期間を伸ばすと相関は上がる}:
+\block{\bt{3.2}指標2：矛盾の数}{%
+各線に\textbf{符号}を付ける（正の相関＝$+$、負の相関＝$-$）。
+輪を一周して\textbf{符号をかけ合わせる}。
 
 \vspace{2mm}
 \centering
-\renewcommand{\arraystretch}{1.2}
+\includegraphics[width=0.9\linewidth]{../../figs/slide_balance.png}
+
+\vspace{1mm}
+\raggedright
+\begin{itemize}
+\setlength{\itemsep}{1mm}
+\item かけ算が $+$：つじつまが合う（整合）
+\item かけ算が $-$：どこかで関係がねじれている（\textbf{\color{warn}矛盾}）
+\end{itemize}
+指標 $\nunb$ ＝ \textbf{矛盾している輪の個数}。
+}
+
+\block{\bt{3.3}2つは独立か}{%
+指標1（穴）と指標2（矛盾）は、同じネットワークから作るのに、
+\textbf{たがいにどれくらい連動するか}を相関で測った。
+
+\vspace{2mm}
+\centering
+\renewcommand{\arraystretch}{1.25}
 \begin{tabular}{lcl}
 \toprule
-{\bfseries 期間} & {\bfseries 相関} & {\bfseries 判定}\\
+{\bfseries データ期間} & {\bfseries 相関} & {\bfseries }\\
 \midrule
-5年  & 0.15 & ほぼ独立\\
-10年 & 0.19 & ほぼ独立\\
-15年 & 0.26 & 弱い相関\\
-20年 & \textbf{0.40} & {\color{warn}\textbf{独立でない}}\\
+短期（5年）  & 0.15 & \color{accent}\textbf{ほぼ独立}\\
+中期（10年） & 0.19 & ほぼ独立\\
+中期（15年） & 0.26 & 弱い連動\\
+長期（20年） & \textbf{0.40} & {\color{warn}\textbf{連動}}\\
 \bottomrule
 \end{tabular}
 
 \vspace{2mm}
 \raggedright
-\textbf{\color{warn}正直な開示}: 期間を伸ばすほど相関は上がり、\textbf{20年では独立とは言えない}。
-
-\vspace{1mm}
-\textbf{なぜ長期で連動するか（推察）}: 危機では相関構造が\textbf{一斉に組み替わり}、
-穴（連結の乱れ）と矛盾（符号のねじれ）が\textbf{共に急増}する。
-長期データはこの危機を多く含むため、両者が連動して見える。「独立」は\textbf{平常時・短期の近似}。
+\textbf{短期と長期で対照的}:
+\begin{itemize}
+\setlength{\itemsep}{1mm}
+\item \textbf{短期}：2指標はばらばらに動く＝\textbf{\color{accent}独立}（別々の情報）
+\item \textbf{長期}：危機（2008・2020等）を多く含み、穴も矛盾も同時に跳ねて\textbf{\color{warn}連動}
+\end{itemize}
 }
 
-\block{\bnum{6}組み合わせ指標 $\ediv$}{%
-2指標を同じ物差しに揃えて差を取る:
+\block{\bt{3.4}2指標の統合：$\ediv$}{%
+2指標を同じ物差しに揃える\textbf{標準化 $z$}（$x_t$＝各指標のその日の値）:
 \[
-\ediv(t) = z(\nunb) - z(L^1)
+z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \]
-\textbf{矛盾だけが穴を超えて突出した日} $\Rightarrow$ 危険サイン。
+{\color{muted}\small mean・sd＝その日\textbf{まで}の平均・標準偏差（未来は見ない）。$z$＝過去平均から標準偏差いくつ分外れたか。}
 
-\vspace{1mm}
-\textbf{その意味}: 矛盾（符号のねじれ）が増えるのは、
-\textbf{\color{accent}市場のグループ構造が崩れ始めている}こと（Ferreira 2021）。
-平常時は業種などでまとまり内は同調・外とは逆、という``バランス''が保たれるが、
-一緒に動いていた銘柄の関係が組み替わると矛盾が増える。
-$\ediv$ は、この\textbf{関係の乱れ（矛盾）が全体の連結の乱れ（穴）を超えて先行}した状態を捉える。
-
-\vspace{1mm}
-バックテストでは $\ediv$ が\textbf{上位20\%の日に株を売って現金化}（＝危ない局面を避ける）。予測ではなく\textbf{回避}の指標。
+\vspace{2mm}
+2つを組み合わせた指標:
+\[
+\boxed{\ediv = z(\nunb) - z(L^1)}
+\]
+\begin{itemize}
+\setlength{\itemsep}{1mm}
+\item \textbf{\color{warn}$\ediv > 0$}：矛盾が穴を上回る＝\textbf{危険サイン} → 株を避ける
+\item \textbf{$\ediv < 0$}：穴が矛盾を上回る＝平常 → 株を持つ
+\end{itemize}
 }
 
-% ================= 右列（縦に 7→8→9）=================
+% ================= 右列 =================
 \column{0.333}
 
-\block{\bnum{7}なぜ「差分」か — 単独では効かない}{%
-同じしきい値（上位20\%で回避）で株を避けたときの\textbf{最大下落}（20年）:
+\block{\bt{3.5}なぜ「差分」なのか}{%
+片方だけでは効かない。同じ条件（危険サインの日に株を避ける）で
+20年運用したときの\textbf{最大下落}:
 
 \vspace{2mm}
 \centering
-\renewcommand{\arraystretch}{1.2}
+\renewcommand{\arraystretch}{1.25}
 \begin{tabular}{lcc}
 \toprule
-{\bfseries 指標} & {\bfseries 最大下落} & {\bfseries シャープ比}\\
+{\bfseries 使う指標} & {\bfseries 最大下落} & {\bfseries シャープ比}\\
 \midrule
-\textbf{$\ediv$ 差分} & {\color{accent}\textbf{$-20\%$}} & {\color{accent}\textbf{0.76}}\\
-矛盾 $\nunb$ 単独 & $-45\%$ & 0.47\\
-穴 $L^1$ 単独 & $-56\%$ & 0.22\\
-持ち続け & $-57\%$ & 0.48\\
+\textbf{$\ediv$（差分）} & {\color{accent}\textbf{$-20\%$}} & {\color{accent}\textbf{0.76}}\\
+矛盾 $\nunb$ だけ & $-45\%$ & 0.47\\
+穴 $L^1$ だけ & $-56\%$ & 0.22\\
+何もしない & $-57\%$ & 0.48\\
 \bottomrule
 \end{tabular}
 
 \vspace{2mm}
 \raggedright
-\textbf{単独では下落を防げない}（穴だけ・矛盾だけでは持ち続けと大差なし）。
-\textbf{\color{accent}差分にして初めて $-20\%$ に激変}。
-機序: $\ediv$ が高い日は矛盾が穴を超えて突出し、穴を基準に矛盾の``純粋な超過''を取り出す。
+\begin{itemize}
+\setlength{\itemsep}{1mm}
+\item 片方だけでは\textbf{何もしないのと大差なし}
+\item \textbf{\color{accent}差分にして初めて $-20\%$ に激変}
+\end{itemize}
+穴を基準に、矛盾の``純粋な超過''を取り出すのが差分の役割。
 }
 
-\block{\bnum{8}結果1：下落を浅くする}{%
+\block{\bt{4.}結果：下落を回避できた}{%
+$\ediv>0$ の日に株を売って現金化する戦略を、
+\textbf{シミュレーション（過去データでの模擬売買）}で検証:
+
+\vspace{2mm}
 \centering
 \includegraphics[width=0.9\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
-{\color{muted}\footnotesize \$10{,}000 を5年運用したバックテスト（S\&P 500、取引コスト込み）}
+{\color{muted}\footnotesize \$10{,}000 を5年運用した模擬売買（S\&P 500、取引コスト込み）}
 
 \vspace{1mm}
 \raggedright
-$\ediv$ 突出日に株を避けると、\textbf{最大下落が $-25\%\to-17\%$} に浅くなる。
-20年の期間外検証（16回）でも最大下落は\textbf{ランダム回避1000本の上位1\%}。\\
-{\color{muted}\small ただしリターンは持ち続けに劣り、シャープ比の優位は期間外では消える（下落回避のみが残る）。}
+\begin{itemize}
+\setlength{\itemsep}{1mm}
+\item \textbf{最大下落が $-25\%\to-17\%$} に浅くなる
+\item 20年・16回の検証でも最大下落は\textbf{ランダム回避の上位1\%}
+\item ただし\textbf{リターンは持ち続けに劣る}（下落回避に特化）
+\end{itemize}
 }
 
-\block{\bnum{9}結果2：主因は天然ガス}{%
-\centering
-\includegraphics[width=0.84\linewidth]{../../figs/slide_source.png}\\[1mm]
-{\color{muted}\footnotesize 4つの危機で銘柄を1つずつ抜いた寄与度}
-
-\vspace{1mm}
-\raggedright
-4つの独立な危機（米関税2025・円キャリー2024・中東2023・ウクライナ2022）で
-銘柄を1つずつ抜くと、\textbf{\color{accent}天然ガスが 4/4 で寄与最大}。
-銅・中国株が 3/4 で続く。米国株は 1/4 以下。
-}
-
-\block{この研究を1枚で — 全体の流れ}{%
-\centering
-\includegraphics[width=0.72\linewidth]{../../figs/slide_flow.png}
+\block{\bt{}今後の取り組み}{%
+\begin{itemize}
+\setlength{\itemsep}{1.5mm}
+\item \textbf{他市場での再現}（欧州・アジア・暗号資産）で一般性を確かめる
+\item \textbf{なぜ差分が効くのか}の理論的な解明（現状は経験的な発見）
+\item 位相と符号を統一的に扱う\textbf{数理の枠組み}（コホモロジー等）
+\item 暴落の\textbf{予知}への拡張（現状は初動の検知にとどまる）
+\end{itemize}
 }
 
 \end{columns}
 
-% ================= フッタ：検証設計・結論・参考文献・QR =================
+% ================= フッタ：参考文献・検証設計 =================
 \block{}{%
-\footnotesize
-\begin{minipage}[t]{0.30\linewidth}
-\textbf{\large 検証設計}
-
-\begin{itemize}
-\item \textbf{前進検証}: 3年学習/1年テストを20年で16回。しきい値も$z$も学習期間のみから決定（先読み排除）
-\item \textbf{ランダム回避との比較}: 同頻度で無作為に回避する1000本より最大下落が浅い（上位1\%）
-\item \textbf{因果の向き}: 政策ショック $\to \ediv$ の一方向の関連（グレンジャー因果 $p=0.02$、逆向きは非有意）
-\end{itemize}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.30\linewidth}
-\textbf{\large 結論と限界}
-
-\textbf{結論}: 同じ相関ネットワークから\textbf{\color{accent}短期ではほぼ独立な2指標}（穴・矛盾）を同時に抽出でき、その差分 $\ediv$ は20年の期間外検証で\textbf{下落の浅さに限り}頑健な優位を保つ。
-
-\vspace{1mm}
-\textbf{限界}:
-\begin{itemize}
-\item 独立性は期間依存（20年で相関0.40）
-\item 予測でなく初動検知（急落の入口は捉えられない）
-\item シャープ比の優位は期間外で消える
-\item 差分が効く機序は未解明（危機期間の識別による）
-\end{itemize}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.36\linewidth}
+\begin{minipage}[t]{0.48\linewidth}
 \textbf{\large 参考文献}
-
-\begin{enumerate}\setlength{\itemsep}{0.5mm}
+\small
+\begin{enumerate}\setlength{\itemsep}{1mm}
 \item R. N. Mantegna (1999). Hierarchical structure in financial markets. \textit{Eur. Phys. J. B} \textbf{11}, 193--197.
 \item M. Gidea (2017). Topology Data Analysis of Critical Transitions in Financial Networks. \textit{NetSci-X 2017}, Springer, 47--59.
 \item E. Ferreira ら (2021). Loss of structural balance in stock markets. \textit{Scientific Reports} \textbf{11}.
 \item D. Cartwright \& F. Harary (1956). Structural balance. \textit{Psychol. Rev.} \textbf{63}, 277--293.
 \end{enumerate}
-
-\vspace{1mm}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.30\linewidth}
+\textbf{\large 検証設計}
+\small
+\begin{itemize}\setlength{\itemsep}{1mm}
+\item \textbf{データ}: Yahoo Finance (yfinance) の40銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値
+\item \textbf{前進検証}: 3年学習/1年テストを20年で16回（未来を見ない）
+\item \textbf{比較}: ランダム回避1000本・VIX より最大下落が浅い
+\item \textbf{因果}: 政策ショック $\to\ediv$（グレンジャー因果 $p=0.02$）
+\end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.18\linewidth}
 \centering
-\qrcode[height=26mm]{https://github.com/hajimedayo328/market-graph-presentation}\;
-{\color{muted}\scriptsize 全コード・データ公開\\ github.com/hajimedayo328/\\market-graph-presentation\\[1mm]
-生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
+\textbf{\large GitHub}\\[1mm]
+{\color{muted}\footnotesize 全コード・データ公開}\\[2mm]
+\qrcode[height=34mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[2mm]
+{\color{muted}\scriptsize 生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
 \end{minipage}
 }
 
