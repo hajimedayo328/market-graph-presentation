@@ -79,8 +79,8 @@
 
 \vspace{2mm}
 \centering
-\includegraphics[width=0.78\linewidth]{../../figs/slide_network.png}\\
-{\color{muted}\small 青＝正の相関・赤破線＝負の相関（40銘柄の相関ネットワーク）}
+\includegraphics[width=0.82\linewidth]{../../figs/slide_network.png}\\
+{\color{muted}\small 40銘柄の相関ネットワーク（近い＝値動きが類似）}
 
 \vspace{2mm}
 \raggedright
@@ -104,9 +104,9 @@
 \raggedright
 指標 $L^1$ ＝ すべての穴の寿命の合計:
 \[
-L^1 = \sum_{k}(d_k - b_k)
-\quad{\small (b_k\text{＝現れる基準},\ d_k\text{＝消える基準})}
+L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k)
 \]
+{\small $\mathrm{Dgm}(H_1)$＝1次元の穴の一覧（$b_k$＝現れる基準、$d_k$＝消える基準）。}
 }
 
 % ================= 中列 =================
@@ -134,29 +134,19 @@ L^1 = \sum_{k}(d_k - b_k)
 \]
 }
 
-\block{\bt{3.3}2つは独立か}{%
-指標1（穴）と指標2（矛盾）が、たがいにどれくらい似て動くかを相関で測った:
+\block{\bt{3.3}2つの指標の独立性}{%
+指標1（穴）と指標2（矛盾）が、たがいにどれくらい似て動くかを\textbf{相関}で測った:
 
-\vspace{2mm}
+\vspace{1mm}
 \centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lcl}
-\toprule
-{\bfseries データ期間} & {\bfseries 相関} & \\
-\midrule
-5年  & 0.15 & \color{accent}\textbf{ほぼ独立}\\
-10年 & 0.19 & ほぼ独立\\
-15年 & 0.26 & 弱い相関\\
-20年 & \textbf{0.40} & {\color{warn}\textbf{独立でない}}\\
-\bottomrule
-\end{tabular}
+\includegraphics[width=\linewidth]{../../figs/slide_independence.png}
 
-\vspace{2mm}
+\vspace{1mm}
 \raggedright
 \begin{itemize}
 \setlength{\itemsep}{1mm}
-\item \textbf{短期}：2指標はばらばらに動き\textbf{\color{accent}独立}（別々の情報を持つ）
-\item \textbf{長期}：危機（2008・2020等）を多く含み、両指標が同時に跳ねて\textbf{\color{warn}相関が上がる}
+\item \textbf{短期（5年）}：2指標はばらばらに動き\textbf{\color{accent}独立}（別々の情報を持つ）
+\item \textbf{長期（20年）}：危機（2008・2020等）を多く含み、両指標が同時に跳ねて\textbf{\color{warn}相関が上がる}
 \end{itemize}
 }
 

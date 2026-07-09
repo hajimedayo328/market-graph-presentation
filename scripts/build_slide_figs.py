@@ -168,8 +168,14 @@ def fig_network():
                            style="dashed", ax=ax)
     nx.draw_networkx_nodes(G, pos, node_color=INK, node_size=260, ax=ax)
     nx.draw_networkx_labels(G, pos, font_size=7, font_color="white", ax=ax)
-    ax.set_title("40 銘柄を点、似た動きを線で結ぶ (市場の地図)",
-                 fontsize=14, color=INK, weight="bold", pad=10)
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], marker='o', color='w', markerfacecolor=INK, markersize=13, label='点 ＝ 銘柄'),
+        Line2D([0], [0], color='#9fc0f5', lw=3, label='実線 ＝ 正の相関'),
+        Line2D([0], [0], color='#f0b3b3', lw=3, ls='--', label='破線 ＝ 負の相関'),
+    ]
+    ax.legend(handles=legend_elements, loc='upper right', fontsize=14,
+              frameon=True, framealpha=0.95, edgecolor='#cccccc')
     ax.axis("off")
     fig.tight_layout()
     fig.savefig(FIGS / "slide_network.png", bbox_inches="tight", facecolor="white")
