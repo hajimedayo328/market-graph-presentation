@@ -149,9 +149,8 @@ L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k),\quad
 \raggedright
 \begin{itemize}
 \setlength{\itemsep}{2mm}
-\item \textbf{短期（5年）は\color{accent}独立}（相関 0.15）：穴と不均衡は\textbf{別々の情報}を持つ
-\item \textbf{長期（20年）は\color{warn}連動}（相関 0.40）：\textbf{危機という共通の要因}が
-穴も不均衡も同時に動かす。「独立」は\textbf{平常時の性質}で、危機時には両者が一斉に反応する
+\item \textbf{近年ほど\color{accent}独立}（直近5年で相関 0.15）：穴と不均衡は\textbf{別々の情報}を持つ
+\item \textbf{古い時代ほど\color{warn}連動}（2006--11の 0.45 から直近 0.15 へ単調に低下）：20年通しの 0.40 は\textbf{2008危機を含む古いレジームの寄与}で、期間の長さでなく\textbf{時代の違い}が生む
 \end{itemize}
 }
 
@@ -183,8 +182,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \column{0.333}
 
 \block{\bt{3.5}なぜ「差分」なのか}{%
-片方だけでは効かない。同じ条件（構造不安定シグナルの日に株を避ける）で
-20年運用したときの\textbf{最大下落}:
+片方だけでは効かない。同じ条件を\textbf{20年全体に当てはめた}ときの最大下落（指標どうしの比較。先読みを排した実力は4章）:
 
 \vspace{2mm}
 \centering
@@ -217,15 +215,15 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \vspace{2mm}
 \centering
 \includegraphics[width=0.92\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
-{\color{muted}\small 5年運用の模擬売買（S\&P 500、取引コスト込み）}
+{\color{muted}\small 直近5年の資産推移（例示）。下の数字は20年・16回の前進検証（S\&P 500、取引コスト込み）}
 
 \vspace{1mm}
 \raggedright
 \begin{itemize}
 \setlength{\itemsep}{1mm}
-\item \textbf{最大下落が $-25\%\to-17\%$} に浅くなる
-\item 20年・16回の検証でも\textbf{ランダム回避の上位1\%}
-\item ただし\textbf{リターンは持ち続けに劣る}（下落回避に特化）
+\item \textbf{先読みを排した20年・16回の前進検証}で最大下落 $-34\%\to\mathbf{-16\%}$
+\item ランダム回避500本中の\textbf{上位1\%}（下落が最も浅い側）
+\item ただし\textbf{リターンは持ち続けに劣る}（総リターン $+597\%\to+197\%$、下落回避に特化）
 \end{itemize}
 }
 
@@ -256,7 +254,7 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \begin{itemize}\setlength{\itemsep}{1.2mm}
 \item \textbf{データ}: Yahoo Finance (yfinance) の40個の銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値
 \item \textbf{前進検証}: 3年学習/1年テストを20年で16回（未来を見ない）
-\item \textbf{比較}: ランダム回避1000本・VIX より最大下落が浅い
+\item \textbf{比較}: ランダム回避500本・VIX より最大下落が浅い（OOS上位1\%）
 \item \textbf{因果}: 政策ショック $\to\ediv$（グレンジャー因果 $p=0.02$）
 \end{itemize}}
 }
