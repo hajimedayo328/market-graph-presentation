@@ -46,7 +46,7 @@ def style_ax(ax):
 
 
 def fig_scatter():
-    """発見①: 穴の量 vs 矛盾の数 が無相関 (バラけてる)."""
+    """発見①: 穴の量 vs 不均衡の数 が無相関 (バラけてる)."""
     df = pd.read_csv(DATA / "gamma_timeseries_w30.csv").dropna(subset=["L1_H1", "n_unb"])
     # expanding z-score
     mp = 90
@@ -60,7 +60,7 @@ def fig_scatter():
     ax.scatter(x, y, s=14, c=ACCENT, alpha=0.35, edgecolors="none")
     style_ax(ax)
     ax.set_xlabel("穴の量  (大きい →)", fontsize=13, color=INK)
-    ax.set_ylabel("矛盾の数  (大きい →)", fontsize=13, color=INK)
+    ax.set_ylabel("不均衡の数  (大きい →)", fontsize=13, color=INK)
     ax.axhline(0, color=MUTED, lw=0.8, ls="--"); ax.axvline(0, color=MUTED, lw=0.8, ls="--")
     ax.set_title(f"バラけている = 連動しない  (相関 {r:.2f})",
                  fontsize=14, color=INK, weight="bold", pad=12)
@@ -71,7 +71,7 @@ def fig_scatter():
 
 
 def fig_scatter_raw():
-    """3.3 独立性: 穴 L1 と 矛盾 n_unb の生値散布図 (相関 0.15 = 独立).
+    """3.3 独立性: 穴 L1 と 不均衡 n_unb の生値散布図 (相関 0.15 = 独立).
 
     ポスターに縮小配置されるため、軸ラベル/凡例/目盛りを大きめに描く。
     """
@@ -87,9 +87,9 @@ def fig_scatter_raw():
     style_ax(ax)
     ax.tick_params(labelsize=17)
     ax.set_xlabel("穴の指標 $L^1$（0〜2くらい）", fontsize=21, color=INK)
-    ax.set_ylabel("矛盾の数 $n_{unb}$（0〜80くらい）", fontsize=21, color=INK)
+    ax.set_ylabel("不均衡の数 $n_{unb}$（0〜80くらい）", fontsize=21, color=INK)
     ax.legend(loc="upper left", fontsize=18, frameon=True, framealpha=0.95, edgecolor="#cccccc")
-    ax.set_title("穴 と 矛盾 は バラけている ＝ 連動しない（独立）",
+    ax.set_title("穴 と 不均衡 は バラけている ＝ 連動しない（独立）",
                  fontsize=21, color=INK, weight="bold", pad=12)
     fig.tight_layout()
     fig.savefig(FIGS / "slide_scatter_raw.png", bbox_inches="tight", facecolor="white")
@@ -98,34 +98,46 @@ def fig_scatter_raw():
 
 
 def fig_hole():
-    """3.1: 穴が現れて消える3コマ (点 → 穴 → 埋まった).
+    """3.1: Vietoris-Rips で穴が現れて消える3コマ.
 
-    ポスター縮小に耐えるよう文字大きめ・横長 (縦を抑える) で描く。
+    各点に半径 r の円を描き、2円が重なった (中心間距離 <= 2r) 対を辺で結ぶ。
+    r を大きくすると輪(穴 H1)が現れ、三角形が埋まって消える。
     """
-    from matplotlib.patches import Circle
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.6), dpi=150)
-    titles = ["① 点データ", "② 穴が現れる", "③ 穴が消える"]
-    radii = [0.0, 0.42, 0.74]
-    n = 22
-    theta = np.linspace(0, 2 * np.pi, n, endpoint=False)
-    ring = np.c_[np.cos(theta), np.sin(theta)]
-    for ax, title, br in zip(axes, titles, radii):
-        ax.set_title(title, fontsize=21, color=INK, pad=12)
-        if br > 0:
-            for (x, y) in ring:
-                ax.add_patch(Circle((x, y), br, color=ACCENT, alpha=0.12, ec="none"))
-        ax.scatter(ring[:, 0], ring[:, 1], s=30, c=INK, zorder=5)
-        if title == titles[1]:
-            ax.add_patch(Circle((0, 0), 0.55, fill=False, ec=RED, lw=3.4))
-            ax.text(0, 0, "穴", fontsize=34, color=RED, ha="center", va="center", weight="bold")
-        if title == titles[2]:
-            ax.text(0, 0, "埋まった", fontsize=19, color=MUTED, ha="center", va="center")
-        ax.set_xlim(-1.75, 1.75)
-        ax.set_ylim(-1.75, 1.75)
+    from matplotlib.patches import Circle, Polygon as MPoly
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 5.0), dpi=150)
+    titles = ["半径 小：辺なし", "半径 中：外周を結ぶ→穴", "半径 大：三角形が埋まる"]
+    radii = [0.30, 0.52, 1.02]
+    n = 6
+    theta = np.linspace(0, 2 * np.pi, n, endpoint=False) + np.pi / 2
+    pts = np.c_[np.cos(theta), np.sin(theta)]
+    for ax, title, r in zip(axes, titles, radii):
+        ax.set_title(title, fontsize=19, color=INK, pad=10)
+        for (x, y) in pts:
+            ax.add_patch(Circle((x, y), r, color=ACCENT, alpha=0.12, ec=ACCENT, lw=0.5))
+        edges = [(i, j) for i in range(n) for j in range(i + 1, n)
+                 if np.hypot(*(pts[i] - pts[j])) <= 2 * r + 1e-9]
+        eset = set(edges)
+        tris = [(i, j, k) for i in range(n) for j in range(i + 1, n) for k in range(j + 1, n)
+                if (i, j) in eset and (j, k) in eset and (i, k) in eset]
+        dense = len(edges) > n           # 全結合コマ = 埋まりを面で見せる
+        lw = 0.8 if dense else 1.8
+        tri_alpha = 0.16 if dense else 0.10
+        for (i, j, k) in tris:
+            ax.add_patch(MPoly(pts[[i, j, k]], closed=True, color=ACCENT,
+                               alpha=tri_alpha, ec="none", zorder=1))
+        for (i, j) in edges:
+            ax.plot([pts[i, 0], pts[j, 0]], [pts[i, 1], pts[j, 1]],
+                    color=ACCENT, lw=lw, zorder=3)
+        ax.scatter(pts[:, 0], pts[:, 1], s=44, c=INK, zorder=5)
+        if len(edges) >= n and not tris:   # 外周が閉じたが面はまだ = 穴
+            ax.text(0, 0, "穴", fontsize=30, color=RED, ha="center",
+                    va="center", weight="bold", zorder=6)
+        ax.set_xlim(-1.7, 1.7)
+        ax.set_ylim(-1.7, 1.7)
         ax.set_aspect("equal")
         ax.axis("off")
-    fig.text(0.5, 0.015, "「近い点どうしを結ぶ基準」を大きくしていく →",
-             fontsize=18, color=MUTED, ha="center")
+    fig.text(0.5, 0.02, "2円が重なった対を辺で結ぶ ｜ 円の半径を大きくする →",
+             fontsize=16, color=MUTED, ha="center")
     fig.tight_layout(rect=[0, 0.06, 1, 1])
     fig.savefig(FIGS / "slide_hole.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -168,7 +180,7 @@ def fig_lifetime():
 
 
 def fig_equity():
-    """発見③: 暴落で戦略の方が浅い (ただ持つ vs 矛盾の日に避ける)."""
+    """発見③: 暴落で戦略の方が浅い (ただ持つ vs 不均衡の日に避ける)."""
     d = json.load(open(DATA / "backtest_v2_results.json", encoding="utf-8"))
     dates = pd.to_datetime(d["common_dates"])
     bh = np.array(d["equity_curves"]["Z_buy_and_hold"])
@@ -179,7 +191,7 @@ def fig_equity():
 
     fig, ax = plt.subplots(figsize=(7.6, 4.6), dpi=150)
     ax.plot(dates, bh, color=MUTED, lw=2.2, label="ただ持ち続ける")
-    ax.plot(dates, s1, color=ACCENT, lw=2.4, label="矛盾の日に避ける (守り)")
+    ax.plot(dates, s1, color=ACCENT, lw=2.4, label="不均衡の日に避ける (守り)")
     style_ax(ax)
     ax.set_ylabel("資産 (100 から開始)", fontsize=12, color=INK)
     ax.legend(loc="upper left", fontsize=12, frameon=False)
@@ -267,8 +279,8 @@ def fig_network():
     from matplotlib.lines import Line2D
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', markerfacecolor=INK, markersize=15, label='点 ＝ 銘柄'),
-        Line2D([0], [0], color='#9fc0f5', lw=3.5, label='実線 ＝ 正の相関'),
-        Line2D([0], [0], color='#f0b3b3', lw=3.5, ls='--', label='破線 ＝ 負の相関'),
+        Line2D([0], [0], color='#9fc0f5', lw=3.5, label='実線 ＝ 正相関'),
+        Line2D([0], [0], color='#f0b3b3', lw=3.5, ls='--', label='破線 ＝ 負相関'),
     ]
     ax.legend(handles=legend_elements, loc='upper right', fontsize=18,
               frameon=True, framealpha=0.95, edgecolor='#cccccc')
@@ -279,9 +291,50 @@ def fig_network():
     print(f"slide_network.png  (nodes={G.number_of_nodes()}, edges={G.number_of_edges()})")
 
 
+def fig_balance():
+    """3.2: 構造的均衡 (正相関＋/負相関−、符号の積で均衡/不均衡) 3例."""
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 5.2), dpi=150)
+    A = (0.0, 0.9); B = (-0.8, -0.6); C = (0.8, -0.6)
+    edges_xy = {"AB": (A, B), "AC": (A, C), "BC": (B, C)}
+    cases = [
+        ("全て ＋ ＝ 均衡", {"AB": +1, "AC": +1, "BC": +1}, GREEN),
+        ("− が偶数 ＝ 均衡", {"AB": +1, "AC": -1, "BC": -1}, GREEN),
+        ("− が奇数 ＝ 不均衡", {"AB": +1, "AC": -1, "BC": +1}, RED),
+    ]
+    gx, gy = 0.0, -0.1
+    for ax, (title, signs, tcol) in zip(axes, cases):
+        ax.set_title(title, fontsize=18, color=tcol, pad=12, weight="bold")
+        for name, s in signs.items():
+            p, q = edges_xy[name]
+            col = ACCENT if s > 0 else RED
+            ls = "-" if s > 0 else (0, (6, 4))
+            ax.plot([p[0], q[0]], [p[1], q[1]], color=col, lw=3, ls=ls, zorder=2)
+            mx, my = (p[0] + q[0]) / 2, (p[1] + q[1]) / 2
+            dx, dy = mx - gx, my - gy
+            nrm = np.hypot(dx, dy) or 1.0
+            lx, ly = mx + dx / nrm * 0.30, my + dy / nrm * 0.30
+            ax.text(lx, ly, "＋" if s > 0 else "−", fontsize=26, color=col,
+                    ha="center", va="center", weight="bold", zorder=4)
+        for lab, (x, y) in [("A", A), ("B", B), ("C", C)]:
+            ax.add_patch(plt.Circle((x, y), 0.16, fc="white", ec=INK, lw=2, zorder=5))
+            ax.text(x, y, lab, fontsize=17, ha="center", va="center",
+                    weight="bold", color=INK, zorder=6)
+        ax.set_xlim(-1.45, 1.45); ax.set_ylim(-1.25, 1.4)
+        ax.set_aspect("equal"); ax.axis("off")
+    fig.text(0.5, 0.02,
+             "実線 ＝ 正相関（＋）　破線 ＝ 負相関（−）　｜　符号の積が −1（負相関が奇数）＝ 不均衡サイクル",
+             fontsize=15, color="#374151", ha="center")
+    fig.tight_layout(rect=[0, 0.06, 1, 1])
+    fig.savefig(FIGS / "slide_balance.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print("slide_balance.png")
+
+
 if __name__ == "__main__":
     fig_scatter()
     fig_equity()
     fig_source()
     fig_network()
+    fig_balance()
+    fig_hole()
     print("Done.")
