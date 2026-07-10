@@ -104,14 +104,14 @@ def fig_hole():
     r を大きくすると輪(穴 H1)が現れ、三角形が埋まって消える。
     """
     from matplotlib.patches import Circle, Polygon as MPoly
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 5.0), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 5.4), dpi=150)
     titles = ["半径 小：辺なし", "半径 中：外周を結ぶ→穴", "半径 大：三角形が埋まる"]
-    radii = [0.30, 0.52, 1.02]
+    radii = [0.34, 0.62, 1.02]
     n = 6
     theta = np.linspace(0, 2 * np.pi, n, endpoint=False) + np.pi / 2
     pts = np.c_[np.cos(theta), np.sin(theta)]
     for ax, title, r in zip(axes, titles, radii):
-        ax.set_title(title, fontsize=19, color=INK, pad=10)
+        ax.set_title(title, fontsize=23, color=INK, pad=10)
         for (x, y) in pts:
             ax.add_patch(Circle((x, y), r, color=ACCENT, alpha=0.12, ec=ACCENT, lw=0.5))
         edges = [(i, j) for i in range(n) for j in range(i + 1, n)
@@ -128,16 +128,16 @@ def fig_hole():
         for (i, j) in edges:
             ax.plot([pts[i, 0], pts[j, 0]], [pts[i, 1], pts[j, 1]],
                     color=ACCENT, lw=lw, zorder=3)
-        ax.scatter(pts[:, 0], pts[:, 1], s=44, c=INK, zorder=5)
+        ax.scatter(pts[:, 0], pts[:, 1], s=54, c=INK, zorder=5)
         if len(edges) >= n and not tris:   # 外周が閉じたが面はまだ = 穴
-            ax.text(0, 0, "穴", fontsize=30, color=RED, ha="center",
+            ax.text(0, 0, "穴", fontsize=35, color=RED, ha="center",
                     va="center", weight="bold", zorder=6)
-        ax.set_xlim(-1.7, 1.7)
-        ax.set_ylim(-1.7, 1.7)
+        ax.set_xlim(-2.05, 2.05)
+        ax.set_ylim(-2.05, 2.05)
         ax.set_aspect("equal")
         ax.axis("off")
     fig.text(0.5, 0.02, "2円が重なった対を辺で結ぶ ｜ 円の半径を大きくする →",
-             fontsize=16, color=MUTED, ha="center")
+             fontsize=20, color=MUTED, ha="center")
     fig.tight_layout(rect=[0, 0.06, 1, 1])
     fig.savefig(FIGS / "slide_hole.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -164,12 +164,12 @@ def fig_lifetime():
         h = 0.44 if real else 0.30
         ax.barh(y, ln, left=s, height=h, color=c)
     ax.text(0.70, len(bars) - 1, "← 本物の穴（長く残る＝市場の構造）",
-            fontsize=20, color=ACCENT, va="center", weight="bold")
+            fontsize=24, color=ACCENT, va="center", weight="bold")
     ax.text(0.46, len(bars) - 5, "← ノイズ（すぐ消える）",
-            fontsize=18, color=MUTED, va="center")
+            fontsize=22, color=MUTED, va="center")
     ax.annotate("", xy=(1.02, -0.7), xytext=(0.0, -0.7),
                 arrowprops=dict(arrowstyle="->", color=INK, lw=2.2))
-    ax.text(0.5, -1.15, "結ぶ基準を大きくする →", fontsize=18, color=INK, ha="center")
+    ax.text(0.5, -1.15, "円の半径を大きくする →", fontsize=22, color=INK, ha="center")
     ax.set_xlim(-0.02, 1.4)
     ax.set_ylim(-1.6, len(bars))
     ax.axis("off")
