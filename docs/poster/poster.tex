@@ -47,7 +47,7 @@
 
 \block{\bt{1.}動機と問い}{%
 株価そのものを\textbf{予測}するのではなく、
-危険な局面で株を避けて\textbf{\color{accent}下落を回避}できないか。
+危険な局面を\textbf{\color{accent}先取り}して株を避けられないか。
 市場の``つながりの形''から\textbf{2つの指標}を作って調べる。
 
 \vspace{2mm}
@@ -65,7 +65,7 @@
 \begin{itemize}
 \setlength{\itemsep}{1mm}
 \item この\textbf{2つの指標は、たがいに独立}か？
-\item その2つを\textbf{組み合わせると下落を回避}できるか？
+\item その2つを\textbf{組み合わせると下落を先取り}できるか？
 \end{itemize}
 
 \vspace{2mm}
@@ -208,7 +208,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 穴を基準に、不均衡の``純粋な超過''を取り出すのが差分の役割。
 }
 
-\block{\bt{4.}結果：下落を回避できた}{%
+\block{\bt{4.}結果：下落を先取りできた}{%
 $\ediv>0$ の日に株を売って現金化する戦略を、
 \textbf{シミュレーション（過去データでの模擬売買）}で検証:
 
@@ -221,9 +221,9 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \raggedright
 \begin{itemize}
 \setlength{\itemsep}{1mm}
-\item \textbf{先読みを排した20年・16回の前進検証}で最大下落 $-34\%\to\mathbf{-16\%}$
-\item ランダム回避500本中の\textbf{上位1\%}（下落が最も浅い側）
-\item ただし\textbf{リターンは持ち続けに劣る}（総リターン $+597\%\to+197\%$、下落回避に特化）
+\item 最大下落 $-34\%\to\mathbf{-16\%}$：ランダム回避500本中の\textbf{上位1\%}、\textbf{VIX（恐怖指数）にも全勝}
+\item ただし\textbf{持ち続けは超えない}（総リターン $+597\%\to+197\%$、シャープ比 $0.63\!<\!0.74$）
+\item ＝構造の崩れが\textbf{下落を先取りする}証明。運用の最適化は今後
 \end{itemize}
 }
 
