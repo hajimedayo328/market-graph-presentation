@@ -104,14 +104,14 @@ def fig_hole():
     r を大きくすると輪(穴 H1)が現れ、三角形が埋まって消える。
     """
     from matplotlib.patches import Circle, Polygon as MPoly
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 5.4), dpi=150)
-    titles = ["半径 小：辺なし", "半径 中：外周を結ぶ→穴", "半径 大：三角形が埋まる"]
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 6.2), dpi=150)
+    titles = ["小：辺なし", "中：外周→穴", "大：埋まる"]
     radii = [0.34, 0.62, 1.02]
     n = 6
     theta = np.linspace(0, 2 * np.pi, n, endpoint=False) + np.pi / 2
     pts = np.c_[np.cos(theta), np.sin(theta)]
     for ax, title, r in zip(axes, titles, radii):
-        ax.set_title(title, fontsize=23, color=INK, pad=10)
+        ax.set_title(title, fontsize=31, color=INK, pad=10)
         for (x, y) in pts:
             ax.add_patch(Circle((x, y), r, color=ACCENT, alpha=0.12, ec=ACCENT, lw=0.5))
         edges = [(i, j) for i in range(n) for j in range(i + 1, n)
@@ -128,16 +128,16 @@ def fig_hole():
         for (i, j) in edges:
             ax.plot([pts[i, 0], pts[j, 0]], [pts[i, 1], pts[j, 1]],
                     color=ACCENT, lw=lw, zorder=3)
-        ax.scatter(pts[:, 0], pts[:, 1], s=54, c=INK, zorder=5)
+        ax.scatter(pts[:, 0], pts[:, 1], s=66, c=INK, zorder=5)
         if len(edges) >= n and not tris:   # 外周が閉じたが面はまだ = 穴
-            ax.text(0, 0, "穴", fontsize=35, color=RED, ha="center",
+            ax.text(0, 0, "穴", fontsize=46, color=RED, ha="center",
                     va="center", weight="bold", zorder=6)
         ax.set_xlim(-2.05, 2.05)
         ax.set_ylim(-2.05, 2.05)
         ax.set_aspect("equal")
         ax.axis("off")
     fig.text(0.5, 0.02, "2円が重なった対を辺で結ぶ ｜ 円の半径を大きくする →",
-             fontsize=20, color=MUTED, ha="center")
+             fontsize=27, color=MUTED, ha="center")
     fig.tight_layout(rect=[0, 0.06, 1, 1])
     fig.savefig(FIGS / "slide_hole.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -146,7 +146,7 @@ def fig_hole():
 
 def fig_lifetime():
     """3.1: 穴の寿命バー (本物=長い青, ノイズ=短い灰). 文字大きめ."""
-    fig, ax = plt.subplots(figsize=(11.5, 5.0), dpi=150)
+    fig, ax = plt.subplots(figsize=(11.5, 5.6), dpi=150)
     # (start, length, is_real)
     bars = [
         (0.04, 0.62, True),
@@ -164,12 +164,12 @@ def fig_lifetime():
         h = 0.44 if real else 0.30
         ax.barh(y, ln, left=s, height=h, color=c)
     ax.text(0.70, len(bars) - 1, "← 本物の穴（長く残る＝市場の構造）",
-            fontsize=24, color=ACCENT, va="center", weight="bold")
+            fontsize=31, color=ACCENT, va="center", weight="bold")
     ax.text(0.46, len(bars) - 5, "← ノイズ（すぐ消える）",
-            fontsize=22, color=MUTED, va="center")
+            fontsize=28, color=MUTED, va="center")
     ax.annotate("", xy=(1.02, -0.7), xytext=(0.0, -0.7),
                 arrowprops=dict(arrowstyle="->", color=INK, lw=2.2))
-    ax.text(0.5, -1.15, "円の半径を大きくする →", fontsize=22, color=INK, ha="center")
+    ax.text(0.5, -1.15, "円の半径を大きくする →", fontsize=28, color=INK, ha="center")
     ax.set_xlim(-0.02, 1.4)
     ax.set_ylim(-1.6, len(bars))
     ax.axis("off")
@@ -293,7 +293,7 @@ def fig_network():
 
 def fig_balance():
     """3.2: 構造的均衡 (正相関＋/負相関−、符号の積で均衡/不均衡) 3例."""
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 5.2), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 6.2), dpi=150)
     A = (0.0, 0.9); B = (-0.8, -0.6); C = (0.8, -0.6)
     edges_xy = {"AB": (A, B), "AC": (A, C), "BC": (B, C)}
     cases = [
@@ -303,7 +303,7 @@ def fig_balance():
     ]
     gx, gy = 0.0, -0.1
     for ax, (title, signs, tcol) in zip(axes, cases):
-        ax.set_title(title, fontsize=18, color=tcol, pad=12, weight="bold")
+        ax.set_title(title, fontsize=26, color=tcol, pad=12, weight="bold")
         for name, s in signs.items():
             p, q = edges_xy[name]
             col = ACCENT if s > 0 else RED
@@ -313,17 +313,17 @@ def fig_balance():
             dx, dy = mx - gx, my - gy
             nrm = np.hypot(dx, dy) or 1.0
             lx, ly = mx + dx / nrm * 0.30, my + dy / nrm * 0.30
-            ax.text(lx, ly, "＋" if s > 0 else "−", fontsize=26, color=col,
+            ax.text(lx, ly, "＋" if s > 0 else "−", fontsize=35, color=col,
                     ha="center", va="center", weight="bold", zorder=4)
         for lab, (x, y) in [("A", A), ("B", B), ("C", C)]:
-            ax.add_patch(plt.Circle((x, y), 0.16, fc="white", ec=INK, lw=2, zorder=5))
-            ax.text(x, y, lab, fontsize=17, ha="center", va="center",
+            ax.add_patch(plt.Circle((x, y), 0.19, fc="white", ec=INK, lw=2, zorder=5))
+            ax.text(x, y, lab, fontsize=23, ha="center", va="center",
                     weight="bold", color=INK, zorder=6)
         ax.set_xlim(-1.45, 1.45); ax.set_ylim(-1.25, 1.4)
         ax.set_aspect("equal"); ax.axis("off")
     fig.text(0.5, 0.02,
              "実線 ＝ 正相関（＋）　破線 ＝ 負相関（−）　｜　符号の積が −1（負相関が奇数）＝ 不均衡サイクル",
-             fontsize=15, color="#374151", ha="center")
+             fontsize=21, color="#374151", ha="center")
     fig.tight_layout(rect=[0, 0.06, 1, 1])
     fig.savefig(FIGS / "slide_balance.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
