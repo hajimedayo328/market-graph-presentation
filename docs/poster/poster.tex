@@ -74,13 +74,13 @@
 }
 
 \block{\bt{2.}相関ネットワーク}{%
-40銘柄を\textbf{点}、値動きが\textbf{類似した}銘柄どうしを\textbf{線}で結ぶ。
+40個の銘柄を\textbf{点}、値動きが\textbf{類似した}銘柄どうしを\textbf{線}で結ぶ。
 相関 $r$ を距離 $d=\sqrt{2(1-r)}$ に変換し、類似した銘柄を近くに配置する。
 
 \vspace{2mm}
 \centering
 \includegraphics[width=0.82\linewidth]{../../figs/slide_network.png}\\
-{\color{muted}\small 40銘柄の相関ネットワーク（近い＝値動きが類似）}
+{\color{muted}\small 40個の銘柄の相関ネットワーク（近い＝値動きが類似）}
 
 \vspace{2mm}
 \raggedright
@@ -242,39 +242,33 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \end{itemize}
 }
 
-\end{columns}
-
-% ================= フッタ：参考文献・検証設計 =================
 \block{}{%
-\begin{minipage}[t]{0.48\linewidth}
-\textbf{\large 参考文献}
-\small
-\begin{enumerate}\setlength{\itemsep}{1mm}
+\textbf{\large 参考文献}\par\smallskip
+{\small
+\begin{enumerate}\setlength{\itemsep}{1.2mm}
 \item R. N. Mantegna (1999). Hierarchical structure in financial markets. \textit{Eur. Phys. J. B} \textbf{11}, 193--197.
 \item M. Gidea (2017). Topology Data Analysis of Critical Transitions in Financial Networks. \textit{NetSci-X 2017}, Springer, 47--59.
 \item E. Ferreira ら (2021). Loss of structural balance in stock markets. \textit{Scientific Reports} \textbf{11}.
 \item D. Cartwright \& F. Harary (1956). Structural balance. \textit{Psychol. Rev.} \textbf{63}, 277--293.
-\end{enumerate}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.30\linewidth}
-\textbf{\large 検証設計}
-\small
-\begin{itemize}\setlength{\itemsep}{1mm}
-\item \textbf{データ}: Yahoo Finance (yfinance) の40銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値
+\end{enumerate}}
+\vspace{3mm}
+\textbf{\large 検証設計}\par\smallskip
+{\small
+\begin{itemize}\setlength{\itemsep}{1.2mm}
+\item \textbf{データ}: Yahoo Finance (yfinance) の40個の銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値
 \item \textbf{前進検証}: 3年学習/1年テストを20年で16回（未来を見ない）
 \item \textbf{比較}: ランダム回避1000本・VIX より最大下落が浅い
 \item \textbf{因果}: 政策ショック $\to\ediv$（グレンジャー因果 $p=0.02$）
-\end{itemize}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.18\linewidth}
-\centering
-\textbf{\large GitHub}\\[1mm]
-{\color{muted}\small 全コード・データ公開}\\[1mm]
-\qrcode[height=30mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[1.5mm]
-{\color{muted}\scriptsize 生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
-\end{minipage}
+\end{itemize}}
 }
+
+\block{}{%
+\centering
+\textbf{\large GitHub}\quad{\color{muted}\small 全コード・データ公開}\\[2mm]
+\qrcode[height=28mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[2mm]
+{\color{muted}\scriptsize 生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
+}
+
+\end{columns}
 
 \end{document}
