@@ -69,7 +69,7 @@
 \end{itemize}
 
 \vspace{2mm}
-{\color{muted}\small\textbf{用語}：\textbf{日次リターン}＝1日の値動き（前日比の変化率）。
+{\color{muted}\small\textbf{用語}：\textbf{日次リターン}＝前日の終値に対する変化率。
 \textbf{相関}＝2銘柄の値動きの似方（$+1$＝完全に同調、$0$＝無関係、$-1$＝完全に逆）。}
 }
 
@@ -171,7 +171,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \]
 \begin{itemize}
 \setlength{\itemsep}{1.5mm}
-\item \textbf{\color{warn}$\ediv > 0$（危険サイン）}：不均衡が穴を上回る＝
+\item \textbf{\color{warn}$\ediv > 0$（構造不安定シグナル）}：不均衡が穴を上回る＝
 市場の関係が\textbf{ねじれ始めている}。まとまり（正相関の群れ）が崩れ、
 今まで一緒に動いた銘柄が逆に動く。\textbf{\color{warn}秩序の崩壊の兆し} → 株を避ける
 \item \textbf{$\ediv < 0$（平常）}：穴が不均衡を上回る＝
@@ -183,7 +183,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \column{0.333}
 
 \block{\bt{3.5}なぜ「差分」なのか}{%
-片方だけでは効かない。同じ条件（危険サインの日に株を避ける）で
+片方だけでは効かない。同じ条件（構造不安定シグナルの日に株を避ける）で
 20年運用したときの\textbf{最大下落}:
 
 \vspace{2mm}

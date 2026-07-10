@@ -321,10 +321,11 @@ def fig_balance():
                     weight="bold", color=INK, zorder=6)
         ax.set_xlim(-1.45, 1.45); ax.set_ylim(-1.25, 1.4)
         ax.set_aspect("equal"); ax.axis("off")
-    fig.text(0.5, 0.02,
-             "実線 ＝ 正相関（＋）　破線 ＝ 負相関（−）　｜　符号の積が −1（負相関が奇数）＝ 不均衡サイクル",
-             fontsize=21, color="#374151", ha="center")
-    fig.tight_layout(rect=[0, 0.06, 1, 1])
+    fig.text(0.5, 0.075, "実線 ＝ 正相関（＋）　　破線 ＝ 負相関（−）",
+             fontsize=28, color="#374151", ha="center")
+    fig.text(0.5, 0.015, "符号の積が −1（負相関が奇数）＝ 不均衡サイクル",
+             fontsize=28, color="#374151", ha="center")
+    fig.tight_layout(rect=[0, 0.14, 1, 1])
     fig.savefig(FIGS / "slide_balance.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
     print("slide_balance.png")
