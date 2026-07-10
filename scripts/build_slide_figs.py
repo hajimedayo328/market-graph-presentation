@@ -331,6 +331,30 @@ def fig_balance():
     print("slide_balance.png")
 
 
+def fig_equity_absolute():
+    """4章: $10,000を5年運用 (持ち続ける vs シグナルで避ける)."""
+    from matplotlib.ticker import FuncFormatter
+    d = json.load(open(DATA / "backtest_v2_results.json", encoding="utf-8"))
+    dates = pd.to_datetime(d["common_dates"])
+    bh = np.array(d["equity_curves"]["Z_buy_and_hold"], dtype=float)
+    s1 = np.array(d["equity_curves"]["S1_ediv_high_short"], dtype=float)
+    bh = bh / bh[0] * 10000
+    s1 = s1 / s1[0] * 10000
+    fig, ax = plt.subplots(figsize=(7.8, 4.9), dpi=150)
+    ax.fill_between(dates, s1, bh, where=(bh >= s1), color=MUTED, alpha=0.15, zorder=1)
+    ax.plot(dates, bh, color=MUTED, lw=2.0, label=f"持ち続ける：${bh[-1]:,.0f}", zorder=2)
+    ax.plot(dates, s1, color=ACCENT, lw=2.3, label=f"シグナルで避ける：${s1[-1]:,.0f}", zorder=3)
+    style_ax(ax)
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"${v/1000:.0f}k"))
+    ax.set_ylabel("資産（ドル）", fontsize=12, color=INK)
+    ax.legend(loc="upper left", fontsize=13, frameon=False)
+    ax.set_title("$10,000 を5年運用（S&P 500）", fontsize=14, color=INK, weight="bold", pad=10)
+    fig.tight_layout()
+    fig.savefig(FIGS / "slide_equity_absolute.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    print("slide_equity_absolute.png")
+
+
 if __name__ == "__main__":
     fig_scatter()
     fig_equity()
@@ -338,4 +362,5 @@ if __name__ == "__main__":
     fig_network()
     fig_balance()
     fig_hole()
+    fig_equity_absolute()
     print("Done.")
