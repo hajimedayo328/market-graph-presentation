@@ -217,7 +217,6 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \item 片方だけでは\textbf{何もしないのと大差なし}
 \item \textbf{\color{accent}差分にして初めて $-20\%$ に激変}
 \end{itemize}
-穴を基準に、不均衡の``純粋な超過''を取り出すのが差分の役割。
 }
 
 \block{\bt{4.}結果：下落を先取りできた}{%
@@ -226,7 +225,7 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 
 \vspace{2mm}
 \centering
-\includegraphics[width=0.84\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
+\includegraphics[width=0.78\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
 {\color{muted}\footnotesize 直近5年の資産推移（例示）。下の数字は20年・16回の前進検証（S\&P 500、取引コスト込み）}
 
 \vspace{1mm}
@@ -235,13 +234,13 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \setlength{\itemsep}{1mm}
 \item 最大下落 $-34\%\to\mathbf{-16\%}$：ランダム回避500本中の\textbf{上位1\%}、\textbf{VIX（恐怖指数）にも全勝}
 \item ただし\textbf{持ち続けは超えない}（総リターン $+597\%\to+197\%$、シャープ比 $0.63\!<\!0.74$）
-\item ＝構造の崩れが\textbf{下落を先取りする}証明。運用の最適化は今後
+\item ＝構造の崩れによる\textbf{先取りの証明}（運用最適化は今後）
 \end{itemize}
 }
 
 \block{\bt{}今後の取り組み}{%
 \begin{itemize}
-\setlength{\itemsep}{2mm}
+\setlength{\itemsep}{1.5mm}
 \item \textbf{指標の作り込みは避ける}：$L^1$ の変種を30通り試したが、
 期間を分けると順位が入れ替わる\textbf{過剰適合}だった（順位相関 $-0.12$）
 \item \textbf{パラメータの調整}：窓の長さ・相関のしきい値を変えて結果を安定させる
@@ -272,8 +271,8 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 
 \block{}{%
 \centering
-\textbf{\large GitHub}\quad{\color{muted}\small 全コード・データ公開}\\[2mm]
-\qrcode[height=28mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[2mm]
+\textbf{\large GitHub}\quad{\color{muted}\small 全コード・データ公開}\\[1mm]
+\qrcode[height=28mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[1mm]
 {\color{muted}\scriptsize 生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
 }
 
