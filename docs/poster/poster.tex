@@ -2,7 +2,7 @@
 % A0 縦ポスター — JSIAM 2026（再構成v2：フォント拡大・先行研究結論・式復活・寿命グラフ）
 \documentclass[25pt, a0paper, portrait,
                margin=15mm, innermargin=8mm,
-               blockverticalspace=3mm, colspace=8mm]{tikzposter}
+               blockverticalspace=2.5mm, colspace=8mm]{tikzposter}
 
 % 本文フォント拡大（タイトル・著者名の \huge/\Huge は触らない）
 % tikzposter は 25pt までしか対応しないため、サイズコマンドを直接再定義する
@@ -226,8 +226,8 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 
 \vspace{2mm}
 \centering
-\includegraphics[width=0.92\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
-{\color{muted}\small 直近5年の資産推移（例示）。下の数字は20年・16回の前進検証（S\&P 500、取引コスト込み）}
+\includegraphics[width=0.84\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
+{\color{muted}\footnotesize 直近5年の資産推移（例示）。下の数字は20年・16回の前進検証（S\&P 500、取引コスト込み）}
 
 \vspace{1mm}
 \raggedright
@@ -242,9 +242,8 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \block{\bt{}今後の取り組み}{%
 \begin{itemize}
 \setlength{\itemsep}{2mm}
-\item \textbf{指標の作り込みは避ける}：$L^1$ の変種（平均寿命・最大の穴・個数など）を
-30通り試したが、期間を分けると順位が入れ替わり（順位相関 $-0.12$）\textbf{過剰適合}だった。
-今後は変種探索でなく\textbf{頑健性・他市場での再現}を優先する
+\item \textbf{指標の作り込みは避ける}：$L^1$ の変種を30通り試したが、
+期間を分けると順位が入れ替わる\textbf{過剰適合}だった（順位相関 $-0.12$）
 \item \textbf{パラメータの調整}：窓の長さ・相関のしきい値を変えて結果を安定させる
 \item \textbf{他市場での再現}（欧州・アジア・暗号資産）で一般性を確かめる
 \item 暴落の\textbf{予知}への拡張（現状は初動の検知にとどまる）
@@ -253,8 +252,8 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 
 \block{}{%
 \textbf{\large 参考文献}\par\smallskip
-{\small
-\begin{enumerate}\setlength{\itemsep}{1.2mm}
+{\footnotesize
+\begin{enumerate}\setlength{\itemsep}{1mm}
 \item R. N. Mantegna (1999). Hierarchical structure in financial markets. \textit{Eur. Phys. J. B} \textbf{11}, 193--197.
 \item M. Gidea (2017). Topology Data Analysis of Critical Transitions in Financial Networks. \textit{NetSci-X 2017}, Springer, 47--59.
 \item E. Ferreira ら (2021). Loss of structural balance in stock markets. \textit{Scientific Reports} \textbf{11}.
@@ -262,8 +261,8 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \end{enumerate}}
 \vspace{3mm}
 \textbf{\large 検証設計}\par\smallskip
-{\small
-\begin{itemize}\setlength{\itemsep}{1.2mm}
+{\footnotesize
+\begin{itemize}\setlength{\itemsep}{1mm}
 \item \textbf{データ}: Yahoo Finance (yfinance) の40個の銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値
 \item \textbf{前進検証}: 3年学習/1年テストを20年で16回（未来を見ない）
 \item \textbf{比較}: ランダム回避500本・VIX より最大下落が浅い（OOS上位1\%）
