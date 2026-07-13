@@ -293,17 +293,17 @@ def fig_network():
 
 def fig_balance():
     """3.2: 構造的均衡 (正相関＋/負相関−、符号の積で均衡/不均衡) 3例."""
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 6.9), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 7.3), dpi=150)
     A = (0.0, 0.9); B = (-0.8, -0.6); C = (0.8, -0.6)
     edges_xy = {"AB": (A, B), "AC": (A, C), "BC": (B, C)}
     cases = [
-        ("全て ＋ ＝ 均衡", {"AB": +1, "AC": +1, "BC": +1}, GREEN),
-        ("− が偶数 ＝ 均衡", {"AB": +1, "AC": -1, "BC": -1}, GREEN),
-        ("− が奇数 ＝ 不均衡", {"AB": +1, "AC": -1, "BC": +1}, RED),
+        ("全て＋＝均衡", {"AB": +1, "AC": +1, "BC": +1}, GREEN),
+        ("−が偶数＝均衡", {"AB": +1, "AC": -1, "BC": -1}, GREEN),
+        ("−が奇数＝不均衡", {"AB": +1, "AC": -1, "BC": +1}, RED),
     ]
     gx, gy = 0.0, -0.1
     for ax, (title, signs, tcol) in zip(axes, cases):
-        ax.set_title(title, fontsize=32, color=tcol, pad=12, weight="bold")
+        ax.set_title(title, fontsize=38, color=tcol, pad=12, weight="bold")
         for name, s in signs.items():
             p, q = edges_xy[name]
             col = ACCENT if s > 0 else RED
@@ -313,19 +313,19 @@ def fig_balance():
             dx, dy = mx - gx, my - gy
             nrm = np.hypot(dx, dy) or 1.0
             lx, ly = mx + dx / nrm * 0.30, my + dy / nrm * 0.30
-            ax.text(lx, ly, "＋" if s > 0 else "−", fontsize=43, color=col,
+            ax.text(lx, ly, "＋" if s > 0 else "−", fontsize=52, color=col,
                     ha="center", va="center", weight="bold", zorder=4)
         for lab, (x, y) in [("A", A), ("B", B), ("C", C)]:
-            ax.add_patch(plt.Circle((x, y), 0.22, fc="white", ec=INK, lw=2, zorder=5))
-            ax.text(x, y, lab, fontsize=28, ha="center", va="center",
+            ax.add_patch(plt.Circle((x, y), 0.26, fc="white", ec=INK, lw=2.4, zorder=5))
+            ax.text(x, y, lab, fontsize=34, ha="center", va="center",
                     weight="bold", color=INK, zorder=6)
         ax.set_xlim(-1.45, 1.45); ax.set_ylim(-1.25, 1.4)
         ax.set_aspect("equal"); ax.axis("off")
-    fig.text(0.5, 0.105, "実線 ＝ 正相関（＋）　　破線 ＝ 負相関（−）",
-             fontsize=34, color="#374151", ha="center")
+    fig.text(0.5, 0.115, "実線 ＝ 正相関（＋）　　破線 ＝ 負相関（−）",
+             fontsize=40, color="#374151", ha="center")
     fig.text(0.5, 0.015, "符号の積が −1（負相関が奇数）＝ 不均衡サイクル",
-             fontsize=34, color="#374151", ha="center")
-    fig.tight_layout(rect=[0, 0.19, 1, 1])
+             fontsize=40, color="#374151", ha="center")
+    fig.tight_layout(rect=[0, 0.21, 1, 1])
     fig.savefig(FIGS / "slide_balance.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
     print("slide_balance.png")
