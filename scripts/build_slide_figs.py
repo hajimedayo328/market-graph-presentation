@@ -167,11 +167,11 @@ def fig_lifetime():
             fontsize=37, color=ACCENT, va="center", weight="bold")
     ax.text(0.46, len(bars) - 5, "← ノイズ（すぐ消える）",
             fontsize=33, color=MUTED, va="center")
-    ax.annotate("", xy=(1.02, -0.7), xytext=(0.0, -0.7),
+    ax.annotate("", xy=(1.02, -0.75), xytext=(0.0, -0.75),
                 arrowprops=dict(arrowstyle="->", color=INK, lw=2.2))
-    ax.text(0.5, -1.15, "円の半径を大きくする →", fontsize=33, color=INK, ha="center")
+    ax.text(0.5, -1.6, "円の半径を大きくする →", fontsize=33, color=INK, ha="center")
     ax.set_xlim(-0.02, 1.4)
-    ax.set_ylim(-1.6, len(bars))
+    ax.set_ylim(-2.1, len(bars))
     ax.axis("off")
     fig.tight_layout()
     fig.savefig(FIGS / "slide_lifetime.png", bbox_inches="tight", facecolor="white")
