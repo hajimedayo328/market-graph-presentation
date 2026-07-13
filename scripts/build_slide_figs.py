@@ -85,12 +85,12 @@ def fig_scatter_raw():
     ax.scatter(x, y, s=16, c=ACCENT, alpha=0.30, edgecolors="none", label="日次のデータ点")
     ax.plot(xs, a * xs + b, color=RED, lw=3.4, ls="--", label=f"回帰直線（相関 r={r:.2f}）")
     style_ax(ax)
-    ax.tick_params(labelsize=17)
-    ax.set_xlabel("穴の指標 $L^1$（0〜2くらい）", fontsize=21, color=INK)
-    ax.set_ylabel("不均衡の数 $n_{unb}$（0〜80くらい）", fontsize=21, color=INK)
-    ax.legend(loc="upper left", fontsize=18, frameon=True, framealpha=0.95, edgecolor="#cccccc")
+    ax.tick_params(labelsize=21)
+    ax.set_xlabel("穴の指標 $L^1$（0〜2くらい）", fontsize=26, color=INK)
+    ax.set_ylabel("不均衡の数 $n_{unb}$（0〜80くらい）", fontsize=26, color=INK)
+    ax.legend(loc="upper left", fontsize=22, frameon=True, framealpha=0.95, edgecolor="#cccccc")
     ax.set_title("穴 と 不均衡 は バラけている ＝ 連動しない（独立）",
-                 fontsize=21, color=INK, weight="bold", pad=12)
+                 fontsize=25, color=INK, weight="bold", pad=12)
     fig.tight_layout()
     fig.savefig(FIGS / "slide_scatter_raw.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -111,7 +111,7 @@ def fig_hole():
     theta = np.linspace(0, 2 * np.pi, n, endpoint=False) + np.pi / 2
     pts = np.c_[np.cos(theta), np.sin(theta)]
     for ax, title, r in zip(axes, titles, radii):
-        ax.set_title(title, fontsize=31, color=INK, pad=10)
+        ax.set_title(title, fontsize=38, color=INK, pad=10)
         for (x, y) in pts:
             ax.add_patch(Circle((x, y), r, color=ACCENT, alpha=0.12, ec=ACCENT, lw=0.5))
         edges = [(i, j) for i in range(n) for j in range(i + 1, n)
@@ -130,14 +130,14 @@ def fig_hole():
                     color=ACCENT, lw=lw, zorder=3)
         ax.scatter(pts[:, 0], pts[:, 1], s=66, c=INK, zorder=5)
         if len(edges) >= n and not tris:   # 外周が閉じたが面はまだ = 穴
-            ax.text(0, 0, "穴", fontsize=46, color=RED, ha="center",
+            ax.text(0, 0, "穴", fontsize=56, color=RED, ha="center",
                     va="center", weight="bold", zorder=6)
         ax.set_xlim(-2.05, 2.05)
         ax.set_ylim(-2.05, 2.05)
         ax.set_aspect("equal")
         ax.axis("off")
     fig.text(0.5, 0.02, "2円が重なった対を辺で結ぶ ｜ 円の半径を大きくする →",
-             fontsize=27, color=MUTED, ha="center")
+             fontsize=33, color=MUTED, ha="center")
     fig.tight_layout(rect=[0, 0.06, 1, 1])
     fig.savefig(FIGS / "slide_hole.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -164,12 +164,12 @@ def fig_lifetime():
         h = 0.44 if real else 0.30
         ax.barh(y, ln, left=s, height=h, color=c)
     ax.text(0.70, len(bars) - 1, "← 本物の穴（長く残る＝市場の構造）",
-            fontsize=31, color=ACCENT, va="center", weight="bold")
+            fontsize=37, color=ACCENT, va="center", weight="bold")
     ax.text(0.46, len(bars) - 5, "← ノイズ（すぐ消える）",
-            fontsize=28, color=MUTED, va="center")
+            fontsize=33, color=MUTED, va="center")
     ax.annotate("", xy=(1.02, -0.7), xytext=(0.0, -0.7),
                 arrowprops=dict(arrowstyle="->", color=INK, lw=2.2))
-    ax.text(0.5, -1.15, "円の半径を大きくする →", fontsize=28, color=INK, ha="center")
+    ax.text(0.5, -1.15, "円の半径を大きくする →", fontsize=33, color=INK, ha="center")
     ax.set_xlim(-0.02, 1.4)
     ax.set_ylim(-1.6, len(bars))
     ax.axis("off")
@@ -278,11 +278,11 @@ def fig_network():
     nx.draw_networkx_nodes(G, pos, node_color=INK, node_size=260, ax=ax)
     from matplotlib.lines import Line2D
     legend_elements = [
-        Line2D([0], [0], marker='o', color='w', markerfacecolor=INK, markersize=15, label='点 ＝ 銘柄'),
-        Line2D([0], [0], color='#9fc0f5', lw=3.5, label='実線 ＝ 正相関'),
-        Line2D([0], [0], color='#f0b3b3', lw=3.5, ls='--', label='破線 ＝ 負相関'),
+        Line2D([0], [0], marker='o', color='w', markerfacecolor=INK, markersize=19, label='点 ＝ 銘柄'),
+        Line2D([0], [0], color='#9fc0f5', lw=4.5, label='実線 ＝ 正相関'),
+        Line2D([0], [0], color='#f0b3b3', lw=4.5, ls='--', label='破線 ＝ 負相関'),
     ]
-    ax.legend(handles=legend_elements, loc='upper right', fontsize=18,
+    ax.legend(handles=legend_elements, loc='upper right', fontsize=23,
               frameon=True, framealpha=0.95, edgecolor='#cccccc')
     ax.axis("off")
     fig.tight_layout()
@@ -303,7 +303,7 @@ def fig_balance():
     ]
     gx, gy = 0.0, -0.1
     for ax, (title, signs, tcol) in zip(axes, cases):
-        ax.set_title(title, fontsize=26, color=tcol, pad=12, weight="bold")
+        ax.set_title(title, fontsize=32, color=tcol, pad=12, weight="bold")
         for name, s in signs.items():
             p, q = edges_xy[name]
             col = ACCENT if s > 0 else RED
@@ -313,18 +313,18 @@ def fig_balance():
             dx, dy = mx - gx, my - gy
             nrm = np.hypot(dx, dy) or 1.0
             lx, ly = mx + dx / nrm * 0.30, my + dy / nrm * 0.30
-            ax.text(lx, ly, "＋" if s > 0 else "−", fontsize=35, color=col,
+            ax.text(lx, ly, "＋" if s > 0 else "−", fontsize=43, color=col,
                     ha="center", va="center", weight="bold", zorder=4)
         for lab, (x, y) in [("A", A), ("B", B), ("C", C)]:
-            ax.add_patch(plt.Circle((x, y), 0.19, fc="white", ec=INK, lw=2, zorder=5))
-            ax.text(x, y, lab, fontsize=23, ha="center", va="center",
+            ax.add_patch(plt.Circle((x, y), 0.22, fc="white", ec=INK, lw=2, zorder=5))
+            ax.text(x, y, lab, fontsize=28, ha="center", va="center",
                     weight="bold", color=INK, zorder=6)
         ax.set_xlim(-1.45, 1.45); ax.set_ylim(-1.25, 1.4)
         ax.set_aspect("equal"); ax.axis("off")
     fig.text(0.5, 0.075, "実線 ＝ 正相関（＋）　　破線 ＝ 負相関（−）",
-             fontsize=28, color="#374151", ha="center")
+             fontsize=34, color="#374151", ha="center")
     fig.text(0.5, 0.015, "符号の積が −1（負相関が奇数）＝ 不均衡サイクル",
-             fontsize=28, color="#374151", ha="center")
+             fontsize=34, color="#374151", ha="center")
     fig.tight_layout(rect=[0, 0.14, 1, 1])
     fig.savefig(FIGS / "slide_balance.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
@@ -345,10 +345,10 @@ def fig_equity_absolute():
     ax.plot(dates, bh, color=MUTED, lw=2.0, label=f"持ち続ける：${bh[-1]:,.0f}", zorder=2)
     ax.plot(dates, s1, color=ACCENT, lw=2.3, label=f"シグナルで避ける：${s1[-1]:,.0f}", zorder=3)
     style_ax(ax)
-    ax.tick_params(labelsize=15)
+    ax.tick_params(labelsize=19)
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"${v/1000:.0f}k"))
-    ax.set_ylabel("資産（ドル）", fontsize=18, color=INK)
-    ax.legend(loc="upper left", fontsize=15, frameon=False)
+    ax.set_ylabel("資産（ドル）", fontsize=22, color=INK)
+    ax.legend(loc="upper left", fontsize=19, frameon=False)
     fig.tight_layout()
     fig.savefig(FIGS / "slide_equity_absolute.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
