@@ -86,13 +86,13 @@
 }
 
 \block{\bt{2.}相関ネットワーク}{%
-40個の銘柄を\textbf{点}、値動きが\textbf{類似した}銘柄どうしを\textbf{線}で結ぶ。
+40銘柄を\textbf{点}とし、\textbf{相関の強い}銘柄どうしを\textbf{線}で結ぶ。
 相関 $r$ を距離 $d=\sqrt{2(1-r)}$ に変換し、類似した銘柄を近くに配置する。
 
 \vspace{2mm}
 \centering
 \includegraphics[width=0.82\linewidth]{../../figs/slide_network.png}\\
-{\color{muted}\small 40個の銘柄の相関ネットワーク（近い＝値動きが類似）}
+{\color{muted}\small 40銘柄の相関ネットワーク（近い＝値動きが類似）}
 
 \vspace{2mm}
 \raggedright
@@ -101,7 +101,7 @@
 
 \block{\bt{3.1}指標1：穴の持続期間}{%
 \large
-各点を中心に円を描き半径を大きくすると、円が重なった対が辺で結ばれ、\textbf{``輪（穴）''が現れ、やがて三角形が埋まって消える}。
+各点を中心に円を描き、半径を大きくすると、円が重なった対が辺で結ばれ、\textbf{``輪（穴）''が現れ、やがて三角形で埋まって消える}。
 
 \vspace{1mm}
 \centering
@@ -128,7 +128,7 @@ L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k),\quad
 
 \block{\bt{3.2}指標2：不均衡サイクルの数}{%
 各辺に\textbf{符号}を付ける（\textbf{正相関}＝$+$、\textbf{負相関}＝$-$）。
-サイクルを一周して\textbf{符号の積}をとる。
+サイクル $C$ を一周して\textbf{符号の積}をとる。
 
 \vspace{2mm}
 \centering
@@ -151,7 +151,7 @@ L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k),\quad
 }
 
 \block{\bt{3.3}2つの指標の独立性}{%
-指標1（穴）と指標2（不均衡）が、たがいにどれくらい似て動くかを\textbf{相関}で測った:
+指標1（穴）と指標2（不均衡）が、たがいにどれくらい連動するかを\textbf{相関}で測った:
 
 \vspace{1mm}
 \centering
@@ -162,7 +162,7 @@ L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k),\quad
 \begin{itemize}
 \setlength{\itemsep}{2mm}
 \item \textbf{近年ほど\color{accent}独立}（直近5年で相関 0.15）：穴と不均衡は\textbf{別々の情報}を持つ
-\item \textbf{古い時代ほど\color{warn}連動}（2006--11の 0.45 から直近 0.15 へ単調に低下）：20年通しの 0.40 は\textbf{2008危機を含む古いレジームの寄与}で、期間の長さでなく\textbf{時代の違い}が生む
+\item \textbf{古い時代ほど\color{warn}連動}（2006--11年の 0.45 から直近 0.15 へ単調に低下）：20年通しの 0.40 は\textbf{2008年金融危機を含む古い時代の寄与}で、期間の長さでなく\textbf{時代の違い}による
 \end{itemize}
 }
 
@@ -173,7 +173,7 @@ L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k),\quad
 \[
 z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \]
-{\color{muted}\small これで両指標とも平均0・標準偏差1になり\textbf{スケールの差が消える}。mean・sd＝その日までの値（未来は見ない）。}
+{\color{muted}\small これで両指標とも平均0・標準偏差1になり\textbf{スケールの差が消える}。mean・sd はその日までの値だけで計算（未来は見ない）。}
 
 \vspace{1mm}
 差分をとった指標:
@@ -184,7 +184,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \setlength{\itemsep}{1.5mm}
 \item \textbf{\color{warn}$\ediv > 0$（構造不安定シグナル）}：不均衡が穴を上回る＝
 市場の関係が\textbf{ねじれ始めている}。まとまり（正相関の群れ）が崩れ、
-今まで一緒に動いた銘柄が逆に動く。\textbf{\color{warn}秩序の崩壊の兆し} → 株を避ける
+一緒に動いていた銘柄が逆に動く。\textbf{\color{warn}秩序の崩壊の兆し} → 株を避ける
 \item \textbf{$\ediv < 0$（平常）}：穴が不均衡を上回る＝
 関係のねじれが少なく、\textbf{まとまりが保たれている} → 株を持つ
 \end{itemize}
@@ -194,7 +194,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \column{0.333}
 
 \block{\bt{3.5}なぜ「差分」なのか}{%
-片方だけでは効かない。同じ条件を\textbf{20年全体に当てはめた}ときの最大下落（指標どうしの比較。先読みを排した実力は4章）:
+片方だけでは効かない。同じ条件を\textbf{20年全体（2006--26年）に当てはめた}ときの最大下落（指標どうしの比較。未来を見ない\textbf{前進検証}は4章）:
 
 \vspace{2mm}
 \centering
@@ -215,7 +215,7 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \begin{itemize}
 \setlength{\itemsep}{1mm}
 \item 片方だけでは\textbf{何もしないのと大差なし}
-\item \textbf{\color{accent}差分にして初めて $-20\%$ に激変}
+\item \textbf{\color{accent}差分にして初めて $-20\%$ まで改善}
 \end{itemize}
 }
 
@@ -226,15 +226,15 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \vspace{2mm}
 \centering
 \includegraphics[width=0.78\linewidth]{../../figs/slide_equity_absolute.png}\\[1mm]
-{\color{muted}\footnotesize 直近5年の資産推移（例示）。下の数字は20年・16回の前進検証（S\&P 500、取引コスト込み）}
+{\color{muted}\footnotesize 直近5年の資産推移（例示）。下の数字は20年・16回の前進検証（検証区間 2009--25年、S\&P 500、取引コスト込み）}
 
 \vspace{1mm}
 \raggedright
 \begin{itemize}
 \setlength{\itemsep}{1mm}
 \item 最大下落 $-34\%\to\mathbf{-16\%}$：ランダム回避500本中の\textbf{上位1\%}、\textbf{VIX（恐怖指数）にも全勝}
-\item ただし\textbf{持ち続けは超えない}（総リターン $+597\%\to+197\%$、シャープ比 $0.63\!<\!0.74$）
-\item ＝構造の崩れによる\textbf{先取りの証明}（運用最適化は今後）
+\item ただし\textbf{持ち続けには及ばない}（総リターン $+597\%\to+197\%$、シャープ比 $0.63\!<\!0.74$）
+\item ＝構造の崩れが\textbf{下落を先取りする}ことの\textbf{実証}（運用最適化は今後）
 \end{itemize}
 }
 
@@ -243,7 +243,7 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \setlength{\itemsep}{1.5mm}
 \item \textbf{指標の作り込みは避ける}：$L^1$ の変種を30通り試したが、
 期間を分けると順位が入れ替わる\textbf{過剰適合}だった（順位相関 $-0.12$）
-\item \textbf{パラメータの調整}：窓の長さ・相関のしきい値を変えて結果を安定させる
+\item \textbf{パラメータの頑健性}：窓の長さ・相関のしきい値を変えても\textbf{結果が変わらないか}確かめる
 \item \textbf{他市場での再現}（欧州・アジア・暗号資産）で一般性を確かめる
 \item 暴落の\textbf{予知}への拡張（現状は初動の検知にとどまる）
 \end{itemize}
@@ -262,9 +262,9 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \textbf{\large 検証設計}\par\smallskip
 {\footnotesize
 \begin{itemize}\setlength{\itemsep}{1mm}
-\item \textbf{データ}: Yahoo Finance (yfinance) の40個の銘柄（為替・株価指数・個別株・商品・債券・暗号）、2006--2026年、日次終値
+\item \textbf{データ}: Yahoo Finance (yfinance) の40銘柄（為替・株価指数・個別株・商品・債券・暗号資産）、2006--2026年、日次終値
 \item \textbf{前進検証}: 3年学習/1年テストを20年で16回（未来を見ない）
-\item \textbf{比較}: ランダム回避500本・VIX より最大下落が浅い（OOS上位1\%）
+\item \textbf{比較}: ランダム回避500本・VIX より最大下落が浅い（前進検証で上位1\%）
 \item \textbf{先行性}: 政策ショック $\to\ediv$（グレンジャー検定 $p=0.02$）
 \end{itemize}}
 }
@@ -273,7 +273,7 @@ $\ediv>0$ の日に株を売って現金化する戦略を、
 \centering
 \textbf{\large GitHub}\quad{\color{muted}\small 全コード・データ公開}\\[1mm]
 \qrcode[height=28mm]{https://github.com/hajimedayo328/market-graph-presentation}\\[1mm]
-{\color{muted}\scriptsize 生成AI（Claude）を解析・作図・原稿に補助使用。着想・解釈は著者。}
+{\color{muted}\scriptsize 生成AI（Claude）を解析・作図・原稿作成の補助に使用。着想・解釈は著者。}
 }
 
 \end{columns}
