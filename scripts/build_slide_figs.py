@@ -86,8 +86,8 @@ def fig_scatter_raw():
     ax.plot(xs, a * xs + b, color=RED, lw=3.4, ls="--", label=f"回帰直線（相関 r={r:.2f}）")
     style_ax(ax)
     ax.tick_params(labelsize=21)
-    ax.set_xlabel("穴の指標 $L^1$（0〜2くらい）", fontsize=26, color=INK)
-    ax.set_ylabel("不均衡の数 $n_{unb}$（0〜80くらい）", fontsize=26, color=INK)
+    ax.set_xlabel("穴の指標 $L^1$（0〜2）", fontsize=26, color=INK)
+    ax.set_ylabel("不均衡の数 $n_{unb}$（0〜80）", fontsize=26, color=INK)
     ax.legend(loc="upper left", fontsize=22, frameon=True, framealpha=0.95, edgecolor="#cccccc")
     ax.set_title("穴 と 不均衡 は バラけている ＝ 連動しない（独立）",
                  fontsize=25, color=INK, weight="bold", pad=12)
@@ -293,7 +293,7 @@ def fig_network():
 
 def fig_balance():
     """3.2: 構造的均衡 (正相関＋/負相関−、符号の積で均衡/不均衡) 3例."""
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 6.2), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 6.9), dpi=150)
     A = (0.0, 0.9); B = (-0.8, -0.6); C = (0.8, -0.6)
     edges_xy = {"AB": (A, B), "AC": (A, C), "BC": (B, C)}
     cases = [
@@ -321,11 +321,11 @@ def fig_balance():
                     weight="bold", color=INK, zorder=6)
         ax.set_xlim(-1.45, 1.45); ax.set_ylim(-1.25, 1.4)
         ax.set_aspect("equal"); ax.axis("off")
-    fig.text(0.5, 0.075, "実線 ＝ 正相関（＋）　　破線 ＝ 負相関（−）",
+    fig.text(0.5, 0.105, "実線 ＝ 正相関（＋）　　破線 ＝ 負相関（−）",
              fontsize=34, color="#374151", ha="center")
     fig.text(0.5, 0.015, "符号の積が −1（負相関が奇数）＝ 不均衡サイクル",
              fontsize=34, color="#374151", ha="center")
-    fig.tight_layout(rect=[0, 0.14, 1, 1])
+    fig.tight_layout(rect=[0, 0.19, 1, 1])
     fig.savefig(FIGS / "slide_balance.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
     print("slide_balance.png")
