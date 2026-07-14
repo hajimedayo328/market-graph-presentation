@@ -1,0 +1,114 @@
+{
+ "description": "3.5表のしきい値感度(0.5-1.2)。ediv_best=差分が最大下落・シャープ両方で単独指標に勝ちB&Hより浅い",
+ "b_and_h": {
+  "maxdd": -0.5678,
+  "sharpe": 0.475
+ },
+ "by_threshold": {
+  "0.5": {
+   "e_div": {
+    "maxdd": -0.1454,
+    "sharpe": 0.646
+   },
+   "n_unb": {
+    "maxdd": -0.3772,
+    "sharpe": 0.257
+   },
+   "L1": {
+    "maxdd": -0.532,
+    "sharpe": 0.203
+   },
+   "ediv_best": true
+  },
+  "0.6": {
+   "e_div": {
+    "maxdd": -0.1318,
+    "sharpe": 0.805
+   },
+   "n_unb": {
+    "maxdd": -0.4092,
+    "sharpe": 0.307
+   },
+   "L1": {
+    "maxdd": -0.5292,
+    "sharpe": 0.197
+   },
+   "ediv_best": true
+  },
+  "0.7": {
+   "e_div": {
+    "maxdd": -0.2108,
+    "sharpe": 0.71
+   },
+   "n_unb": {
+    "maxdd": -0.4206,
+    "sharpe": 0.445
+   },
+   "L1": {
+    "maxdd": -0.561,
+    "sharpe": 0.177
+   },
+   "ediv_best": true
+  },
+  "0.8": {
+   "e_div": {
+    "maxdd": -0.2036,
+    "sharpe": 0.705
+   },
+   "n_unb": {
+    "maxdd": -0.4481,
+    "sharpe": 0.438
+   },
+   "L1": {
+    "maxdd": -0.5635,
+    "sharpe": 0.196
+   },
+   "ediv_best": true
+  },
+  "0.9": {
+   "e_div": {
+    "maxdd": -0.2513,
+    "sharpe": 0.716
+   },
+   "n_unb": {
+    "maxdd": -0.4681,
+    "sharpe": 0.514
+   },
+   "L1": {
+    "maxdd": -0.5522,
+    "sharpe": 0.225
+   },
+   "ediv_best": true
+  },
+  "1.0": {
+   "e_div": {
+    "maxdd": -0.2513,
+    "sharpe": 0.65
+   },
+   "n_unb": {
+    "maxdd": -0.4632,
+    "sharpe": 0.494
+   },
+   "L1": {
+    "maxdd": -0.5439,
+    "sharpe": 0.286
+   },
+   "ediv_best": true
+  },
+  "1.2": {
+   "e_div": {
+    "maxdd": -0.3456,
+    "sharpe": 0.5
+   },
+   "n_unb": {
+    "maxdd": -0.4875,
+    "sharpe": 0.505
+   },
+   "L1": {
+    "maxdd": -0.5372,
+    "sharpe": 0.284
+   },
+   "ediv_best": false
+  }
+ }
+}
