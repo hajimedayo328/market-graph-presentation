@@ -310,7 +310,7 @@ def fig_balance_real():
     label = {"RUS2000": "小型株", "NAS100": "ナスダック", "MSFT": "MSFT"}
     pairs = [("RUS2000", "NAS100"), ("NAS100", "MSFT"), ("RUS2000", "MSFT")]
 
-    fig, axes = plt.subplots(1, 3, figsize=(14.4, 9.6), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(14.4, 12.2), dpi=150)
     for ax, (xc, yc) in zip(axes, pairs):
         xv, yv = win[xc].values * 100, win[yc].values * 100
         r = float(np.corrcoef(xv, yv)[0, 1])
@@ -328,10 +328,10 @@ def fig_balance_real():
         ax.set_ylabel(f"{label[yc]} (%)", fontsize=29, color=INK)
         style_ax(ax)
         ax.tick_params(labelsize=22)
-    fig.text(0.5, 0.005,
+    fig.text(0.5, 0.008,
              "2 つは ＋ なのに 1 つだけ − ＝ 符号の積が −  ⇒  不均衡サイクル",
-             fontsize=33, color=RED, ha="center", weight="bold")
-    fig.tight_layout(rect=[0, 0.095, 1, 1])
+             fontsize=38, color=RED, ha="center", weight="bold")
+    fig.tight_layout(rect=[0, 0.075, 1, 1])
     fig.savefig(FIGS / "slide_balance_real.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
     rs = {f"{x}-{y}": round(float(np.corrcoef(win[x], win[y])[0, 1]), 3) for x, y in pairs}
