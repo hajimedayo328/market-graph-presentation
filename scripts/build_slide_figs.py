@@ -310,29 +310,29 @@ def fig_balance_real():
     label = {"RUS2000": "小型株", "NAS100": "ナスダック", "MSFT": "MSFT"}
     pairs = [("RUS2000", "NAS100"), ("NAS100", "MSFT"), ("RUS2000", "MSFT")]
 
-    fig, axes = plt.subplots(1, 3, figsize=(14.4, 5.4), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(14.4, 6.4), dpi=150)
     for ax, (xc, yc) in zip(axes, pairs):
         xv, yv = win[xc].values * 100, win[yc].values * 100
         r = float(np.corrcoef(xv, yv)[0, 1])
         col = ACCENT if r > 0 else RED
         ax.axhline(0, color="#e3e6ea", lw=1.2, zorder=0)
         ax.axvline(0, color="#e3e6ea", lw=1.2, zorder=0)
-        ax.scatter(xv, yv, s=95, c=col, alpha=0.5, edgecolors="none", zorder=3)
+        ax.scatter(xv, yv, s=130, c=col, alpha=0.5, edgecolors="none", zorder=3)
         a, b = np.polyfit(xv, yv, 1)
         xs = np.linspace(xv.min(), xv.max(), 50)
-        ax.plot(xs, a * xs + b, color=col, lw=4,
+        ax.plot(xs, a * xs + b, color=col, lw=5,
                 ls="-" if r > 0 else (0, (6, 4)), zorder=4)
         head = f"{label[xc]} と {label[yc]}"
         sub = f"＋ 一緒に動く（r={r:+.2f}）" if r > 0 else f"− 逆に動く（r={r:+.2f}）"
-        ax.set_title(f"{head}\n{sub}", fontsize=25, color=col, weight="bold", pad=10)
-        ax.set_xlabel(f"{label[xc]} の変化率(%)", fontsize=20, color=INK)
-        ax.set_ylabel(f"{label[yc]} の変化率(%)", fontsize=20, color=INK)
+        ax.set_title(f"{head}\n{sub}", fontsize=31, color=col, weight="bold", pad=12)
+        ax.set_xlabel(f"{label[xc]} の変化率(%)", fontsize=24, color=INK)
+        ax.set_ylabel(f"{label[yc]} の変化率(%)", fontsize=24, color=INK)
         style_ax(ax)
-        ax.tick_params(labelsize=17)
+        ax.tick_params(labelsize=21)
     fig.text(0.5, 0.005,
              "2 つは ＋ なのに 1 つだけ − ＝ 符号の積が −  ⇒  不均衡サイクル",
-             fontsize=27, color=RED, ha="center", weight="bold")
-    fig.tight_layout(rect=[0, 0.085, 1, 1])
+             fontsize=33, color=RED, ha="center", weight="bold")
+    fig.tight_layout(rect=[0, 0.095, 1, 1])
     fig.savefig(FIGS / "slide_balance_real.png", bbox_inches="tight", facecolor="white")
     plt.close(fig)
     rs = {f"{x}-{y}": round(float(np.corrcoef(win[x], win[y])[0, 1]), 3) for x, y in pairs}
