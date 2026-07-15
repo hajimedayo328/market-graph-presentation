@@ -29,30 +29,18 @@ jobs:
           extra_system_packages: |
             font-noto-cjk
 
-      - name: Compile Q&A backup sheet (A4)
-        uses: xu-cheng/latex-action@v3
-        with:
-          root_file: qa_backup.tex
-          working_directory: docs/poster
-          compiler: latexmk
-          args: -pdfxe -interaction=nonstopmode -halt-on-error -file-line-error
-          extra_system_packages: |
-            font-noto-cjk
-
       - name: List generated files
         run: |
           ls -la docs/poster/
-          for f in poster qa_backup; do
-            if [ -f "docs/poster/$f.pdf" ]; then
-              echo "$f.pdf size: $(stat -c%s docs/poster/$f.pdf) bytes"
-            fi
-          done
+          if [ -f docs/poster/poster.pdf ]; then
+            echo "Poster PDF size: $(stat -c%s docs/poster/poster.pdf) bytes"
+          fi
 
-      - name: Commit PDFs
+      - name: Commit PDF
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name  "github-actions[bot]"
-          git add docs/poster/poster.pdf docs/poster/qa_backup.pdf
+          git add docs/poster/poster.pdf
           if git diff --cached --quiet; then
             echo "No PDF changes to commit."
           else
@@ -66,7 +54,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: poster-pdf
-          path: |
-            docs/poster/poster.pdf
-            docs/poster/qa_backup.pdf
+          path: docs/poster/poster.pdf
           retention-days: 30
