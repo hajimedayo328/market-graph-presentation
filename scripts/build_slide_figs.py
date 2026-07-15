@@ -291,6 +291,54 @@ def fig_network():
     print(f"slide_network.png  (nodes={G.number_of_nodes()}, edges={G.number_of_edges()})")
 
 
+def fig_balance_real():
+    """3.2: 実データの不均衡サイクル (正2・負1) を散布図3枚で示す.
+
+    2023-12 の 30 日窓: 小型株(RUS2000)とナスダック(NAS100)は正相関、
+    ナスダックとMSFTも正相関、なのに小型株とMSFTは負相関 = 矛盾(不均衡)。
+    通貨ペアは三角裁定の恒等式で自明な負相関が出るため、株式のみで選定。
+    """
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ohlc = pd.read_parquet(DATA / "ohlc_40_20y.parquet")
+        rets = ohlc.pct_change()
+    end = pd.Timestamp("2023-12-16")
+    idx = int(rets.index.get_indexer([end], method="nearest")[0])
+    cols = ["RUS2000", "NAS100", "MSFT"]
+    win = rets.iloc[idx - 30:idx][cols].dropna()
+    label = {"RUS2000": "小型株", "NAS100": "ナスダック", "MSFT": "MSFT"}
+    pairs = [("RUS2000", "NAS100"), ("NAS100", "MSFT"), ("RUS2000", "MSFT")]
+
+    fig, axes = plt.subplots(1, 3, figsize=(14.4, 5.4), dpi=150)
+    for ax, (xc, yc) in zip(axes, pairs):
+        xv, yv = win[xc].values * 100, win[yc].values * 100
+        r = float(np.corrcoef(xv, yv)[0, 1])
+        col = ACCENT if r > 0 else RED
+        ax.axhline(0, color="#e3e6ea", lw=1.2, zorder=0)
+        ax.axvline(0, color="#e3e6ea", lw=1.2, zorder=0)
+        ax.scatter(xv, yv, s=95, c=col, alpha=0.5, edgecolors="none", zorder=3)
+        a, b = np.polyfit(xv, yv, 1)
+        xs = np.linspace(xv.min(), xv.max(), 50)
+        ax.plot(xs, a * xs + b, color=col, lw=4,
+                ls="-" if r > 0 else (0, (6, 4)), zorder=4)
+        head = f"{label[xc]} と {label[yc]}"
+        sub = f"＋ 一緒に動く（r={r:+.2f}）" if r > 0 else f"− 逆に動く（r={r:+.2f}）"
+        ax.set_title(f"{head}\n{sub}", fontsize=25, color=col, weight="bold", pad=10)
+        ax.set_xlabel(f"{label[xc]} の変化率(%)", fontsize=20, color=INK)
+        ax.set_ylabel(f"{label[yc]} の変化率(%)", fontsize=20, color=INK)
+        style_ax(ax)
+        ax.tick_params(labelsize=17)
+    fig.text(0.5, 0.005,
+             "2 つは ＋ なのに 1 つだけ − ＝ 符号の積が −  ⇒  不均衡サイクル",
+             fontsize=27, color=RED, ha="center", weight="bold")
+    fig.tight_layout(rect=[0, 0.085, 1, 1])
+    fig.savefig(FIGS / "slide_balance_real.png", bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    rs = {f"{x}-{y}": round(float(np.corrcoef(win[x], win[y])[0, 1]), 3) for x, y in pairs}
+    print(f"slide_balance_real.png  {win.index.min().date()}〜{win.index.max().date()}  {rs}")
+
+
 def fig_balance():
     """3.2: 構造的均衡 (正相関＋/負相関−、符号の積で均衡/不均衡) 3例."""
     fig, axes = plt.subplots(1, 3, figsize=(13.5, 7.3), dpi=150)
