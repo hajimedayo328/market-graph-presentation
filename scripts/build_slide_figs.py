@@ -310,7 +310,7 @@ def fig_balance_real():
     label = {"RUS2000": "小型株", "NAS100": "ナスダック", "MSFT": "MSFT"}
     pairs = [("RUS2000", "NAS100"), ("NAS100", "MSFT"), ("RUS2000", "MSFT")]
 
-    fig, axes = plt.subplots(1, 3, figsize=(14.4, 7.8), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(14.4, 9.6), dpi=150)
     for ax, (xc, yc) in zip(axes, pairs):
         xv, yv = win[xc].values * 100, win[yc].values * 100
         r = float(np.corrcoef(xv, yv)[0, 1])
