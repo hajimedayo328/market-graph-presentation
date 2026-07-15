@@ -310,7 +310,7 @@ def fig_balance_real():
     label = {"RUS2000": "小型株", "NAS100": "ナスダック", "MSFT": "MSFT"}
     pairs = [("RUS2000", "NAS100"), ("NAS100", "MSFT"), ("RUS2000", "MSFT")]
 
-    fig, axes = plt.subplots(1, 3, figsize=(14.4, 6.4), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(14.4, 7.8), dpi=150)
     for ax, (xc, yc) in zip(axes, pairs):
         xv, yv = win[xc].values * 100, win[yc].values * 100
         r = float(np.corrcoef(xv, yv)[0, 1])
@@ -322,13 +322,12 @@ def fig_balance_real():
         xs = np.linspace(xv.min(), xv.max(), 50)
         ax.plot(xs, a * xs + b, color=col, lw=5,
                 ls="-" if r > 0 else (0, (6, 4)), zorder=4)
-        head = f"{label[xc]} と {label[yc]}"
-        sub = f"＋ 一緒に動く（r={r:+.2f}）" if r > 0 else f"− 逆に動く（r={r:+.2f}）"
-        ax.set_title(f"{head}\n{sub}", fontsize=31, color=col, weight="bold", pad=12)
-        ax.set_xlabel(f"{label[xc]} の変化率(%)", fontsize=24, color=INK)
-        ax.set_ylabel(f"{label[yc]} の変化率(%)", fontsize=24, color=INK)
+        sub = f"＋ 一緒に動く\nr={r:+.2f}" if r > 0 else f"− 逆に動く\nr={r:+.2f}"
+        ax.set_title(sub, fontsize=32, color=col, weight="bold", pad=10, linespacing=1.3)
+        ax.set_xlabel(f"{label[xc]} (%)", fontsize=29, color=INK)
+        ax.set_ylabel(f"{label[yc]} (%)", fontsize=29, color=INK)
         style_ax(ax)
-        ax.tick_params(labelsize=21)
+        ax.tick_params(labelsize=22)
     fig.text(0.5, 0.005,
              "2 つは ＋ なのに 1 つだけ − ＝ 符号の積が −  ⇒  不均衡サイクル",
              fontsize=33, color=RED, ha="center", weight="bold")
