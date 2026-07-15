@@ -6,20 +6,20 @@
     {
       "dataset": "5y USA",
       "file": "gamma_timeseries_w30.csv",
-      "n": 1797,
-      "pearson_r_calc": 0.1616,
+      "n": 1795,
+      "pearson_r_calc": 0.1498,
       "pearson_r_paper": 0.16,
-      "pearson_r_match_2dp": true,
-      "pc1_variance_calc": 0.5808,
+      "pearson_r_match_2dp": false,
+      "pc1_variance_calc": 0.5749,
       "pc1_variance_paper": 0.58,
-      "pc1_match_2dp": true,
+      "pc1_match_2dp": false,
       "correlation_matrix": [
         [
           1.0,
-          0.1616
+          0.1498
         ],
         [
-          0.1616,
+          0.1498,
           1.0
         ]
       ]
