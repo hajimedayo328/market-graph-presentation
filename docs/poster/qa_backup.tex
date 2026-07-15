@@ -1,0 +1,117 @@
+% !TEX program = xelatex
+% 発表当日の想定質問バックアップシート (A4・1枚・手元用)
+\documentclass[9pt,a4paper]{article}
+\usepackage[margin=8mm]{geometry}
+\usepackage{xeCJK}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{enumitem}
+\setCJKmainfont{Noto Serif CJK JP}
+\setCJKsansfont{Noto Sans CJK JP}
+\definecolor{accent}{HTML}{1F5FE0}
+\definecolor{warn}{HTML}{B5322E}
+\definecolor{muted}{HTML}{555555}
+\setlength{\parindent}{0pt}
+\pagestyle{empty}
+\newcommand{\ediv}{e_{\mathrm{div}}}
+\newcommand{\nunb}{n_{\mathrm{unb}}}
+\newcommand{\qa}[2]{{\color{accent}\textbf{Q. #1}}\\ #2 \par\smallskip}
+
+\begin{document}
+{\large\textbf{想定質問バックアップ}}\quad{\color{muted}\small 全コード・データ: github.com/hajimedayo328/market-graph-presentation}
+
+\vspace{1mm}\hrule\vspace{2mm}
+
+\begin{multicols}{2}
+{\color{accent}\textbf{■ 中心の数字（20年 前進検証 OOS・2009--25年・16 fold）}}\par\smallskip
+{\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & 最大下落 & Sharpe & 総リターン\\
+\midrule
+$\ediv$ 戦略 & \textbf{--16.1\%} & 0.63 & +197\%\\
+持ち続け & --33.9\% & \textbf{0.74} & \textbf{+597\%}\\
+VIX ルール & --20.4\% & 0.55 & +111\%\\
+ランダム500本 & 平均 --28.7\% & --- & ---\\
+\bottomrule
+\end{tabular}\par\smallskip
+$\ediv$ の最大下落は\textbf{ランダム500本中の上位1\%}（$p=0.01$）。VIX には3項目とも勝ち。\\
+{\color{muted}→ data/backtest\_oos\_random\_vix.json （scripts/backtest\_oos\_random\_vix.py）}
+}
+
+\vspace{2mm}
+{\color{accent}\textbf{■ 独立性（年代別の実測）}}\par\smallskip
+{\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+期間 & $r(L^1,\nunb)$ & \\
+\midrule
+2006--11年 & 0.45 & 古いほど連動\\
+2011--16年 & 0.35 & \\
+2016--21年 & 0.22 & \\
+2021--26年 & \textbf{0.15} & 近年ほど独立\\
+20年通し & 0.40 & 2008年危機の寄与\\
+\bottomrule
+\end{tabular}\par\smallskip
+30日おきに間引いても $r=0.44$（自己相関の影響は小）。\\
+{\color{muted}→ data/gamma\_timeseries\_20y\_w30.csv, data/independence\_robustness.json}
+}
+
+\vspace{2mm}
+{\color{accent}\textbf{■ しきい値0.8の感度（3.5表）}}\par\smallskip
+{\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+th & $\ediv$ & $\nunb$だけ & 差分が最良?\\
+\midrule
+0.5 & --15\% & --38\% & YES\\
+0.6 & \textbf{--13\%} & --41\% & YES\\
+0.8 & --20\% & --45\% & YES\\
+1.0 & --25\% & --46\% & YES\\
+1.2 & --35\% & --49\% & NO\\
+\bottomrule
+\end{tabular}\par\smallskip
+\textbf{0.5--1.0 のどこで切っても順位は不変}。0.8 は最適化した値ではない（0.6 の方が良い）。\\
+{\color{muted}→ data/threshold\_sensitivity\_20y.json}
+}
+
+\vspace{2mm}
+{\color{accent}\textbf{■ 売買頻度（実質スイングトレード）}}\par\smallskip
+{\small
+年\textbf{19回}売買（13営業日に1回）／現金でいる期間は中央値\textbf{8営業日}／現金化率\textbf{47.5\%}／取引コスト片道0.05\%\par\smallskip
+{\color{muted}→ scripts/reproduce\_poster\_numbers.py（ヒステリシス5日）}
+}
+
+\columnbreak
+
+{\color{warn}\textbf{■ 想定質問と答え}}\par\smallskip
+{\small
+\qa{その --20\% と --16\% は何が違う?}{表(3.5)は\textbf{指標どうしの比較}のため20年全体に固定しきい値0.8を当てはめた値。4章の--16\%が\textbf{未来を見ない前進検証}の実力。}
+
+\qa{なぜ 0.8?}{分布の上位2割相当。ただし\textbf{0.5--1.0のどこで切っても表の順位は変わらない}（感度検証済み）。むしろ0.6の方が成績は良く、0.8を選んで最適化したわけではない。4章では\textbf{しきい値自体を学習}するので0.8には依存しない（実際の値は0.56--1.21）。}
+
+\qa{独立と言うが20年では0.40では?}{\textbf{近年ほど独立}（直近5年0.15）。20年で0.40に上がるのは\textbf{2008年危機を含む古い時代の寄与}で、期間の長さでなく時代の違い。}
+
+\qa{儲かるのか / 持ち続けに勝つのか}{\textbf{勝ちません}。リターンもSharpeも持ち続けに劣る。これは\textbf{儲けるためでなく、下落を先取りする検知力を示す}研究。}
+
+\qa{株を売れば誰でも下落は減るのでは?}{その通り。だから\textbf{ランダムに同じ量売った500本と比較}した。$\ediv$はその\textbf{上位1\%}。避けた事実でなく\textbf{タイミングの上手さ}が主張。}
+
+\qa{短期売買なら使える?}{既に\textbf{年19回売買＝実質スイングトレード}で、その頻度で検証した結果が上の成績。空売りへの応用は\textbf{未検証}。30日窓なので超短期には原理的に不向き。}
+
+\qa{先読みしていない?}{z標準化はexpanding（その日まで）、しきい値は学習期間のみ、執行は\textbf{翌日始値}。3年学習/1年テストを16回。}
+
+\qa{因果と言える?}{言いません。グレンジャーは\textbf{先行性}のみ。自前のDAG分析では直接の辺が消えるため（隠れた共通要因の可能性）、\textbf{因果は主張しない}。{\color{muted}→ data/causal\_dag\_results.json}}
+
+\qa{なぜ差分（引き算）?}{単独指標では効かず\textbf{差分にして初めて改善}（3.5表）。数学的にも、連動していれば $\mathrm{Var}[\ediv]=2(1-\rho)\to0$ で何も測れず、\textbf{独立（0.15）だから超過情報が残る}。}
+
+\qa{なぜ三角形でなく長いサイクル?}{強い相関(|r|$\geq$0.5)だけで見ると\textbf{「正2・負1」の三角形は実データに存在しない}（三角形自体は300個以上ある）。市場は株/通貨グループに分かれ均衡が保たれ、\textbf{不均衡は長いサイクルで生じる}。}
+
+\qa{TDA / Z/2 とは?}{TDA＝データの``形''（穴）を数える数学。3.1の円を膨らませる操作が持続ホモロジー。Z/2＝偶数か奇数かだけを見る計算で、3.2の符号の積の判定がまさにそれ。}
+}
+\end{multicols}
+
+\vfill
+{\color{muted}\scriptsize 弱点として正直に言えること: ①イベントスタディのpre上昇は窓幅に脆弱（40日で消える）ためポスターに載せていない ②単独指標のOOS版は未計算（3.5表はin-sample比較）③$\nunb$のカウントはサイクル基底の取り方に依存（$L^1$ほどcanonicalではない）}
+\end{document}
