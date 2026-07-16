@@ -157,21 +157,43 @@ def fig_lifetime():
         (0.33, 0.05, False),
         (0.40, 0.05, False),
     ]
-    y = len(bars)
-    for (s, ln, real) in bars:
-        y -= 1
+    # 1本目(注釈用)は独立した上段に、残りは下に詰める
+    GAP = 1.6           # 注釈バーと他バーの間隔
+    ys = []
+    for i, (s, ln, real) in enumerate(bars):
+        y = (len(bars) - 1) - i
+        if i > 0:
+            y -= GAP    # 2本目以降を下げて、1本目の下に注釈スペースを作る
+        ys.append(y)
         c = ACCENT if real else "#9aa0a8"
         h = 0.44 if real else 0.30
         ax.barh(y, ln, left=s, height=h, color=c)
-    ax.text(0.70, len(bars) - 1, "← 本物の穴（長く残る＝市場の構造）",
+
+    # --- 1本目のバーで b / d / 寿命 (d-b) を図示 ---
+    bs, bln = bars[0][0], bars[0][1]
+    by = ys[0]
+    bd = bs + bln
+    for x, lab, note in [(bs, "$b_k$", "現れる"), (bd, "$d_k$", "消える")]:
+        ax.plot([x, x], [by - 0.95, by + 0.32], color=INK, lw=2, ls=":", zorder=4)
+        ax.text(x, by + 0.38, lab, fontsize=36, color=INK, ha="center", va="bottom",
+                weight="bold", zorder=6)
+        ax.text(x, by + 1.02, note, fontsize=26, color=MUTED, ha="center", va="bottom", zorder=6)
+    ax.annotate("", xy=(bd, by - 0.72), xytext=(bs, by - 0.72),
+                arrowprops=dict(arrowstyle="<->", color=RED, lw=3), zorder=5)
+    ax.text((bs + bd) / 2, by - 0.84, "寿命 $= d_k - b_k$", fontsize=35, color=RED,
+            ha="center", va="top", weight="bold", zorder=5)
+
+    ax.text(bd + 0.10, by, "← 本物の穴（長く残る＝市場の構造）",
             fontsize=37, color=ACCENT, va="center", weight="bold")
-    ax.text(0.46, len(bars) - 5, "← ノイズ（すぐ消える）",
+    ax.text(0.60, ys[4], "← ノイズ（すぐ消える）",
             fontsize=33, color=MUTED, va="center")
-    ax.annotate("", xy=(1.02, -0.75), xytext=(0.0, -0.75),
+    base = min(ys) - 1.0
+    ax.annotate("", xy=(1.02, base), xytext=(0.0, base),
                 arrowprops=dict(arrowstyle="->", color=INK, lw=2.2))
-    ax.text(0.5, -1.6, "円の半径を大きくする →", fontsize=33, color=INK, ha="center")
-    ax.set_xlim(-0.02, 1.4)
-    ax.set_ylim(-2.1, len(bars))
+    ax.text(0.5, base - 0.55, "円の半径を大きくする →", fontsize=33, color=INK,
+            ha="center", va="top")
+    ax.set_xlim(-0.02, 1.45)
+    ax.set_ylim(base - 2.0, len(bars) + 1.2)
     ax.axis("off")
     fig.tight_layout()
     fig.savefig(FIGS / "slide_lifetime.png", bbox_inches="tight", facecolor="white")
