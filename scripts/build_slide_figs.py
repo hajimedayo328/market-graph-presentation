@@ -158,7 +158,7 @@ def fig_lifetime():
         (0.40, 0.05, False),
     ]
     # 1本目(注釈用)は独立した上段に、残りは下に詰める
-    GAP = 1.6           # 注釈バーと他バーの間隔
+    GAP = 2.3           # 注釈バーと他バーの間隔
     ys = []
     for i, (s, ln, real) in enumerate(bars):
         y = (len(bars) - 1) - i
@@ -178,9 +178,9 @@ def fig_lifetime():
         ax.text(x, by + 0.38, lab, fontsize=36, color=INK, ha="center", va="bottom",
                 weight="bold", zorder=6)
         ax.text(x, by + 1.02, note, fontsize=26, color=MUTED, ha="center", va="bottom", zorder=6)
-    ax.annotate("", xy=(bd, by - 0.72), xytext=(bs, by - 0.72),
+    ax.annotate("", xy=(bd, by - 0.62), xytext=(bs, by - 0.62),
                 arrowprops=dict(arrowstyle="<->", color=RED, lw=3), zorder=5)
-    ax.text((bs + bd) / 2, by - 0.84, "寿命 $= d_k - b_k$", fontsize=35, color=RED,
+    ax.text((bs + bd) / 2, by - 0.80, "寿命 $= d_k - b_k$", fontsize=35, color=RED,
             ha="center", va="top", weight="bold", zorder=5)
 
     ax.text(bd + 0.10, by, "← 本物の穴（長く残る＝市場の構造）",
