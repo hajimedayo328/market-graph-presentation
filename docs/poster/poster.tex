@@ -98,14 +98,14 @@
 \setlength{\itemsep}{1mm}
 \item \textbf{正相関}（一緒に動く）＝実線
 \item \textbf{負相関}（逆に動く）＝破線
-\item 値動きが\textbf{似ている}ほど\textbf{近く}に置く
+\item 相関 $r$ を距離 $d=\sqrt{2(1-r)}$ に変換して扱う（Mantegna 1999）
 \end{itemize}
 
 \vspace{2mm}
 \centering
 \includegraphics[width=0.82\linewidth]{../../figs/slide_network.png}\\
-{\color{muted}\small 配置は可視化用の2次元近似。\textbf{計算は相関行列から直接}。
-距離は $d=\sqrt{2(1-r)}$（Mantegna 1999）}
+{\color{muted}\small \textbf{点の配置に意味はない}（見やすさのための模式図）。
+指標は図でなく\textbf{相関行列から直接}計算する}
 
 \vspace{2mm}
 \raggedright
