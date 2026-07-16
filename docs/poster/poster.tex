@@ -160,6 +160,7 @@ L^1 = \sum_{(b_k,d_k)\in\mathrm{Dgm}(H_1)}(d_k - b_k),\quad
 \[
 \nunb = \text{不均衡サイクルの個数}\quad\Bigl(\textstyle\prod_{\text{辺}\in C}\mathrm{sign}(r)=-1\Bigr)
 \]
+{\color{muted}\small $\mathrm{sign}(r)$＝相関の符号（正相関なら $+1$、負相関なら $-1$）。}
 
 \vspace{2mm}
 \centering
@@ -190,7 +191,8 @@ z(x_t) = \frac{x_t - \mathrm{mean}(x_{\le t})}{\mathrm{sd}(x_{\le t})}
 \quad\Longrightarrow\quad
 \boxed{\ediv = z(\nunb) - z(L^1)}
 \]
-{\color{muted}\small mean・sd はその日まで（未来を見ない）}
+{\color{muted}\small $x_t$＝指標のその日の値、$x_{\le t}$＝\textbf{その日までの全履歴}。
+mean＝その平均、sd＝その標準偏差（\textbf{未来を見ない}）。}
 
 \vspace{1.5mm}
 \begin{itemize}
