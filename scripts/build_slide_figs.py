@@ -177,7 +177,7 @@ def fig_lifetime():
         ax.plot([x, x], [by - 0.95, by + 0.32], color=INK, lw=2, ls=":", zorder=4)
         ax.text(x, by + 0.38, lab, fontsize=36, color=INK, ha="center", va="bottom",
                 weight="bold", zorder=6)
-        ax.text(x, by + 1.02, note, fontsize=26, color=MUTED, ha="center", va="bottom", zorder=6)
+        ax.text(x, by + 1.35, note, fontsize=26, color=MUTED, ha="center", va="bottom", zorder=6)
     ax.annotate("", xy=(bd, by - 0.62), xytext=(bs, by - 0.62),
                 arrowprops=dict(arrowstyle="<->", color=RED, lw=3), zorder=5)
     ax.text((bs + bd) / 2, by - 0.80, "寿命 $= d_k - b_k$", fontsize=35, color=RED,
