@@ -1,0 +1,36 @@
+{
+ "description": "L1の半径打ち切り(√2=相関0)が結果に影響するかの検証。thresh=√2(現行) vs 切らない場合の比較",
+ "n_windows": 359,
+ "step_bdays": 5,
+ "date_range": [
+  "2021-07-10",
+  "2026-06-04"
+ ],
+ "holes_born_after_sqrt2": {
+  "total": 7,
+  "windows_with_any": 6
+ },
+ "L1_correlation_cut_vs_full": 0.9997,
+ "L1_cut": {
+  "mean": 1.0345,
+  "median": 1.0088
+ },
+ "L1_full": {
+  "mean": 1.0363,
+  "median": 1.0113
+ },
+ "diff_full_minus_cut": {
+  "mean": 0.0019,
+  "median": 0.0,
+  "max": 0.0458
+ },
+ "relative_diff_pct": {
+  "median": 0.0,
+  "p90": 0.14,
+  "max": 8.81
+ },
+ "n_bars": {
+  "cut_mean": 16.45,
+  "full_mean": 16.47
+ }
+}
