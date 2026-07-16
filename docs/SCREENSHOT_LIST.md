@@ -5,6 +5,9 @@
 
 リポジトリ: https://github.com/hajimedayo328/market-graph-presentation
 
+> **数字の「なんで?」に答えるページ** → [NUMBERS.md](NUMBERS.md)
+> （しきい値・窓・パラメータの根拠と、コード行・一次データへの直リンク）
+
 ---
 
 ## 優先度A：ほぼ確実に聞かれる（必ず撮る）
