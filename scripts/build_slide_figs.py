@@ -310,7 +310,7 @@ def fig_balance_real():
     label = {"RUS2000": "小型株", "NAS100": "ナスダック", "MSFT": "MSFT"}
     pairs = [("RUS2000", "NAS100"), ("NAS100", "MSFT"), ("RUS2000", "MSFT")]
 
-    fig, axes = plt.subplots(1, 3, figsize=(14.4, 14.0), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(14.4, 16.5), dpi=150)
     for ax, (xc, yc) in zip(axes, pairs):
         xv, yv = win[xc].values * 100, win[yc].values * 100
         r = float(np.corrcoef(xv, yv)[0, 1])
@@ -340,7 +340,7 @@ def fig_balance_real():
 
 def fig_balance():
     """3.2: 構造的均衡 (正相関＋/負相関−、符号の積で均衡/不均衡) 3例."""
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 7.3), dpi=150)
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 6.6), dpi=150)
     A = (0.0, 0.9); B = (-0.8, -0.6); C = (0.8, -0.6)
     edges_xy = {"AB": (A, B), "AC": (A, C), "BC": (B, C)}
     cases = [
