@@ -1,0 +1,27 @@
+{
+ "description": "L1/n_unbが平均相関でどれだけ説明されるか、統制後に独立性が残るかの検証",
+ "n_days": 6408,
+ "window": 30,
+ "date_range": [
+  "2006-07-03",
+  "2026-05-22"
+ ],
+ "20y_full": {
+  "corr_L1_nunb_raw": 0.399,
+  "corr_L1_meanAbsR": -0.7177,
+  "corr_nunb_meanAbsR": -0.3471,
+  "partial_corr_L1_nunb_given_meanAbsR": 0.2296,
+  "R2_L1_explained_by_meanAbsR": 0.5151,
+  "corr_residualL1_vs_L1": 0.6963,
+  "corr_residualL1_vs_nunb": 0.2153
+ },
+ "recent_5y": {
+  "corr_L1_nunb_raw": 0.1647,
+  "corr_L1_meanAbsR": -0.6707,
+  "corr_nunb_meanAbsR": -0.0981,
+  "partial_corr_L1_nunb_given_meanAbsR": 0.1341,
+  "R2_L1_explained_by_meanAbsR": 0.4499,
+  "corr_residualL1_vs_L1": 0.7417,
+  "corr_residualL1_vs_nunb": 0.1334
+ }
+}
