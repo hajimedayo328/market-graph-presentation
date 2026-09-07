@@ -17,7 +17,7 @@ REPO = r"C:/Users/hajim/dev/market-graph-presentation"
 SQRT2 = _MAX_EDGE_LENGTH
 STEP = 5  # 5営業日おき
 
-ohlc = pd.read_parquet(f"{REPO}/data/ohlc_40.parquet")
+ohlc = pd.read_parquet(f"{REPO}/data/ohlc_40_20y.parquet")
 rets = ohlc.pct_change()
 
 rows = []
