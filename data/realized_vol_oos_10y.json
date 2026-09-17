@@ -1,0 +1,28 @@
+{
+ "description": "e_div vs 直近20日実現ボラ(過去のみ) の前進検証比較。VIX枠に実現ボラを流し、fold毎に同じ現金化率でしきい値を学習",
+ "period": "10y",
+ "n_random": 100,
+ "price_source": "data/ohlc parquet SP500 (offline)",
+ "ediv": {
+  "total_return": 0.3159,
+  "cagr": 0.0468,
+  "sharpe": 0.3989,
+  "max_drawdown": -0.1704
+ },
+ "buy_hold": {
+  "total_return": 1.0788,
+  "sharpe": 0.6184,
+  "max_drawdown": -0.3392
+ },
+ "realized_vol_20d": {
+  "total_return": 0.2601,
+  "cagr": 0.0393,
+  "sharpe": 0.5683,
+  "max_drawdown": -0.1031
+ },
+ "ediv_beats_rv": {
+  "ediv_beats_vix_sharpe": false,
+  "ediv_beats_vix_maxdd": false,
+  "ediv_beats_vix_return": true
+ }
+}
