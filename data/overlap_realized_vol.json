@@ -1,0 +1,155 @@
+{
+ "description": "前進検証での e_div ルールと実現ボラ20日ルールの現金化日の重なりと組み合わせ(OR/AND)",
+ "results": {
+  "20y": {
+   "period": "20y",
+   "oos_span": "2009-07-06〜2025-07-15",
+   "oos_days": 4032,
+   "cash_days": {
+    "ediv": 1776,
+    "rv20": 1814,
+    "both": 1085,
+    "either": 2505
+   },
+   "overlap": {
+    "jaccard": 0.433,
+    "share_of_ediv_cash_days_also_rv": 0.611,
+    "share_of_rv_cash_days_also_ediv": 0.598,
+    "expected_jaccard_if_independent": 0.286
+   },
+   "corr_daily_ediv_vs_rv": 0.251,
+   "strategies": {
+    "buy_hold": {
+     "total_return": 5.9652,
+     "cagr": 0.129,
+     "sharpe": 0.7388,
+     "max_drawdown": -0.3392
+    },
+    "ediv": {
+     "total_return": 1.9607,
+     "cagr": 0.0702,
+     "sharpe": 0.6241,
+     "max_drawdown": -0.1616
+    },
+    "rv20": {
+     "total_return": 1.4539,
+     "cagr": 0.0577,
+     "sharpe": 0.6143,
+     "max_drawdown": -0.1737
+    },
+    "either_OR": {
+     "total_return": 0.8245,
+     "cagr": 0.0383,
+     "sharpe": 0.4907,
+     "max_drawdown": -0.1577
+    },
+    "both_AND": {
+     "total_return": 2.986,
+     "cagr": 0.0903,
+     "sharpe": 0.7279,
+     "max_drawdown": -0.1744
+    }
+   }
+  },
+  "15y": {
+   "period": "15y",
+   "oos_span": "2014-07-08〜2025-07-15",
+   "oos_days": 2772,
+   "cash_days": {
+    "ediv": 1311,
+    "rv20": 1667,
+    "both": 987,
+    "either": 1991
+   },
+   "overlap": {
+    "jaccard": 0.496,
+    "share_of_ediv_cash_days_also_rv": 0.753,
+    "share_of_rv_cash_days_also_ediv": 0.592,
+    "expected_jaccard_if_independent": 0.36
+   },
+   "corr_daily_ediv_vs_rv": 0.257,
+   "strategies": {
+    "buy_hold": {
+     "total_return": 2.1572,
+     "cagr": 0.1102,
+     "sharpe": 0.6146,
+     "max_drawdown": -0.3392
+    },
+    "ediv": {
+     "total_return": 0.7526,
+     "cagr": 0.0523,
+     "sharpe": 0.4917,
+     "max_drawdown": -0.1616
+    },
+    "rv20": {
+     "total_return": 0.2382,
+     "cagr": 0.0196,
+     "sharpe": 0.2835,
+     "max_drawdown": -0.1881
+    },
+    "either_OR": {
+     "total_return": 0.1348,
+     "cagr": 0.0116,
+     "sharpe": 0.1939,
+     "max_drawdown": -0.1808
+    },
+    "both_AND": {
+     "total_return": 0.9123,
+     "cagr": 0.0607,
+     "sharpe": 0.5417,
+     "max_drawdown": -0.1616
+    }
+   }
+  },
+  "10y": {
+   "period": "10y",
+   "oos_span": "2019-06-21〜2025-06-26",
+   "oos_days": 1512,
+   "cash_days": {
+    "ediv": 719,
+    "rv20": 1008,
+    "both": 610,
+    "either": 1117
+   },
+   "overlap": {
+    "jaccard": 0.546,
+    "share_of_ediv_cash_days_also_rv": 0.848,
+    "share_of_rv_cash_days_also_ediv": 0.605,
+    "expected_jaccard_if_independent": 0.384
+   },
+   "corr_daily_ediv_vs_rv": 0.305,
+   "strategies": {
+    "buy_hold": {
+     "total_return": 1.0788,
+     "cagr": 0.1297,
+     "sharpe": 0.6184,
+     "max_drawdown": -0.3392
+    },
+    "ediv": {
+     "total_return": 0.3159,
+     "cagr": 0.0468,
+     "sharpe": 0.3989,
+     "max_drawdown": -0.1704
+    },
+    "rv20": {
+     "total_return": 0.2588,
+     "cagr": 0.0391,
+     "sharpe": 0.5658,
+     "max_drawdown": -0.1035
+    },
+    "either_OR": {
+     "total_return": 0.1654,
+     "cagr": 0.0258,
+     "sharpe": 0.4159,
+     "max_drawdown": -0.0783
+    },
+    "both_AND": {
+     "total_return": 0.4214,
+     "cagr": 0.0604,
+     "sharpe": 0.498,
+     "max_drawdown": -0.1615
+    }
+   }
+  }
+ }
+}
