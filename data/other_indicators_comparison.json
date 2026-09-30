@@ -1,0 +1,375 @@
+{
+ "description": "質問2の検証: 指標を差し替えたら結果はどのくらい変わるか、どこまで同じか",
+ "A_walkforward_20y": {
+  "oos_span": "2009-07-06〜2025-07-15",
+  "buy_hold": {
+   "total_return": 5.965,
+   "cagr": 0.129,
+   "sharpe": 0.739,
+   "max_drawdown": -0.339
+  },
+  "signals": [
+   {
+    "signal": "e_div = 矛盾 − 穴（基準）",
+    "total_return": 1.961,
+    "sharpe": 0.62,
+    "max_drawdown": -0.162,
+    "cash_rate": 0.44,
+    "share_of_ediv_cash_days": 1.0,
+    "jaccard_with_ediv": 1.0
+   },
+   {
+    "signal": "穴だけ（L¹ が小さい）",
+    "total_return": 1.543,
+    "sharpe": 0.5,
+    "max_drawdown": -0.253,
+    "cash_rate": 0.34,
+    "share_of_ediv_cash_days": 0.5,
+    "jaccard_with_ediv": 0.4
+   },
+   {
+    "signal": "矛盾だけ（n_unb）",
+    "total_return": 2.138,
+    "sharpe": 0.64,
+    "max_drawdown": -0.219,
+    "cash_rate": 0.5,
+    "share_of_ediv_cash_days": 0.79,
+    "jaccard_with_ediv": 0.58
+   },
+   {
+    "signal": "不均衡率だけ（1−均衡率）",
+    "total_return": 1.347,
+    "sharpe": 0.4,
+    "max_drawdown": -0.349,
+    "cash_rate": 0.53,
+    "share_of_ediv_cash_days": 0.68,
+    "jaccard_with_ediv": 0.45
+   },
+   {
+    "signal": "不均衡率 − 穴",
+    "total_return": 3.087,
+    "sharpe": 0.8,
+    "max_drawdown": -0.21,
+    "cash_rate": 0.48,
+    "share_of_ediv_cash_days": 0.88,
+    "jaccard_with_ediv": 0.72
+   },
+   {
+    "signal": "辺の数だけ",
+    "total_return": 3.255,
+    "sharpe": 0.73,
+    "max_drawdown": -0.216,
+    "cash_rate": 0.25,
+    "share_of_ediv_cash_days": 0.36,
+    "jaccard_with_ediv": 0.3
+   },
+   {
+    "signal": "辺の数 − 穴",
+    "total_return": 2.98,
+    "sharpe": 0.72,
+    "max_drawdown": -0.194,
+    "cash_rate": 0.28,
+    "share_of_ediv_cash_days": 0.44,
+    "jaccard_with_ediv": 0.37
+   },
+   {
+    "signal": "VIX",
+    "total_return": 1.532,
+    "sharpe": 0.52,
+    "max_drawdown": -0.278,
+    "cash_rate": 0.24,
+    "share_of_ediv_cash_days": 0.31,
+    "jaccard_with_ediv": 0.25
+   },
+   {
+    "signal": "直近20日の値動きの大きさ",
+    "total_return": 3.632,
+    "sharpe": 0.8,
+    "max_drawdown": -0.197,
+    "cash_rate": 0.18,
+    "share_of_ediv_cash_days": 0.25,
+    "jaccard_with_ediv": 0.22
+   }
+  ]
+ },
+ "B_similarity_5y": {
+  "span": "2021-07-15〜2026-05-17",
+  "pairs": [
+   {
+    "pair": "L1 - n_unb_total",
+    "abs_corr_with_ediv": 1.0,
+    "top20_overlap": 1.0
+   },
+   {
+    "pair": "L2 - n_unb_total",
+    "abs_corr_with_ediv": 0.91,
+    "top20_overlap": 0.78
+   },
+   {
+    "pair": "entropy - n_unb_total",
+    "abs_corr_with_ediv": 0.87,
+    "top20_overlap": 0.78
+   },
+   {
+    "pair": "nH1 - n_unb_total",
+    "abs_corr_with_ediv": 0.86,
+    "top20_overlap": 0.8
+   },
+   {
+    "pair": "L1 - n_unb_4",
+    "abs_corr_with_ediv": 0.86,
+    "top20_overlap": 0.71
+   },
+   {
+    "pair": "L1 - n_unb_5plus",
+    "abs_corr_with_ediv": 0.85,
+    "top20_overlap": 0.69
+   },
+   {
+    "pair": "L2 - n_unb_4",
+    "abs_corr_with_ediv": 0.8,
+    "top20_overlap": 0.65
+   },
+   {
+    "pair": "entropy - n_unb_5plus",
+    "abs_corr_with_ediv": 0.76,
+    "top20_overlap": 0.67
+   },
+   {
+    "pair": "nH1 - n_unb_5plus",
+    "abs_corr_with_ediv": 0.75,
+    "top20_overlap": 0.66
+   },
+   {
+    "pair": "entropy - n_unb_4",
+    "abs_corr_with_ediv": 0.75,
+    "top20_overlap": 0.65
+   },
+   {
+    "pair": "nH1 - n_unb_4",
+    "abs_corr_with_ediv": 0.74,
+    "top20_overlap": 0.66
+   },
+   {
+    "pair": "L2 - n_unb_5plus",
+    "abs_corr_with_ediv": 0.72,
+    "top20_overlap": 0.6
+   },
+   {
+    "pair": "meanP - n_unb_total",
+    "abs_corr_with_ediv": 0.62,
+    "top20_overlap": 0.57
+   },
+   {
+    "pair": "L1 - n_unb_3",
+    "abs_corr_with_ediv": 0.6,
+    "top20_overlap": 0.49
+   },
+   {
+    "pair": "meanP - n_unb_4",
+    "abs_corr_with_ediv": 0.58,
+    "top20_overlap": 0.52
+   },
+   {
+    "pair": "Linf - n_unb_total",
+    "abs_corr_with_ediv": 0.53,
+    "top20_overlap": 0.54
+   },
+   {
+    "pair": "L2 - n_unb_3",
+    "abs_corr_with_ediv": 0.51,
+    "top20_overlap": 0.45
+   },
+   {
+    "pair": "L2 - Linf",
+    "abs_corr_with_ediv": 0.5,
+    "top20_overlap": 0.4
+   },
+   {
+    "pair": "entropy - n_unb_3",
+    "abs_corr_with_ediv": 0.5,
+    "top20_overlap": 0.46
+   },
+   {
+    "pair": "Linf - n_unb_4",
+    "abs_corr_with_ediv": 0.5,
+    "top20_overlap": 0.5
+   },
+   {
+    "pair": "nH1 - n_unb_3",
+    "abs_corr_with_ediv": 0.49,
+    "top20_overlap": 0.43
+   },
+   {
+    "pair": "L1 - meanP",
+    "abs_corr_with_ediv": 0.49,
+    "top20_overlap": 0.45
+   },
+   {
+    "pair": "L1 - Linf",
+    "abs_corr_with_ediv": 0.47,
+    "top20_overlap": 0.4
+   },
+   {
+    "pair": "n_unb_4 - balance_rate",
+    "abs_corr_with_ediv": 0.47,
+    "top20_overlap": 0.47
+   },
+   {
+    "pair": "n_unb_total - balance_rate",
+    "abs_corr_with_ediv": 0.46,
+    "top20_overlap": 0.47
+   },
+   {
+    "pair": "L2 - meanP",
+    "abs_corr_with_ediv": 0.46,
+    "top20_overlap": 0.45
+   },
+   {
+    "pair": "meanP - n_unb_5plus",
+    "abs_corr_with_ediv": 0.4,
+    "top20_overlap": 0.49
+   },
+   {
+    "pair": "n_unb_total - n_unb_3",
+    "abs_corr_with_ediv": 0.36,
+    "top20_overlap": 0.48
+   },
+   {
+    "pair": "n_unb_5plus - balance_rate",
+    "abs_corr_with_ediv": 0.35,
+    "top20_overlap": 0.4
+   },
+   {
+    "pair": "n_unb_total - n_unb_5plus",
+    "abs_corr_with_ediv": 0.35,
+    "top20_overlap": 0.46
+   },
+   {
+    "pair": "Linf - n_unb_5plus",
+    "abs_corr_with_ediv": 0.34,
+    "top20_overlap": 0.44
+   },
+   {
+    "pair": "Linf - nH1",
+    "abs_corr_with_ediv": 0.32,
+    "top20_overlap": 0.38
+   },
+   {
+    "pair": "L1 - L2",
+    "abs_corr_with_ediv": 0.32,
+    "top20_overlap": 0.37
+   },
+   {
+    "pair": "n_unb_3 - n_unb_4",
+    "abs_corr_with_ediv": 0.31,
+    "top20_overlap": 0.44
+   },
+   {
+    "pair": "Linf - entropy",
+    "abs_corr_with_ediv": 0.3,
+    "top20_overlap": 0.38
+   },
+   {
+    "pair": "meanP - entropy",
+    "abs_corr_with_ediv": 0.29,
+    "top20_overlap": 0.4
+   },
+   {
+    "pair": "n_unb_3 - balance_rate",
+    "abs_corr_with_ediv": 0.27,
+    "top20_overlap": 0.35
+   },
+   {
+    "pair": "nH1 - meanP",
+    "abs_corr_with_ediv": 0.27,
+    "top20_overlap": 0.38
+   },
+   {
+    "pair": "L1 - balance_rate",
+    "abs_corr_with_ediv": 0.26,
+    "top20_overlap": 0.24
+   },
+   {
+    "pair": "meanP - n_unb_3",
+    "abs_corr_with_ediv": 0.25,
+    "top20_overlap": 0.34
+   },
+   {
+    "pair": "entropy - balance_rate",
+    "abs_corr_with_ediv": 0.2,
+    "top20_overlap": 0.31
+   },
+   {
+    "pair": "nH1 - balance_rate",
+    "abs_corr_with_ediv": 0.19,
+    "top20_overlap": 0.28
+   },
+   {
+    "pair": "Linf - n_unb_3",
+    "abs_corr_with_ediv": 0.19,
+    "top20_overlap": 0.31
+   },
+   {
+    "pair": "L1 - entropy",
+    "abs_corr_with_ediv": 0.18,
+    "top20_overlap": 0.25
+   },
+   {
+    "pair": "L1 - nH1",
+    "abs_corr_with_ediv": 0.17,
+    "top20_overlap": 0.24
+   },
+   {
+    "pair": "n_unb_4 - n_unb_5plus",
+    "abs_corr_with_ediv": 0.17,
+    "top20_overlap": 0.4
+   },
+   {
+    "pair": "L2 - balance_rate",
+    "abs_corr_with_ediv": 0.17,
+    "top20_overlap": 0.21
+   },
+   {
+    "pair": "n_unb_3 - n_unb_5plus",
+    "abs_corr_with_ediv": 0.15,
+    "top20_overlap": 0.38
+   },
+   {
+    "pair": "Linf - balance_rate",
+    "abs_corr_with_ediv": 0.11,
+    "top20_overlap": 0.3
+   },
+   {
+    "pair": "meanP - balance_rate",
+    "abs_corr_with_ediv": 0.07,
+    "top20_overlap": 0.28
+   },
+   {
+    "pair": "Linf - meanP",
+    "abs_corr_with_ediv": 0.06,
+    "top20_overlap": 0.24
+   },
+   {
+    "pair": "L2 - nH1",
+    "abs_corr_with_ediv": 0.05,
+    "top20_overlap": 0.28
+   },
+   {
+    "pair": "L2 - entropy",
+    "abs_corr_with_ediv": 0.05,
+    "top20_overlap": 0.31
+   },
+   {
+    "pair": "nH1 - entropy",
+    "abs_corr_with_ediv": 0.01,
+    "top20_overlap": 0.2
+   },
+   {
+    "pair": "n_unb_total - n_unb_4",
+    "abs_corr_with_ediv": 0.0,
+    "top20_overlap": 0.32
+   }
+  ]
+ }
+}

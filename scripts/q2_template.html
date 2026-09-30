@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>質問2の検証｜指標を替えると結果はどう変わるか</title>
+<meta name="description" content="学会で受けた質問「指標にこの2つ以外を使うのは？」への検証。指標を差し替えたときに結果がどのくらい変わり、どこまで同じかを、売買テストとでたらめ比較で示す。">
+<style>
+:root{
+  color-scheme: light;
+  --page:#f9f9f7; --surface-1:#fcfcfb; --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10); --wash:rgba(11,11,11,.04);
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100;
+  --ref:#898781; --bar-neutral:#c3c2b7; --seq-soft:#86b6ef; --accent-bg:#eaf2fd;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --page:#0d0d0d; --surface-1:#1a1a19; --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --wash:rgba(255,255,255,.05);
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
+    --ref:#898781; --bar-neutral:#52514e; --seq-soft:#1c5cab; --accent-bg:#142236;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0d0d0d; --surface-1:#1a1a19; --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --wash:rgba(255,255,255,.05);
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
+  --ref:#898781; --bar-neutral:#52514e; --seq-soft:#1c5cab; --accent-bg:#142236;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--text-primary);
+  font-family:"Segoe UI",system-ui,-apple-system,"Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;font-size:15px;line-height:1.75}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:32px 72px}
+h1{font-size:clamp(22px,3.4vw,30px);line-height:1.35;margin:6px 0 14px;text-wrap:balance}
+h2{font-size:19px;line-height:1.4;margin:48px 0 8px;text-wrap:balance}
+h3{font-size:14px;margin:0 0 2px;font-weight:650}
+p{margin:8px 0;max-width:70ch}
+.kicker{color:var(--text-secondary);font-size:13px;margin:0}
+.lead{font-size:16px}
+.sub{color:var(--text-secondary);font-size:13px;margin:0 0 10px;max-width:78ch}
+a{color:var(--series-1)}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:16px 16px 12px;margin:14px 0}
+.answer{background:var(--accent-bg);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:14px 0}
+.answer ul{margin:6px 0 0;padding-left:1.2em}
+.answer li{margin:4px 0;max-width:72ch}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:14px 0}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.tile .label{font-size:12.5px;color:var(--text-secondary)}
+.tile .value{font-size:30px;font-weight:650;line-height:1.25}
+.tile .note{font-size:12.5px;color:var(--text-secondary)}
+.filters{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:18px 0 6px;position:sticky;top:0;z-index:5;
+  background:var(--page);padding-block:8px;border-bottom:1px solid var(--border)}
+.filters .flabel{font-size:13px;color:var(--text-secondary)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface-1)}
+.seg button{font:inherit;font-size:13.5px;padding:5px 14px;border:0;background:transparent;color:var(--text-secondary);cursor:pointer}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--series-1);outline-offset:-2px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--text-secondary);margin:4px 0 6px}
+.legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.key{display:inline-block;width:18px;height:0;border-top:2px solid var(--c)}
+.key.box{width:12px;height:12px;border:0;background:var(--c);border-radius:2px}
+.key.band{width:18px;height:10px;border:0;background:var(--ref);opacity:.25;border-radius:2px}
+.key.dotk{width:9px;height:9px;border:0;border-radius:50%;background:var(--c)}
+.key.ringk{width:11px;height:11px;border:1.5px solid var(--text-primary);border-radius:50%;background:transparent}
+.s-ediv{--c:var(--series-1)} .s-rv{--c:var(--series-2)} .s-unb{--c:var(--series-3)} .s-l1{--c:var(--series-4)} .s-hold{--c:var(--ref)}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.chart.wide{overflow-x:auto}
+.chart.wide svg{min-width:720px}
+.chart svg:focus-visible{outline:2px solid var(--series-1);outline-offset:4px;border-radius:4px}
+svg text{font-family:inherit;font-size:11px;fill:var(--muted)}
+svg .lab{fill:var(--text-secondary);font-size:11.5px}
+svg .grid{stroke:var(--grid);stroke-width:1}
+svg .axis{stroke:var(--axis);stroke-width:1}
+svg .ln{fill:none;stroke:var(--c);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg .dot{fill:var(--c);stroke:var(--surface-1);stroke-width:2}
+svg .cross{stroke:var(--muted);stroke-width:1}
+.tip{position:absolute;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);border-radius:8px;
+  box-shadow:0 4px 14px rgba(0,0,0,.12);padding:8px 10px;font-size:12.5px;line-height:1.5;min-width:150px;max-width:280px;z-index:4}
+.tip .t{color:var(--text-secondary);font-size:12px;margin-bottom:2px}
+.tip .r{display:flex;align-items:center;gap:6px;justify-content:space-between}
+.tip .r b{font-weight:650;font-variant-numeric:tabular-nums}
+.tip .r span{color:var(--text-secondary);display:inline-flex;align-items:center;gap:6px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.tablewrap{overflow-x:auto;margin:6px 0}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:6px 10px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{color:var(--text-secondary);font-weight:600;border-bottom:1px solid var(--axis);vertical-align:bottom;white-space:normal;min-width:64px}
+tr.hl td{background:var(--wash);font-weight:650}
+tr.ref td{color:var(--text-secondary)}
+td .sw{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--c);margin-right:7px;vertical-align:baseline}
+details{margin:8px 0}
+summary{cursor:pointer;color:var(--text-secondary);font-size:13px}
+.points li{margin:3px 0;max-width:76ch}
+.points{padding-left:1.2em;margin:6px 0}
+.small{font-size:12.5px;color:var(--text-secondary)}
+footer{margin-top:48px;color:var(--text-secondary);font-size:12.5px}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:var(--wash);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="kicker">日本応用数理学会 2026年度年会 ポスター P03 ／ 会場で受けた質問 2 への検証</p>
+<h1>「指標にこの2つ以外を使うのは？」<br>指標を替えると結果はどのくらい変わるか、どこまで同じか</h1>
+
+<div class="answer">
+  <b>答え：使える。そして「この2つでなければならない」とは、成績からは言えない。</b>
+  <ul>
+    <li><b>形の指標は、別のものに替えてもほぼ同じ。</b>穴の寿命の合計を、二乗和・穴の数・ばらつきに替えても、e_div との動きの近さは 0.86〜0.91（1 が完全一致）。</li>
+    <li><b>まったく別の指標に替えると、休む日は変わる。</b>「直近20日の値動きの大きさ」で休むルールは、同じ手順だと休む日がずっと少なく、成績は e_div より上。</li>
+    <li><b>同じ手順で比べると、20年・15年では e_div の最大下落が一番浅い。</b>ただし e_div は半分近くの日を休んでいる。</li>
+    <li><b>休む日数を同じくらいに揃えると、値動きの大きさで休む方が最大下落は浅い。</b>成績は20年・15年で e_div が少し上、10年では逆。</li>
+    <li><b>最大下落では、e_div は「同じ回数・長さで時期だけでたらめに休む」よりはっきり浅い</b>（20年・15年。10年は境目）。<b>成績では、でたらめと区別がつかない。</b>持ち続けより儲かる指標はない。</li>
+  </ul>
+</div>
+
+<div class="tiles" id="tiles"></div>
+
+<p class="sub">用語：<b>休む</b>＝株を売って現金で待つ。<b>成績</b>＝年あたりの儲け ÷ 年あたりのブレ（Sharpe 比、金利は 0 として計算）。
+<b>最大下落</b>＝資産がそれまでの最高値から一番大きく減った割合。<b>e_div</b>＝「符号の矛盾の多さ」−「穴の寿命の合計」を、それぞれ過去の自分と比べた高さに直して引いたもの（ポスターの指標）。</p>
+
+<div class="filters" role="group" aria-label="表示の切り替え">
+  <span class="flabel">期間（以下のすべての図と表に反映）</span>
+  <div class="seg" id="seg-period"></div>
+  <span class="flabel" id="span-note"></span>
+</div>
+
+<h2>1. どのくらい変わるか ― 同じ手順で、休む基準の指標だけ差し替える</h2>
+<p class="sub">手順はポスターと同じ：過去3年で「上位20%に入る高さ」を決め、次の1年はその高さを超えたら翌日から休む。1年ずつ進めて繰り返す。指標だけを入れ替えた。</p>
+<ul class="points" id="sum-own"></ul>
+
+<div class="card">
+  <h3>資産の推移（開始時を 1 とした倍率・対数目盛）</h3>
+  <div class="legend" id="lg-eq"></div>
+  <div class="chart wide" id="ch-eq"></div>
+</div>
+<div class="card">
+  <h3>そのときどきの下落の深さ（直前の最高値からの減り方）</h3>
+  <div class="legend" id="lg-dd"></div>
+  <div class="chart wide" id="ch-dd"></div>
+</div>
+
+<div class="card">
+  <h3>成績の一覧（しきい値は全指標共通で「過去3年の上位20%」）</h3>
+  <div class="tablewrap"><table id="tb-own"></table></div>
+  <p class="small">「でたらめより浅い」＝ e_div と同じ回数・同じ長さで、時期だけでたらめに休んだ 500 本のうち、この指標より最大下落が深かった割合。休む率が e_div と大きく違う指標では、目安として読む。</p>
+  <details><summary>年末時点の資産（図の表版）</summary><div class="tablewrap"><table id="tb-year"></table></div></details>
+</div>
+
+<h2>2. 休む日数を揃えると ― 休む率を動かしたときの成績</h2>
+<p class="sub">上の比較は、指標ごとに休む日数が違うので公平ではない。そこで「上位何%で休むか」を 50%〜5% まで動かし、実際に休んだ割合を横軸にした。同じ横位置で縦を比べれば、同じ日数だけ休んだときの差になる。灰色は、e_div と同じ休み方で時期だけでたらめにした場合の幅（10〜90%）と中央値。</p>
+<ul class="points" id="sum-front"></ul>
+<div class="grid2">
+  <div class="card"><h3>休む率と最大下落（上ほど浅い）</h3><div class="legend" id="lg-f1"></div><div class="chart" id="ch-f1"></div></div>
+  <div class="card"><h3>休む率と成績（上ほど良い）</h3><div class="legend" id="lg-f2"></div><div class="chart" id="ch-f2"></div></div>
+</div>
+<div class="card">
+  <h3>休む率を e_div に近づけたときの比較</h3>
+  <div class="tablewrap"><table id="tb-near"></table></div>
+  <p class="small">各指標について、実際の休む率が e_div（しきい値80）に最も近くなるしきい値を選んだ。後から休む率を見て選んでいるので、売買ルールとしての成績ではなく、同じ日数だけ休んだときの性質の比較として読む。</p>
+  <details><summary>すべてのしきい値の結果（図の表版）</summary><div class="tablewrap"><table id="tb-front"></table></div></details>
+</div>
+
+<h2>3. どこまで同じ日に休むか</h2>
+<p class="sub">色のついた区間が休んでいた期間（しきい値80・同じ手順）。上の行と同じ模様なら、同じ日に休んでいる。</p>
+<ul class="points" id="sum-bar"></ul>
+<div class="card">
+  <h3>休んでいた期間</h3>
+  <div class="chart wide" id="ch-bar"></div>
+</div>
+
+<h2>4. でたらめに休んだ場合との比較</h2>
+<p class="sub">e_div と同じ回数・同じ長さのまま、休む時期だけをでたらめにした 500 本の分布（灰色の柱）。縦線が各指標（しきい値80）。</p>
+<ul class="points" id="sum-rand"></ul>
+<div class="grid2">
+  <div class="card"><h3>最大下落（右ほど浅い）</h3><div class="legend" id="lg-h1"></div><div class="chart" id="ch-h1"></div></div>
+  <div class="card"><h3>成績（右ほど良い）</h3><div class="legend" id="lg-h2"></div><div class="chart" id="ch-h2"></div></div>
+</div>
+
+<h2>5. 位相の指標どうしでは ― 55通りは e_div とどこまで同じ動きか</h2>
+<p class="sub" id="sim-sub"></p>
+<ul class="points" id="sum-sim"></ul>
+<div class="grid2">
+  <div class="card"><h3>e_div との動きの近さ（相関の大きさ）ごとの組み合わせの数</h3><div class="chart" id="ch-sim"></div></div>
+  <div class="card"><h3>組み合わせの型ごとの近さ</h3><div class="tablewrap"><table id="tb-kind"></table></div>
+    <p class="small">「形」＝穴の寿命の合計・二乗和・最長・穴の数・平均寿命・ばらつき。「符号」＝矛盾した輪の数（全部・三角形・四角形・5角形以上）・均衡率。</p></div>
+</div>
+<div class="card">
+  <details><summary>55通りすべて（e_div との近さ、休む上位2割の日の重なり、事件での反応順位）</summary>
+    <div class="tablewrap"><table id="tb-pairs"></table></div>
+    <p class="small">事件での順位は、関税2件・市場構造1件・戦争2件の前後で指標がどれだけ動いたかの順位（55通り中）。事件が5件しかないので目安。詳細は <a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/docs/PAIR_SCAN_RANKING.md">PAIR_SCAN_RANKING.md</a>。</p>
+  </details>
+</div>
+
+<h2>6. 手順</h2>
+<ul class="points" id="method"></ul>
+
+<h2>7. この比較から言えないこと</h2>
+<ul class="points">
+  <li><b>指標の優劣の順位づけ。</b>9つの指標を比べて一番良いものを選ぶと、たまたま良かったものを選んでしまう。期間を変えると一番は入れ替わる（上の切り替えで確認できる）。</li>
+  <li><b>他の市場への一般化。</b>売買の対象は S&amp;P500 の1本。ポスターで示したとおり、英・独・中の指数では e_div は効かなかった。</li>
+  <li><b>位相の11指標での売買テスト。</b>11指標が揃うのは直近5年だけで、5年では「過去3年で決めて次の1年で試す」が2回しか回らない。だから55通りは売買テストではなく、動きの近さで比べた。</li>
+  <li><b>休む率を揃えた比較は、揃え方で数字が動く。</b>たとえば20年で「直近20日の値動き」の最大下落は、しきい値を動かして揃えると −14.0%、以前の検証（1年ごとに e_div の休む率に合わせる方法）では −17.4%。e_div の −16.2% と同程度か、値動きの方が浅い、までが言える範囲。</li>
+  <li><b>しきい値・学習年数・待機日数は固定。</b>上位20%・過去3年・一度休んだら最低5日、はポスターの設定のまま。2節のしきい値の掃引以外は動かしていない。</li>
+  <li><b>実際の運用成績ではない。</b>手数料は片道 0.05% を引いているが、税金や値幅のずれは入っていない。</li>
+</ul>
+
+<h2>8. 出所</h2>
+<ul class="points">
+  <li>このページの数字：<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/build_q2_page.py"><code>scripts/build_q2_page.py</code></a> が計算し、<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/data/q2_page_data.json"><code>data/q2_page_data.json</code></a> に保存（このページに埋め込み）。</li>
+  <li>売買テストの本体：<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/scripts/backtest_oos_random_vix.py"><code>scripts/backtest_oos_random_vix.py</code></a>（ポスター4章と同じ関数を使用）。</li>
+  <li>学会後の検証のまとめ：<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/docs/STATUS.md">STATUS.md §7</a>、<a href="https://github.com/hajimedayo328/market-graph-presentation/blob/main/docs/NUMBERS.md">NUMBERS.md 4C</a>。</li>
+  <li>ポスター：<a href="https://hajimedayo328.github.io/market-graph-presentation/poster.html">poster.html</a>。</li>
+</ul>
+
+<footer id="foot"></footer>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const NS = "http://www.w3.org/2000/svg";
+const M = "−";
+const $ = (s, r = document) => r.querySelector(s);
+const h = (tag, attrs = {}, text) => { const e = document.createElement(tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+const s = (tag, attrs = {}, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
+const sgn = (x, d = 0) => (x < 0 ? M : x > 0 ? "+" : "") + Math.abs(x * 100).toFixed(d) + "%";
+const rate = (x, d = 0) => (x * 100).toFixed(d) + "%";
+const num = (x, d = 2) => (x < 0 ? M : "") + Math.abs(x).toFixed(d);
+const LABEL = Object.fromEntries(D.signals.map(x => [x.key, x.label]));
+const CHART = D.chart_keys;                       // 色を持つ4系列（固定順）
+const PLABEL = { "20y": "20年", "15y": "15年", "10y": "10年" };
+let period = "20y";
+
+/* ---------- 共通部品 ---------- */
+function legend(id, items) {
+  const box = $(id); box.replaceChildren();
+  for (const it of items) {
+    const sp = h("span"); const k = h("i", { class: "key " + (it.kind || "") + " " + (it.cls || "") });
+    sp.append(k, document.createTextNode(it.label)); box.append(sp);
+  }
+}
+function tipFor(chart) {
+  let t = chart.querySelector(".tip");
+  if (!t) { t = h("div", { class: "tip", hidden: "" }); chart.append(t); }
+  return t;
+}
+function placeTip(chart, tip, px, py) {
+  tip.hidden = false;
+  const W = chart.scrollWidth, tw = tip.offsetWidth, th = tip.offsetHeight;
+  let x = px + 14; if (x + tw > W) x = px - tw - 14; if (x < 0) x = 0;
+  let y = py - th - 10; if (y < 0) y = py + 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function tipRows(tip, title, rows) {
+  tip.replaceChildren(h("div", { class: "t" }, title));
+  for (const r of rows) {
+    const row = h("div", { class: "r" }); const lab = h("span");
+    if (r.cls) lab.append(h("i", { class: "key " + (r.kind || "") + " " + r.cls }));
+    lab.append(document.createTextNode(r.label));
+    row.append(lab, h("b", {}, r.value)); tip.append(row);
+  }
+}
+function yearTicks(dates, idxs) {                  // idxs: 図の各点に対応する dates の添字
+  const out = []; let prev = null;
+  idxs.forEach((di, i) => { const y = dates[di].slice(0, 4); if (y !== prev) { out.push({ i, y }); prev = y; } });
+  const step = out.length > 12 ? 2 : 1;
+  return out.filter((t, k) => k > 0 && (+t.y % step === 0));
+}
+function svgPoint(svg, evt) { const r = svg.getBoundingClientRect(); const vb = svg.viewBox.baseVal; return { x: (evt.clientX - r.left) * vb.width / r.width, y: (evt.clientY - r.top) * vb.height / r.height, px: evt.clientX - r.left, py: evt.clientY - r.top, k: r.width / vb.width }; }
+
+/* ---------- 折れ線（資産・下落） ---------- */
+function lineChart(id, cfg) {
+  const chart = $(id); chart.replaceChildren();
+  const W = 960, H = cfg.height, m = { l: 52, r: cfg.endLabels ? 118 : 16, t: 10, b: 26 };
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.aria, tabindex: "0" });
+  const n = cfg.n, X = i => m.l + (W - m.l - m.r) * i / (n - 1);
+  const [y0, y1] = cfg.domain, tr = cfg.log ? Math.log : v => v;
+  const Y = v => m.t + (H - m.t - m.b) * (1 - (tr(v) - tr(y0)) / (tr(y1) - tr(y0)));
+  for (const t of cfg.yTicks) {
+    svg.append(s("line", { class: t.base ? "axis" : "grid", x1: m.l, x2: W - m.r, y1: Y(t.v), y2: Y(t.v) }));
+    svg.append(s("text", { x: m.l - 8, y: Y(t.v) + 4, "text-anchor": "end" }, t.label));
+  }
+  for (const t of cfg.xTicks) svg.append(s("text", { x: X(t.i), y: H - 8, "text-anchor": "middle" }, t.y));
+  for (const se of cfg.series) {
+    const d = se.values.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("");
+    const p = s("path", { class: "ln " + se.cls, d }); if (se.thin) p.style.strokeWidth = 1.5; svg.append(p);
+  }
+  for (const se of cfg.series) {
+    const v = se.values[n - 1];
+    svg.append(s("circle", { class: "dot " + se.cls, cx: X(n - 1), cy: Y(v), r: 4 }));
+    if (cfg.endLabels && cfg.endLabels.includes(se.key)) svg.append(s("text", { class: "lab", x: X(n - 1) + 9, y: Y(v) + 4 }, se.short + " " + cfg.fmt(v)));
+  }
+  const cross = s("line", { class: "cross", y1: m.t, y2: H - m.b, visibility: "hidden" }); svg.append(cross);
+  const dots = cfg.series.map(se => { const c = s("circle", { class: "dot " + se.cls, r: 4, visibility: "hidden" }); svg.append(c); return c; });
+  chart.append(svg); const tip = tipFor(chart); let cur = n - 1;
+  const show = (i, px, py) => {
+    cur = Math.max(0, Math.min(n - 1, i)); cross.setAttribute("x1", X(cur)); cross.setAttribute("x2", X(cur)); cross.setAttribute("visibility", "visible");
+    cfg.series.forEach((se, k) => { dots[k].setAttribute("cx", X(cur)); dots[k].setAttribute("cy", Y(se.values[cur])); dots[k].setAttribute("visibility", "visible"); });
+    tipRows(tip, cfg.dateAt(cur), cfg.series.map(se => ({ cls: se.cls, label: se.label, value: cfg.fmt(se.values[cur]) })));
+    placeTip(chart, tip, px, py);
+  };
+  const hide = () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); dots.forEach(d => d.setAttribute("visibility", "hidden")); };
+  svg.addEventListener("pointermove", e => { const p = svgPoint(svg, e); show(Math.round((p.x - m.l) / (W - m.l - m.r) * (n - 1)), p.px, p.py); });
+  svg.addEventListener("pointerleave", hide); svg.addEventListener("blur", hide);
+  svg.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); const i = cur + (e.key === "ArrowLeft" ? -1 : 1) * (e.shiftKey ? 10 : 1); const r = svg.getBoundingClientRect(); show(i, X(Math.max(0, Math.min(n - 1, i))) * r.width / W, 40); });
+  svg.addEventListener("focus", () => { const r = svg.getBoundingClientRect(); show(cur, X(cur) * r.width / W, 40); });
+}
+
+/* ---------- 休む率 × 成績（点をつないだ線 + でたらめの幅） ---------- */
+function frontierChart(id, cfg) {
+  const chart = $(id); chart.replaceChildren();
+  const W = 470, H = 300, m = { l: 46, r: 14, t: 10, b: 40 };
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.aria });
+  const X = v => m.l + (W - m.l - m.r) * (v - cfg.xd[0]) / (cfg.xd[1] - cfg.xd[0]);
+  const Y = v => m.t + (H - m.t - m.b) * (1 - (v - cfg.yd[0]) / (cfg.yd[1] - cfg.yd[0]));
+  for (const t of cfg.yTicks) { svg.append(s("line", { class: t.base ? "axis" : "grid", x1: m.l, x2: W - m.r, y1: Y(t.v), y2: Y(t.v) })); svg.append(s("text", { x: m.l - 7, y: Y(t.v) + 4, "text-anchor": "end" }, t.label)); }
+  for (const v of [0, .2, .4, .6, .8]) svg.append(s("text", { x: X(v), y: H - 22, "text-anchor": "middle" }, rate(v)));
+  svg.append(s("text", { x: (m.l + W - m.r) / 2, y: H - 5, "text-anchor": "middle" }, "実際に休んだ日の割合"));
+  const rb = cfg.random;
+  const band = rb.map((p, i) => (i ? "L" : "M") + X(p.x).toFixed(1) + " " + Y(p.hi).toFixed(1)).join("") + rb.slice().reverse().map(p => "L" + X(p.x).toFixed(1) + " " + Y(p.lo).toFixed(1)).join("") + "Z";
+  const bp = s("path", { d: band }); bp.style.fill = "var(--ref)"; bp.style.opacity = ".14"; svg.append(bp);
+  const mp = s("path", { class: "ln s-hold", d: rb.map((p, i) => (i ? "L" : "M") + X(p.x).toFixed(1) + " " + Y(p.mid).toFixed(1)).join("") }); mp.style.strokeWidth = 1.5; svg.append(mp);
+  const pts = [];
+  for (const se of cfg.series) {
+    svg.append(s("path", { class: "ln " + se.cls, d: se.points.map((p, i) => (i ? "L" : "M") + X(p.x).toFixed(1) + " " + Y(p.y).toFixed(1)).join("") }));
+    for (const p of se.points) {
+      const c = s("circle", { class: "dot " + se.cls, cx: X(p.x), cy: Y(p.y), r: p.pct === 80 ? 5.5 : 4 });
+      if (p.pct === 80) { c.style.stroke = "var(--text-primary)"; c.style.strokeWidth = 1.5; }
+      svg.append(c); pts.push({ se, p, cx: X(p.x), cy: Y(p.y) });
+    }
+  }
+  const hp = cfg.hold; const hc = s("circle", { class: "dot s-hold", cx: X(0), cy: Y(hp.y), r: 4 }); svg.append(hc);
+  pts.push({ hold: true, cx: X(0), cy: Y(hp.y), p: { x: 0, y: hp.y } });
+  const ring = s("circle", { r: 8, fill: "none", visibility: "hidden" }); ring.style.stroke = "var(--text-primary)"; ring.style.strokeWidth = 1.5; svg.append(ring);
+  chart.append(svg); const tip = tipFor(chart);
+  svg.addEventListener("pointermove", e => {
+    const q = svgPoint(svg, e); let best = null, bd = 1e9;
+    for (const t of pts) { const d = (t.cx - q.x) ** 2 + (t.cy - q.y) ** 2; if (d < bd) { bd = d; best = t; } }
+    if (!best || bd > 45 * 45) { tip.hidden = true; ring.setAttribute("visibility", "hidden"); return; }
+    ring.setAttribute("cx", best.cx); ring.setAttribute("cy", best.cy); ring.setAttribute("visibility", "visible");
+    if (best.hold) tipRows(tip, "持ち続け（休まない）", [{ label: cfg.yName, value: cfg.fmt(best.p.y) }]);
+    else tipRows(tip, best.se.label, [{ label: "休む基準", value: "過去3年の上位" + (100 - best.p.pct) + "%" }, { label: "休んだ割合", value: rate(best.p.x) }, { label: cfg.yName, value: cfg.fmt(best.p.y) }, { label: cfg.otherName, value: cfg.otherFmt(best.p.other) }]);
+    placeTip(chart, tip, q.px, q.py);
+  });
+  svg.addEventListener("pointerleave", () => { tip.hidden = true; ring.setAttribute("visibility", "hidden"); });
+}
+
+/* ---------- 休んでいた期間（帯） ---------- */
+function barcode(id, P) {
+  const chart = $(id); chart.replaceChildren();
+  const rows = D.signals.map(x => P.signals[x.key]);
+  const W = 960, rh = 14, gap = 9, m = { l: 196, r: 60, t: 6, b: 24 }, H = m.t + rows.length * (rh + gap) + m.b;
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "各指標が休んでいた期間" });
+  const n = P.n_days, X = i => m.l + (W - m.l - m.r) * i / n;
+  const masks = rows.map(r => { const a = new Uint8Array(n); for (const [a0, b0] of r.runs) a.fill(1, a0, b0); return a; });
+  rows.forEach((r, k) => {
+    const y = m.t + k * (rh + gap);
+    const bg = s("rect", { x: m.l, y, width: W - m.l - m.r, height: rh, rx: 2 }); bg.style.fill = "var(--wash)"; svg.append(bg);
+    for (const [a0, b0] of r.runs) { const re = s("rect", { x: X(a0), y, width: Math.max(.6, X(b0) - X(a0)), height: rh }); re.style.fill = r.key === "ediv" ? "var(--series-1)" : "var(--seq-soft)"; svg.append(re); }
+    const t = s("text", { class: "lab", x: m.l - 10, y: y + rh - 3, "text-anchor": "end" }, r.label); if (r.key === "ediv") t.style.fontWeight = 650; svg.append(t);
+    svg.append(s("text", { class: "lab", x: W - m.r + 8, y: y + rh - 3 }, rate(r.cash_rate)));
+  });
+  svg.append(s("text", { x: W - m.r + 8, y: H - 8 }, "休む率"));
+  const ticks = []; let prev = null; P.dates.forEach((d, i) => { const y = d.slice(0, 4); if (y !== prev) { ticks.push({ i, y }); prev = y; } });
+  const step = ticks.length > 12 ? 2 : 1;
+  for (const t of ticks.filter((t, k) => k > 0 && (+t.y % step === 0))) svg.append(s("text", { x: X(t.i), y: H - 8, "text-anchor": "middle" }, t.y));
+  const cross = s("line", { class: "cross", y1: m.t - 2, y2: H - m.b, visibility: "hidden" }); svg.append(cross);
+  chart.append(svg); const tip = tipFor(chart);
+  svg.addEventListener("pointermove", e => {
+    const q = svgPoint(svg, e); const i = Math.round((q.x - m.l) / (W - m.l - m.r) * n);
+    if (i < 0 || i >= n) { tip.hidden = true; cross.setAttribute("visibility", "hidden"); return; }
+    cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i)); cross.setAttribute("visibility", "visible");
+    tipRows(tip, P.dates[i], rows.map((r, k) => ({ label: r.label, value: masks[k][i] ? "休み" : "保有" })));
+    placeTip(chart, tip, q.px, q.py);
+  });
+  svg.addEventListener("pointerleave", () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); });
+}
+
+/* ---------- 柱（でたらめの分布・55通りの近さ） ---------- */
+function histChart(id, cfg) {
+  const chart = $(id); chart.replaceChildren();
+  const W = 470, H = cfg.height || 250, m = { l: 34, r: 14, t: cfg.markers ? 20 : 16, b: 40 };
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.aria });
+  const X = v => m.l + (W - m.l - m.r) * (v - cfg.xd[0]) / (cfg.xd[1] - cfg.xd[0]);
+  const ymax = Math.max(...cfg.bins.map(b => b.count), 1), Y = c => m.t + (H - m.t - m.b) * (1 - c / ymax);
+  svg.append(s("line", { class: "axis", x1: m.l, x2: W - m.r, y1: Y(0), y2: Y(0) }));
+  const tip = tipFor(chart);
+  for (const b of cfg.bins) {
+    const bw = Math.min(24, X(b.hi) - X(b.lo) - 2), cx = (X(b.lo) + X(b.hi)) / 2, y = Y(b.count), hh = Y(0) - y;
+    if (b.count > 0) {
+      const r = Math.min(4, bw / 2, hh);
+      const d = `M${cx - bw / 2} ${Y(0)}V${y + r}Q${cx - bw / 2} ${y} ${cx - bw / 2 + r} ${y}H${cx + bw / 2 - r}Q${cx + bw / 2} ${y} ${cx + bw / 2} ${y + r}V${Y(0)}Z`;
+      const p = s("path", { d }); p.style.fill = cfg.fill; svg.append(p);
+      if (cfg.capLabels) svg.append(s("text", { class: "lab", x: cx, y: y - 5, "text-anchor": "middle" }, String(b.count)));
+    }
+    const hit = s("rect", { x: X(b.lo), y: m.t, width: X(b.hi) - X(b.lo), height: H - m.t - m.b, fill: "transparent" });
+    hit.addEventListener("pointermove", e => { const q = svgPoint(svg, e); tipRows(tip, cfg.binTitle(b), cfg.binRows(b)); placeTip(chart, tip, q.px, q.py); });
+    hit.addEventListener("pointerleave", () => { tip.hidden = true; });
+    svg.append(hit);
+  }
+  for (const t of cfg.xTicks) svg.append(s("text", { x: X(t.v), y: H - 22, "text-anchor": "middle" }, t.label));
+  svg.append(s("text", { x: (m.l + W - m.r) / 2, y: H - 5, "text-anchor": "middle" }, cfg.xName));
+  for (const mk of cfg.markers || []) {
+    const l = s("line", { x1: X(mk.v), x2: X(mk.v), y1: m.t - 4, y2: Y(0), class: "ln " + mk.cls }); svg.append(l);
+    const c = s("circle", { class: "dot " + mk.cls, cx: X(mk.v), cy: m.t - 4, r: 4 }); svg.append(c);
+    const hit = s("circle", { cx: X(mk.v), cy: m.t - 4, r: 13, fill: "transparent" });
+    hit.addEventListener("pointermove", e => { const q = svgPoint(svg, e); tipRows(tip, mk.label, mk.rows); placeTip(chart, tip, q.px, q.py); });
+    hit.addEventListener("pointerleave", () => { tip.hidden = true; });
+    svg.append(hit);
+  }
+  chart.append(svg);
+}
+function bins(values, width, lo, hi) { const out = []; for (let a = lo; a < hi - 1e-9; a += width) out.push({ lo: a, hi: a + width, count: 0 }); for (const v of values) { const k = Math.min(out.length - 1, Math.max(0, Math.floor((v - lo) / width))); out[k].count++; } return out; }
+
+/* ---------- 表 ---------- */
+function table(id, head, rows) {
+  const t = $(id); t.replaceChildren(); const th = h("thead"), tr = h("tr"); head.forEach(x => tr.append(h("th", {}, x))); th.append(tr); t.append(th);
+  const tb = h("tbody");
+  for (const r of rows) { const row = h("tr", r.cls ? { class: r.cls } : {}); r.cells.forEach((c, i) => { const td = h("td"); if (i === 0 && r.sw) td.append(h("i", { class: "sw " + r.sw })); td.append(document.createTextNode(c)); row.append(td); }); tb.append(row); }
+  t.append(tb);
+}
+const SW = { ediv: "s-ediv", rv: "s-rv", unb: "s-unb", l1: "s-l1" };
+
+/* ---------- 描画 ---------- */
+function render() {
+  const P = D.periods[period], sig = P.signals, rows = D.signals.map(x => sig[x.key]), e = sig.ediv;
+  $("#span-note").textContent = `試した期間 ${P.oos_start} 〜 ${P.oos_end}（${P.n_folds}回の「3年で決めて1年試す」）`;
+
+  // 冒頭の数字（期間に連動）
+  const byDD = [...rows].sort((a, b) => b.max_drawdown - a.max_drawdown), bySh = [...rows].sort((a, b) => b.sharpe - a.sharpe);
+  const rv = sig.rv, nrv = P.near_budget.rv;
+  const tiles = $("#tiles"); tiles.replaceChildren();
+  const tile = (label, value, note) => { const t = h("div", { class: "tile" }); t.append(h("div", { class: "label" }, label), h("div", { class: "value" }, value), h("div", { class: "note" }, note)); tiles.append(t); };
+  tile(`e_div の最大下落（${PLABEL[period]}）`, sgn(e.max_drawdown, 1), `持ち続けは ${sgn(P.hold.max_drawdown, 1)}。9指標中 ${byDD.indexOf(e) + 1} 番目に浅い`);
+  tile("値動きの大きさで、同じだけ休んだ場合", sgn(nrv.max_drawdown, 1), `直近20日の値動きで休んだときの最大下落（休む率 ${rate(nrv.cash_rate)}。e_div は休む率 ${rate(e.cash_rate)} で ${sgn(e.max_drawdown, 1)}）`);
+  tile("e_div の成績", num(e.sharpe), `9指標中 ${bySh.indexOf(e) + 1} 番目。最も高いのは「${bySh[0].label}」の ${num(bySh[0].sharpe)}`);
+  tile("e_div とほぼ同じ動きの組み合わせ", `${D.similarity.n_ge_08} / ${D.similarity.n_others}`, "位相の指標 54 通りのうち、近さ 0.8 以上（直近5年）");
+
+  // 1. 同じ手順
+  const cash = rows.map(r => r.cash_rate);
+  const ul = $("#sum-own"); ul.replaceChildren();
+  [(byDD[0] === e ? `最大下落が最も浅いのは e_div の ${sgn(e.max_drawdown, 1)}。次は「${byDD[1].label}」の ${sgn(byDD[1].max_drawdown, 1)}。` : `最大下落が最も浅いのは「${byDD[0].label}」の ${sgn(byDD[0].max_drawdown, 1)}。e_div は ${byDD.indexOf(e) + 1} 番目（${sgn(e.max_drawdown, 1)}）。`) + `持ち続けは ${sgn(P.hold.max_drawdown, 1)}。`,
+   `成績が最も高いのは「${bySh[0].label}」の ${num(bySh[0].sharpe)}。e_div は ${bySh.indexOf(e) + 1} 番目（${num(e.sharpe)}）。持ち続けは ${num(P.hold.sharpe)}。`,
+   `休む率は指標によって ${rate(Math.min(...cash))}〜${rate(Math.max(...cash))} とばらつく。e_div は ${rate(e.cash_rate)}、直近20日の値動きは ${rate(rv.cash_rate)}。休む日が多いほど下落は浅くなりやすいので、この表だけでは公平ではない（→ 2節）。`,
+   `儲けはどの指標も持ち続け（${sgn(P.hold.total_return)}）に届かない。`].forEach(t => ul.append(h("li", {}, t)));
+
+  const series = [{ key: "hold", cls: "s-hold", label: "持ち続け（休まない）", short: "持ち続け", thin: true, d: P.hold }]
+    .concat(CHART.slice().reverse().map(k => ({ key: k, cls: SW[k], label: LABEL[k], short: k === "ediv" ? "e_div" : LABEL[k], d: sig[k] })));
+  const lg = series.slice().reverse().map(x => ({ cls: x.cls, label: x.label })); const lgo = [lg[0], lg[1], lg[2], lg[3], lg[4]];
+  // 凡例は e_div → 値動き → 矛盾 → 穴 → 持ち続け の固定順
+  const order = ["ediv", "rv", "unb", "l1", "hold"]; const lgFixed = order.map(k => { const x = series.find(v => v.key === k); return { cls: x.cls, label: x.label }; });
+  legend("#lg-eq", lgFixed); legend("#lg-dd", lgFixed);
+  const n = P.pick.length, xt = yearTicks(P.dates, P.pick), dateAt = i => P.dates[P.pick[i]];
+  const allEq = series.flatMap(x => x.d.eq), lo = Math.min(...allEq), hi = Math.max(...allEq);
+  const eqTicks = [0.5, 1, 2, 4, 8, 16].filter(v => v >= lo * 0.9 && v <= hi * 1.15).map(v => ({ v, label: v + "倍", base: v === 1 }));
+  lineChart("#ch-eq", { height: 330, n, log: true, domain: [Math.min(lo * 0.94, 0.95), hi * 1.12], yTicks: eqTicks, xTicks: xt, dateAt,
+    series: series.map(x => ({ ...x, values: x.d.eq })), fmt: v => v.toFixed(2) + "倍", endLabels: ["ediv", "hold"], aria: "資産の推移" });
+  const allDd = series.flatMap(x => x.d.dd), dlo = Math.min(...allDd), ddTicks = [];
+  for (let v = 0; v >= dlo - 0.0001; v -= 0.1) ddTicks.push({ v, label: v === 0 ? "0%" : sgn(v), base: v === 0 });
+  lineChart("#ch-dd", { height: 230, n, log: false, domain: [Math.min(dlo * 1.05, -0.1), 0], yTicks: ddTicks, xTicks: xt, dateAt,
+    series: series.map(x => ({ ...x, values: x.d.dd })), fmt: v => sgn(v, 1), aria: "下落の深さの推移" });
+
+  table("#tb-own", ["休む基準の指標", "儲け", "成績", "最大下落", "休む率", "e_div と同じ日に休んだ割合", "でたらめより浅い"],
+    [{ cls: "ref", sw: "s-hold", cells: ["持ち続け（休まない）", sgn(P.hold.total_return), num(P.hold.sharpe), sgn(P.hold.max_drawdown, 1), "0%", "—", "—"] }]
+      .concat(rows.map(r => ({ cls: r.key === "ediv" ? "hl" : "", sw: SW[r.key], cells: [r.label, sgn(r.total_return), num(r.sharpe), sgn(r.max_drawdown, 1), rate(r.cash_rate), r.key === "ediv" ? "—" : rate(r.share_of_ediv), rate(r.rand_worse_maxdd)] })))
+      .concat([{ cls: "ref", cells: ["でたらめに休む（500本の平均）", "—", num(P.random.sharpe_mean), sgn(P.random.maxdd_mean, 1), rate(e.cash_rate), "—", "—"] }]));
+  table("#tb-year", ["年末"].concat(order.map(k => series.find(v => v.key === k).short)),
+    P.years.map((y, i) => ({ cells: [String(y)].concat(order.map(k => series.find(v => v.key === k).d.eq_year_end[i].toFixed(2) + "倍")) })));
+
+  // 2. 休む率を動かす
+  const fs = key => P.frontier[key].slice().sort((a, b) => a.cash_rate - b.cash_rate);
+  const fr = P.frontier_random.slice().sort((a, b) => a.cash_rate - b.cash_rate);
+  const fser = (yk, ok) => CHART.map(k => ({ cls: SW[k], label: LABEL[k], points: fs(k).map(p => ({ x: p.cash_rate, y: p[yk], other: p[ok], pct: p.pct })) }));
+  const fl = CHART.map(k => ({ cls: SW[k], label: LABEL[k] })).concat([{ kind: "ringk", label: "縁つき＝ポスターと同じ基準（上位20%）" }, { kind: "dotk", cls: "s-hold", label: "持ち続け（休む率 0%）" }, { cls: "s-hold", label: "でたらめの中央値" }, { kind: "band", label: "でたらめの幅（10〜90%）" }]);
+  legend("#lg-f1", fl); legend("#lg-f2", fl);
+  const fdd = CHART.flatMap(k => P.frontier[k].map(p => p.max_drawdown)).concat(fr.map(p => p.dd_q10), [P.hold.max_drawdown]);
+  const ylo = Math.floor(Math.min(...fdd) * 10 - 0.5) / 10, t1 = []; for (let v = 0; v >= ylo - 1e-9; v -= 0.1) t1.push({ v: +v.toFixed(1), label: v === 0 ? "0%" : sgn(v), base: v === 0 });
+  frontierChart("#ch-f1", { xd: [0, 0.9], yd: [ylo, 0], yTicks: t1, series: fser("max_drawdown", "sharpe"), yName: "最大下落", fmt: v => sgn(v, 1), otherName: "成績", otherFmt: v => num(v),
+    random: fr.map(p => ({ x: p.cash_rate, lo: p.dd_q10, mid: p.dd_q50, hi: p.dd_q90 })), hold: { y: P.hold.max_drawdown }, holdBelow: false, aria: "休む率と最大下落" });
+  const fsh = CHART.flatMap(k => P.frontier[k].map(p => p.sharpe)).concat(fr.map(p => p.sh_q10), fr.map(p => p.sh_q90), [P.hold.sharpe]);
+  const s0 = Math.min(0, Math.floor(Math.min(...fsh) * 5) / 5), s1 = Math.ceil(Math.max(...fsh) * 5) / 5, t2 = [];
+  for (let v = s0; v <= s1 + 1e-9; v += 0.2) t2.push({ v: +v.toFixed(1), label: num(v, 1), base: Math.abs(v) < 1e-9 });
+  frontierChart("#ch-f2", { xd: [0, 0.9], yd: [s0, s1], yTicks: t2, series: fser("sharpe", "max_drawdown"), yName: "成績", fmt: v => num(v), otherName: "最大下落", otherFmt: v => sgn(v, 1),
+    random: fr.map(p => ({ x: p.cash_rate, lo: p.sh_q10, mid: p.sh_q50, hi: p.sh_q90 })), hold: { y: P.hold.sharpe }, holdBelow: true, aria: "休む率と成績" });
+  const nb = P.near_budget, u2 = $("#sum-front"); u2.replaceChildren();
+  const cmp = (a, b, better) => a === b ? "同じ" : ((better === "hi" ? a > b : a > b) ? "上" : "下");
+  [`休む率を e_div（${rate(e.cash_rate)}）に近づけると、直近20日の値動きは 休む率 ${rate(nb.rv.cash_rate)} で最大下落 ${sgn(nb.rv.max_drawdown, 1)}、成績 ${num(nb.rv.sharpe)}。e_div は最大下落 ${sgn(e.max_drawdown, 1)}、成績 ${num(e.sharpe)}。最大下落は${nb.rv.max_drawdown > e.max_drawdown ? "値動きの方が浅い" : "e_div の方が浅い"}、成績は${nb.rv.sharpe > e.sharpe ? "値動きの方が上" : "e_div の方が上"}。`,
+   `矛盾だけは 休む率 ${rate(nb.unb.cash_rate)} で最大下落 ${sgn(nb.unb.max_drawdown, 1)}、穴だけは ${rate(nb.l1.cash_rate)} で ${sgn(nb.l1.max_drawdown, 1)}。`,
+   `同じ休む率のでたらめ（中央値）は最大下落 ${sgn(fr.reduce((a, b) => Math.abs(b.cash_rate - e.cash_rate) < Math.abs(a.cash_rate - e.cash_rate) ? b : a).dd_q50, 1)}。図で灰色の幅より上にある点は、でたらめの9割より浅い。`,
+   `成績の図では、ほとんどの点が灰色の幅の中かその近くにある。成績については、でたらめとはっきり区別できる指標はない。`].forEach(t => u2.append(h("li", {}, t)));
+  table("#tb-near", ["休む基準の指標", "選んだ基準", "休む率", "最大下落", "成績", "儲け", "e_div と同じ日に休んだ割合"],
+    rows.map(r => { const x = nb[r.key]; return { cls: r.key === "ediv" ? "hl" : "", sw: SW[r.key], cells: [r.label, "上位" + (100 - x.pct) + "%", rate(x.cash_rate), sgn(x.max_drawdown, 1), num(x.sharpe), sgn(x.total_return), r.key === "ediv" ? "—" : rate(x.share_of_ediv)] }; }));
+  table("#tb-front", ["休む基準の指標", "基準", "休む率", "最大下落", "成績", "儲け"],
+    D.signals.flatMap(x => P.frontier[x.key].map(p => ({ sw: SW[x.key], cells: [x.label, "上位" + (100 - p.pct) + "%", rate(p.cash_rate), sgn(p.max_drawdown, 1), num(p.sharpe), sgn(p.total_return)] }))));
+
+  // 3. 帯
+  barcode("#ch-bar", P);
+  const others = rows.filter(r => r.key !== "ediv"), so = [...others].sort((a, b) => b.share_of_ediv - a.share_of_ediv), u3 = $("#sum-bar"); u3.replaceChildren();
+  [`e_div が休んだ日のうち、同じ日に休んでいた割合が高いのは「${so[0].label}」${rate(so[0].share_of_ediv)}、「${so[1].label}」${rate(so[1].share_of_ediv)}。e_div の休む日は、主に符号の矛盾の側で決まっている。`,
+   `低いのは「${so[so.length - 1].label}」${rate(so[so.length - 1].share_of_ediv)}、「${so[so.length - 2].label}」${rate(so[so.length - 2].share_of_ediv)}。値動きの大きさや VIX は、危機の時期だけを短く休む。e_div は平時にも長く休んでいる。`,
+   `休む率を e_div に近づけた場合の重なりは、直近20日の値動きで ${rate(nb.rv.share_of_ediv)}、VIX で ${rate(nb.vix.share_of_ediv)}（2節の表）。`].forEach(t => u3.append(h("li", {}, t)));
+
+  // 4. でたらめ
+  const R = P.random, marks = (k, f, of) => CHART.map(c => ({ v: sig[c][k], cls: SW[c], label: LABEL[c], rows: [{ label: f === "dd" ? "最大下落" : "成績", value: f === "dd" ? sgn(sig[c][k], 1) : num(sig[c][k]) }, { label: "これより悪い でたらめ", value: rate(sig[c][of]) }] }));
+  const hl = CHART.map(k => ({ cls: SW[k], label: LABEL[k] })).concat([{ kind: "box", cls: "s-hold", label: "でたらめ 500本" }]);
+  legend("#lg-h1", hl); legend("#lg-h2", hl);
+  const dAll = R.maxdd.concat(CHART.map(k => sig[k].max_drawdown)), dl = Math.floor(Math.min(...dAll) * 50) / 50, dh = Math.min(0, Math.ceil(Math.max(...dAll) * 50) / 50 + 0.02);
+  const xt1 = []; for (let v = Math.ceil(dl * 10) / 10; v <= dh + 1e-9; v += 0.1) xt1.push({ v: +v.toFixed(1), label: v === 0 ? "0%" : sgn(v) });
+  histChart("#ch-h1", { xd: [dl, dh], bins: bins(R.maxdd, 0.02, dl, dh), fill: "var(--bar-neutral)", xTicks: xt1, xName: "最大下落", markers: marks("max_drawdown", "dd", "rand_worse_maxdd"),
+    binTitle: b => `${sgn(b.lo)} 〜 ${sgn(b.hi)}`, binRows: b => [{ label: "でたらめの本数", value: b.count + " 本" }], aria: "でたらめ500本の最大下落の分布" });
+  const sAll = R.sharpe.concat(CHART.map(k => sig[k].sharpe)), sl = Math.floor(Math.min(...sAll) * 10) / 10, sh = Math.ceil(Math.max(...sAll) * 10) / 10 + 0.05;
+  const xt2 = []; for (let v = Math.ceil(sl * 5) / 5; v <= sh + 1e-9; v += 0.2) xt2.push({ v: +v.toFixed(1), label: num(v, 1) });
+  histChart("#ch-h2", { xd: [sl, sh], bins: bins(R.sharpe, 0.05, sl, sh), fill: "var(--bar-neutral)", xTicks: xt2, xName: "成績", markers: marks("sharpe", "sh", "rand_worse_sharpe"),
+    binTitle: b => `${num(b.lo)} 〜 ${num(b.hi)}`, binRows: b => [{ label: "でたらめの本数", value: b.count + " 本" }], aria: "でたらめ500本の成績の分布" });
+  const u4 = $("#sum-rand"); u4.replaceChildren();
+  [`最大下落：でたらめ 500 本のうち e_div より浅かったのは ${rate(1 - e.rand_worse_maxdd, 1)}。でたらめの平均は ${sgn(R.maxdd_mean, 1)}、e_div は ${sgn(e.max_drawdown, 1)}。`,
+   `成績：でたらめの ${rate(1 - e.rand_worse_sharpe)} が e_div 以上。成績では、e_div はでたらめと区別がつかない。`,
+   `直近20日の値動きは、最大下落でたらめの ${rate(rv.rand_worse_maxdd)} より浅く、成績は ${rate(rv.rand_worse_sharpe)} より上。ただし休む率が ${rate(rv.cash_rate)} と e_div（${rate(e.cash_rate)}）より少ないので、同じ物差しではない。`].forEach(t => u4.append(h("li", {}, t)));
+}
+
+/* ---------- 期間に依存しない部分 ---------- */
+function renderStatic() {
+  const S = D.similarity;
+  $("#sim-sub").textContent = `位相の11指標から2つ選ぶ55通り（e_div はその1つ）について、差の系列が e_div とどれだけ同じ動きをするかを測った。期間は11指標が揃う ${S.start} 〜 ${S.end}（${S.n_days}日）。上の期間切り替えの対象外。`;
+  const others = S.pairs.filter(p => !p.is_ediv);
+  const hb = S.hist.map((c, i) => ({ lo: i / 10, hi: (i + 1) / 10, count: c }));
+  histChart("#ch-sim", { xd: [0, 1], bins: hb, fill: "var(--series-1)", capLabels: true, height: 250,
+    xTicks: [0, .2, .4, .6, .8, 1].map(v => ({ v, label: v.toFixed(1) })), xName: "e_div との近さ（0＝無関係、1＝完全に同じ）",
+    binTitle: b => `近さ ${b.lo.toFixed(1)} 〜 ${b.hi.toFixed(1)}：${b.count} 通り`,
+    binRows: b => others.filter(p => p.abs_corr >= b.lo && (p.abs_corr < b.hi || b.hi >= 1)).slice(0, 8).map(p => ({ label: p.pair, value: p.abs_corr.toFixed(2) })), aria: "e_div との近さの分布" });
+  table("#tb-kind", ["組み合わせの型", "通り数", "近さの中央値", "最小", "最大"], Object.entries(S.by_kind).map(([k, v]) => ({ cells: [k, String(v.n), v.median.toFixed(2), v.min.toFixed(2), v.max.toFixed(2)] })));
+  const top = others.slice(0, 5), rk = v => v == null ? "—" : v + "位";
+  const u = $("#sum-sim"); u.replaceChildren();
+  [`e_div 以外の ${S.n_others} 通りのうち、ほぼ同じ動き（近さ 0.8 以上）は ${S.n_ge_08} 通り、似ている（0.5 以上）まで入れて ${S.n_ge_05} 通り。中央値は ${S.median.toFixed(2)}。`,
+   `近いのは「${top.map(p => p.pair).slice(0, 3).join("」「")}」（${top[0].abs_corr.toFixed(2)}〜${top[2].abs_corr.toFixed(2)}）。形の側を別の形の指標に替えても、相手が「矛盾（全部）」なら e_div とほぼ同じ。`,
+   `形どうしの差（中央値 ${S.by_kind["形 − 形"].median.toFixed(2)}）、符号どうしの差（${S.by_kind["符号 − 符号"].median.toFixed(2)}）は e_div とは別の動き。`,
+   `事件前後の反応で1位だった「L² − 矛盾（三角形）」は近さ ${(S.pairs.find(p => p.pair === "L² − 矛盾（三角形）") || {}).abs_corr?.toFixed(2)}、「L∞ − ばらつき」は ${(S.pairs.find(p => p.pair === "L∞ − ばらつき") || {}).abs_corr?.toFixed(2)}。事件で強く反応した組は、e_div とは違う動きをしている。`].forEach(t => u.append(h("li", {}, t)));
+  table("#tb-pairs", ["組み合わせ（A − B）", "型", "e_div との近さ", "休む上位2割の重なり", "関税", "市場構造", "戦争"],
+    S.pairs.map(p => ({ cls: p.is_ediv ? "hl" : "", cells: [p.pair + (p.is_ediv ? "（＝e_div、符号は逆）" : ""), p.kind, p.abs_corr.toFixed(2), rate(p.top20_overlap), rk(p.rank_trade), rk(p.rank_market), rk(p.rank_war)] })));
+  const q = D.params, mu = $("#method");
+  [`価格：S&P500 の終値（日次）。指標：40資産（株・為替・金・国債・VIX など）の直近30日の相関から毎日計算。`,
+   `売買テスト：過去${q.train_years}年の指標の分布から「上位${100 - q.percentile}%に入る高さ」を決め、次の${q.test_years}年はその高さ以上の日に休む。${q.test_years}年ずつ進めて繰り返す。未来のデータは使わない。`,
+   `休むと決めた翌日から売買する。一度休んだら最低${q.hysteresis_days}日は休む。売買のたびに片道 ${(q.cost_one_way * 100).toFixed(2)}% の手数料を引く。`,
+   `指標は過去の自分と比べた高さ（それまでの全期間の平均と標準偏差で標準化）に直してから使う。VIX と直近20日の値動きの大きさはそのまま使う。`,
+   `でたらめ比較：1年ごとに、e_div と同じ回数・同じ長さで、休む時期だけをでたらめに置いた。しきい値80では ${q.n_random} 本、休む率を動かした図では各 ${q.n_random_frontier} 本。乱数の種は固定（${q.seed}）。`,
+   `55通りの近さ：各組の差の系列と e_div の相関の大きさ。向きは e_div に合わせてから、上位2割の日の重なりを数えた。`].forEach(t => mu.append(h("li", {}, t)));
+  $("#foot").textContent = `作成 ${D.generated}。数字はすべて手元のデータからの再計算で、ポスターの表と小数点以下がわずかに違う場合がある（価格データの取得元の違い）。`;
+  const seg = $("#seg-period");
+  for (const p of Object.keys(D.periods)) { const b = h("button", { type: "button", "aria-pressed": String(p === period) }, PLABEL[p]); b.addEventListener("click", () => { period = p; seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); render(); }); seg.append(b); }
+}
+renderStatic(); render();
+</script>
+</body>
+</html>
